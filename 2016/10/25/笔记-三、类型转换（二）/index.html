@@ -1,0 +1,352 @@
+	<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>[笔记]-三、类型转换（二） | 一切都沉淀为笔记</title>
+  <meta name="author" content="Huangzhike">
+  
+  <meta name="description" content="数值表示法
+
+科学计数法
+12123e3; // 123000123e-3; // 0.123
+
+字面形式
+120.0000003; // 3e-70.000003; // 0.000003
+
+
+特殊数值1234-0 === +0; // true0 === -0; // true0 === +0;">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="[笔记]-三、类型转换（二）"/>
+  <meta property="og:site_name" content="一切都沉淀为笔记"/>
+
+  
+  
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<!-- favicon end -->
+    <!-- <link href="//favicon.ico" rel="icon"> -->
+  
+
+  <!-- toc -->
+  <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css">
+
+  <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+
+  <!-- material design -->
+	<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css">
+  <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+	<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+  
+
+  
+
+  <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/libs/jquery-2.0.3.min.js" type="text/javascript"><\/script>')</script>
+
+</head>
+
+ 	<body>
+	  <nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">菜单</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li>
+                    <a href="/" title="">
+                    <i class="fa fa-home"></i>首页
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="/archives" title="">
+                    <i class="fa fa-list"></i>存档
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="//resume" title="我的主页">
+                    <i class="fa fa-github"></i>GitHub
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+	  <div class="container" >
+	    <div class="row">
+	
+	<div class="col-md-9 center-content">
+	
+
+		<div class="content">
+			<!-- index -->
+		   
+
+			  		<h2>[笔记]-三、类型转换（二）</h2>
+					
+					<div>
+						<span class="post-time">2016-10-25 16:11</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<p>数值表示法</p>
+<ul>
+<li><p>科学计数法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">123e3; // 123000</div><div class="line">123e-3; // 0.123</div></pre></td></tr></table></figure>
+</li>
+<li><p>字面形式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">0.0000003; // 3e-7</div><div class="line">0.000003; // 0.000003</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>特殊数值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">-0 === +0; // true</div><div class="line">0 === -0; // true</div><div class="line">0 === +0; // true</div><div class="line">(1/+0) === (1/-0) // false 除以正零得到+Infinity，除以负零得到-Infinity，两者不相等</div></pre></td></tr></table></figure></p>
+<p>Infinity</p>
+<p>除了 0除以 0得到 NaN，任意数除以 0，得到 Infinity。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">0 / 0; // NaN</div><div class="line">1 / -0; // -Infinity</div><div class="line">1 / +0; // Infinity</div><div class="line">// 非0值除以0，返回Infinity。</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">Infinity === -Infinity; // false</div><div class="line"></div><div class="line">-Math.pow(2, 2048); // -Infinity （运算结果超出JavaScript范围，也会返回无穷）</div><div class="line"></div><div class="line">Infinity + Infinity; // Infinity</div><div class="line">5 * Infinity; // Infinity</div><div class="line">5 - Infinity; // -Infinity</div><div class="line">Infinity / 5; // Infinity</div><div class="line">5 / Infinity; // 0</div><div class="line">Infinity - Infinity; // NaN</div><div class="line">Infinity / Infinity; // NaN</div><div class="line">Infinity + 1000; // Infinity</div><div class="line">Infinity - 1000; // Infinity</div><div class="line">Infinity / 1000; // Infinity </div><div class="line">Infinity - Infinity; // NaN</div><div class="line">Infinity /Infinity; // NaN</div><div class="line">Infinity * Infinity; // Infinity</div></pre></td></tr></table></figure>
+<p>Infinity 可以用于布尔运算。<br>Infinity 是JavaScript中最大的值（NaN 除外），-Infinity 是最小的值（NaN 除外）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">5 &gt; -Infinity // true</div><div class="line">5 &gt; Infinity // false</div></pre></td></tr></table></figure></p>
+<p>isFinite函数：返回一个布尔值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">isFinite(Infinity) // false</div><div class="line">isFinite(-1) // true</div><div class="line">isFinite(true) // true</div><div class="line">isFinite(NaN) // false</div><div class="line">isFinite(0/0) ; // false</div><div class="line">isFinite(&quot;foo&quot;); // false</div><div class="line">isFinite(&quot;10&quot;); // true</div><div class="line">isFinite(10); // true</div><div class="line">isFinite(undefined);  // false</div><div class="line">isFinite(); // false</div><div class="line">isFinite(null); // true，注意</div></pre></td></tr></table></figure></p>
+<p>NaN（Not a Number），其类型是 number，主要原因是字符串解析成数字出错。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">5 - &quot;x&quot; // NaN  自动将字符串“x”转为数值，但是由于x不是数字，所以最后得到结果为NaN</div><div class="line"></div><div class="line"> // 一些数学函数的运算结果会出现NaN。</div><div class="line">Math.acos(2); // NaN</div><div class="line">Math.log(-1); // NaN</div><div class="line">Math.sqrt(-1); // NaN</div><div class="line">0 / 0; // NaN</div><div class="line">typeof NaN; // &quot;number&quot;</div><div class="line">NaN === NaN; // false</div><div class="line">Boolean(NaN); // false</div></pre></td></tr></table></figure></p>
+<p>NaN 与任何数（包括 NaN）的运算，都是 NaN。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NaN + 3; // NaN</div><div class="line">NaN - 3; // NaN</div><div class="line">NaN * 3; // NaN</div><div class="line">NaN / 3; // NaN</div></pre></td></tr></table></figure></p>
+<p>NaN不等于自己，不全等于自己<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NaN == NaN; // false</div><div class="line">NaN === NaN; // false</div><div class="line">NaN != NaN; // true</div><div class="line">NaN !== NaN; // true</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">isNaN(NaN); // true</div><div class="line">isNaN(&quot;10&quot;); // false</div><div class="line">isNaN(&quot;abc&quot;); // true</div><div class="line">isNaN(true); // false</div><div class="line">isNaN(null); // false</div></pre></td></tr></table></figure>
+<p>isNaN只对数值有效，如果传入其他值，会被先转成数值。<br>也就是说，isNaN为 true 的值，可能不是 NaN，而是一个字符串。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">isNaN(&quot;Hello&quot;) // true</div><div class="line">isNaN(Number(&quot;Hello&quot;)) // true</div><div class="line">isNaN(&#123;&#125;) // true</div><div class="line">isNaN(Number(&#123;&#125;)) // true</div><div class="line">isNaN([&quot;xzy&quot;]) // true</div><div class="line">isNaN(Number([&quot;xzy&quot;])) // true</div></pre></td></tr></table></figure></p>
+<p>因此，使用isNaN之前，最好判断一下数据类型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">function myIsNaN(value) &#123;</div><div class="line">    return typeof value === &quot;number&quot; &amp;&amp; isNaN(value);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>判断 NaN 更可靠的方法是，利用 NaN 是JavaScript之中唯一不等于自身的值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">function myIsNaN(value) &#123;</div><div class="line">    return value !== value;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">isNaN(NaN); //true</div><div class="line">isNaN(23); //false</div><div class="line">isNaN(&quot;ds&quot;); //true</div><div class="line">isNaN(&quot;32131sdasd&quot;); //true</div><div class="line"></div><div class="line">undefined === undefined; //true</div><div class="line">typeof NaN; //number</div><div class="line">Object.prototype.toString.call(NaN); //[object Number]</div></pre></td></tr></table></figure>
+<p>ES6 中，isNaN() 成为了 Number 的静态方法：Number.isNaN()</p>
+<p>判断 x 是否是整数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 将 x 转换成10进制，判断和本身是不是相等：</div><div class="line">function isInteger(x) &#123; </div><div class="line">    return parseInt(x, 10) === x; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ES6 提供了静态方法 isInteger() 来判断参数是否是整数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Number.isInteger(25) // true</div><div class="line">Number.isInteger(25.0) // true</div><div class="line">Number.isInteger(25.1) // false</div><div class="line">Number.isInteger(&quot;15&quot;) // false</div></pre></td></tr></table></figure></p>
+<p>自动类型转换</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">5 + null; // 5 null 被转换为 0</div><div class="line">&quot;5&quot; + null; // &quot;5null&quot; null 被转换为 &quot;null&quot;</div><div class="line">&quot;5&quot; + 2; // 52 （加法比较特殊，因为+同时是加法和连字符，所以加法在面对字符串的时候没有隐式转换）</div><div class="line">&quot;5&quot; - 2; // 3 &quot;5&quot; 被转换为5</div><div class="line">3 + undefined; // NaN   </div><div class="line">3 + false; // 3</div><div class="line">3 + true; // 4</div><div class="line">&quot;5&quot; * &quot;2&quot;; // 10 &quot;5&quot; 和&quot;2&quot; 被转换为5和2</div><div class="line">1 +  &quot;2&quot; + &quot;2&quot;; // 122</div><div class="line">1 +  +&quot;2&quot; + &quot;2&quot;; // 32</div><div class="line">1 +  -&quot;1&quot; + &quot;2&quot;; // 02</div><div class="line">+&quot;1&quot; +  &quot;1&quot; + &quot;2&quot;; // 112</div><div class="line">// 运算结果不能转换成数字的，返回 NaN</div><div class="line"> &quot;A&quot; - &quot;B&quot; + &quot;2&quot;; // NaN2</div><div class="line">&quot;A&quot; - &quot;B&quot; + 2; // NaN</div><div class="line">&quot;a&quot; * &quot;sd&quot;; // NaN</div><div class="line">&quot;A&quot; - &quot;B&quot;; // NaN</div><div class="line">1 * undefined; // NaN</div><div class="line">// 无论哪种运算，只要undefined参与运算，结果都是NaN</div><div class="line">3 * &quot;8&quot;; // 24</div><div class="line">&quot;3&quot; * &quot;8&quot;; // 24</div><div class="line">3 * null; // 0   隐式转换null被转为0</div><div class="line">3 * false; // 0  隐式转换false被转为0</div><div class="line">3 * true; // 3  隐式转换true被转为1</div><div class="line">3 * &quot;8天&quot;; // NaN   数学运算中，不纯的字符串没法隐式转换</div><div class="line">false + true * null; // 0</div></pre></td></tr></table></figure>
+<ul>
+<li>减号-，乘号*，肯定是进行数学运算，所以转化为number类型。</li>
+<li>加号+，可能是字符串拼接，也可能是数学运算，所以转化为number或string</li>
+<li>一元运算，如+[]，只有一个操作数的，转化为number类型
+　　</li>
+</ul>
+<p>与数字进行关系运算时，纯数字字符串被转为数字，null转换为0（null不能进行和0的相等判定），true转换转为1， false转换为0</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">null &lt; 0.01; // true</div><div class="line">null &gt; -0.01; // true</div><div class="line">null == 0; // false , 因为null是一个对象，引用类型值，和基本类型值比</div><div class="line">false == 0; // true</div><div class="line">true == 1; // true</div></pre></td></tr></table></figure>
+<p>string 和 number比，string会被隐式转换为number<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&quot;25&quot; &lt; 3 // false</div><div class="line">&quot;66&quot; &lt; &quot;8&quot;; // true</div><div class="line">66 &lt; &quot;8&quot;; // false ， 因为有一个数字，就按数字比了，&quot;8&quot;就转为8了</div><div class="line">&quot;66&quot; &lt; 8; // false</div></pre></td></tr></table></figure></p>
+<p>string 和 string 也能够进行关系运算，比较的就是字符编码顺序。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&quot;a&quot; &lt; &quot;b&quot;; // true</div><div class="line">&quot;A&quot; &lt; &quot;B&quot;; // true</div><div class="line">&quot;A&quot; &lt; &quot;a&quot;; // true ，大写字母在字符集里面是在小写字母前面</div><div class="line">&quot;1&quot; &lt; &quot;A&quot;;  // true ，数字在字母前端</div><div class="line">&quot;blank&quot; &lt; &quot;blue&quot;; // true   一位一位比，直到比出大小</div><div class="line">&quot;25678&quot; &lt; &quot;3&quot;; // true  是string和string比，比的是字符编码顺序</div></pre></td></tr></table></figure></p>
+<p>==自动类型转换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&quot;&quot; == &quot;0&quot;; // false</div><div class="line">0 == &quot;&quot;; // true</div><div class="line">0 == &quot;0&quot;; // true</div><div class="line">5 == &quot;5&quot;; // true</div><div class="line">5 != &quot;5&quot;; // false</div><div class="line">10 == &quot;10&quot;; // true</div><div class="line">10 == &quot;+10 &quot;; // true</div><div class="line">10 == &quot;010&quot;; // true </div><div class="line">10 == 010; // false （以 0 开头的数字字面值会被作为八进制数字解析。ES5 严格模式下这个特性被移除。）</div><div class="line">10 == &quot;-10&quot;; // false</div><div class="line">false == &quot;false&quot;; // false</div><div class="line">false == &quot;0&quot;; // true</div><div class="line">false == 0; // true</div><div class="line">true == 1; // true</div><div class="line">false == undefined; // false</div><div class="line">false == null; // false</div><div class="line">null == undefined; // true</div><div class="line">&quot; \t\r\n&quot; == 0; // true</div><div class="line">new Number(10) == 10; // true</div></pre></td></tr></table></figure></p>
+<p>===不类型转换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&quot;&quot; === &quot;0&quot;; // false</div><div class="line">0 === &quot;&quot;; // false</div><div class="line">0 === &quot;0&quot;; // false</div><div class="line">5 === &quot;5&quot;; // false</div><div class="line">5 !== &quot;5&quot;; // true</div><div class="line">false === &quot;false&quot;; // false</div><div class="line">false === &quot;0&quot;; // false</div><div class="line">false === undefined; // false</div><div class="line">false === null; // false</div><div class="line">null === undefined; // false</div><div class="line">&quot; \t\r\n&quot; === 0; // false</div><div class="line">&#123;&#125; === &#123;&#125;; // false</div><div class="line">new String(&quot;foo&quot;) === &quot;foo&quot;; // false</div><div class="line">new Number(10) === 10; // false</div></pre></td></tr></table></figure></p>
+<table>
+<thead>
+<tr>
+<th>原始值</th>
+<th>转换为数字类型</th>
+<th>转换为字符串类型</th>
+<th>转换为布尔类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>false</td>
+<td>0</td>
+<td>“false”</td>
+<td>false</td>
+</tr>
+<tr>
+<td>true</td>
+<td>1</td>
+<td>“true”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>“0”</td>
+<td>false</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>“1”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>“0”</td>
+<td>0</td>
+<td>“0”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>“1”</td>
+<td>1</td>
+<td>“1”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>NaN</td>
+<td>NaN</td>
+<td>“NaN”</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Infinity</td>
+<td>Infinity</td>
+<td>“Infinity”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>-Infinity</td>
+<td>-Infinity</td>
+<td>“-Infinity”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>“”</td>
+<td>0</td>
+<td>“”</td>
+<td>false</td>
+</tr>
+<tr>
+<td>“20”</td>
+<td>20</td>
+<td>“20”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>“twenty”</td>
+<td>NaN</td>
+<td>“twenty”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>[]</td>
+<td>0</td>
+<td>“”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>[20]</td>
+<td>20</td>
+<td>“20”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>[10,20]</td>
+<td>NaN</td>
+<td>“10,20”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>[“twenty”]</td>
+<td>NaN</td>
+<td>“twenty”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>[“ten”,”twenty”]</td>
+<td>NaN</td>
+<td>“ten,twenty”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>function(){}</td>
+<td>NaN</td>
+<td>“function(){}”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>{}</td>
+<td>NaN</td>
+<td>“[objectObject]”</td>
+<td>true</td>
+</tr>
+<tr>
+<td>null</td>
+<td>0</td>
+<td>“null”</td>
+<td>false</td>
+</tr>
+<tr>
+<td>undefined</td>
+<td>NaN</td>
+<td>“undefined”</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+
+					</div>
+
+			  <!-- about -->
+			  
+		</div>
+
+		<!-- pagination -->
+	  
+
+		<div class="comment-section">
+  
+  
+
+
+</div>
+	</div>
+
+	
+
+</div>
+
+
+		<footer>
+			
+
+<p>
+  Powered by <a href="https://hexo.io">Hexo</a>  | with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme
+</p>
+<p>
+  &copy; 2016 <a href="http://huangzhike.github.io"> Huangzhike </a>
+</p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	  </div>
+
+		<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>
+
+		<!-- material design -->
+		<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script>
+		<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>
+		<!-- toc -->
+		<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		<script src="/libs/tocify/jquery.tocify.custom.js"></script>
+
+		<script src="/js/main.js"></script>
+
+	</body>
+</html>

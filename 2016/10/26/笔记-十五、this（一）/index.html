@@ -1,0 +1,202 @@
+	<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>[笔记]-十五、this（一） | 一切都沉淀为笔记</title>
+  <meta name="author" content="Huangzhike">
+  
+  <meta name="description" content="全局环境调用
+在全局环境使用 this，它将会指向全局对象，window。1this === window // true
+如果使用eval，则是全局对象或undefined（取决于严格模式）12345678function Foo() &amp;#123;&amp;#125;Foo.prototype.foo =">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="[笔记]-十五、this（一）"/>
+  <meta property="og:site_name" content="一切都沉淀为笔记"/>
+
+  
+  
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<!-- favicon end -->
+    <!-- <link href="//favicon.ico" rel="icon"> -->
+  
+
+  <!-- toc -->
+  <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css">
+
+  <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+
+  <!-- material design -->
+	<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css">
+  <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+	<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+  
+
+  
+
+  <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/libs/jquery-2.0.3.min.js" type="text/javascript"><\/script>')</script>
+
+</head>
+
+ 	<body>
+	  <nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">菜单</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li>
+                    <a href="/" title="">
+                    <i class="fa fa-home"></i>首页
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="/archives" title="">
+                    <i class="fa fa-list"></i>存档
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="//resume" title="我的主页">
+                    <i class="fa fa-github"></i>GitHub
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+	  <div class="container" >
+	    <div class="row">
+	
+	<div class="col-md-9 center-content">
+	
+
+		<div class="content">
+			<!-- index -->
+		   
+
+			  		<h2>[笔记]-十五、this（一）</h2>
+					
+					<div>
+						<span class="post-time">2016-10-26 18:45</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<p>全局环境调用</p>
+<p>在全局环境使用 this，它将会指向全局对象，window。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">this === window // true</div></pre></td></tr></table></figure></p>
+<p>如果使用eval，则是全局对象或undefined（取决于严格模式）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">function Foo() &#123;&#125;</div><div class="line">Foo.prototype.foo = &quot;foo&quot;;</div><div class="line">Foo.prototype.logFoo = function () &#123;</div><div class="line">    eval(&quot;console.log(this.foo)&quot;); //  &quot;foo&quot;</div><div class="line">&#125;</div><div class="line"></div><div class="line">var f= new Foo();</div><div class="line">f.logFoo();</div></pre></td></tr></table></figure></p>
+<p>严格模式（strict mode）中，如果变量未定义就会报错。this 则是 undefined。</p>
+<p>严格模式中，重复的变量声明和参数声明会报错。</p>
+<p>严格模式中，给未声明的变量赋值不会自动转化为全局对象的属性，而会报错。</p>
+<p>严格模式中，在call apply 中将this指向null或者undefined不会自动转换为全局。<br>作为单纯的函数调用</p>
+<p>this 指向全局对象，即 window。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">this.g = &quot;g&quot;;</div><div class="line"></div><div class="line">function nonStrict () &#123;</div><div class="line">	return function () &#123;</div><div class="line">		console.log(this.g); </div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line">nonStrict()(); // &quot;g&quot;</div><div class="line"></div><div class="line">function strict() &#123;</div><div class="line">	&quot;use strict&quot;; // Strict Mode</div><div class="line">	return function () &#123;</div><div class="line">		console.log(this.g); </div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">strict()(); // TypeError: Cannot read property &quot;g&quot; of undefined</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">function g()&#123;</div><div class="line">	g.name=&quot;g&quot;;</div><div class="line">	console.log(this.name); // undefined</div><div class="line">	console.log(g.name); //  &quot;g&quot;</div><div class="line">&#125;;</div><div class="line">g();</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">this.g = &quot;g&quot;;</div><div class="line">function outerFunc ()&#123;</div><div class="line">	this.i = &quot;i&quot;; // 设置了全局对象 i</div><div class="line">	console.log(this); // window</div><div class="line">	console.log(this.i === &quot;i&quot;); // true</div><div class="line">	return &#123;</div><div class="line">		innerFunc: function () &#123;</div><div class="line">			this.i=&quot;inner&quot;;</div><div class="line">			console.log(this); //Object &#123;&#125; innerFunc （this指向返回的对象）</div><div class="line">			console.log(this.g === undefined); // true</div><div class="line">			console.log(this.i === &quot;inner&quot;); // true</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">outerFunc().innerFunc();</div><div class="line"></div><div class="line">i; // &quot;i&quot; （全局变量i值为&quot;i&quot;）</div></pre></td></tr></table></figure>
+<p>构造函数</p>
+<p>构造函数就是使用 new 关键词的函数。<br>构造函数的函数名第一个字母大写，如：Object、Array、Function 等。<br>this 指向新创建的实例对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">var F = function(s) &#123;</div><div class="line">	this.s = s;</div><div class="line">	this.a = function () &#123;</div><div class="line">		return this.s;</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">F.prototype.b = function() &#123;</div><div class="line">	return this.s;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">var f = new F(&quot;Hello World!&quot;);</div><div class="line"></div><div class="line"></div><div class="line">f.a() // &quot;Hello World!&quot;</div><div class="line">f.b() // &quot;Hello World!&quot;</div></pre></td></tr></table></figure>
+<p>如果直接调用 F，而不是 new F()，这种情况下只是单纯的函数调用，this 是 window</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">var F = function()&#123;</div><div class="line">	this.name= &quot;mother&quot; // 设置了全局对象的属性 name</div><div class="line">	console.log(this.name); // 全局对象的属性</div><div class="line">	console.log(this); // Window</div><div class="line">&#125;;</div><div class="line">F();</div><div class="line">var f=new F;</div><div class="line">console.log(f.name) // mother</div></pre></td></tr></table></figure>
+<p>函数作为对象的方法调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">o.method(); // method的this 指向 o 对象。</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">var o = &#123;</div><div class="line">	method : function()&#123;</div><div class="line">		// this的指向是不确定的，不要在函数中包含多层的this</div><div class="line">		console.log(this); // 指向该对象</div><div class="line">		function test() &#123;	 // 内部定义函数test	      </div><div class="line">			console.log(this); //  this 会默认为全局对象（浏览器环境就是 window 对象）</div><div class="line">		&#125;</div><div class="line">		test();  // this 不会指向 o 对象，直接调用函数时，this 指向全局对象。</div><div class="line">		return function()&#123;</div><div class="line">			return this; //  this 会默认为全局对象</div><div class="line">		&#125;;</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"></div><div class="line">o.method = function() &#123;</div><div class="line">	var that = this; // 在 method 内部缓存变量指向 o 对象。</div><div class="line">	function test() &#123;       </div><div class="line">		// this 会默认为全局对象，可以使用 that 指向 o 对象</div><div class="line">	&#125;</div><div class="line">	test();</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">var obj = &#123;</div><div class="line">	foo: &quot;foo&quot;,</div><div class="line">	func: function() &#123;</div><div class="line">		var self = this;</div><div class="line">		console.log(&quot;outer func:  this.foo = &quot; + this.foo); // foo</div><div class="line">		console.log(&quot;outer func:  self.foo = &quot; + self.foo); // foo</div><div class="line">		(function() &#123; // 闭包</div><div class="line">			console.log(&quot;inner func:  this.foo = &quot; + this.foo); // undefined （this指向全局）</div><div class="line">			console.log(&quot;inner func:  self.foo = &quot; + self.foo); // foo</div><div class="line">		&#125;());</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">obj.func();</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">function say()&#123;</div><div class="line">	console.log(this.name);</div><div class="line">&#125;</div><div class="line"></div><div class="line">var obj1 = &#123;</div><div class="line">	name: &quot;obj1&quot;,</div><div class="line">	say: say,</div><div class="line">	method : function ()&#123; </div><div class="line">		console.log(this.name);</div><div class="line">	&#125;,</div><div class="line">	obj2:obj2</div><div class="line">&#125;;</div><div class="line"></div><div class="line">obj1.say(); // obj1</div><div class="line">obj1.method(); // obj1</div><div class="line"></div><div class="line"></div><div class="line">var obj2 = &#123;</div><div class="line">	name:&quot;obj2&quot;,</div><div class="line">	say: say,</div><div class="line">	method: obj1.method</div><div class="line">&#125;;</div><div class="line"></div><div class="line">obj1.obj2.say(); // obj2</div><div class="line"></div><div class="line">obj2.method(); // obj2 （this 取决于运行时所在的对象，method是obj1的方法，如果在obj2上面调用，method的 this 会指向obj2。）</div><div class="line"></div><div class="line">obj2.method = obj1.method; // 目标的引用，调用对象是 obj2 而不是 obj1 。</div><div class="line">obj2.method() // obj2</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">var fn = obj1.method; // 赋值表达式的返回值是目标函数的引用，因此调用位置是 fn 而不是 obj1.method 。this 默认绑定全局。</div><div class="line">fn(); //  undefined （this 指向全局对象）</div><div class="line">/*</div><div class="line">默认绑定把 this 绑定到全局对象或者 undefined 上，取决于是否是严格模式。</div><div class="line">决定 this 绑定对象的并不是调用位置是否处于严格模式，而是函数体是否处于严格模式。</div><div class="line">如果函数体处于严格模式， this 会被绑定到 undefined ，否则 this 会被绑定到全局对象。</div><div class="line">*/</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">function doF(fn) &#123;</div><div class="line">	fn(); // 调用位置</div><div class="line">&#125;</div><div class="line"></div><div class="line">doF( obj1.method ); // undefined  （传入回调函数时：参数传递就是一种隐式赋值，传入函数也会被隐式赋值）</div><div class="line"></div><div class="line">setTimeout( obj1.method, 100 ); // undefined  （obj1.method 在全局被调用）</div></pre></td></tr></table></figure>
+<p>如果不想改变 this 的指向：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">obj2.method = obj1.method.bind(obj1); // 用bind 绑定了无法更改</div><div class="line">obj2.method(); // obj1 </div><div class="line"></div><div class="line">obj2.method = function ()&#123; </div><div class="line">	obj1.method()</div><div class="line">&#125;;</div><div class="line"></div><div class="line">obj2.method() // obj1 （方法这时是在obj1下面运行，this指向obj1）</div></pre></td></tr></table></figure></p>
+<p>如果某个方法位于多层对象的内部，为了简化书写，把该方法赋值给一个变量，可能会出现意外。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">var a = &#123;</div><div class="line">	b : &#123;</div><div class="line">		m : function() &#123;</div><div class="line">			console.log(this.p);</div><div class="line">		&#125;,</div><div class="line">		p : &apos;Hello&apos;</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">var hello = a.b.m;</div><div class="line">hello() // undefined （this指向了全局对象）</div><div class="line"></div><div class="line">var hello = a.b; // 只将m所在的对象赋值给hello，调用时 this 的指向就不会变。</div><div class="line">hello.m() // Hello</div></pre></td></tr></table></figure>
+<p>JavaScript函数的运行环境完全是动态的，可以在运行时切换。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">function func()&#123; </div><div class="line">	console.log(this.name); // 同时充当a对象和b对象的方法</div><div class="line">&#125;;</div><div class="line"></div><div class="line">var a = &#123;name:&quot;a&quot;&#125;;</div><div class="line">a.n = func;</div><div class="line">a.n() // a</div><div class="line"></div><div class="line">var b = &#123;name:&quot;b&quot;&#125;;</div><div class="line">b.n = func;</div><div class="line">b.n() // b</div></pre></td></tr></table></figure>
+<p>jQuery源码案例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">jQuery.extend = jQuery.fn.extend = function ()&#123;</div><div class="line">	var target = this;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>jQuery.extend 和 jQuery.fn.extend 都指向了同一个函数，当执行时，函数中的 this 是不一样的。<br>执行 jQuery.extend()时，this指向 jQuery；执行 jQuery.fn.extend()时，this 指向 jQuery.fn。</p>
+<p>在对象的字面声明语法中，this 不能指向对象本身。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var obj = &#123;me: this&#125; // me 不会指向 obj，默认为全局对象。</div></pre></td></tr></table></figure></p>
+<p>避免数组处理方法中的this</p>
+<p>数组的 map 和 forEach 方法，允许提供一个函数作为参数。这个函数内部不应该使用 this。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">var o = &#123;</div><div class="line">	v: &apos;hello&apos;,</div><div class="line">	p: [ &apos;a1&apos;, &apos;a2&apos; ],</div><div class="line">	f: function f() &#123;</div><div class="line">		this.p.forEach(function (item) &#123;</div><div class="line">			console.log(this.v+&apos; &apos;+item); // this 指向window对象</div><div class="line">		&#125;);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">o.f()</div><div class="line">// undefined a1</div><div class="line">// undefined a2</div></pre></td></tr></table></figure></p>
+<p>解决方法之一是使用中间变量。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">var o = &#123;</div><div class="line">	v: &apos;hello&apos;,</div><div class="line">	p: [ &apos;a1&apos;, &apos;a2&apos; ],</div><div class="line">	f: function f() &#123;</div><div class="line">		var that = this;</div><div class="line">		this.p.forEach(function (item) &#123;</div><div class="line">			console.log(that.v+&apos; &apos;+item);</div><div class="line">		&#125;);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">o.f()</div><div class="line">// hello a1</div><div class="line">// hello a2</div></pre></td></tr></table></figure></p>
+<p>另一种方法是将this当作forEach方法的第二个参数，固定它的运行环境。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">var o = &#123;</div><div class="line">	v: &apos;hello&apos;,</div><div class="line">	p: [ &apos;a1&apos;, &apos;a2&apos; ],</div><div class="line">	f: function f() &#123;</div><div class="line">		this.p.forEach(function (item) &#123;</div><div class="line">			console.log(this.v+&apos; &apos;+item);</div><div class="line">		&#125;, this);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">o.f();</div><div class="line">// hello a1</div><div class="line">// hello a2</div></pre></td></tr></table></figure></p>
+<p>避免回调函数中的this<br>回调函数中的this往往会改变指向，最好避免使用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(&quot;#btn&quot;).on(&quot;click&quot;, o.f); // false （ o.f 的 this 不再指向o对象，而指向DOM对象$(&quot;#btn&quot;)，因为是在$(&quot;#btn&quot;)的环境中被调用。）</div></pre></td></tr></table></figure></p>
+<p>可以使用call apply bind 固定 this。</p>
+
+					</div>
+
+			  <!-- about -->
+			  
+		</div>
+
+		<!-- pagination -->
+	  
+
+		<div class="comment-section">
+  
+  
+
+
+</div>
+	</div>
+
+	
+
+</div>
+
+
+		<footer>
+			
+
+<p>
+  Powered by <a href="https://hexo.io">Hexo</a>  | with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme
+</p>
+<p>
+  &copy; 2016 <a href="http://huangzhike.github.io"> Huangzhike </a>
+</p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	  </div>
+
+		<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>
+
+		<!-- material design -->
+		<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script>
+		<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>
+		<!-- toc -->
+		<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		<script src="/libs/tocify/jquery.tocify.custom.js"></script>
+
+		<script src="/js/main.js"></script>
+
+	</body>
+</html>

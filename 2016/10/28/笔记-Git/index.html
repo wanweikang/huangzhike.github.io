@@ -3,15 +3,16 @@
 <head>
   <meta charset="utf-8">
   
-  <title>笔记-Git | 一切都沉淀为笔记</title>
+  <title>[笔记]-Git | 一切都沉淀为笔记</title>
   <meta name="author" content="Huangzhike">
   
-  <meta name="description" content="最近换到了Hexo搭博客，要用到Git，再加上要管理在Github上的resume和作品，折腾一晚上顺便把Git基础操作给学了，其它命令等需要用再现学吧。注：我主要看了廖雪峰的Git教程，网上又搜了一大堆补充，写了这个笔记。听说还有Git GUI，TortoiseGit，TortoiseHg，SVN">
+  <meta name="description" content="最近换到了Hexo搭博客，要用到Git，再加上要管理在Github上的resume和作品，折腾一晚上顺便把Git基础操作给学了，其它命令等需要用再现学吧。
+注：我主要看了廖雪峰的Git教程，网上又搜了一大堆补充，写了这个笔记。听说还有Git GUI，TortoiseGit，TortoiseHg，SV">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="笔记-Git"/>
+  <meta property="og:title" content="[笔记]-Git"/>
   <meta property="og:site_name" content="一切都沉淀为笔记"/>
 
   
@@ -79,7 +80,7 @@
                 </li>
                 
                 <li>
-                    <a href="/http://huangzhike.github.io/resume" title="我的GitHub">
+                    <a href="//resume" title="我的主页">
                     <i class="fa fa-github"></i>GitHub
                     </a>
                 </li>
@@ -99,7 +100,7 @@
 			<!-- index -->
 		   
 
-			  		<h2>笔记-Git</h2>
+			  		<h2>[笔记]-Git</h2>
 					
 					<div>
 						<span class="post-time">2016-10-28 16:11</span>
@@ -107,7 +108,8 @@
 					
 
 					<div class="article-content">
-						<p>最近换到了Hexo搭博客，要用到Git，再加上要管理在Github上的resume和作品，折腾一晚上顺便把Git基础操作给学了，其它命令等需要用再现学吧。<br>注：我主要看了廖雪峰的Git教程，网上又搜了一大堆补充，写了这个笔记。听说还有Git GUI，TortoiseGit，TortoiseHg，SVN什么的，我是忙不过来了。</p>
+						<p>最近换到了Hexo搭博客，要用到Git，再加上要管理在Github上的resume和作品，折腾一晚上顺便把Git基础操作给学了，其它命令等需要用再现学吧。</p>
+<p>注：我主要看了廖雪峰的Git教程，网上又搜了一大堆补充，写了这个笔记。听说还有Git GUI，TortoiseGit，TortoiseHg，SVN什么的，不明觉厉。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">Git Bash Here</div><div class="line"></div><div class="line">git init // 初始化.git</div><div class="line"></div><div class="line">git pull git@github.com:huangzhike/resume.git // 同步到本地</div><div class="line"></div><div class="line">git branch gh-pages // 在当前分支下新建gh-pages分支</div><div class="line"></div><div class="line">git checkout gh-pages // 切换到gh-pages分支</div><div class="line"></div><div class="line">git checkout -b gh-pages // 合并写法，创建+切换分支</div><div class="line"></div><div class="line">git branch // 查看所有分支 当前分支为*</div><div class="line"></div><div class="line">git merge master // 合并master分支到当前分支</div><div class="line"></div><div class="line">git branch -d master // 合并完成后删除master分支</div></pre></td></tr></table></figure>
 <p>注：创建、合并和删除分支非常快，Git鼓励使用分支完成任务，合并后再删掉分支，这和直接在master分支上效果一样，但更安全。</p>
 <p>注：当Git无法自动合并分支时，必须先解决冲突。解决冲突后，再提交，合并完成。</p>
@@ -124,7 +126,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git fetch origin master:tmp // 从远程获取最新的版本到本地的test分支上</div><div class="line">git diff tmp // 比较</div><div class="line">git merge tmp // 合并</div></pre></td></tr></table></figure>
 <p><code>git pull</code>：相当于从远程获取最新版本并merge到本地</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git pull origin master // 相当于git fetch 和 git merge</div></pre></td></tr></table></figure>
-<p>注：我想把原来的resume转到新建的repository上，同时保留之前的commit记录，旧的搭博客用，首先是clone新仓库到本地，再关联远程的旧仓库，再fetch merge push，结果试了好几次，错误也是五花八门，pull 也不行，<code>fatal: refusing to merge unrelated histories</code> ，<code>-allow-unrelated-histories</code>也无果，<code>fatal could not read from remote repository</code>（难道是因为我打错了的原因？），push又出来<code>[rejected] master -&gt; master (fetch first)</code>，好在segmentfault解决了我的问题，加个<code>-f</code>强制push，搞定。Git果然博大精深啊。</p>
+<p>注：我想把原来的resume转到新建的repository上，同时保留之前的commit记录，旧的搭博客用，首先是clone新仓库到本地，再关联远程的旧仓库，再fetch merge push，结果试了好几次，错误也是五花八门，pull 也不行，<code>fatal: refusing to merge unrelated histories</code> ，<code>-allow-unrelated-histories</code>也无果，<code>fatal could not read from remote repository</code>（难道是因为我打错了的原因？），push又出来<code>[rejected] master -&gt; master (fetch first)</code>，好在segmentfault有解答，加个<code>-f</code>强制，搞定。</p>
 
 					</div>
 

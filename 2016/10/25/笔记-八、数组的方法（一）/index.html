@@ -1,0 +1,222 @@
+	<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>[笔记]-八、数组的方法（一） | 一切都沉淀为笔记</title>
+  <meta name="author" content="Huangzhike">
+  
+  <meta name="description" content="扩展 JavaScript 的内置对象 Array，这样，所有声明的数组都会自动拥有 remove 能力
+12345Array.prototype.remove = function(from, to) &amp;#123;	var rest = this.slice((to || from) + 1 ||">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="[笔记]-八、数组的方法（一）"/>
+  <meta property="og:site_name" content="一切都沉淀为笔记"/>
+
+  
+  
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<!-- favicon end -->
+    <!-- <link href="//favicon.ico" rel="icon"> -->
+  
+
+  <!-- toc -->
+  <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css">
+
+  <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+
+  <!-- material design -->
+	<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css">
+  <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+	<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+  
+
+  
+
+  <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/libs/jquery-2.0.3.min.js" type="text/javascript"><\/script>')</script>
+
+</head>
+
+ 	<body>
+	  <nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">菜单</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li>
+                    <a href="/" title="">
+                    <i class="fa fa-home"></i>首页
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="/archives" title="">
+                    <i class="fa fa-list"></i>存档
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="//resume" title="我的主页">
+                    <i class="fa fa-github"></i>GitHub
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+	  <div class="container" >
+	    <div class="row">
+	
+	<div class="col-md-9 center-content">
+	
+
+		<div class="content">
+			<!-- index -->
+		   
+
+			  		<h2>[笔记]-八、数组的方法（一）</h2>
+					
+					<div>
+						<span class="post-time">2016-10-25 16:11</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<p>扩展 JavaScript 的内置对象 Array，这样，所有声明的数组都会自动拥有 remove 能力</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Array.prototype.remove = function(from, to) &#123;</div><div class="line">	var rest = this.slice((to || from) + 1 || this.length);</div><div class="line">	this.length = from &lt; 0 ? this.length + from : from;</div><div class="line">	return this.push.apply(this, rest);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>不影响原型链：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Array.remove = function(array, from, to) &#123;</div><div class="line">	var rest = array.slice((to || from) + 1 || array.length);</div><div class="line">	array.length = from &lt; 0 ? array.length + from : from;</div><div class="line">	return array.push.apply(array, rest);</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>操作方式与前者并无二致，但是不影响全局对象，代价是你需要显式的传递需要操作的数组作为第一个参数，相当于给 JavaScript 内置的 Array 添加了一个静态方法。</p>
+<p>Array对象的静态方法</p>
+<p>Array.isArray 方法用来判断一个值是否为数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var a = [1,2,3];</div><div class="line">typeof a // &quot;object&quot;</div><div class="line">Array.isArray(a) // true</div></pre></td></tr></table></figure></p>
+<p>Array实例的方法</p>
+<p>Array实例对象的方法，数组实例才能使用。如果不想创建实例，只是想单纯调用这些方法，可以写成 [].method.call(调用对象，参数) 的形式，<br>或者 Array.prototype.method.call(调用对象，参数)的形式。</p>
+<p>valueOf 方法返回数组本身。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[1,2,3].valueOf() // [1,2,3]</div></pre></td></tr></table></figure></p>
+<p>toString 方法返回数组的字符串形式。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[1,2,3,[4,5,6]].toString() // &quot;1,2,3,4,5,6&quot;</div></pre></td></tr></table></figure></p>
+<p>push()方法向数组末尾添加一个或者多个元素（改变原数组），并返回新的长度。</p>
+<p>pop()方法和 push()方法相反。pop()方法删除数组的最后一个元素（改变原数组），并返回被删除元素的值，如果数组为空，则返回undefine。</p>
+<p>unshift()方法向数组开头添加一个或多个元素（改变原数组），并返回新的长度。</p>
+<p>shift()方法和 unshift()方法相反。shift()方法删除数组的第一个元素（改变原数组），并返回被删除元素的值。如果数组为空，则返回undefined。</p>
+<p>push和pop 方法</p>
+<p>push()向数组末尾添加元素，返回新数组的长度。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var arr = [1, 2];</div><div class="line">arr.push(&quot;A&quot;, &quot;B&quot;); // 返回新长度: 4</div><div class="line">arr; // [1, 2, &quot;A&quot;, &quot;B&quot;]</div></pre></td></tr></table></figure></p>
+<p>合并两个数组，可以这样写。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">var a = [1,2,3];</div><div class="line">var b = [4,5,6];</div><div class="line"></div><div class="line">Array.prototype.push.apply(a, b);</div><div class="line">// 或者</div><div class="line">a.push.apply(a,b);</div><div class="line"></div><div class="line">// 等同于</div><div class="line">a.push(4,5,6);</div><div class="line"></div><div class="line">a; // [1, 2, 3, 4, 5, 6]</div><div class="line"></div><div class="line">var a = [1,2,3];</div><div class="line">var b = [4,5,6];</div><div class="line">a.push(b);</div><div class="line">a; // [1, 2, 3, [4,5,6]]</div></pre></td></tr></table></figure></p>
+<p>push方法还可以向对象添加元素，添加后的对象变成“类数组”对象，新加入元素的键对应数组的索引，并且对象有一个length属性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var a = &#123; a: 1 &#125;;</div><div class="line"></div><div class="line">[].push.call(a, 2);</div><div class="line">a // &#123;a:1, 0:2, length: 1&#125;</div><div class="line"></div><div class="line">[].push.call(a, [3]);</div><div class="line">a // &#123;a:1, 0:2, 1:[3], length: 2&#125;</div></pre></td></tr></table></figure></p>
+<p>pop()则删除数组最后一个元素并返回该元素：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">arr.pop(); // 返回&quot;B&quot;</div><div class="line">arr; // [1, 2, &quot;A&quot;]</div></pre></td></tr></table></figure></p>
+<p>unshift和shift 方法</p>
+<p>shift方法删除数组的第一个元素，并返回该元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;].shift() // &quot;a&quot;</div></pre></td></tr></table></figure></p>
+<p>shift方法可以遍历并清空一个数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var list = [1,2,3,4,5,6,7,8,9,10];</div><div class="line">var item;</div><div class="line"></div><div class="line">while (item = list.shift()) &#123;</div><div class="line">	console.log(item);</div><div class="line">&#125;</div><div class="line">list; // []</div></pre></td></tr></table></figure></p>
+<p>unshift方法在数组的第一个位置添加元素，并返回新的数组长度。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var a = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];</div><div class="line"></div><div class="line">a.unshift(&quot;x&quot;); // 4</div><div class="line">a; // [&quot;x&quot;, &quot;a&quot;, &quot;b&quot;, &quot;c&quot;]</div></pre></td></tr></table></figure></p>
+<p>sort方法对数组元素默认按照字典顺序排序。返回改变后的数组。改变原数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var arr = [&quot;B&quot;, &quot;C&quot;, &quot;A&quot;];</div><div class="line">arr.sort(); // [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;] </div><div class="line">arr; // [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;]</div></pre></td></tr></table></figure></p>
+<p>如果想让sort方法按照大小排序，可以传入一个函数作为参数，该函数本身又接受两个参数，表示进行比较的两个元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">arr.sort(function(a,b)&#123;</div><div class="line">	//a要放在b前面，返回负数</div><div class="line">	//a要放在b后面，返回正数</div><div class="line">	//a和b不区分大小，返回0（a放在b前面）</div><div class="line">	if(a &lt; b)&#123;</div><div class="line">		return -1;</div><div class="line">	&#125;else if(a &gt; b)&#123;</div><div class="line">		return 1;</div><div class="line">	&#125;else if(a == b)&#123;</div><div class="line">		return 0;</div><div class="line">	&#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[10111,1101,111].sort(function (a,b)&#123;</div><div class="line">  return a-b;</div><div class="line">&#125;); </div><div class="line">// [111, 1101, 10111]</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[</div><div class="line">	&#123; name: &quot;张三&quot;, age: 30 &#125;,</div><div class="line">	&#123; name: &quot;李四&quot;, age: 24 &#125;,</div><div class="line">	&#123; name: &quot;王五&quot;, age: 28  &#125;</div><div class="line">].sort(function(o1, o2) &#123;</div><div class="line">	return o1.age - o2.age;</div><div class="line">&#125;)</div><div class="line">// [</div><div class="line">// 	&#123; name: &quot;李四&quot;, age: 24 &#125;,</div><div class="line">// 	&#123; name: &quot;王五&quot;, age: 28  &#125;,</div><div class="line">// 	&#123; name: &quot;张三&quot;, age: 30 &#125;</div><div class="line">// ]</div></pre></td></tr></table></figure>
+<p>reverse 方法颠倒数组中元素的顺序，返回改变后的数组。修改原数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var a = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];</div><div class="line"></div><div class="line">a.reverse(); // [&quot;c&quot;, &quot;b&quot;, &quot;a&quot;] </div><div class="line">a; // [&quot;c&quot;, &quot;b&quot;, &quot;a&quot;]</div></pre></td></tr></table></figure></p>
+<p>concat 方法将新数组的成员，添加到原数组的尾部，返回新数组（不修改原数组），用于连接多个数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var arr = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;];</div><div class="line">var added = arr.concat([1, 2, 3]);</div><div class="line">added; // [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, 1, 2, 3]</div><div class="line">arr; // [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;]</div></pre></td></tr></table></figure></p>
+<p>concat()方法可以接收任意个元素和数组，并且自动把数组拆开，然后全部添加到新的数组里：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[&quot;A&quot;, &quot;B&quot;, &quot;C&quot;].concat(1, 2, [3, 4]); // [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, 1, 2, 3, 4] </div><div class="line"></div><div class="line">[&quot;hello&quot;].concat([&quot;world&quot;]); // [&quot;hello&quot;, &quot;world&quot;]</div></pre></td></tr></table></figure></p>
+<p>如果不提供参数，concat方法返回当前数组的一个浅拷贝。<br>所谓“浅拷贝”，指的是如果数组成员包括复合类型的值（比如对象），则新数组拷贝的是该值的引用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var o = &#123;a:1&#125;;</div><div class="line">var oldArray = [o];</div><div class="line">var newArray = oldArray.concat(); // 原数组包含一个对象，concat方法生成的新数组包含这个对象的引用</div><div class="line"></div><div class="line">o.a = 2;</div><div class="line">newArray[0].a; // 2 （改变原对象以后，新数组跟着改变）</div></pre></td></tr></table></figure></p>
+<p>事实上，只要原数组的成员中包含对象，concat方法不管有没有参数，总是返回该对象的引用。</p>
+<p>concat方法也可以将对象合并为数组，但是必须借助call方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[].concat.call(&#123; a: 1 &#125;, [2]); // [&#123;a:1&#125;, 2]</div><div class="line"></div><div class="line">// 等同于</div><div class="line"></div><div class="line">[2].concat(&#123;a:1&#125;);</div></pre></td></tr></table></figure></p>
+<p>join方法以参数作为分隔符，将所有数组成员组成一个字符串返回（不改变原数组）。<br>如果不提供参数，默认用逗号分隔。<br>如果Array的元素不是字符串，自动转换为字符串后再连接。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var arr = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, 1, 2, 3];</div><div class="line">arr.join(&quot;-&quot;); // &quot;A-B-C-1-2-3&quot;</div></pre></td></tr></table></figure></p>
+<p>通过函数的call方法，join方法也可以用于字符串。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Array.prototype.join.call(&quot;hello&quot;, &quot;-&quot;); // &quot;h-e-l-l-o&quot;</div></pre></td></tr></table></figure></p>
+<p>区分join和concat</p>
+<p>.join(separator)以separator作为分隔符拼接数组元素，并返回字符串，如果没有提供separator，将使用默认。<br>.concat会创建一个新数组，作为原数组的浅拷贝。</p>
+<p>浅拷贝意味着新数组和原数组保持相同的对象引用，这通常是好事。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">var a = &#123; foo: &quot;bar&quot; &#125;;</div><div class="line">var b = [1, 2, 3, a];</div><div class="line">var c = b.concat();</div><div class="line">console.log(b === c); // false</div><div class="line">b[3] === a &amp;&amp; c[3] === a; // true</div></pre></td></tr></table></figure></p>
+<p>补充：浅拷贝与深拷贝</p>
+<p>浅拷贝<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">var p =&#123;</div><div class="line">	name:&quot;p&quot;,</div><div class="line">	love:&#123;</div><div class="line">		go:&quot;shopping&quot;</div><div class="line">	&#125;,</div><div class="line">	arr:[&quot;a&quot;,&quot;b&quot;]</div><div class="line">&#125;;</div><div class="line"></div><div class="line">var c=&#123;&#125;;</div><div class="line"></div><div class="line">function extend(p,c)&#123;</div><div class="line">	for(var prop in p)&#123;</div><div class="line">		c[prop]=p[prop];</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">extend(p,c);</div><div class="line"></div><div class="line">c.name=&quot;c&quot;;</div><div class="line">p.name; // &quot;p&quot;</div><div class="line"></div><div class="line">c.love.go; // &quot;shoping&quot;</div><div class="line">c.love.go=&quot;what&quot;;</div><div class="line">p.love.go; // &quot;what&quot; （因为love是一个对象，p，c都是引用love对象，因此更改是更改love对象，变化p，c 会共享）</div><div class="line"></div><div class="line">// 数组在 for in 循环中索引当做属性名。</div><div class="line">c.arr[0]; // &quot;a&quot;</div><div class="line">c.arr[0]=&quot;n&quot;;</div><div class="line">p.arr[0] // &quot;n&quot;</div></pre></td></tr></table></figure></p>
+<p>深拷贝<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">function extendDeep(p,c)&#123;</div><div class="line">	for(var prop in p)&#123;</div><div class="line">		if (typeof p[prop]===&quot;object&quot;) &#123;</div><div class="line">			c[prop]=p[prop].constructor===Array?[]:&#123;&#125;;</div><div class="line">			extendDeep(p[prop],c[prop]);</div><div class="line">		&#125;else&#123;</div><div class="line">			c[prop]=p[prop];</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>方法二<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">function clone(Obj) &#123;</div><div class="line">	var buf;</div><div class="line">	if (Obj instanceof Array) &#123;</div><div class="line">		buf = []; //创建一个空的数组</div><div class="line">		var i = Obj.length;</div><div class="line">		while (i--) &#123;</div><div class="line">			buf[i] = clone(Obj[i]);</div><div class="line">		&#125;</div><div class="line">		return buf;</div><div class="line">	&#125; else if (Obj instanceof Object) &#123;</div><div class="line">		buf = &#123;&#125;; //创建一个空对象</div><div class="line">		for (var k in Obj) &#123; //为这个对象添加新的属性</div><div class="line">			buf[k] = clone(Obj[k]);</div><div class="line">		&#125;</div><div class="line">		return buf;</div><div class="line">	&#125; else &#123;</div><div class="line">		return Obj;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>slice 方法</p>
+<p>Array的 slice()对应String的 slice() 和 substring()，它截取Array的部分元素，然后返回一个新的Array（不改变原数组）：<br>slice()的起止参数包括开始索引，不包括结束索引。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&quot;abc&quot;.slice(1,2);           // &quot;b&quot;</div><div class="line">[14, 3, 77].slice(1, 2);    //  [3]</div><div class="line"></div><div class="line">var arr = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;G&quot;];</div><div class="line">arr.slice(0, 3); // 从索引0开始，到索引3结束，但不包括索引3: [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;]</div><div class="line">arr.slice(3); // 从索引3开始到结束: [&quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;G&quot;] </div><div class="line">arr.slice(-2); // [&quot;F&quot;, &quot;G&quot;] （如果参数是负数，则从尾部开始选择的成员个数）</div><div class="line">arr.slice(9); // [] （如果参数大于数组长度，返回空数组）</div><div class="line">arr.slice(2,1); // [] （第二个参数小于第一个参数，，返回空数组）</div><div class="line">arr.slice(1,2); // [&quot;B&quot;]</div></pre></td></tr></table></figure>
+<p>复制：和concat类似，调用没有参数的.slice()方法会返回原数组的一个浅拷贝。<br>如果不给 slice()传任何参数，它就会从头到尾截取所有元素。利用这一点，很容易复制Array：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var arr = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;G&quot;];</div><div class="line">var aCopy = arr.slice();</div><div class="line">aCopy; // [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;G&quot;]</div><div class="line">aCopy === arr; // false，slice方法返回新数组，原数组不变。</div></pre></td></tr></table></figure></p>
+<p>slice方法的一个重要应用，是将类数组对象转为真正的数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Array.prototype.slice.call(&#123; 0: &quot;a&quot;, 1: &quot;b&quot;, length: 2 &#125;); // [&quot;a&quot;, &quot;b&quot;]</div><div class="line"></div><div class="line">Array.prototype.slice.call(document.querySelectorAll(&quot;div&quot;));</div><div class="line"></div><div class="line">Array.prototype.slice.call(arguments);</div></pre></td></tr></table></figure></p>
+<p>这对concat不适用，因为它会用数组包裹类数组对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Array.prototype.concat.call(&#123; 0: &quot;a&quot;, 1: &quot;b&quot;, length: 2 &#125;); // [&#123; 0: &quot;a&quot;, 1: &quot;b&quot;, length: 2 &#125;]</div></pre></td></tr></table></figure></p>
+<p>slice的另一个用法是从一个参数列表中删除一些元素，这可以将类数组对象转换为真正的数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">function format (text, bold) &#123;</div><div class="line">	if (bold) &#123;</div><div class="line">		text = &quot;&lt;b&gt;&quot; + text + &quot;&lt;/b&gt;&quot;;</div><div class="line">	&#125;</div><div class="line">	var values = Array.prototype.slice.call(arguments, 2);</div><div class="line">	values.forEach(function (value) &#123;</div><div class="line">		text = text.replace(&quot;%s&quot;, value);</div><div class="line">	&#125;)</div><div class="line">	return text;</div><div class="line">&#125;</div><div class="line">format(&quot;some%sthing%s %s&quot;, true, &quot;some&quot;, &quot;other&quot;, &quot;things&quot;); // &quot;&lt;b&gt;somesomethingother things&lt;/b&gt;&quot;</div></pre></td></tr></table></figure></p>
+<p>splice()方法是修改Array的“万能方法”，它可以从指定的索引开始删除若干元素，再从被删除的位置添加若干元素。它的返回值是被删除的元素。<br>不同于concat和slice，splice改变原数组。</p>
+<p>使用javascript数组类型内置的splice方法仅需一行代码即可轻松实现对数组元素进行插入、删除、替换操作。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Array.prototype.splice(index,count[,elm1,elm2...n]);</div></pre></td></tr></table></figure></p>
+<p>index ：数组中元素的起始下标。<br>count ：需要要被删除或替换的元素个数。<br>elems ：需要插入到数组中的项。<br>返回值 ：返回从素组中被移除的项。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">var items =[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;];</div><div class="line"></div><div class="line">//删除元素</div><div class="line">result = items.splice(1,2); // 删除了items中的元素[&quot;b&quot;，&quot;c&quot;],并返回[&quot;b&quot;，&quot;c&quot;]给result.</div><div class="line"></div><div class="line">//替换元素</div><div class="line">result = items.splice(1,2,&quot;x&quot;,&quot;y&quot;); // 使用元素&quot;x&quot;,&quot;y&quot;替换了items数组中的元素[&quot;b&quot;，&quot;c&quot;],并返回[&quot;b&quot;，&quot;c&quot;] 给 result.</div><div class="line"></div><div class="line">//插入元素</div><div class="line">result = items.splice(1,0,&quot;x&quot;,&quot;y&quot;); // 在items数组的的&quot;b&quot;元素后插入[&quot;x&quot;,&quot;y&quot;],返回值为空。</div></pre></td></tr></table></figure>
+<p>splice的第一个参数是删除的起始位置，第二个参数是被删除的元素个数。如果后面还有更多的参数，则表示这些就是要被插入数组的新元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">var arr = [&quot;Microsoft&quot;, &quot;Apple&quot;, &quot;Yahoo&quot;, &quot;AOL&quot;, &quot;Excite&quot;, &quot;Oracle&quot;];</div><div class="line"></div><div class="line">// 从索引2开始删除3个元素,然后再添加两个元素:</div><div class="line">arr.splice(2, 3, &quot;Google&quot;, &quot;Facebook&quot;); // 返回删除的元素 [&quot;Yahoo&quot;, &quot;AOL&quot;, &quot;Excite&quot;]</div><div class="line">arr; // [&quot;Microsoft&quot;, &quot;Apple&quot;, &quot;Google&quot;, &quot;Facebook&quot;, &quot;Oracle&quot;]</div><div class="line"></div><div class="line">// 只删除,不添加:</div><div class="line">arr.splice(2, 2); // [&quot;Google&quot;, &quot;Facebook&quot;]</div><div class="line">arr; // [&quot;Microsoft&quot;, &quot;Apple&quot;, &quot;Oracle&quot;]</div><div class="line"></div><div class="line">// 只添加,不删除:</div><div class="line">arr.splice(2, 0, &quot;Google&quot;, &quot;Facebook&quot;); // 返回[],因为没有删除任何元素</div><div class="line">arr; // [&quot;Microsoft&quot;, &quot;Apple&quot;, &quot;Google&quot;, &quot;Facebook&quot;, &quot;Oracle&quot;] </div><div class="line"></div><div class="line">// 只提供第一个参数，等同于将原数组在指定位置拆分成两个数组。</div><div class="line">arr.splice(2) // [&quot;Google&quot;, &quot;Facebook&quot;, &quot;Oracle&quot;]</div><div class="line">arr; // [&quot;Microsoft&quot;, &quot;Apple&quot;]</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var source = [1,2,3,8,8,8,8,8,9,10,11,12,13];</div><div class="line">var spliced = source.splice(3, 4, 4, 5, 6, 7);</div><div class="line">console.log(source); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ,13]</div><div class="line">spliced; // [8, 8, 8, 8]</div></pre></td></tr></table></figure>
+<p>因为splice会返回删除的元素，如果想遍历已经删除的数组时，这会非常方便。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">var source = [1,2,3,8,8,8,8,8,9,10,11,12,13];</div><div class="line">var spliced = source.splice(9);</div><div class="line">spliced.forEach(function (value) &#123;</div><div class="line">	console.log(value);</div><div class="line">&#125;)</div><div class="line">// 10</div><div class="line">// 11</div><div class="line">// 12</div><div class="line">// 13</div><div class="line">console.log(source);</div><div class="line">// [1, 2, 3, 8, 8, 8, 8, 8, 9]</div></pre></td></tr></table></figure></p>
+<p>虽然 splice也需要（至少）两个参数，但它的意义则完全不同。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[14, 3, 77].slice(1, 2); // [3]</div><div class="line">[14, 3, 77].splice(1, 2); // [3, 77]</div></pre></td></tr></table></figure></p>
+
+					</div>
+
+			  <!-- about -->
+			  
+		</div>
+
+		<!-- pagination -->
+	  
+
+		<div class="comment-section">
+  
+  
+
+
+</div>
+	</div>
+
+	
+
+</div>
+
+
+		<footer>
+			
+
+<p>
+  Powered by <a href="https://hexo.io">Hexo</a>  | with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme
+</p>
+<p>
+  &copy; 2016 <a href="http://huangzhike.github.io"> Huangzhike </a>
+</p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	  </div>
+
+		<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>
+
+		<!-- material design -->
+		<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script>
+		<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>
+		<!-- toc -->
+		<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		<script src="/libs/tocify/jquery.tocify.custom.js"></script>
+
+		<script src="/js/main.js"></script>
+
+	</body>
+</html>
