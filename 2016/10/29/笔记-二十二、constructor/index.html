@@ -1,0 +1,176 @@
+	<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>[笔记]-二十二、constructor | 一切都沉淀为笔记</title>
+  <meta name="author" content="Huangzhike">
+  
+  <meta name="description" content="constructor属性定义在prototype对象上，指向prototype对象所在的构造函数，可被所有实例对象继承。12345function Foo() &amp;#123;&amp;#125;Foo.prototype.constructor === Foo // true,函数原型的构造器默认是该函数F">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="[笔记]-二十二、constructor"/>
+  <meta property="og:site_name" content="一切都沉淀为笔记"/>
+
+  
+  
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<!-- favicon end -->
+    <!-- <link href="//favicon.ico" rel="icon"> -->
+  
+
+  <!-- toc -->
+  <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css">
+
+  <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+
+  <!-- material design -->
+	<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css">
+  <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+	<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+  
+
+  
+
+  <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/libs/jquery-2.0.3.min.js" type="text/javascript"><\/script>')</script>
+
+</head>
+
+ 	<body>
+	  <nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">菜单</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li>
+                    <a href="/" title="">
+                    <i class="fa fa-home"></i>首页
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="/archives" title="">
+                    <i class="fa fa-list"></i>存档
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="//resume" title="我的主页">
+                    <i class="fa fa-github"></i>GitHub
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+	  <div class="container" >
+	    <div class="row">
+	
+	<div class="col-md-9 center-content">
+	
+
+		<div class="content">
+			<!-- index -->
+		   
+
+			  		<h2>[笔记]-二十二、constructor</h2>
+					
+					<div>
+						<span class="post-time">2016-10-29 13:45</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<p>constructor属性定义在prototype对象上，指向prototype对象所在的构造函数，可被所有实例对象继承。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">function Foo() &#123;&#125;</div><div class="line"></div><div class="line">Foo.prototype.constructor === Foo // true,函数原型的构造器默认是该函数</div><div class="line"></div><div class="line">Foo.prototype.hasOwnProperty(&quot;constructor&quot;); // true</div></pre></td></tr></table></figure></p>
+<p>定义在原型上的属性可以被实例对象继承，但构造函数上没有相应属性<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Foo.constructor // function Function() &#123; [native code] &#125;，[native code]的意思是JavaScript引擎的内置函数 </div><div class="line"></div><div class="line">Foo.constructor=== Foo; // false</div><div class="line"></div><div class="line">Foo.hasOwnProperty(&quot;constructor&quot;); // false</div><div class="line"></div><div class="line">// Foo的constructor属性继承Foo.__proto__指向的Function.prototype上的constructor属性</div><div class="line">Foo.constructor=== Function; // true</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">var instance= new Foo();</div><div class="line"></div><div class="line">instance.constructor; // function Foo() &#123;&#125;</div><div class="line"></div><div class="line">instance.hasOwnProperty(&quot;constructor&quot;); // false （实例对象instance自身没有contructor属性，读取instance.__proto__指向的Foo.prototype上的constructor属性。）</div><div class="line"></div><div class="line">instance.constructor === Foo; // true （instance的构造器是Foo）</div><div class="line"></div><div class="line">instance.constructor === Foo.prototype.constructor; // true</div><div class="line"></div><div class="line">delete Foo.prototype.constructor; // 使得原型链向上级查找Foo.prototype.__proto__===Object.prototype;</div><div class="line"></div><div class="line">Foo.prototype.constructor === Object; // true （读取Object.prototype上的constructor）</div><div class="line"></div><div class="line">Foo.prototype.constructor === new Object().constructor; // true （函数的原型是内置的Object()构造器的实例，但是该实例创建后constructor属性被赋值为当前的函数）</div></pre></td></tr></table></figure>
+<p>可以通过实例的constructor属性来找到构造器，进而找到它的原型“instance.constructor.prototype”</p>
+<p>constructor属性返回所有JavaScript变量的构造函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&quot;Jim&quot;.constructor; // function String() &#123; [native code] &#125;</div><div class="line">(1).constructor; // function Number() &#123; [native code] &#125;</div><div class="line">false.constructor; // function Boolean() &#123; [native code] &#125;</div><div class="line">[].constructor; // function Array() &#123; [native code] &#125;</div><div class="line">(&#123;&#125;).constructor; // function Object() &#123; [native code] &#125;</div><div class="line">new Date().constructor; // function Date() &#123; [native code] &#125;</div><div class="line">function () &#123;&#125;.constructor; // function Function() &#123; [native code] &#125;</div></pre></td></tr></table></figure></p>
+<p>可以通过constructor属性判断某个对象类型是否是Array：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">function isArray(arr) &#123;</div><div class="line">	return arr.constructor.toString().indexOf(&quot;Array&quot;) &gt; -1;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>也可以通过constructor属性以判断某个对象类型是否是Date：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">function isDate(date) &#123;</div><div class="line">	return date.constructor.toString().indexOf(&quot;Date&quot;) &gt; -1;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">function Foo() &#123;&#125;  </div><div class="line">function Bar() &#123;&#125;  </div><div class="line"></div><div class="line">// 定义在Bar.prototype上的constructor被覆盖了</div><div class="line">// Bar.prototype.__proto__===Foo.prototype</div><div class="line">// 在Foo的原型对象上查找constructor属性</div><div class="line">Bar.prototype = new Foo();  </div><div class="line"></div><div class="line">// a和b是不同构造器的实例</div><div class="line">var a = new Foo();  </div><div class="line">var b = new Bar();   </div><div class="line"></div><div class="line">// constructor指向都是Foo。</div><div class="line">a.constructor == b.constructor; //true  </div><div class="line">Bar.prototype.constructor == Foo.prototype.constructor; //true</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">function Foo() &#123; 	    </div><div class="line">	this.constructor = arguments.callee; // arguments.callee为Foo</div><div class="line">&#125;  </div><div class="line"></div><div class="line">Foo.prototype = new Object(); // 人为改变外部原型链  </div><div class="line"></div><div class="line">function Bar() &#123; 	   </div><div class="line">	this.constructor = arguments.callee; // 维护constructor，以便回溯外部原型链     </div><div class="line">&#125; </div><div class="line"></div><div class="line">Bar.prototype = new Foo(); </div><div class="line"></div><div class="line">var C = Bar.prototype ;</div><div class="line"></div><div class="line">var f = new Foo();  </div><div class="line">var b = new Bar();  </div><div class="line"></div><div class="line"></div><div class="line">// f和b从不同的构造器产生的实例，constructor属性正确指向相应的构造器。</div><div class="line">f.constructor === Foo; // true  </div><div class="line">b.constructor === Bar; // true  </div><div class="line"></div><div class="line">b.__proto__ instanceof Foo; // true  </div><div class="line">Bar.prototype instanceof Foo; // true </div><div class="line">Bar.prototype.constructor === Foo; // true  （重点）</div><div class="line"></div><div class="line">f.__proto__ instanceof Object; // true  </div><div class="line">Foo.prototype instanceof Object; // true  </div><div class="line">Foo.prototype.constructor === Object; // true  </div><div class="line"></div><div class="line">b.constructor.prototype.constructor.prototype.constructor === Object; // true，完成所有回溯  </div><div class="line"></div><div class="line">// 在Bar的原型上添加value属性</div><div class="line"></div><div class="line">Bar.prototype.value = &quot;This is from Bar.prototype&quot;;  </div><div class="line"></div><div class="line">b.value; // &quot;This is from Bar.prototype&quot;   </div><div class="line"></div><div class="line">// 在b构造之后，把Bar的原型更改</div><div class="line">Bar.prototype = new Object();   </div><div class="line">Bar.prototype.value; // undefined</div><div class="line">b.value; // &quot;This is from Bar.prototype&quot; </div><div class="line">C.value; // &quot;This is from Bar.prototype&quot;</div></pre></td></tr></table></figure>
+<p>即使把Bar的原型对象改了， 但b的[proto]属性依然指向原来Foo构造的实例对象（C），<br>此时如果在新的原型上定义属性和方法，仍然访问的是原来的原型，新方法无法继承（其实我很好奇，对象不是引用类型么，怎么跟引用副本一样了？）。<br>内部访问属性时是通过[proto]来回溯原型链，而不是通过prototype（且对象实例也没有prototype属性）。   </p>
+<p>为什么不用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Bar.prototype = new Foo();  </div><div class="line">Bar.prototype.constructor = Bar;</div></pre></td></tr></table></figure></p>
+<p>这样使得Bar的原型对象（Foo构造的实例）的constructor属性没法往父代原型追溯。<br>当Bar的原型对象想通过 constructor属性来获取到Foo构造器时， 获取到的是Bar的构造器，而不是Foo的构造器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Bar.prototype instanceof Foo; // true </div><div class="line">Bar.prototype.constructor === Foo; // false</div></pre></td></tr></table></figure></p>
+
+					</div>
+
+			  <!-- about -->
+			  
+		</div>
+
+		<!-- pagination -->
+	  
+
+		<div class="comment-section">
+  
+  
+
+
+</div>
+	</div>
+
+	
+
+</div>
+
+
+		<footer>
+			
+
+<p>
+  Powered by <a href="https://hexo.io">Hexo</a>  | with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme
+</p>
+<p>
+  &copy; 2016 <a href="http://huangzhike.github.io"> Huangzhike </a>
+</p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	  </div>
+
+		<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>
+
+		<!-- material design -->
+		<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script>
+		<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>
+		<!-- toc -->
+		<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		<script src="/libs/tocify/jquery.tocify.custom.js"></script>
+
+		<script src="/js/main.js"></script>
+
+	</body>
+</html>

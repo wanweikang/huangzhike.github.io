@@ -1,0 +1,196 @@
+	<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>[笔记]-八、数组 | 一切都沉淀为笔记</title>
+  <meta name="author" content="Huangzhike">
+  
+  <meta name="description" content="类数组对象（array-like object）看上去很像数组，可以使用length属性，但是并不是数组，无法使用一些数组的方法。下面就是一个类似数组的对象。12345678var a = &amp;#123;	0:&amp;quot;a&amp;quot;,	1:&amp;quot;b&amp;quot;,	length:2&amp;#125;">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="[笔记]-八、数组"/>
+  <meta property="og:site_name" content="一切都沉淀为笔记"/>
+
+  
+  
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<!-- favicon end -->
+    <!-- <link href="//favicon.ico" rel="icon"> -->
+  
+
+  <!-- toc -->
+  <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css">
+
+  <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+
+  <!-- material design -->
+	<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css">
+  <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+	<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+  
+
+  
+
+  <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/libs/jquery-2.0.3.min.js" type="text/javascript"><\/script>')</script>
+
+</head>
+
+ 	<body>
+	  <nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">菜单</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li>
+                    <a href="/" title="">
+                    <i class="fa fa-home"></i>首页
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="/archives" title="">
+                    <i class="fa fa-list"></i>存档
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="//resume" title="我的主页">
+                    <i class="fa fa-github"></i>GitHub
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+	  <div class="container" >
+	    <div class="row">
+	
+	<div class="col-md-9 center-content">
+	
+
+		<div class="content">
+			<!-- index -->
+		   
+
+			  		<h2>[笔记]-八、数组</h2>
+					
+					<div>
+						<span class="post-time">2016-10-28 13:11</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<p><strong>类数组对象（array-like object）</strong><br>看上去很像数组，可以使用length属性，但是并不是数组，无法使用一些数组的方法。<br>下面就是一个类似数组的对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">var a = &#123;</div><div class="line">	0:&quot;a&quot;,</div><div class="line">	1:&quot;b&quot;,</div><div class="line">	length:2</div><div class="line">&#125;;</div><div class="line"></div><div class="line">a[0] // &quot;a&quot;</div><div class="line">a.length // 2</div></pre></td></tr></table></figure></p>
+<p>典型的类数组对象是函数的arguments对象，以及大多数DOM元素集，还有字符串。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&quot;abc&quot;[1] // &quot;b&quot;</div><div class="line">&quot;abc&quot;.length // 3</div><div class="line">&quot;abc&quot; instanceof Array // false</div></pre></td></tr></table></figure></p>
+<p>通过函数的call方法，可以用slice方法将类似数组的对象变成真正的数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var arr = Array.prototype.slice.call(arguments);</div></pre></td></tr></table></figure></p>
+<p>遍历类数组对象，可以采用for循环，也可以采用数组的forEach方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">// for循环</div><div class="line">function logArgs() &#123;</div><div class="line">	for (var i=0; i&lt;arguments.length; i++) &#123;</div><div class="line">		console.log(i+&quot;. &quot;+arguments[i]);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// forEach方法</div><div class="line">function logArgs() &#123;</div><div class="line">	Array.prototype.forEach.call(arguments, function (elem, i) &#123;</div><div class="line">		console.log(i+&quot;. &quot;+elem);</div><div class="line">	&#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>数组</strong></p>
+<p>数组支持 [] 访问形式，数组期望的是数值下标，索引，比如说0和42：</p>
+<p>数组也是对象，所以虽然每个下标都是整数，仍然可以给数组添加属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">var myArray = [ &quot;foo&quot;, 42 ];</div><div class="line">myArray.bar = &quot;bar&quot; ; </div><div class="line">myArray.length; // 2 （数组的 length 值并未发生变化）</div><div class="line">myArray.bar; // &quot;bar&quot;</div><div class="line"></div><div class="line">myArray[&quot;3&quot;] = &quot;A&quot;;</div><div class="line">myArray.length; // 3 </div><div class="line">myArray[3]; // &quot;A&quot; （如果向数组添加属性，但属性名像数字，会变成数值下标（修改数组内容而不是添加属性））</div></pre></td></tr></table></figure></p>
+<p>本质上，数组也属于对象，是字典结构（dictionary）的一个变种。<br>数组的特殊性体现在，它的键默认是按次序排列的整数（0，1，2…），所以数组不用为每个元素指定键名，而对象的每个成员都必须指定键名。<br>此外，对象以字符串来识别键名，非字符串的键名会被转为字符串，所以使用数值或字符串作为键名，都能读取数组的成员。<br>这一条在赋值时也成立，即如果一个值可以被转换为整数，则以该值为键名，等于以对应的整数为键名。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var arr = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];</div><div class="line">arr[&quot;0&quot;] // &quot;a&quot;</div><div class="line">arr[0] // &quot;a&quot;</div></pre></td></tr></table></figure></p>
+<p>对象有两种读取成员的方法：“点”结构（object.key）和方括号结构（object[key]）。<br>但是，对于数字的键名，不能使用点结构，arr.0的写法不合法，因为单独的数字不能作为标识符（identifier）。<br>所以，数组成员只能用方括号 arr[0]表示（方括号是运算符，可以接受数值）</p>
+<p>创建数组的基本方式有两种。<br>第一种是使用Array构造函数（new也可以省略）。第二种基本方式是使用数组字面量表示法。</p>
+<p>Array 的构造函数在处理参数时模棱两可，推荐使用数组的字面语法 - [] - 来创建数组。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">new Array(&quot;3&quot;) // 结果: [&quot;3&quot;]</div><div class="line">new Array(3, 4, 5); // 结果: [3, 4, 5] </div><div class="line">new Array(3) // 结果: []，此数组长度为 3</div><div class="line"></div><div class="line"></div><div class="line">var arr = new Array(3);</div><div class="line">arr[1]; // undefined</div><div class="line">1 in arr; // false, 数组还没有生成</div></pre></td></tr></table></figure>
+<p>优先于设置数组长度属性的做法只在少数几种情况下有用，比如需要循环字符串，可以避免 for 循环的麻烦。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">new Array(count + 1).join(stringToRepeat);</div><div class="line">new Array(3).join(&quot;#&quot;) // 返回 ##</div></pre></td></tr></table></figure></p>
+<p>数组的length属性不是只读的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">colors[colors.length] = &quot;black&quot;;    //数组的最后一项永远是[length-1]</div></pre></td></tr></table></figure></p>
+<p>JavaScript的Array可以包含任意数据类型，并通过索引来访问每个元素。<br>要取得Array的长度，直接访问length属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var arr = [1, 2, 3.14, &quot;Hello&quot;, null, true];</div><div class="line">arr.length; // 6</div></pre></td></tr></table></figure></p>
+<p>直接给Array的length赋一个新的值会导致Array大小的变化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var arr = [1, 2, 3];</div><div class="line">arr.length = 6;</div><div class="line">arr; // [1, 2, 3, undefined, undefined, undefined]</div><div class="line"></div><div class="line">var arr = [1, 2, 3];</div><div class="line">arr[5] = &quot;x&quot;;</div><div class="line">arr; // [1, 2, 3, undefined, undefined, &quot;x&quot;]</div></pre></td></tr></table></figure></p>
+<p>大多数编程语言不允许直接改变数组的大小，越界访问索引会报错。然而，JavaScript的Array不会有任何错误。</p>
+<p>数组中的每个元素都是一个对象，可以使用 delete 来删除元素吗？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var array = [&quot;one&quot;, &quot;two&quot;,&quot;three&quot;,&quot;four&quot;];</div><div class="line">delete array[2];</div><div class="line">array; //  [one, two, undefined, four]</div><div class="line">array.length == 4 // delete 只是将数组元素删掉，数组的长度没有改变</div></pre></td></tr></table></figure></p>
+<p>Array.isArray()方法用于最终确定某个值到底是不是数组。因为在不同 iframe 中创建的 Array 并不共享 prototype，所以instanceof无法检测。</p>
+<p>检查某个键是否存在的运算符in，适用于对象，也适用于数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">2 in [ &quot;a&quot;, &quot;b&quot;, &quot;c&quot; ] // true</div><div class="line"></div><div class="line">&quot;2&quot; in [ &quot;a&quot;, &quot;b&quot;, &quot;c&quot; ] // true</div></pre></td></tr></table></figure></p>
+<p>混淆indexOf和in操作符：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var a = [1, 2, 5]</div><div class="line">1 in a // &lt;- true, but because of the 2</div><div class="line">5 in a // &lt;- false</div><div class="line">1 in a === !!a[1] // &lt;- true （in操作符是检索对象的键而非值。性能上比indexOf快得多）</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">var array = [1, 2, 3, 4];</div><div class="line">for(var item in array)&#123;</div><div class="line">	console.log(array[item]);</div><div class="line">&#125;</div><div class="line">// 1</div><div class="line">// 2</div><div class="line">// 3</div><div class="line">// 4</div></pre></td></tr></table></figure>
+<p>这种方式并不总是有效，比如我们扩展了内置对象 Array：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Array.prototype.useless = function()&#123;&#125;</div><div class="line">// 重复执行上边的代码，输出：</div><div class="line">// 1</div><div class="line">// 2</div><div class="line">// 3</div><div class="line">// 4</div><div class="line">// function()&#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>虽然数组是对象，但是不建议使用 for in 遍历数组。<br>注意： JavaScript 中数组不是关联数组。JavaScript 中只有对象来管理键值的对应关系。关联数组是保持顺序的，而对象不是。<br>由于 for in 循环会枚举原型链上的所有属性，唯一过滤这些属性的方式是使用hasOwnProperty 函数， 因此会比普通的 for 循环慢上好多倍。</p>
+<p>为了达到遍历数组的最佳性能，推荐使用 for 循环。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">var list = [1, 2, 3, 4, 5, ...... 100000000];</div><div class="line">for(var i = 0, len = list.length; i &lt; len; i++) &#123;</div><div class="line">	console.log(list[i]);</div><div class="line">&#125;</div><div class="line">// 上面代码通过 len = list.length 来缓存数组的长度。</div><div class="line">// or</div><div class="line"></div><div class="line">var i = 0;</div><div class="line">while (i&lt; list.length)&#123;</div><div class="line">	console.log(list[i]);</div><div class="line">	i++;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// or 逆向遍历</div><div class="line"></div><div class="line">var len = list.length;</div><div class="line">while (len--)&#123;</div><div class="line">	console.log(list[len]);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>数组是一个引用类型，保存数组的变量，实际上保存是数组内存地址：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var a = [1];</div><div class="line">var b = a;</div><div class="line">b[0] = 2;</div><div class="line">a // 2</div></pre></td></tr></table></figure></p>
+<p>引用类型比较的是地址，指向的位置不一样。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var a = [1];</div><div class="line">var b = [1];</div><div class="line">a == b; // false</div></pre></td></tr></table></figure></p>
+<p>如果a里面存储的是基本类型，那么语句b=a就是把a的值赋值一份给b。<br>如果a里面存储的是引用类型，那么b将指向a现在指向的位置，a的值不会赋值一份，a、b指向同一个地方。</p>
+<p><strong>Map对象</strong><br>Map是一组键值对的结构，具有极快的查找速度。<br>假设要根据同学的名字查找对应的成绩，如果用Array实现，需要两个Array：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var names = [&quot;Michael&quot;, &quot;Bob&quot;, &quot;Tracy&quot;];</div><div class="line">var scores = [95, 75, 85];</div></pre></td></tr></table></figure></p>
+<p>给定一个名字，要查找对应的成绩，就先要在names中找到对应的位置，再从scores取出对应的成绩，Array越长，耗时越长。<br>如果用Map实现，只需要一个“名字”-“成绩”的对照表，直接根据名字查找成绩，无论这个表有多大，查找速度都不会变慢。用JavaScript写一个Map如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var m = new Map([[&quot;Michael&quot;, 95], [&quot;Bob&quot;, 75], [&quot;Tracy&quot;, 85]]);</div><div class="line">m.get(&quot;Michael&quot;); // 95</div></pre></td></tr></table></figure></p>
+<p>初始化Map需要一个二维数组，或者直接初始化一个空Map。Map具有以下方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var m = new Map(); // 空Map</div><div class="line">m.set(&quot;Adam&quot;, 67); // 添加新的key-value</div><div class="line">m.has(&quot;Adam&quot;); // 是否存在key &quot;Adam&quot;: true</div><div class="line">m.get(&quot;Adam&quot;); // 67</div><div class="line">m.delete(&quot;Adam&quot;); // 删除key &quot;Adam&quot;</div><div class="line">m.get(&quot;Adam&quot;); // undefined</div></pre></td></tr></table></figure></p>
+<p>一个key只能对应一个value，多次对一个key放入value，后面的值会把前面的值冲掉：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var m = new Map();</div><div class="line">m.set(&quot;Adam&quot;, 67);</div><div class="line">m.set(&quot;Adam&quot;, 88);</div><div class="line">m.get(&quot;Adam&quot;); // 88</div></pre></td></tr></table></figure></p>
+
+					</div>
+
+			  <!-- about -->
+			  
+		</div>
+
+		<!-- pagination -->
+	  
+
+		<div class="comment-section">
+  
+  
+
+
+</div>
+	</div>
+
+	
+
+</div>
+
+
+		<footer>
+			
+
+<p>
+  Powered by <a href="https://hexo.io">Hexo</a>  | with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme
+</p>
+<p>
+  &copy; 2016 <a href="http://huangzhike.github.io"> Huangzhike </a>
+</p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	  </div>
+
+		<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>
+
+		<!-- material design -->
+		<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script>
+		<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>
+		<!-- toc -->
+		<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		<script src="/libs/tocify/jquery.tocify.custom.js"></script>
+
+		<script src="/js/main.js"></script>
+
+	</body>
+</html>

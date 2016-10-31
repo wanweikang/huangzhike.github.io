@@ -1,0 +1,226 @@
+	<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>[笔记]-一、语句&amp;循环&amp;遍历 | 一切都沉淀为笔记</title>
+  <meta name="author" content="Huangzhike">
+  
+  <meta name="description" content="条件分支语句1234567if () &amp;#123;	// ...&amp;#125; else if () &amp;#123;	// ...&amp;#125; else &amp;#123;	// ...&amp;#125;
+else代码块跟随最近的if语句。12345var m = 1, n = 2;if (m !== 1) if ">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="[笔记]-一、语句&amp;循环&amp;遍历"/>
+  <meta property="og:site_name" content="一切都沉淀为笔记"/>
+
+  
+  
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<!-- favicon end -->
+    <!-- <link href="//favicon.ico" rel="icon"> -->
+  
+
+  <!-- toc -->
+  <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css">
+
+  <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+
+  <!-- material design -->
+	<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css">
+  <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+	<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+  
+
+  
+
+  <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/libs/jquery-2.0.3.min.js" type="text/javascript"><\/script>')</script>
+
+</head>
+
+ 	<body>
+	  <nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">菜单</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li>
+                    <a href="/" title="">
+                    <i class="fa fa-home"></i>首页
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="/archives" title="">
+                    <i class="fa fa-list"></i>存档
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="//resume" title="我的主页">
+                    <i class="fa fa-github"></i>GitHub
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+	  <div class="container" >
+	    <div class="row">
+	
+	<div class="col-md-9 center-content">
+	
+
+		<div class="content">
+			<!-- index -->
+		   
+
+			  		<h2>[笔记]-一、语句&amp;循环&amp;遍历</h2>
+					
+					<div>
+						<span class="post-time">2016-10-27 12:11</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<p><strong>条件分支语句</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">if () &#123;</div><div class="line">	// ...</div><div class="line">&#125; else if () &#123;</div><div class="line">	// ...</div><div class="line">&#125; else &#123;</div><div class="line">	// ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>else代码块跟随最近的if语句。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">var m = 1, n = 2;</div><div class="line"></div><div class="line">if (m !== 1) </div><div class="line">if (n === 2) console.log(&quot;a&quot;); </div><div class="line">else console.log(&quot;b&quot;);</div></pre></td></tr></table></figure></p>
+<p>等价于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">if (m !== 1) &#123;</div><div class="line">	if (n === 2) &#123;</div><div class="line">		console.log(&quot;a&quot;);  </div><div class="line">	&#125; else &#123;</div><div class="line">		console.log(&quot;b&quot;);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>有括号的话，if语句执行{}里面的所有语句，没括号的话，if语句只控制最近的一行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">if (true)</div><div class="line">console.log(&quot;1&quot;);</div><div class="line">console.log(&quot;2&quot;);</div><div class="line"></div><div class="line">// 1</div><div class="line">// 2</div><div class="line"></div><div class="line">if (false)</div><div class="line">console.log(&quot;1&quot;);</div><div class="line">console.log(&quot;2&quot;);</div><div class="line"></div><div class="line">// 2</div></pre></td></tr></table></figure>
+<p>跳楼现象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">var a = 4;</div><div class="line"></div><div class="line">if(a &lt; 8)&#123;</div><div class="line">	a++; // a变为5，然后跳楼，不会进行a===5的比较</div><div class="line">&#125;else if(a === 5)&#123;</div><div class="line">	a++;</div><div class="line">&#125;</div><div class="line">console.log(a); // 5</div></pre></td></tr></table></figure></p>
+<p><strong>switch语句</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">function test(age) &#123;  </div><div class="line">	var result = &quot;&quot;;  </div><div class="line"></div><div class="line">	switch (true) &#123;  </div><div class="line">		case isNaN(age):</div><div class="line">		 result = &quot;NaN&quot;;  </div><div class="line">		break;  </div><div class="line">		case (age &gt;= 22):  </div><div class="line">		 result = &quot;Old&quot;;  </div><div class="line">		break;  </div><div class="line">		case (age &lt;= 21):  </div><div class="line">		 result = &quot;Young&quot;;  </div><div class="line">		break;  </div><div class="line">		default:  </div><div class="line">		 result = &quot;&quot;;  </div><div class="line">		break;  </div><div class="line">	&#125;;  </div><div class="line">	return result;  </div><div class="line">&#125;  </div><div class="line">test(21); // &quot;Young&quot;</div></pre></td></tr></table></figure>
+<p>switch进行相同判断，是===的比较，连类型一起比较<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var a = &quot;5&quot;;</div><div class="line"></div><div class="line">switch(a)&#123;      </div><div class="line">	case 5 :</div><div class="line">		alert(&quot;h&quot;);  //不会弹出</div><div class="line">	break;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果不写break，还将执行下面的case的语句，直到一个break。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">switch(month)&#123;</div><div class="line">	case 1:</div><div class="line">	case 3:</div><div class="line">	case 5:</div><div class="line">	case 7:</div><div class="line">	case 8:</div><div class="line">	case 10:</div><div class="line">	case 12:</div><div class="line">		alert(&quot;31天&quot;);</div><div class="line">	break;</div><div class="line">	case 4:</div><div class="line">	case 6:</div><div class="line">	case 9:</div><div class="line">	case 11:</div><div class="line">	 alert(&quot;30天&quot;);</div><div class="line">	break;</div><div class="line">	case 2:</div><div class="line">		alert(&quot;28天或29天&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">// 错误写法 </div><div class="line">switch(month)&#123;</div><div class="line">	case 1 || 3 || 5 || 7 || 8 || 10 || 12 :</div><div class="line">		alert(&quot;这个月有31天&quot;);</div><div class="line">	break;</div><div class="line">	case 4 || 6 || 9 || 11 :</div><div class="line">		alert(&quot;这个月有30天&quot;);</div><div class="line">	break;</div><div class="line">	default :</div><div class="line">		alert(&quot;默认&quot;);</div><div class="line">&#125;</div><div class="line">// 1 || 3 || 5 || 7 是表达式，计算求值 1 || 3 || 5 || 7 || 8 || 10 || 12表达式的值是 1，等价于case 1:</div></pre></td></tr></table></figure>
+<p>switch语句部分和case语句部分，都可以使用表达式。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">switch(a + b) &#123;</div><div class="line">	case c + d:</div><div class="line">	break;</div><div class="line">	default:</div><div class="line">	break;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>switch…case要求每一个case的最后一行必须是break语句，否则会接着运行下一个case。<br>这样不仅容易忘记，还会造成代码的冗长。<br>而且，switch…case不使用大括号，不利于代码形式的统一。<br>此外，这种结构类似goto语句，容易造成流程混乱，不符合面向对象编程原则。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">function A(action) &#123;</div><div class="line">	switch (act) &#123;</div><div class="line">		case &quot;f&quot;:</div><div class="line">			console.log( &quot;f&quot;);</div><div class="line">		break;</div><div class="line">		default:     </div><div class="line">		break;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>改写成对象结构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">function A(action) &#123;</div><div class="line">	var act = &#123;</div><div class="line">		&quot;f&quot;: function () &#123;</div><div class="line">			console.log( &quot;f&quot;);</div><div class="line">		&#125;</div><div class="line">	&#125;;</div><div class="line"></div><div class="line">	if (act[action])&#123;</div><div class="line">		act[action]();</div><div class="line">	&#125; else &#123;</div><div class="line">	 act[&quot;default&quot;]();</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">A(&quot;f&quot;);</div></pre></td></tr></table></figure></p>
+<p>总结：条件语句</p>
+<p>if……else if……<br>switch case<br>三元运算符   （赋值的时候，根据条件有两个可能的值，马上想到三元运算符）<br>&amp;&amp; || 短路写法   </p>
+<p><strong>循环语句</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">for()&#123;     </div><div class="line">&#125;</div><div class="line"></div><div class="line">while()&#123;   </div><div class="line">&#125;; </div><div class="line"></div><div class="line">do&#123;     </div><div class="line">&#125;while(); // 分号不能省略</div></pre></td></tr></table></figure>
+<p>do while语句</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">var i = 1;</div><div class="line">do&#123;</div><div class="line">	console.log(i);</div><div class="line">	i++;</div><div class="line">&#125;while(i &lt;= 100);</div></pre></td></tr></table></figure>
+<p>break语句</p>
+<p>break语句只能跳出当前所在的最内层循环<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// break只中断了最内层循环，外层循环还在继续</div><div class="line">for(var i = 1 ; i &lt;= 10 ; i++)&#123;</div><div class="line">	for(var j = 1 ; j &lt;= 10 ; j++)&#123;</div><div class="line">		console.log(i,j);</div><div class="line">		if(j == 5)&#123;</div><div class="line">			break;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果想终止所有的循环，给循环语句加label<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">A : for(var i = 1 ; i &lt;= 10 ; i++)&#123;</div><div class="line">	for(var j = 1 ; j &lt;= 10 ; j++)&#123;</div><div class="line">		console.log(i,j);</div><div class="line">		if(j == 5)&#123;</div><div class="line">			break A;		</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>continue语句</p>
+<p>遇见continue语句，for会终止执行后面的语句，然后进入下一次迭代。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">for(var i = 1 ; i &lt;= 100 ; i++)&#123;</div><div class="line">	if(i == 5)&#123;</div><div class="line">	 continue;   // 当i为5的时候，立即终止执行后面的console语句，直接i为6了。</div><div class="line">	&#125;</div><div class="line">	console.log(i);</div><div class="line">&#125;</div><div class="line"></div><div class="line">// continue同样只能终端当前最内层的for，外层for要加label。</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">// 寻找2~100之内的所有质数</div><div class="line">A : </div><div class="line">for(var i = 2 ; i &lt;= 100 ; i++)&#123;</div><div class="line">	for(var j = 2 ; j &lt;= Math.sqrt(i) ; j++)&#123;</div><div class="line">		if(i % j == 0)&#123;</div><div class="line">			continue A;	// 如果这数字，被某一个数字整除了，那么立即放弃他</div><div class="line">		//开始验证下一个i</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	console.log(i);	// 如果一个数字有约数，就会执行continue，就遇不见这个语句了。</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">var i = 0;</div><div class="line">while (i&lt;100)&#123;</div><div class="line">	console.log(i);</div><div class="line">	i++;</div><div class="line">	if (i === 10) &#123;</div><div class="line">		break;</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">// 上面代码只会执行10次循环，一旦i等于10，就会跳出循环。</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">// continue语句用于立即终止本次循环，返回循环结构的头部，开始下一次循环。</div><div class="line">var i = 0;</div><div class="line"></div><div class="line">while (i&lt;100)&#123;</div><div class="line">	i++;</div><div class="line">	if (i%2===0) &#123;</div><div class="line">		continue;</div><div class="line">	&#125;</div><div class="line">	console.log(i);</div><div class="line">&#125;</div><div class="line">// 如果存在多重循环，不带参数的break语句和continue语句都只针对最内层循环。</div></pre></td></tr></table></figure>
+<p>return 语句<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">function log(a) &#123;</div><div class="line">	return // 自动分号插入</div><div class="line">	a; // 如果 return 对象的左括号和 return 不在一行上会出错。</div><div class="line">&#125;</div><div class="line">console.log(log(1)); // undefined</div></pre></td></tr></table></figure></p>
+<p><strong>遍历</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">var Arr = [&quot;Javascript&quot;, &quot;CSS3&quot;, &quot;jQuery&quot;, &quot;Angular&quot;];</div><div class="line"></div><div class="line">var Obj = &#123;</div><div class="line">	a: &quot;Javascript&quot;,</div><div class="line">	b: &quot;CSS3&quot;,</div><div class="line">	c: &quot;jQuery&quot;,</div><div class="line">	d: &quot;Angular&quot;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>有两种方式使用 in 操作符：</p>
+<ul>
+<li>单独使用 （单独使用时， in 操作符会在通过对象能够访问给定属性时返回 true ，无论该属性存在于实例中还是原型中。）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">if (&quot;querySelector&quot; in document) &#123;</div><div class="line">	document.querySelector(&quot;#id&quot;);</div><div class="line">&#125; else &#123;</div><div class="line">	document.getElementById(&quot;id&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>在 for-in 循环中使用。</li>
+</ul>
+<p>for in：可以用于遍历数组和对象</p>
+<p>for(var key in arr|obj){} </p>
+<ul>
+<li>遍历数组时，key表示索引值</li>
+<li>遍历对象时，key表示属性名</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">(function() &#123;</div><div class="line">for(var i in Arr) &#123;</div><div class="line">	if (i === &quot;2&quot;) &#123;</div><div class="line">		return; // 终止函数</div><div class="line">		// break;  // 终止循环</div><div class="line">		// continue;  // 跳过当前循环</div><div class="line">	&#125;;</div><div class="line">	console.log(&quot;Arr[&quot;+ i +&quot;]:&quot; + Arr[i]);</div><div class="line">	&#125;</div><div class="line">	console.log(&quot;return&quot;);</div><div class="line">&#125;)();</div></pre></td></tr></table></figure>
+<p>forEach</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Arr.forEach(function(val, index) &#123;</div><div class="line">	if (val === &quot;CSS3&quot;) &#123;</div><div class="line">		return;  // 循环被跳过</div><div class="line">		// break; // 报错</div><div class="line">		// continue; // 报错</div><div class="line">	&#125;;</div><div class="line">	console.log(val, index);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var newArr = [];</div><div class="line">Arr.forEach(function(val, index) &#123;</div><div class="line">	this.push(val); // 这里的this指向newArr</div><div class="line">&#125;, newArr)</div></pre></td></tr></table></figure>
+<p>回调函数中有2个参数，分别表示值和索引，这一点与jQuery的 $.each相反</p>
+<ul>
+<li>forEach无法遍历对象</li>
+<li>forEach在低版本浏览器无法使用（ES5）</li>
+<li>forEach无法使用 break，continue 跳出循环，使用 return 时，和在 for 循环中使用 continue 一致</li>
+<li>forEach可以添加第二参数，为一个数组，回调函数中的 this 指向这个数组。而如果没有第二参数，则 this 指向 window</li>
+</ul>
+<p>do/while：不建议使用do/while的遍历数组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">// while</div><div class="line">(function() &#123;</div><div class="line">	var i = 0, len = Arr.length;</div><div class="line">	while(i &lt; len) &#123;</div><div class="line">		if (i === 2) &#123;</div><div class="line">			// return; // 终止函数执行</div><div class="line">			// break;  // 终止循环</div><div class="line">			// continue;  // 跳过循环，后边的代码无法执行，i 值无法改变，因此循环卡死</div><div class="line">			// 使用 continue 时，不要将i++放在后面</div><div class="line">		&#125;;</div><div class="line">		console.log(&quot;Arr[&quot;+ i +&quot;]:&quot; + Arr[i]);</div><div class="line">		i ++;</div><div class="line">	&#125;</div><div class="line">	console.log(&quot;return&quot;);</div><div class="line">&#125;)();</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">// do while</div><div class="line">(function() &#123;</div><div class="line">	var i = 0, len = Arr.length;</div><div class="line">	do &#123;</div><div class="line">		if (i === 2) &#123;</div><div class="line">			break; // 循环被终止</div><div class="line">		&#125;;</div><div class="line">		console.log(&quot;Arr[&quot;+ i +&quot;]:&quot; + Arr[i]);</div><div class="line">		i++;</div><div class="line">	&#125; while(i&lt;len);</div><div class="line">&#125;)();</div></pre></td></tr></table></figure>
+<p>$.each：用来遍历数组和对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">$.each(Arr, function(key, value) &#123;</div><div class="line">	console.log(key, value);</div><div class="line">&#125;)</div><div class="line">// output:</div><div class="line">0 &quot;Javascript&quot;</div><div class="line">1 &quot;CSS3&quot;</div><div class="line">2 &quot;jQuery&quot;</div><div class="line">3 &quot;Angular&quot;</div><div class="line"></div><div class="line">/*</div><div class="line">* 使用  return 或者 return true 跳过一次循环，继续执行后面的循环</div><div class="line">* 使用 return false 终止循环，但并不终止函数</div><div class="line">* 无法使用 break 与 continue 跳过循环</div><div class="line">*/</div></pre></td></tr></table></figure></p>
+<p>$(selecter).each：用来遍历DOMList</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$(&quot;.list li&quot;).each(function(index, ele) &#123;</div><div class="line">	console.log(index, ele);</div><div class="line">	// console.log(this == ele); // true （this 当前被遍历的DOM元素，不能调用jQuery方法）</div><div class="line">	$(this).html(index); // $(this) == $(ele) 当前被遍历元素的jquery对象，可以调用jquery的方法</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+
+					</div>
+
+			  <!-- about -->
+			  
+		</div>
+
+		<!-- pagination -->
+	  
+
+		<div class="comment-section">
+  
+  
+
+
+</div>
+	</div>
+
+	
+
+</div>
+
+
+		<footer>
+			
+
+<p>
+  Powered by <a href="https://hexo.io">Hexo</a>  | with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme
+</p>
+<p>
+  &copy; 2016 <a href="http://huangzhike.github.io"> Huangzhike </a>
+</p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	  </div>
+
+		<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>
+
+		<!-- material design -->
+		<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script>
+		<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>
+		<!-- toc -->
+		<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		<script src="/libs/tocify/jquery.tocify.custom.js"></script>
+
+		<script src="/js/main.js"></script>
+
+	</body>
+</html>
