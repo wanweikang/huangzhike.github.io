@@ -1,0 +1,167 @@
+	<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>[笔记]-模块&amp;封装（三） | 一切都沉淀为笔记</title>
+  <meta name="author" content="Huangzhike">
+  
+  <meta name="description" content="现代的模块机制123456789101112131415161718var Modules = (function Manager() &amp;#123;	var modules = &amp;#123;&amp;#125;;	function define(name, deps, impl) &amp;#123;		for (">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="[笔记]-模块&amp;封装（三）"/>
+  <meta property="og:site_name" content="一切都沉淀为笔记"/>
+
+  
+  
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<!-- favicon end -->
+    <!-- <link href="//favicon.ico" rel="icon"> -->
+  
+
+  <!-- toc -->
+  <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css">
+
+  <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+
+  <!-- material design -->
+	<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css">
+  <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+	<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+  
+
+  
+
+  <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/libs/jquery-2.0.3.min.js" type="text/javascript"><\/script>')</script>
+
+</head>
+
+ 	<body>
+	  <nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">菜单</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li>
+                    <a href="/" title="">
+                    <i class="fa fa-home"></i>首页
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="/archives" title="">
+                    <i class="fa fa-list"></i>存档
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="//resume" title="我的主页">
+                    <i class="fa fa-github"></i>GitHub
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+	  <div class="container" >
+	    <div class="row">
+	
+	<div class="col-md-9 center-content">
+	
+
+		<div class="content">
+			<!-- index -->
+		   
+
+			  		<h2>[笔记]-模块&amp;封装（三）</h2>
+					
+					<div>
+						<span class="post-time">2016-10-28 12:18</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<p>现代的模块机制<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">var Modules = (function Manager() &#123;</div><div class="line">	var modules = &#123;&#125;;</div><div class="line">	function define(name, deps, impl) &#123;</div><div class="line">		for (var i=0; i&lt;deps.length; i++) &#123;</div><div class="line">			deps[i] = modules[deps[i]];</div><div class="line">		&#125;</div><div class="line">		modules[name] = impl.apply( impl, deps );</div><div class="line">	&#125;</div><div class="line">	function get(name) &#123;</div><div class="line">		return modules[name];</div><div class="line">	&#125;</div><div class="line">	return &#123;</div><div class="line">		define: define,</div><div class="line">		get: get</div><div class="line">	&#125;;</div><div class="line">&#125;)();</div><div class="line"></div><div class="line">// 核心是 modules[name] = impl.apply(impl, deps) 。</div></pre></td></tr></table></figure></p>
+<p>为了模块的定义引入了包装函数（可以传入任何依赖），并且将返回值，也就是模块的API，储存在一个根据名字来管理的模块列表中。<br>下面展示了如何使用它来定义模块：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">MyModules.define( &quot;bar&quot;, [], function() &#123;</div><div class="line">	function hello(who) &#123;</div><div class="line">		return &quot;Let me introduce: &quot; + who;</div><div class="line">	&#125;</div><div class="line">	return &#123;</div><div class="line">		hello: hello</div><div class="line">	&#125;;</div><div class="line">&#125; );</div><div class="line"></div><div class="line">MyModules.define( &quot;foo&quot;, [&quot;bar&quot;], function(bar) &#123;</div><div class="line">	var hungry = &quot;hippo&quot;;</div><div class="line">	function awesome() &#123;</div><div class="line">		console.log( bar.hello( hungry ).toUpperCase() );</div><div class="line">	&#125;</div><div class="line">	 return &#123;</div><div class="line">		awesome: awesome</div><div class="line">	&#125;;</div><div class="line">&#125; );</div><div class="line"></div><div class="line">var bar = MyModules.get( &quot;bar&quot; );</div><div class="line">var foo = MyModules.get( &quot;foo&quot; );</div><div class="line">console.log(bar.hello( &quot;hippo&quot; )); // &lt;i&gt;Let me introduce: hippo&lt;/i&gt;</div><div class="line">foo.awesome(); // LET ME INTRODUCE: HIPPO</div><div class="line"></div><div class="line">// &quot;foo&quot; 和 &quot;bar&quot; 模块都是通过一个返回公共API的函数来定义的。</div><div class="line">// &quot;foo&quot; 甚至接受 &quot;bar&quot; 的示例作为依赖参数，并能相应地使用它。</div></pre></td></tr></table></figure></p>
+<p>ES6的模块没有“行内”格式，必须被定义在独立的文件中（一个文件一个模块）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">// bar.js</div><div class="line">function hello(who) &#123;</div><div class="line">	return &quot;Let me introduce: &quot; + who;</div><div class="line">&#125;</div><div class="line">export hello;</div><div class="line"></div><div class="line"></div><div class="line">// foo.js</div><div class="line">// 仅从&quot;bar&quot;模块导入hello()</div><div class="line">import hello from &quot;bar&quot;;</div><div class="line">var hungry = &quot;hippo&quot;;</div><div class="line">function awesome() &#123;</div><div class="line">	console.log(</div><div class="line">		hello( hungry ).toUpperCase()</div><div class="line">	);</div><div class="line">&#125;</div><div class="line">export awesome;</div><div class="line"></div><div class="line"></div><div class="line">// baz.js</div><div class="line">// 导入完整的&quot;foo&quot;和&quot;bar&quot;模块</div><div class="line">module foo from &quot;foo&quot;;</div><div class="line">module bar from &quot;bar&quot;;</div><div class="line"></div><div class="line">console.log(</div><div class="line">	bar.hello( &quot;rhino&quot; )</div><div class="line">); // Let me introduce: rhino</div><div class="line"></div><div class="line">foo.awesome(); // LET ME INTRODUCE: HIPPO</div></pre></td></tr></table></figure></p>
+
+					</div>
+
+			  <!-- about -->
+			  
+		</div>
+
+		<!-- pagination -->
+	  
+
+		<div class="comment-section">
+  
+  
+
+
+</div>
+	</div>
+
+	
+
+</div>
+
+
+		<footer>
+			
+
+<p>
+  Powered by <a href="https://hexo.io">Hexo</a>  | with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme
+</p>
+<p>
+  &copy; 2016 <a href="http://huangzhike.github.io"> Huangzhike </a>
+</p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	  </div>
+
+		<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>
+
+		<!-- material design -->
+		<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script>
+		<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>
+		<!-- toc -->
+		<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		<script src="/libs/tocify/jquery.tocify.custom.js"></script>
+
+		<script src="/js/main.js"></script>
+
+	</body>
+</html>
