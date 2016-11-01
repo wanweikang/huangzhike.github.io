@@ -6,8 +6,8 @@
   <title>[半原创]-原型链 | 一切都沉淀为笔记</title>
   <meta name="author" content="Huangzhike">
   
-  <meta name="description" content="吭，所谓半原创的意思就是一半是原创（没有能力完全原创），后面各个原型链关系是我原创的，其它都是整理的笔记。
-JavaScript基于原型（prototype-based）实现面向对象（OOP），但不是所有对象都有原型（prototype）属性：12var obj = &amp;#123;&amp;#125;;obj">
+  <meta name="description" content="吭，所谓半原创的意思就是一半是原创，后面各个原型链关系是我原创的，图是用processon画的，其它都是整理的笔记。
+JavaScript基于原型（prototype-based）实现面向对象（OOP），但不是所有对象都有原型（prototype）属性：12var obj = &amp;#123;&amp;#125">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -108,7 +108,7 @@ JavaScript基于原型（prototype-based）实现面向对象（OOP），但不�
 					
 
 					<div class="article-content">
-						<p><strong>吭，所谓半原创的意思就是一半是原创（没有能力完全原创），后面各个原型链关系是我原创的，其它都是整理的笔记。</strong></p>
+						<p><strong>吭，所谓半原创的意思就是一半是原创，后面各个原型链关系是我原创的，图是用processon画的，其它都是整理的笔记。</strong></p>
 <p>JavaScript基于原型（prototype-based）实现面向对象（OOP），但不是所有对象都有原型（prototype）属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var obj = &#123;&#125;;</div><div class="line">obj.prototype;  // undefined</div></pre></td></tr></table></figure></p>
 <p>对象实例(Object Instance)没有原型（prototype），而构造器(constructor)有原型，“[constructor].prototype”指向原型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">var Foo = new Function();</div><div class="line">Foo.prototype;  // &#123;&#125;（prototype是function自带属性，function本身也是对象）</div><div class="line"></div><div class="line">var instance = new Foo;</div><div class="line">instance.prototype; // undefined，对象实例没有原型</div><div class="line"></div><div class="line">var str = &quot;Hello&quot;;</div><div class="line">str.prototype;  // undefined</div></pre></td></tr></table></figure></p>
 <p>prototype是函数类型自带属性，非函数类型没有（Object，String等类型的构造函数本身也是函数，所以有prototype属性）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Object.prototype; // Object &#123;&#125;</div><div class="line">Function.prototype; // function()&#123;&#125;</div><div class="line">String.prototype; // String &#123;length: 0, [[PrimitiveValue]]: &quot;&quot;&#125;</div></pre></td></tr></table></figure></p>

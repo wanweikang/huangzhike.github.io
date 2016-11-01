@@ -1,0 +1,514 @@
+	<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>[笔记]-高性能代码及优化 | 一切都沉淀为笔记</title>
+  <meta name="author" content="Huangzhike">
+  
+  <meta name="description" content="不要在块内声明一个函数123if (x) &amp;#123;	function foo() &amp;#123;&amp;#125;&amp;#125;
+如果确实需要在块中定义函数, 建议使用函数表达式来初始化变量123if (x) &amp;#123;	var foo = function() &amp;#123;&amp;#125;&amp;#125;
+没">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="[笔记]-高性能代码及优化"/>
+  <meta property="og:site_name" content="一切都沉淀为笔记"/>
+
+  
+  
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<!-- favicon end -->
+    <!-- <link href="//favicon.ico" rel="icon"> -->
+  
+
+  <!-- toc -->
+  <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css">
+
+  <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+
+  <!-- material design -->
+	<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+  <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css">
+  <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+	<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">
+
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+  
+
+  
+
+  <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/libs/jquery-2.0.3.min.js" type="text/javascript"><\/script>')</script>
+
+</head>
+
+ 	<body>
+	  <nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">菜单</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li>
+                    <a href="/" title="">
+                    <i class="fa fa-home"></i>首页
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="/archives" title="">
+                    <i class="fa fa-list"></i>存档
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="//resume" title="我的主页">
+                    <i class="fa fa-github"></i>GitHub
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+	  <div class="container" >
+	    <div class="row">
+	
+	<div class="col-md-9 center-content">
+	
+
+		<div class="content">
+			<!-- index -->
+		   
+
+			  		<h2>[笔记]-高性能代码及优化</h2>
+					
+					<div>
+						<span class="post-time">2016-11-01 18:20</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<p>不要在块内声明一个函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">if (x) &#123;</div><div class="line">	function foo() &#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果确实需要在块中定义函数, 建议使用函数表达式来初始化变量<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">if (x) &#123;</div><div class="line">	var foo = function() &#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>没有任何理由去封装基本类型, 另外还存在一些风险<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var x = new Boolean(false);</div><div class="line">if (x) &#123;</div><div class="line">	alert(&apos;hi&apos;);  // Shows &apos;hi&apos;.</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var x = Boolean(0);</div><div class="line">if (x) &#123;</div><div class="line">	alert(&apos;hi&apos;);  // This will never be alerted.</div><div class="line">&#125;</div><div class="line">typeof Boolean(0) == &apos;boolean&apos;;</div><div class="line">typeof new Boolean(0) == &apos;object&apos;;</div></pre></td></tr></table></figure>
+<p>使用对象作为对象的原型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">function clone(object) &#123;  </div><div class="line">	function OneShotConstructor()&#123;&#125;; </div><div class="line">	OneShotConstructor.prototype = object;  </div><div class="line">	return new OneShotConstructor(); </div><div class="line">&#125; </div><div class="line">clone(Array).prototype ;  // []</div></pre></td></tr></table></figure></p>
+<p>时间注意原始操作符比函数调用快，使用VanillaJS<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// 一般不要这样：</div><div class="line">var min = Math.min(a,b); </div><div class="line">A.push(v);</div><div class="line"></div><div class="line">// 可以这样代替：</div><div class="line">var min = a &lt; b ? a : b; </div><div class="line">A[A.length] = v;</div></pre></td></tr></table></figure></p>
+<p>不要直接从数组中delete或remove元素<br>对数组元素直接使用delete，其实并没有删除，只是将元素置为了undefined。<br>数组元素删除应使用splice。<br>删除对象的属性时可以使用delete。</p>
+<p>使用length属性截断数组<br>前面的例子中用length属性清空数组，同样还可用它来截断数组：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var myArray = [12 , 222 , 1000 , 124 , 98 , 10 ];  </div><div class="line">myArray.length = 4; // myArray will be equal to [12 , 222 , 1000 , 124].</div><div class="line"></div><div class="line">//与此同时，如果把length属性变大，数组的长度值变会增加，会使用undefined来作为新的元素填充。</div><div class="line">// length是一个可写的属性。</div><div class="line">myArray.length = 10; // the new array length is 10 </div><div class="line">myArray[myArray.length - 1] ; // undefined</div></pre></td></tr></table></figure></p>
+<p>使用===取代==<br>==和!=操作符会在需要的情况下自动转换数据类型。但===和!==不会，它们会同时比较值和数据类型，它们要比==和!=快。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[10] === 10    // is false</div><div class="line">[10]  == 10    // is true</div><div class="line">&apos;10&apos; == 10     // is true</div><div class="line">&apos;10&apos; === 10    // is false</div><div class="line"> []   == 0     // is true</div><div class="line"> [] ===  0     // is false</div><div class="line"> &apos;&apos; == false   // is true but true == &quot;a&quot; is false</div><div class="line"> &apos;&apos; === false  // is false</div></pre></td></tr></table></figure></p>
+<p>使用原始操作代替方法调用<br>方法调用一般封装了原始操作，在性能要求高的逻辑中，可以使用原始操作代替方法调用来提高性能。</p>
+<p>原始操作<code>var min = a&lt;b?a:b;</code><br>方法实例<code>var min = Math.min(a, b);</code></p>
+<p>使用运算符时，尽量使用 <code>+＝</code>， <code>－＝</code>、 <code>*＝</code>、<code>\=</code>等运算符号，而不是直接进行赋值运算。</p>
+<p>位运算：进行数学运算时位运算 较快， 位运算操作要比任何布尔运算或算数运算 快，如取模 ，逻辑与和逻辑或可以考虑用位运算替换</p>
+<p>自增和自减运算符<br>自增<code>++</code>和自减<code>--</code>运算符，放在变量的前面或后面，返回的值不一样，容易发生错误。<br>所有的<code>++</code>运算符都可以用<code>+= 1</code>代替。<br>用<code>+=</code>和<code>-=</code>代替自增<code>++</code>和自减<code>--</code>运算符。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">++x</div><div class="line">// 等同于</div><div class="line">x += 1;</div><div class="line"></div><div class="line">++x;</div><div class="line">++x;</div><div class="line">// 等同于</div><div class="line">x += 2;</div></pre></td></tr></table></figure></p>
+<p>二元和三元操作符<br>操作符始终写在前一行, 以免分号的隐式插入。<code>.</code>操作符也是如此<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var x = a ? b : c;</div></pre></td></tr></table></figure></p>
+<p>三元操作符用于替代 if 条件判断语句（用于赋值或返回）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// Not recommended</div><div class="line">if (val != 0) &#123;</div><div class="line">	return foo();</div><div class="line">&#125; else &#123;</div><div class="line">	return bar();</div><div class="line">&#125;</div><div class="line"></div><div class="line">// Recommended</div><div class="line">return val ? foo() : bar();</div></pre></td></tr></table></figure></p>
+<p>&amp;&amp; 和 ||<br>二元布尔操作符是可短路的, 只有在必要时才会计算到最后一项。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">// Not recommended</div><div class="line">function foo(opt_win) &#123;</div><div class="line">	var win;</div><div class="line">	if (opt_win) &#123;</div><div class="line">		win = opt_win;</div><div class="line">	&#125; else &#123;</div><div class="line">		win = window;</div><div class="line">	&#125;</div><div class="line">	// ...</div><div class="line">&#125;</div><div class="line"></div><div class="line">if (node) &#123;</div><div class="line">	if (node.kids) &#123;</div><div class="line">		if (node.kids[index]) &#123;</div><div class="line">			foo(node.kids[index]);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// Recommended</div><div class="line">function foo(opt_win) &#123;</div><div class="line">	var win = opt_win || window;</div><div class="line">	// ...</div><div class="line">&#125;</div><div class="line"></div><div class="line">var kid = node &amp;&amp; node.kids &amp;&amp; node.kids[index];</div><div class="line">if (kid) &#123;</div><div class="line">	foo(kid);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>把数字转换成字符串：应用 <code>&quot;&quot;+1</code>，效率最高。</p>
+<p>性能上来说： <code>&quot;&quot;+字符串</code> &gt; <code>String()</code> &gt; <code>.toString()</code> &gt; <code>new String()</code>。</p>
+<p>String() 属于内部函数，所以速度很快。<br>.toString() 要查询原型中的函数，所以速度略慢。<br>new String() 最慢。</p>
+<p>浮点数转换成整型。</p>
+<p>parseInt() 将字符串转换成 数字 ，而不是浮点数和整型之间的转换。<br>应该使用 Math.floor() 或者 Math.round() 。<br>Math 是内部对象，所以 Math.floor() 其实并没有多少查询方法和调用的时间，速度是最快的。</p>
+<p>不要在内置对象的原型上添加方法，如Array, Date；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// not good</div><div class="line">Array.prototype.count = function(value) &#123;</div><div class="line">	return 4;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>不要在一些不需要的地方加括号，例：delete(a.b)；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// not good</div><div class="line">delete(obj.attr);</div><div class="line"></div><div class="line">// good</div><div class="line">delete obj.attr;</div></pre></td></tr></table></figure></p>
+<p>变量专题</p>
+<p>全局变量：当一个变量被定义在全局作用域中，默认情况下 JAVASCRIPT 引擎就不会将其回收销毁</p>
+<p>被定义在全局作用域的对象，可能会一直存活到进程退出的，如果是一个很大的对象，那就麻烦了。比如在JavaScript中做模版渲染。</p>
+<p>全局变量缺点：</p>
+<ul>
+<li>使变量不易被回收，不利于内存释放。</li>
+<li>多人协作时容易产生混淆。</li>
+<li>在作用域链中容易被干扰。</li>
+<li>全局变量需要搜索更长的作用域链。</li>
+</ul>
+<p>尽量选用局部变量而不是全局变量。<br>局部变量的访问速度要比全局变量的访问速度更快，因为全局变量其实是window对象的成员，而局部变量是放在函数的栈里的。</p>
+<p>手工解除变量引用<br>在业务代码中，一个变量已经确定不再需要了，那么就可以手工解除变量引用，以使其被回收。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var data = &#123; /* some big data */ &#125;;</div><div class="line">// ...</div><div class="line">data = null;</div></pre></td></tr></table></figure></p>
+<p>变量查找优化：变量声明带上 var ，如果声明变量忘记了 var ，那么 JAVASCRIPT 引擎将会遍历整个作用域</p>
+<p>缓存重复使用的全局变量。<br>全局变量要比局部变量需要搜索的作用域长<br>重复调用的方法也可以通过局部缓存来提速<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">var docElem = window.document.documentElement,</div><div class="line">	selector_hasDuplicate,</div><div class="line">	matches = docElem.webkitMatchesSelector || docElem.mozMatchesSelector || docElem.oMatchesSelector ||docElem.msMatchesSelector,</div><div class="line">	selector_sortOrder = function ( a, b ) &#123;</div><div class="line">	// Flag for duplicate removal</div><div class="line">		if ( a === b ) &#123;</div><div class="line">			selector_hasDuplicate = true ;</div><div class="line">			return 0;</div><div class="line">		&#125;</div><div class="line">	&#125;</div></pre></td></tr></table></figure></p>
+<p>首次为变量赋值时务必使用var关键字<br>变量没有声明而直接赋值得话，默认会作为一个新的全局变量，要尽量避免使用全局变量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">if (!o) &#123;</div><div class="line">	var o = &#123;&#125;;</div><div class="line">&#125;</div><div class="line">// 等同于</div><div class="line">var o;</div><div class="line">if (!o) &#123;</div><div class="line">	o = &#123;&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>把变量声明都放在代码块的头部。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">for (var i ...) &#123;...&#125;</div><div class="line">// 最好写成</div><div class="line">var i;</div><div class="line"></div><div class="line">for (i ...) &#123;...&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">var a = b = 0;</div><div class="line">// 等同于</div><div class="line">b = 0;</div><div class="line"></div><div class="line">var a = b;</div></pre></td></tr></table></figure>
+<p>一个函数作用域中所有的变量声明尽量提到函数首部，用一个var声明，不允许出现两个连续的var声明。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">function doSomethingWithItems(items) &#123;</div><div class="line">	// use one var</div><div class="line">	var value = 10,</div><div class="line">		result = value + 10,</div><div class="line">		i,</div><div class="line">		len;</div><div class="line">	for (i = 0, len = items.length; i &lt; len; i++) &#123;</div><div class="line">		result += 10;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>原生方法更快<br>只要有可能，使用原生方法而不是自已用JS重写。</p>
+<p>最小化语句数<br>JS代码中的语句数量也会影响所执行的操作的速度，完成多个操作的单个语句要比完成单个操作的多个语句块快。<br>故要找出可以组合在一起的语句，以减来整体的执行时间。这里列举几种模式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">// 多个变量声明</div><div class="line">/**不提倡**/</div><div class="line">var i = 1;</div><div class="line">var j = &quot;hello&quot;;</div><div class="line">var arr = [1,2,3];</div><div class="line">var now = new Date();</div><div class="line"></div><div class="line">/**提倡**/</div><div class="line">var i = 1,</div><div class="line">	j = &quot;hello&quot;,</div><div class="line">	arr = [1,2,3],</div><div class="line">	now = new Date();</div><div class="line"></div><div class="line">// 插入迭代值</div><div class="line"></div><div class="line">/**不提倡**/</div><div class="line">var name = values[i];</div><div class="line">i++;</div><div class="line"></div><div class="line">/**提倡**/</div><div class="line">var name = values[i++];</div></pre></td></tr></table></figure>
+<p>不要在循环内部声明函数；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// not good</div><div class="line">var nums = [];</div><div class="line">for (var i = 0; i &lt; 10; i++) &#123;</div><div class="line">	(function(i) &#123;</div><div class="line">		nums[i] = function(j) &#123;</div><div class="line">			return i + j;</div><div class="line">		&#125;;</div><div class="line">	&#125;(i));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>不要像这样使用构造函数，例： new function () { … } , new Object ；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">// not good</div><div class="line">var singleton = new function() &#123;</div><div class="line">	var privateVar;</div><div class="line">	this.publicMethod = function() &#123;</div><div class="line">		privateVar = 1;</div><div class="line">	&#125;;</div><div class="line">	this.publicMethod2 = function() &#123;</div><div class="line">		privateVar = 2;</div><div class="line">	&#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>使用数组和对象字面量，避免使用构造函数Array(),Object()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/**不提倡**/</div><div class="line">var a = new Array();</div><div class="line">	a[0] = 1;</div><div class="line">	a[1] = &quot;hello&quot;;</div><div class="line">	a[2] = 45;</div><div class="line">var o = new Obejct();</div><div class="line">	o.name = &quot;bill&quot;;</div><div class="line">	o.age = 13;</div><div class="line"></div><div class="line">/**提倡**/</div><div class="line">var a = [1, &quot;hello&quot;, 45];</div><div class="line">var o = &#123;</div><div class="line">	name : &quot;bill&quot;,</div><div class="line">	age : 13</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>不要使用eval()或者函数构造器<br>eval()和函数构造器（Function consturctor）的开销较大，每次调用，JavaScript引擎都要转换为可执行的代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var func1 = new Function(functionCode);</div><div class="line">var func2 = eval(functionCode);</div></pre></td></tr></table></figure></p>
+<p>避免使用with()<br>使用with()可以把变量加入到全局作用域中，如果有其它的同名变量，一来容易混淆，二来值也会被覆盖。</p>
+<p>传给setInterval()和setTimeout()时使用函数而不是字符串</p>
+<p>如果传给setTimeout()和setInterval()一个字符串，将会用类似于eval方式进行转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">setInterval(&apos;doSomethingPeriodically()&apos;, 1000);  </div><div class="line"></div><div class="line">// 而是用：</div><div class="line"></div><div class="line">setInterval(doSomethingPeriodically, 1000);</div></pre></td></tr></table></figure></p>
+<p>传递方法取代方法字符串<br>一些方法例如setTimeout() 、setInterval() ，接受字符串或者方法实例作为参数。直接传递方法对象作为参数来避免对字符串的二次解析。</p>
+<p>传递方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setTimeout(test, 1);</div></pre></td></tr></table></figure></p>
+<p>传递方法字符串<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setTimeout(&apos;test()&apos;, 1);</div></pre></td></tr></table></figure></p>
+<p>定时器<br>如果针对的是不断运行的代码，不应该使用setTimeout ，而应该是用setInterval 。setTimeout每次要重新设置一个定时器。</p>
+<p>避免双重解释<br>当 JAVASCRIPT 代码想解析 JAVASCRIPT 代码时就会存在双重解释惩罚，双重解释一般在使用eval 函数、 new Function 构造函数和 setTimeout 传一个字符串时等情况下会遇到。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">eval(&quot;alert(&apos;hello world&apos;);&quot;);</div><div class="line">var sayHi = new Function(&quot;alert(&apos;hello world&apos;);&quot;);</div><div class="line">setTimeout(&quot;alert(&apos;hello world&apos;);&quot;, 100);</div><div class="line"></div><div class="line">// 上述 alert(&apos;hello world&apos;); 语句包含在字符串中，即在JS代码运行的同时必须新启运一个解析器来解析新的代码，而实例化一个新的解析器有很大的性能损耗。 </div><div class="line"></div><div class="line">var sum, num1 = 1, num2 = 2;</div><div class="line"></div><div class="line">/**效率低**/</div><div class="line">for(var i = 0; i &lt; 10000; i++)&#123;</div><div class="line">	var func = new Function(&quot;sum+=num1;num1+=num2;num2++;&quot;);</div><div class="line">	func();</div><div class="line">	//eval(&quot;sum+=num1;num1+=num2;num2++;&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**效率高**/</div><div class="line">for(var i = 0; i &lt; 10000; i++)&#123;</div><div class="line">	sum+=num1;</div><div class="line">	num1+=num2;</div><div class="line">	num2++;</div><div class="line">&#125;</div><div class="line">// 第一种情况使用了new Function来进行双重解释，而第二种是避免了双重解释。</div></pre></td></tr></table></figure></p>
+<p>避免使用属性访问方法<br>JavaScript不需要属性访问方法，因为所有的属性都是外部可见的。添加属性访问方法只是增加了一层重定向 ，对于访问控制没有意义。</p>
+<p>使用属性访问方法示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">function Car() &#123;</div><div class="line">	this .m_tireSize = 17;</div><div class="line">	this .m_maxSpeed = 250;</div><div class="line">	this .GetTireSize = Car_get_tireSize;</div><div class="line">	this .SetTireSize = Car_put_tireSize;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function Car_get_tireSize() &#123;</div><div class="line">	return this .m_tireSize;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function Car_put_tireSize(value) &#123;</div><div class="line">	this .m_tireSize = value;</div><div class="line">&#125;</div><div class="line"></div><div class="line">var ooCar = new Car();</div><div class="line">var iTireSize = ooCar.GetTireSize();</div><div class="line">ooCar.SetTireSize(iTireSize + 1);</div></pre></td></tr></table></figure></p>
+<p>直接访问属性示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">function Car() &#123;</div><div class="line">	this .m_tireSize = 17;</div><div class="line">	this .m_maxSpeed = 250;</div><div class="line">&#125;</div><div class="line">var perfCar = new Car();</div><div class="line">var iTireSize = perfCar.m_tireSize;</div><div class="line">perfCar.m_tireSize = iTireSize + 1;</div></pre></td></tr></table></figure></p>
+<p>null<br>适用场景：</p>
+<ul>
+<li>初始化一个将来可能被赋值为对象的变量</li>
+<li>与已经初始化的变量做比较</li>
+<li>作为一个参数为对象的函数的调用传参</li>
+<li>作为一个返回对象的函数的返回值</li>
+</ul>
+<p>不适用场景：</p>
+<ul>
+<li>不要用null来判断函数调用时有无传参</li>
+<li>不要与未初始化的变量做比较</li>
+</ul>
+<p>undefined<br>不要直接使用undefined进行变量判断，使用typeof和字符串’undefined’对变量进行判断。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// not good</div><div class="line">if (person === undefined) &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// good</div><div class="line">if (typeof person === &apos;undefined&apos;) &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>类型检测优先使用 typeof。<br>对象类型检测使用 instanceof。</p>
+<p>下面的布尔表达式都返回 false:</p>
+<ul>
+<li>null</li>
+<li>undefined</li>
+<li><code>&#39;&#39;</code> 空字符串</li>
+<li>0 数字0</li>
+</ul>
+<p>下面的都返回 true:</p>
+<ul>
+<li>‘0’ 字符串0</li>
+<li>[] 空数组</li>
+<li>{} 空对象</li>
+</ul>
+<p>临时存储用于计算和查询的变量<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var navright = document.querySelector(&apos;#right&apos;);</div></pre></td></tr></table></figure></p>
+<p>避免不必要的 DOM 操作<br>浏览器遍历 DOM 元素的代价是昂贵的。最简单优化 DOM 树查询的方案是，当一个元素出现多次时，将它保存在一个变量中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">// Recommended</div><div class="line">var myList = &quot;&quot;;</div><div class="line">var myListHTML = document.getElementById(&quot;myList&quot;).innerHTML;</div><div class="line">for (var i = 0; i &lt; 100; i++) &#123;</div><div class="line">	myList += &quot;&lt;span&gt;&quot; + i + &quot;&lt;/span&gt;&quot;;</div><div class="line">&#125;</div><div class="line">myListHTML = myList;</div><div class="line"></div><div class="line">// Not recommended</div><div class="line">for (var i = 0; i &lt; 100; i++) &#123;</div><div class="line">	document.getElementById(&quot;myList&quot;).innerHTML += &quot;&lt;span&gt;&quot; + i + &quot;&lt;/span&gt;&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当需要使用数组时，可使用 JSON 格式的语法，即直接使用如下语法定义数组： [parrm,param,param…] ,而不是采用new Array(parrm,param,param…) 这种语法。<br>使用 JSON 格式的语法是引擎直接解释。而后者则需要调用 Array 的构造器。<br>如果需要遍历数组，应该先缓存数组长度，将数组长度放入局部变量中，避免多次查询数组长度。<br>根据字符串、数组的长度进行循环，而通常这个长度是不变的，比如每次查询 a.length ，就要额外进行一个操作，而预先把 var len=a.length ，则每次循环就少了一次查询。</p>
+<p>缓存数组长度</p>
+<p>循环无疑是和 JavaScript 性能非常相关的一部分。通过存储数组的长度，可以有效避免每次循环重新计算。<br>注: 虽然现代浏览器引擎会自动优化这个过程，但是不要忘记还有旧的浏览器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">var arr = new Array(1000),</div><div class="line">	len, i;</div><div class="line">// Recommended - size is calculated only 1 time and then stored</div><div class="line">for (i = 0, len = arr.length; i &lt; len; i++) &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// Not recommended - size needs to be recalculated 1000 times</div><div class="line">for (i = 0; i &lt; arr.length; i++) &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">for (var i=0, len=items.length; i &lt; len; i++)&#123;</div><div class="line">	process(items[i]);</div><div class="line">&#125;</div><div class="line"></div><div class="line">var j=0,  count = items.length;</div><div class="line"></div><div class="line">while (j &lt; count)&#123;</div><div class="line">	process(items[j++]]);</div><div class="line">&#125;</div><div class="line"></div><div class="line">var k=0, num = items.length;</div><div class="line"></div><div class="line">do &#123;</div><div class="line">	process(items[k++]);</div><div class="line">&#125; while (k &lt; num);</div></pre></td></tr></table></figure>
+<p>避免对全局 DOM 元素进行遍历，如果 parent 已知可以指定 parent 在特定范围查询。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">var elements = document.getElementsByTagName( &apos;*&apos; );</div><div class="line"></div><div class="line">for (i = 0; i &lt; elements.length; i++) &#123;</div><div class="line">	if (elements[i].hasAttribute( &apos;selected&apos; )) &#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果已知元素存在于一个较小的范围内，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">var elements = document.getElementById( &apos;canvas&apos; ).getElementsByTagName ( &apos;*&apos; );</div><div class="line"></div><div class="line">for (i = 0; i &lt; elements.length; i++) &#123;</div><div class="line">	if (elements[i].hasAttribute( &apos;selected&apos; )) &#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>JAVASCRIPT 提供了三种循环。</p>
+<p>推荐使用for循环，如果循环变量递增或递减，不要单独对循环变量赋值，而应该使用嵌套的<code>++</code>或<code>--</code>运算符。</p>
+<p>用 -=1 从大到小的方式循环（缺点是降低代码的可读性）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">/**效率低**/</div><div class="line">var divs = document.getElementsByTagName(&quot;div&quot;);</div><div class="line">	for(var i = 0; i &lt; divs.length; i++)&#123;</div><div class="line">	...</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**效率高，适用于获取DOM集合，如果纯数组则两种情况区别不到**/</div><div class="line">var divs = document.getElementsByTagName(&quot;div&quot;);</div><div class="line">	for(var i = 0, len = divs.length; i &lt; len; i++)&#123;</div><div class="line">	...</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line">在`IE6.0`下，`for(;;)`循环在执行中，</div><div class="line">第一种情况会每次都计算一下长度，</div><div class="line">第二种情况却是在开始的时候计算长度，并把其保存到一个变量中，所以其执行效率要高点，</div><div class="line">使用`for(;;)`循环的时候，特别是需要计算长度的情况，应该开始将其保存到一个变量中。</div><div class="line">**/</div></pre></td></tr></table></figure></p>
+<p>for(;;) 、 while() 循环的性能基本持平。</p>
+<p>在这三种循环中 for(in) 内部实现是构造一个所有元素的列表，包括 array 继承的属性，然后再开始循环，并且需要查询hasOwnProperty。<br>所以 for(in) 相对 for(;;) 循环性能要慢。</p>
+<p>不要对数组使用for-in循环<br>因为它并不是从 0到 length - 1 进行遍历, 而是所有出现在对象及其原型链的键值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">// 避免：</div><div class="line"></div><div class="line">var sum = 0;  </div><div class="line">for (var i in arrayNumbers) &#123;  </div><div class="line">	sum += arrayNumbers[i];  </div><div class="line">&#125;</div><div class="line"></div><div class="line">// 而是：</div><div class="line"></div><div class="line">var sum = 0;  </div><div class="line">for (var i = 0, len = arrayNumbers.length; i &lt; len; i++) &#123;  </div><div class="line">	sum += arrayNumbers[i];  </div><div class="line">&#125;</div><div class="line"></div><div class="line">// 另一个好处是，i和len两个变量在for循环的第一个声明中，二者只会初始化一次，这比下面写法快：</div><div class="line"></div><div class="line">for (var i = 0; i &lt; arrayNumbers.length; i++)</div></pre></td></tr></table></figure></p>
+<p>for-in里一定要有hasOwnProperty的判断；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// good</div><div class="line">for (key in obj) &#123;</div><div class="line">	if (obj.hasOwnProperty(key)) &#123;</div><div class="line">		// be sure that obj[key] belongs to the object and was not inherited</div><div class="line">		console.log(obj[key]);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>访问 变量 或 数组 是 O(1) 操作。<br>访问 对象 上的 属性 是一个 O(n) 操作。<br>对象上的任何属性查找都要比访问变量或数组花费更长时间，因为必须在原型链中对拥有该名称的属性进行一次搜索，即属性查找越多，执行时间越长。<br>所以针对需要多次用到对象属性，应将其存储在局部变量。</p>
+<p>减值迭代，大多数循环使用一个从0开始，增加到某个特定值的迭代器。在很多情况下，从最大值开始，在循环中不断减值的迭代器更加有效。<br>简化终止条件，由于每次循环过程都会计算终止条件，故必须保证它尽可能快，即避免属性查找或其它O(n)的操作。<br>简化循环体，循环体是执行最多的，故要确保其被最大限度地优化。确保没有某些可以被很容易移出循环的密集计算。<br>使用后测试循环，最常用的for和while循环都是前测试循环，而如do-while循环可以避免最初终止条件的计算，因些计算更快。</p>
+<p>不要在循环内部使用try-catch-finally<br>try-catch-finally中catch部分在执行时会将异常赋给一个变量，这个变量会被构建成一个运行时作用域内的新的变量。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">// 切忌：循环中使用try-catch</div><div class="line"></div><div class="line">for ( var i = 0; i &lt; 200; i++) &#123;</div><div class="line">	try &#123;&#125; </div><div class="line">	catch (e) &#123;&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 应该：循环外使用try-catch</div><div class="line"></div><div class="line">try &#123;</div><div class="line">	for ( var i = 0; i &lt; 200; i++) &#123;</div><div class="line"></div><div class="line">	&#125;</div><div class="line">&#125; catch (e) &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>作用域链和闭包优化</p>
+<p>作用域( scope )是 JAVASCRIPT 编程中一个重要的 运行机制 ，在 JAVASCRIPT 中，能形成作用域的有</p>
+<ul>
+<li>函数的调用。</li>
+<li>with语句，with 会创建自已的作用域，因此会增加其中执行代码的作用域的长度。</li>
+<li>全局作用域。</li>
+</ul>
+<p>作用域链：在 JAVASCRIPT 编程中，会遇到多层函数嵌套的场景，这就是典型的作用域链的表示。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">function foo() &#123;</div><div class="line">	var val = &apos;hello&apos;;</div><div class="line">	function bar() &#123;</div><div class="line">		function baz() &#123;</div><div class="line">			global.val = &apos;world;&apos;</div><div class="line">		&#125;;</div><div class="line">		baz();</div><div class="line">		console.log(val); //=&gt; hello</div><div class="line">	&#125;;</div><div class="line">	bar();</div><div class="line">&#125;;</div><div class="line">foo();</div><div class="line"></div><div class="line">/**</div><div class="line">在`JAVASCRIPT`中，变量标识符的查找是从当前作用域开始向外查找，直到全局作用域为止。</div><div class="line">所以`JAVASCRIPT`代码中对变量的访问只能向外进行，而不能逆而行之。</div><div class="line">baz()函数的执行在全局作用域中定义了一个全局变量val。</div><div class="line">而在bar()函数中，对val这一标识符进行访问时，按照从内到外的查找原则：在bar函数的作用域中没有找到，便到上一层，即foo()函数的作用域中查找。</div><div class="line">然而，本次标识符访问在foo()函数的作用域中找到了符合的变量，便不会继续向外查找，故在baz()函数中定义的全局变量val并没有在本次变量访问中产生影响。</div><div class="line">**/</div></pre></td></tr></table></figure></p>
+<p>减少作用域链上的查找次数<br>JAVASCRIPT 代码在执行的时候，如果需要访问一个变量或者一个函数的时候，它需要遍历当前执行环境的作用域链，而遍历是从这个作用域链的前端一级一级的向后遍历，直到全局执行环境。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">/**效率低**/</div><div class="line">for(var i = 0; i &lt; 10000; i++)&#123;</div><div class="line">	var but1 = document.getElementById(&quot;but1&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**效率高**/</div><div class="line">/**避免全局查找**/</div><div class="line">var doc = document;</div><div class="line">for(var i = 0; i &lt; 10000; i++)&#123;</div><div class="line">	var but1 = doc.getElementById(&quot;but1&quot;);</div><div class="line">&#125;</div><div class="line">/**</div><div class="line">上面代码中，第二种情况是先把全局对象的变量放到函数里面先保存下来，然后直接访问这个变量，</div><div class="line">而第一种情况是每次都遍历作用域链，直到全局环境，我们看到第二种情况实际上只遍历了一次，</div><div class="line">而第一种情况却是每次都遍历了，而且这种差别在多级作用域链和多个全局变量的情况下还会表现的非常明显。</div><div class="line">在作用域链查找的次数是`O(n)`。通过创建一个指向`document`的局部变量，就可以通过限制一次全局查找来改进这个函数的性能。</div><div class="line">**/</div></pre></td></tr></table></figure></p>
+<p>闭包：JAVASCRIPT 中的标识符查找遵循从内到外的原则。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">function foo() &#123;</div><div class="line">	var local = &apos;Hello&apos;;</div><div class="line">	return function() &#123;</div><div class="line">		return local;</div><div class="line">	&#125;;</div><div class="line">&#125;</div><div class="line">var bar = foo();</div><div class="line">console.log(bar()); //=&gt; Hello</div><div class="line"></div><div class="line">/**</div><div class="line">这里所展示的让外层作用域访问内层作用域的技术便是闭包(Closure)。</div><div class="line">得益于高阶函数的应用，使foo()函数的作用域得到`延伸`。</div><div class="line">foo()函数返回了一个匿名函数，该函数存在于foo()函数的作用域内，</div><div class="line">所以可以访问到foo()函数作用域内的local变量，并保存其引用。</div><div class="line">而因这个函数直接返回了local变量，所以在外层作用域中便可直接执行bar()函数以获得local变量。</div><div class="line">闭包是 JAVASCRIPT 的高级特性，因为把带有内部变量引用的函数带出了函数外部，</div><div class="line">所以该作用域内的变量在函数执行完毕后的并不一定会被销毁，直到内部变量的引用被全部解除。</div><div class="line">所以闭包的应用很容易造成内存无法释放的情况。</div><div class="line">**/</div></pre></td></tr></table></figure></p>
+<p>良好的闭包管理。<br>循环事件绑定、私有属性、含参回调等一定要使用闭包时，并谨慎对待其中的细节。<br>循环绑定事件，我们假设一个场景：有六个按钮，分别对应六种事件，当用户点击按钮时，在指定的地方输出相应的事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">var btns = document.querySelectorAll(&apos;.btn&apos;); // 6 elements</div><div class="line">var output = document.querySelector(&apos;#output&apos;);</div><div class="line">var events = [1, 2, 3, 4, 5, 6];</div><div class="line">// Case 1</div><div class="line">for (var i = 0; i &lt; btns.length; i++) &#123;</div><div class="line">	btns[i].onclick = function(evt) &#123;</div><div class="line">		output.innerText += &apos;Clicked &apos; + events[i];</div><div class="line">	&#125;;</div><div class="line">&#125;</div><div class="line">// 这里第一个解决方案显然是典型的循环绑定事件错误，而第二和第三个方案的区别就在于闭包传入的参数。</div><div class="line">// Case 2</div><div class="line">for (var i = 0; i &lt; btns.length; i++) &#123;</div><div class="line">	btns[i].onclick = (function(index) &#123;</div><div class="line">		return function(evt) &#123;</div><div class="line">			output.innerText += &apos;Clicked &apos; + events[index];</div><div class="line">		&#125;;</div><div class="line">	&#125;)(i);</div><div class="line">&#125;</div><div class="line">/**</div><div class="line">第二个方案传入的参数是当前循环下标，而后者是直接传入相应的事件对象。</div><div class="line">事实上，后者更适合在大量数据应用的时候，因为在JavaScript的函数式编程中，函数调用时传入的参数是基本类型对象，</div><div class="line">那么在函数体内得到的形参会是一个复制值，这样这个值就被当作一个局部变量定义在函数体的作用域内，</div><div class="line">在完成事件绑定之后就可以对events变量进行手工解除引用，以减轻外层作用域中的内存占用了。</div><div class="line">而且当某个元素被删除时，相应的事件监听函数、事件对象、闭包函数也随之被销毁回收。</div><div class="line">**/</div><div class="line"></div><div class="line">// Case 3</div><div class="line">for (var i = 0; i &lt; btns.length; i++) &#123;</div><div class="line">	btns[i].onclick = (function(event) &#123;</div><div class="line">		return function(evt) &#123;</div><div class="line">			output.innerText += &apos;Clicked &apos; + event;</div><div class="line">		&#125;;</div><div class="line">	&#125;)(events[i]);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>闭包是个强大的工具，但同时也是性能问题的主要诱因之一。不合理的使用闭包会导致内存泄漏。闭包的性能不如使用内部方法，更不如重用外部方法。<br>由于 IE 9 浏览器的 DOM 节点作为 COM 对象来实现， COM 的 内存管理 是通过引用计数的方式，引用计数有个难题就是循环引用，一旦 DOM 引用了闭包，例如 event handler，闭包的上层元素又引用了这个 DOM ，就会造成循环引用从而导致内存泄漏。</p>
+<p>当函数执行完毕时，在函数内部所声明的对象 不一定 就会被销毁。引用( Reference )是 JAVASCRIPT 引擎垃圾回收中最关键的一个机制。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var val = &apos;hello world&apos;;</div><div class="line">function foo() &#123;</div><div class="line">	return function() &#123;</div><div class="line">		return val;</div><div class="line">	&#125;;</div><div class="line">&#125;</div><div class="line">global.bar = foo();</div></pre></td></tr></table></figure></p>
+<p>当代码执行完毕时，对象 val 和 bar() 并没有被回收释放， 判断对象是否正在使用中的标准，就是是否仍然存在对该对象的引用 。<br>JAVASCRIPT 的 引用 是可以进行 转移 的，那么就有可能出现某些引用被带到了全局作用域，但事实上在业务逻辑里已经不需要对其进行访问了，这个时候就应该被回收，<br>但是 JAVASCRIPT 引擎仍会认为程序仍然需要它。IE 下闭包引起跨页面内存泄露。</p>
+<p>JAVASCRIPT 的内存泄露处理</p>
+<p>给 DOM 对象添加的属性是一个对象的引用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var MyObject = &#123;&#125;;</div><div class="line">document.getElementByIdx_x(&apos;myDiv&apos;).myProp = MyObject;</div></pre></td></tr></table></figure></p>
+<p>解决方法：在window.onunload事件中写上:<code>document.getElementByIdx_x(&#39;myDiv&#39;).myProp = null;</code></p>
+<p>DOM对象与JS对象相互引用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">function Encapsulator(element) &#123;</div><div class="line">	this.elementReference = element;</div><div class="line">	element.myProp = this;</div><div class="line">&#125;</div><div class="line">new Encapsulator(document.getElementByIdx_x(&apos;myDiv&apos;));</div></pre></td></tr></table></figure></p>
+<p>解决方法：在onunload事件中写上:<code>document.getElementByIdx_x(&#39;myDiv&#39;).myProp = null;</code></p>
+<p>给DOM对象用attachEvent绑定事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">function doClick() &#123;&#125;</div><div class="line">element.attachEvent(&quot;onclick&quot;, doClick);</div></pre></td></tr></table></figure></p>
+<p>解决方法：在onunload事件中写上:<code>element.detachEvent(&#39;onclick&#39;, doClick);</code></p>
+<p>从外到内执行appendChild。这时即使调用removeChild也无法释放。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var parentDiv = document.createElement_x(&quot;div&quot;);</div><div class="line">var childDiv = document.createElement_x(&quot;div&quot;);</div><div class="line">document.body.appendChild(parentDiv);</div><div class="line">parentDiv.appendChild(childDiv);</div></pre></td></tr></table></figure></p>
+<p>解决方法：从内到外执行appendChild:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var parentDiv = document.createElement_x(&quot;div&quot;);</div><div class="line">var childDiv = document.createElement_x(&quot;div&quot;);</div><div class="line">parentDiv.appendChild(childDiv);</div><div class="line">document.body.appendChild(parentDiv);</div></pre></td></tr></table></figure></p>
+<p>反复重写同一个属性会造成内存大量占用(但关闭IE后内存会被释放)。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">for(i = 0; i &lt; 5000; i++) &#123;</div><div class="line">	hostElement.text = &quot;asdfasdfasdf&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这种方式相当于定义了5000个属性，解决方法：无。</p>
+<p>闭包保留了一个指向它封闭作用域的指针, 所以, 在给 DOM 元素附加闭包时, 很可能会产生循环引用, 进一步导致内存泄漏。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">function foo(element, a, b) &#123;</div><div class="line">	element.onclick = function() &#123; /* uses a and b */ &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里, 即使没有使用 element, 闭包也保留了 element, a 和 b 的引用，由于 element 也保留了对闭包的引用, 这就产生了循环引用, 这就不能被 GC 回收。<br>这种情况下, 可将代码重构为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">function foo(element, a, b) &#123;</div><div class="line">	element.onclick = bar(a, b);</div><div class="line">&#125;</div><div class="line"></div><div class="line">function bar(a, b) &#123;</div><div class="line">	return function() &#123; /* uses a and b */ &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>this：仅在对象构造器, 方法, 闭包中使用。使用时很容易出错, 所以只有在下面两个情况时才能使用:</p>
+<ul>
+<li>在构造器中</li>
+<li>对象的方法(包括创建的闭包)中</li>
+</ul>
+<p>数组和对象的初始化</p>
+<p>如果初始值不是很长, 就保持写在单行上：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var arr = [1, 2, 3];  // No space after [ or before ]</div><div class="line">var obj = &#123;a: 1, b: 2, c: 3&#125;;  // No space after &#123; or before &#125;</div></pre></td></tr></table></figure></p>
+<p>初始值占用多行时，缩进2个空格。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">// Object initializer.</div><div class="line">var inset = &#123;</div><div class="line">	top: 10,</div><div class="line">	right: 20,</div><div class="line">	bottom: 15,</div><div class="line">	left: 12</div><div class="line">&#125;;</div><div class="line"></div><div class="line">// Array initializer.</div><div class="line">// 换行写请注意最后一个元素需要加上,（逗号）。</div><div class="line">this.rows_ = [</div><div class="line">	&apos;&quot;Slartibartfast&quot; &lt;fjordmaster@magrathea.com&gt;&apos;,</div><div class="line">	&apos;&quot;Zaphod Beeblebrox&quot; &lt;theprez@universe.gov&gt;&apos;,</div><div class="line">	&apos;&quot;Ford Prefect&quot; &lt;ford@theguide.com&gt;&apos;,</div><div class="line">];</div><div class="line"></div><div class="line">// Used in a method call.</div><div class="line">goog.dom.createDom(goog.dom.TagName.DIV, &#123;</div><div class="line">	id: &apos;foo&apos;,</div><div class="line">	className: &apos;some-css-class&apos;,</div><div class="line">	style: &apos;display:none&apos;</div><div class="line">&#125;, &apos;Hello, world!&apos;);</div><div class="line"></div><div class="line">// 比较长的标识符或者数值, 不要为了让代码好看些而手工对齐，如：</div><div class="line">CORRECT_Object.prototype = &#123;</div><div class="line">	a: 0,</div><div class="line">	b: 1,</div><div class="line">	lengthyName: 2</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>使用单引号 <code>‘</code>优于双引号 <code>“</code>，特别是创建一个包含 HTML 代码的字符串时。</p>
+<p>对象字面量（函数参数）：一个对象字面量就是包含在一对花括号中的0个或多个“名/值”对，可减少传参错误的发生。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">function generateAlert(container, text, data) &#123;</div><div class="line">	var oldData = &#123;</div><div class="line">		container: container,</div><div class="line">		place: &quot;append&quot;,</div><div class="line">		type: &quot;info&quot;,</div><div class="line">		message: text,</div><div class="line">		...</div><div class="line">	&#125;;</div><div class="line"></div><div class="line">	// 合并对象，用户数据覆盖默认数据</div><div class="line">	var newData = $.extend(&#123;&#125;, oldData, data);</div><div class="line">	...</div><div class="line">&#125;</div><div class="line"></div><div class="line">generateAlert(&quot;alert&quot;, &quot;hello world&quot;, &#123;message: &quot;hehe&quot;, type: &quot;warning&quot;&#125;);</div></pre></td></tr></table></figure></p>
+<p>面向对象书写方式：使用匿名函数进行封装，提高重用性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">(function ($) &#123;</div><div class="line">	function api() &#123;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	api.prototype = &#123;</div><div class="line">		init: function (domain, d) &#123;</div><div class="line">			this.domain = &quot;//&quot; + domain;</div><div class="line">			this.d = d;</div><div class="line">		&#125;,</div><div class="line">		getList: function (id) &#123;</div><div class="line">			...</div><div class="line">		&#125;,</div><div class="line">		...</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	// 注册到全局</div><div class="line">	window.api = new api;</div><div class="line">&#125;)(jQuery);</div><div class="line"></div><div class="line">var api = window.api;</div><div class="line">api.init(&quot;api.shop.com&quot;, 10);</div><div class="line">var list = api.getList(1);</div></pre></td></tr></table></figure></p>
+<p>使用一个匿名函数在代码的最外层进行包裹。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">;(function() &#123; // 主业务代码 &#125;)();</div><div class="line"></div><div class="line">// 更高级一点：</div><div class="line">;(function(win, doc, $, undefined) &#123;</div><div class="line">	// 主业务代码</div><div class="line">&#125;)(window, document, jQuery);</div><div class="line"></div><div class="line">// 如RequireJS, SeaJS, OzJS 等前端模块化加载解决方案，都是采用类似的形式</div><div class="line"></div><div class="line">/**RequireJS**/</div><div class="line">define([&apos;jquery&apos;], function($) &#123;</div><div class="line">	// 主业务代码</div><div class="line">&#125;);</div><div class="line"></div><div class="line">/**SeaJS**/</div><div class="line">define(&apos;module&apos;, [&apos;dep&apos;, &apos;underscore&apos;], function($, _) &#123;</div><div class="line">	// 主业务代码</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>jQuery 变量</p>
+<ol>
+<li>存放 jQuery 对象的变量以 $ 开头；</li>
+<li>将 jQuery 选择器返回的对象缓存到本地变量中复用；</li>
+<li>使用驼峰命名变量；<br>var $myDiv = $(“#myDiv”);<br>$myDiv.click(function(){…});</li>
+</ol>
+<p>选择器</p>
+<ol>
+<li>尽可能的使用 ID 选择器，因为它会调用浏览器原生方法 document.getElementById 查找元素。当然直接使用原生 document.getElementById 方法性能会更好；</li>
+<li>在父元素中选择子元素使用 .find() 方法性能会更好, 因为 ID 选择器没有使用到 Sizzle 选择器引擎来查找元素；<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// Not recommended</div><div class="line">var $productIds = $(&quot;#products .class&quot;);</div><div class="line"></div><div class="line">// Recommended</div><div class="line">var $productIds = $(&quot;#products&quot;).find(&quot;.class&quot;);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>DOM 操作</p>
+<ol>
+<li>当要操作 DOM 元素的时候，尽量将其分离节点，操作结束后，再插入节点；</li>
+<li>使用字符串连接 array.join 要比 .append() 性能更好；<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">var $myList = $(&quot;#list-container &gt; ul&quot;).detach();</div><div class="line">//...a lot of complicated things on $myList</div><div class="line">$myList.appendTo(&quot;#list-container&quot;);</div><div class="line"></div><div class="line">// Not recommended</div><div class="line">var $myList = $(&quot;#list&quot;);</div><div class="line">for(var i = 0; i &lt; 10000; i++)&#123;</div><div class="line">	$myList.append(&quot;&lt;li&gt;&quot;+i+&quot;&lt;/li&gt;&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">// Recommended</div><div class="line">var $myList = $(&quot;#list&quot;);</div><div class="line">var list = &quot;&quot;;</div><div class="line">for(var i = 0; i &lt; 10000; i++)&#123;</div><div class="line">	list += &quot;&lt;li&gt;&quot;+i+&quot;&lt;/li&gt;&quot;;</div><div class="line">&#125;</div><div class="line">$myList.html(list);</div><div class="line"></div><div class="line">// Much to recommended</div><div class="line">var array = [];</div><div class="line">for(var i = 0; i &lt; 10000; i++)&#123;</div><div class="line">	array[i] = &quot;&lt;li&gt;&quot;+i+&quot;&lt;/li&gt;&quot;;</div><div class="line">&#125;</div><div class="line">$myList.html(array.join(&apos;&apos;));</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>事件</p>
+<ol>
+<li>如果需要，对事件使用自定义的 namespace ，这样容易解绑特定的事件，而不会影响到此 DOM 元素的其他事件监听；</li>
+<li>对 Ajax 加载的 DOM 元素绑定事件时尽量使用事件委托。事件委托允许在父元素绑定事件，子代元素可以响应事件，也包括 Ajax 加载后添加的子代元素；<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$(&quot;#myLink&quot;).on(&quot;click.mySpecialClick&quot;, myEventHandler);</div><div class="line">$(&quot;#myLink&quot;).unbind(&quot;click.mySpecialClick&quot;);</div><div class="line"></div><div class="line">// Not recommended</div><div class="line">$(&quot;#list a&quot;).on(&quot;click&quot;, myClickHandler);</div><div class="line"></div><div class="line">// Recommended</div><div class="line">$(&quot;#list&quot;).on(&quot;click&quot;, &quot;a&quot;, myClickHandler);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>链式写法</p>
+<ol>
+<li>尽量使用链式写法而不是用变量缓存或者多次调用选择器方法；</li>
+<li>当链式写法超过三次或者因为事件绑定变得复杂后，使用换行和缩进保持代码可读性；<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$(&quot;#myDiv&quot;).addClass(&quot;error&quot;).show();</div><div class="line"></div><div class="line">$(&quot;#myLink&quot;)</div><div class="line">	.addClass(&quot;bold&quot;)</div><div class="line">	.on(&quot;click&quot;, myClickHandler)</div><div class="line">	.on(&quot;mouseover&quot;, myMouseOverHandler)</div><div class="line">	.show();</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>其他</p>
+<ol>
+<li>多个参数使用对象字面量存储；</li>
+<li>不要将 CSS 写在 jQuery 里面；</li>
+<li>正则表达式仅准用 .test() 和 .exec() 。不准用 “string”.match() ；</li>
+</ol>
+<p>异步加载第三方内容<br>当无法保证嵌入第三方内容比如 Youtube 视频可以正常工作的时候，需要考虑用异步加载这些代码，避免阻塞整个页面加载。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">(function() &#123;</div><div class="line">	var script,</div><div class="line">	scripts = document.getElementsByTagName(&apos;script&apos;)[0];</div><div class="line">	function load(url) &#123;</div><div class="line">		script = document.createElement(&apos;script&apos;);</div><div class="line">		script.async = true;</div><div class="line">		script.src = url;</div><div class="line">		scripts.parentNode.insertBefore(script, scripts);</div><div class="line">	&#125;</div><div class="line">	load(&apos;//apis.google.com/js/plusone.js&apos;);</div><div class="line">	load(&apos;//platform.twitter.com/widgets.js&apos;);</div><div class="line">	load(&apos;//s.widgetsite.com/widget.js&apos;);</div><div class="line">&#125;());</div></pre></td></tr></table></figure></p>
+<p>避免使用 jQuery 实现动画</p>
+<ol>
+<li>禁止使用 slideUp/Down() fadeIn/fadeOut() 等方法；</li>
+<li>尽量不使用 animate() 方法；</li>
+</ol>
+<p>AJAX优化<br>缓存 AJAX ：<br>异步 并不等于 即时 。<br>请求使用 GET ：<br>当使用 XMLHttpRequest 时，而URL长度不到 2K ，可以使用 GET 请求数据， GET 相比POST 更快速。<br>POST 类型请求要发送两个 TCP 数据包。先发送文件头。再发送数据。<br>GET 类型请求只需要发送一个 TCP 数据包。取决于 cookie 数量。</p>
+<p>DOM 优化<br>优化节点修改。<br>使用 cloneNode 在外部更新节点然后再通过 replace 与原始节点互换。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">var orig = document.getElementById(&apos;container&apos;);</div><div class="line">var clone = orig.cloneNode(true);</div><div class="line">var list = [&apos;foo&apos;, &apos;bar&apos;, &apos;baz&apos;];</div><div class="line">var content;</div><div class="line">for (var i = 0; i &lt; list.length; i++) &#123;</div><div class="line">	content = document.createTextNode(list[i]);</div><div class="line">	clone.appendChild(content);</div><div class="line">&#125;</div><div class="line">orig.parentNode.replaceChild(clone, orig);</div></pre></td></tr></table></figure></p>
+<p>优化节点添加<br>多个节点插入操作，即使在外面设置节点的元素和风格再插入，由于多个节点还是会引发多次reflow。<br>优化的方法是创建 DocumentFragment ，在其中插入节点后再添加到页面。<br>如 JQuery 中所有的添加节点的操作如 append ，都是最终调用 DocumentFragment 来实现的，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">createSafeFragment(document) &#123;</div><div class="line">	var list = nodeNames.split( &quot;|&quot; ),</div><div class="line">	safeFrag = document.createDocumentFragment();</div><div class="line">	if (safeFrag.createElement) &#123;</div><div class="line">		while (list.length) &#123;</div><div class="line">			safeFrag.createElement(list.pop(););</div><div class="line">		&#125;;</div><div class="line">	&#125;;</div><div class="line">	return safeFrag;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>优化 CSS 样式转换。</p>
+<p>如果需要动态更改CSS样式，尽量采用触发reflow次数较少的方式。<br>如以下代码逐条更改元素的几何属性，理论上会触发多次 reflow 。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">element.style.fontWeight = &apos;bold&apos; ;</div><div class="line">element.style.marginLeft= &apos;30px&apos; ;</div><div class="line">element.style.marginRight = &apos;30px&apos; ;</div></pre></td></tr></table></figure></p>
+<p>可以通过直接设置元素的 className 直接设置，只会触发一次 reflow 。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">element.className = &apos;selectedAnchor&apos; ;</div></pre></td></tr></table></figure></p>
+<p>减少 DOM 元素数量</p>
+<p>DOM 操作性能问题主要有以下原因。</p>
+<ul>
+<li>DOM 元素过多导致元素定位缓慢。</li>
+<li>大量的 DOM 接口调用。</li>
+<li>JAVASCRIPT 和 DOM 之间的交互需要通过函数 API 接口来完成，造成延时，尤其是在循环语句中。</li>
+<li>DOM 操作触发频繁的 reflow(layout) 和 repaint 。</li>
+<li>layout 发生在 repaint 之前，所以layout相对来说会造成更多性能损耗。</li>
+<li>reflow(layout) 就是计算页面元素的几何信息。</li>
+<li>repaint 就是绘制页面元素。对 DOM 进行操作会导致浏览器执行回流 reflow 。</li>
+</ul>
+<p>一般影响页面重绘的不仅仅是innerHTML，如果改变元素的样式，位置等情况都会触发页面重绘。</p>
+<p>解决方案</p>
+<ul>
+<li>如果需要多次访问某个 DOM 节点，请使用局部变量存储对它的引用。</li>
+<li>谨慎处理 HTML 集合（ HTML 集合实时连系底层文档），把集合的长度缓存到一个变量中，并在迭代中使用它，如果需要经常操作集合，建议把它拷贝到一个数组中。</li>
+<li>如果可能的话，使用速度更快的API，比如 querySelectorAll 和 firstElementChild 。</li>
+<li>批量修改样式时， 离线 操作 DOM 树。</li>
+<li>使用缓存，并减少访问布局的次数。</li>
+<li>动画中使用绝对定位，使用拖放代理。</li>
+<li>使用事件委托来减少事件处理器的数量。</li>
+<li>优化 DOM 交互 &gt;在 JAVASCRIPT 中， DOM 操作和交互要消耗大量时间，因为它们往往需要重新渲染整个页面或者某一个部分。</li>
+<li>当需要访问的 DOM 部分已经已经被渲染为页面中的一部分，那么 DOM 操作和交互的过程就是再进行一次 现场更新 。</li>
+<li>现场更新 是需要针对 现场 （相关显示页面的部分结构）立即进行更新，每一个更改（不管是插入单个字符还是移除整个片段），都有一个性能损耗。</li>
+</ul>
+<p>多使用 innerHTML 。<br>有两种在页面上创建 DOM 节点的方法：<br>1使用诸如 createElement() 和 appendChild() 之类的 DOM 方法。<br>2使用 innerHTML 。</p>
+<p>回流 reflow 发生场景</p>
+<ul>
+<li>改变窗体大小。</li>
+<li>更改字体。</li>
+<li>添加移除stylesheet块。</li>
+<li>内容改变哪怕是输入框输入文字。</li>
+<li>CSS伪类被触发如 :hover。</li>
+<li>更改元素的className。</li>
+<li>当对DOM节点执行新增或者删除操作或内容更改时。</li>
+<li>动态设置一个style样式时（比如element.style.width=”10px”）。</li>
+<li>当获取一个必须经过计算的尺寸值时，比如访问offsetWidth、clientHeight或者其他需要经过计算的CSS值。</li>
+</ul>
+<p>解决问题的关键，就是限制通过DOM操作所引发回流的次数。</p>
+<ul>
+<li>在对当前DOM进行操作之前，尽可能多的做一些准备工作，保证N次创建，1次写入。</li>
+<li>在对DOM操作之前，把要操作的元素，先从当前DOM结构中删除：</li>
+<li>通过removeChild()或者replaceChild()实现真正意义上的删除。</li>
+<li>设置该元素的display样式为“none”。</li>
+</ul>
+<p>每次修改元素的style属性都会触发回流操作。</p>
+<ul>
+<li>使用更改 className 的方式替换 style.xxx=xxx 的方式。</li>
+<li>使用 style.cssText = ‘’; 一次写入样式。</li>
+<li>避免设置过多的行内样式。</li>
+<li>添加的结构外元素尽量设置它们的位置为 fixed 或 absolute 。</li>
+<li>避免使用表格来布局。</li>
+<li>避免在 CSS 中使用 JavaScript expressions(IE only) 。</li>
+<li>将获取的 DOM 数据缓存起来。这种方法，对获取那些会触发回流操作的属性（比如offsetWidth 等）尤为重要。</li>
+<li>当对HTMLCollection对象进行操作时，应该将访问的次数尽可能的降至最低，最简单的，你可以将length属性缓存在一个本地变量中，这样就能大幅度的提高循环的效率。</li>
+</ul>
+<p>善用回调。<br>除了使用闭包进行内部变量访问，还可以使用十分流行的回调函数来进行业务处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">function getData(callback) &#123;</div><div class="line">	var data = &apos;some big data&apos;;</div><div class="line">	callback(null, data);</div><div class="line">&#125;</div><div class="line">getData(function(err, data) &#123;console.log(data);&#125;);</div></pre></td></tr></table></figure></p>
+<p>回调函数是一种后续传递风格( Continuation Passing Style , CPS )的技术，这种风格的程序编写将函数的业务重点从返回值转移到回调函数中去。<br>而且其相比闭包的好处也有很多。<br>如果传入的参数是基础类型（如字符串、数值），回调函数中传入的形参就会是复制值，业务代码使用完毕以后，更容易被回收。<br>通过回调，我们除了可以完成同步的请求外，还可以用在异步编程中，这也就是现在非常流行的一种编写风格。<br>回调函数自身通常也是临时的匿名函数，一旦请求函数执行完毕，回调函数自身的引用就会被解除，自身也得到回收。</p>
+<p>减少使用元素位置操作</p>
+<p>一般浏览器都会使用增量reflow的方式将需要reflow的操作积累到一定程度再一起触发，但是如果脚本中要获取以下属性，那么积累的reflow将会马上执行，已得到准确的位置信息。</p>
+<ul>
+<li>offsetLeft</li>
+<li>offsetTop</li>
+<li>offsetHeight</li>
+<li>offsetWidth</li>
+<li>scrollTop/Left/Width/Height</li>
+<li>clientTop/Left/Width/Height</li>
+<li>getComputedStyle()</li>
+</ul>
+<p>设置动画元素为absolute或fixed。</p>
+<ul>
+<li>position: static 或 position: relative 元素应用动画效果会造成频繁的 reflow 。</li>
+<li>position: absolute 或 position: fixed 的元素应用动画效果只需要 repaint 。</li>
+</ul>
+<p>使用一个 timer 完成多个元素动画。<br>setInterval 和 setTimeout 是两个常用的实现动画的接口，最优化的情况是使用一个 timer 完成多个对象的动画效果，其原因在于多个timer 的调用本身就会损耗一定性能。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">setInterval(function() &#123;</div><div class="line">	animateFirst(&apos;&apos;);</div><div class="line">&#125;, 10);</div><div class="line">setInterval(function() &#123;</div><div class="line">	animateSecond(&apos;&apos;);</div><div class="line">&#125;, 10);</div><div class="line"></div><div class="line">// 使用同一个 timer 。</div><div class="line">setInterval(function() &#123;</div><div class="line">	animateFirst(&apos;&apos;);</div><div class="line">	animateSecond(&apos;&apos;);</div><div class="line">&#125;, 10);</div></pre></td></tr></table></figure></p>
+<p>事件优化：使用事件代理<br>当存在多个元素需要注册事件时，在每个元素上绑定事件本身就会对性能有一定损耗。<br>由于DOM Level2事件模 型中所有事件默认会传播到上层文档对象，可以借助这个机制在上层元素注册一个统一事件对不同子元素进行相应处理。<br>捕获型事件先发生。两种事件流会触发DOM中的所有对象，从document对象开始，也在document对象结束。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;ul id=&quot;parent-list&quot;&gt;</div><div class="line">	&lt;li id=&quot;post-1&quot;&gt;Item 1&lt;/li&gt;</div><div class="line">	&lt;li id=&quot;post-2&quot;&gt;Item 2&lt;/li&gt;</div><div class="line">	&lt;li id=&quot;post-3&quot;&gt;Item 3&lt;/li&gt;</div><div class="line">	&lt;li id=&quot;post-4&quot;&gt;Item 4&lt;/li&gt;</div><div class="line">	&lt;li id=&quot;post-5&quot;&gt;Item 5&lt;/li&gt;</div><div class="line">	&lt;li id=&quot;post-6&quot;&gt;Item 6&lt;/li&gt;</div><div class="line">&lt;/ul&gt;</div><div class="line"></div><div class="line">document.getElementById(&quot;parent-list&quot;).addEventListener(&quot;click&quot;,function(e) &#123;</div><div class="line">	if(e.target &amp;&amp; e.target.nodeName == &quot;LI&quot;) &#123;</div><div class="line">		console.log(&quot;List item &quot;,e.target.id.replace(&quot;post-&quot;),&quot; was clicked!&quot;);</div><div class="line">	&#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>JS（不包括动态插入的JS）执行完之后，才会触发DOMContentLoaded事件。<br>DOMContentLoaded事件本身不会等待CSS文件、图片、iframe加载完成。<br>它的触发时机是：加载完页面，解析完所有标签（不包括执行CSS和JS），并设置interactive 和执行每个静态的script标签中的JS，然后触发。<br>而JS的执行，需要等待位于它前面的CSS加载（如果是外联的话）、执行完成，因为JS可能会依赖位于它前面的CSS计算出来的样式。<br>当浏览器从服务器接收到了HTML文档，并把HTML在内存中转换成DOM树，在转换的过程中如果发现某个节点(node)上引用了CSS或者 IMAGE，就会再发1个request去请求CSS或image,然后继续执行下面的转换，而不需要等待request的返回，当request返回 后，只需要把返回的内容放入到DOM树中对应的位置就OK。但当引用了JS的时候，浏览器发送1个js request就会一直等待该request的返回。因为浏览器需要1个稳定的DOM树结构，而JS中很有可能有代码直接改变了DOM树结构，浏览器为了防止出现JS修改DOM树，需要重新构建DOM树的情况，所以 就会阻塞其他的下载和呈现.</p>
+<p>避免图片和iFrame等的空Src：空Src会重新加载当前页面，影响速度和效率</p>
+<p>避免重设图片大小：重设图片大小是指在页面、CSS、JavaScript等中多次重置图片大小，多次重设图片大小会引发图片的多次重绘</p>
+<p>TOUCH事件优化：使用touchstart、touchend代替click，因快影响速度快。注意Touch响应过快，易引发误操作</p>
+<p>移动端优化</p>
+<p>click 的 300ms 延迟响应<br>click 的 300ms 延迟是由双击缩放(double tap to zoom)所导致的，用户可以双击缩放或者双击滚动，当用户一次点击屏幕之后，浏览器并不能立刻判断用户是确实要打开这个链接，还是想要进行双击操作。<br>因此，移动端浏览器就等待 300 毫秒，以判断用户是否再次点击了屏幕。<br>随着响应式网页逐渐增多，用户使用双击缩放机会减少，这 300ms 的延迟就更不可接受了。<br>浏览器开发商也随之提供相应的解决方案。<br>这些方案在5 Ways to Prevent the 300ms Click Delay on Mobile Devices 中，被提及的包括「禁用缩放」和「width=device-width」等方案，但这些方案并不完美，需要针对某些版本浏览器，又或仅在 Android 的浏览器上使用。<br>所以这时候就需要一个更简单通用的解决方案，其中 FT Labs 专门为解决移动端浏览器 300 毫秒点击延迟问题所开发的一个轻量级的库 FastClick 就是很好的选择。<br>FastClick 在检测到 touchend 事件的时候，会通过 DOM 自定义事件立即触发一个模拟 click 事件，并把浏览器在 300 毫秒之后真正触发的 click 事件阻止掉。<br>FastClick 的使用方法非常简单，在 window load 事件之后，在 <body> 上调用 FastClick.attach() 即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">window.addEventListener( &quot;load&quot;, function() &#123;</div><div class="line">	FastClick.attach( document.body );</div><div class="line">&#125;, false );</div></pre></td></tr></table></figure></body></p>
+<p>获取滚动条值<br>PC 端滚动条的值是通过 <code>document.scrollTop</code> 和 <code>document.scrollLeft</code> 获得，<br>但在 iOS 中并没有滚动条的概念，所以仅能通过 <code>window.scrollY</code>、<code>window.scrollX</code>获取，同时也能兼容 Android 。</p>
+<p>在 iOS 上，输入框默认有内部阴影，但无法使用 box-shadow 来清除，如果不需要阴影，可以这样操作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">input,</div><div class="line">textarea &#123;</div><div class="line">	border: 0; /* 方法1 */</div><div class="line">	-webkit-appearance: none; /* 方法2 */</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>电话号码识别<br>iOS Safari ( Android 或其他浏览器不会) 会自动识别看起来像电话号码的数字，将其处理为电话号码链接，比如：<br>7位数字，形如：1234567<br>带括号及加号的数字，形如：(+86)123456789<br>双连接线的数字，形如：00-00-00111<br>11位数字，形如：13800138000<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 关闭电话号码识别： --&gt;</div><div class="line">&lt;meta name=&quot;format-detection&quot; content=&quot;telephone=no&quot; /&gt;</div><div class="line"></div><div class="line">&lt;!-- 开启电话功能： --&gt;</div><div class="line">&lt;a href=&quot;tel:123456&quot;&gt;123456&lt;/a&gt;</div><div class="line"></div><div class="line">&lt;!-- 开启短信功能： --&gt;</div><div class="line">&lt;a href=&quot;sms:123456&quot;&gt;123456&lt;/a&gt;</div></pre></td></tr></table></figure></p>
+<p>邮箱地址的识别<br>在 Android （ iOS 不会）上，浏览器会自动识别看起来像邮箱地址的字符串，不论有你没有加上邮箱链接，当你在这个字符串上长按，会弹出发邮件的提示。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;!-- 关闭邮箱地址识别： --&gt;</div><div class="line">&lt;meta name=&quot;format-detection&quot; content=&quot;email=no&quot; /&gt;</div></pre></td></tr></table></figure></p>
+<p>指定 iOS 的 safari 顶端状态条的样式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;meta name=&quot;apple-mobile-web-app-status-bar-style&quot; content=&quot;black&quot; /&gt;</div><div class="line">&lt;!-- 可选default、black、black-translucent --&gt;</div></pre></td></tr></table></figure></p>
+<p>请求数优化</p>
+<ul>
+<li>在请求数控制方面，将js，css各用combo的方式合并成单个资源。</li>
+<li>页面图片等等，只加载首屏资源，提升首屏展示速度。</li>
+<li>使用CSS ,SVG,ICONFONT 替换UI图片</li>
+<li>合理使用IconFont，iconfont对于前端来说有很多优点：自由变化大小 矢量不失真、自由修改颜色、可以添加一些视觉效果如阴影、旋转、透明度、兼容IE6。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@font-face &#123;</div><div class="line">font-family: &quot;iconfont&quot;;</div><div class="line">	src: url(&apos;iconfont.eot&apos;); /* IE9*/</div><div class="line">	src: url(&apos;iconfont.eot?#iefix&apos;) </div><div class="line">	format(&apos;embedded-opentype&apos;), /* IE6-IE8 */</div><div class="line">	url(&apos;iconfont.woff&apos;) </div><div class="line">	format(&apos;woff&apos;), /* chrome、firefox */</div><div class="line">	url(&apos;iconfont.ttf&apos;) </div><div class="line">	format(&apos;truetype&apos;), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/</div><div class="line">	url(&apos;iconfont.svg#iconfont&apos;) </div><div class="line">	format(&apos;svg&apos;); /* iOS 4.1- */</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样造成了极大的网络带宽的消耗，这些icon资源往往在界面渲染中占据重要位置。<br>目前我们移动端只加载ttf一个字体文件，对于较小的文件也可以考虑base64在css文件中。</p>
+<p>使用WebP格式。<br>手淘2年前已经开始使用WebP格式了（主要native使用），1年前H5全面使用，其中iOS 的webview中由手淘以插件的方式支持。<br>案例：线上的一个活动页面,打开一看其中的banner 就320多KB，整个页面加载457KB，<br>如果就单单banner图片换成webp格式，整个页面的大小就只有181KB。</p>
+<p>性能优化</p>
+<p>慎重选择高消耗的样式，高消耗属性在绘制前需要浏览器进行大量计算：</p>
+<ul>
+<li>box-shadows</li>
+<li>border-radius</li>
+<li>transparency</li>
+<li>transforms</li>
+<li>CSS filters（性能杀手）</li>
+</ul>
+<p>避免过分重排，当发生重排的时候，浏览器需要重新计算布局位置与大小，常见的重排元素:</p>
+<ul>
+<li>width</li>
+<li>height</li>
+<li>padding</li>
+<li>margin</li>
+<li>display</li>
+<li>border-width</li>
+<li>position</li>
+<li>top</li>
+<li>left</li>
+<li>right</li>
+<li>bottom</li>
+<li>font-size</li>
+<li>float</li>
+<li>text-align</li>
+<li>overflow-y</li>
+<li>font-weight</li>
+<li>overflow</li>
+<li>font-family</li>
+<li>line-height</li>
+<li>vertical-align</li>
+<li>clear</li>
+<li>white-space</li>
+<li>min-height</li>
+</ul>
+<p>正确使用 Display 的属性，Display 属性会影响页面的渲染，请合理使用。</p>
+<ul>
+<li>display: inline后不应该再使用 width、height、margin、padding 以及 float；</li>
+<li>display: inline-block 后不应该再使用 float；</li>
+<li>display: block 后不应该再使用 vertical-align；</li>
+<li>display: table-* 后不应该再使用 margin 或者 float；</li>
+</ul>
+<p>不滥用 Float，Float在渲染时计算量比较大，尽量减少使用。</p>
+<p>如果使用基于 javaScript 的动画，尽量使用 requestAnimationFrame，避免使用 setTimeout,setInterval。</p>
+<p>避免通过类似 jQuery animate()-style 改变每帧的样式，使用 CSS 声明动画会得到更好的浏览器优化。</p>
+<p>使用 translate 取代 absolute 定位就会得到更好的 fps，动画会更顺滑。</p>
+<p>多利用硬件能力，如通过 3D 变形开启 GPU 加速</p>
+<p>一般在 Chrome 中，3D或透视变换（perspective transform）CSS属性和对 opacity 进行 CSS 动画会创建新的图层，在硬件加速渲染通道的优化下，GPU 完成 3D 变形等操作后，将图层进行复合操作（Compesite Layers），从而避免触发浏览器大面积重绘和重排。<br>使用 translate3d 右移 500px 的动画流畅度要明显优于直接使用 left。</p>
+<p>提升 CSS 选择器性能</p>
+<p>CSS 选择器对性能的影响源于浏览器匹配选择器和文档元素时所消耗的时间，所以优化选择器的原则是应尽量避免使用消耗更多匹配时间的选择器。<br>在这之前需要了解 CSS 选择器匹配的机制， 如子选择器规则：<code>#header &gt; a {font-weight:blod;}</code></p>
+<p>大多数人都是从左到右的阅读习惯，习惯性的设定浏览器也是从左到右的方式进行匹配规则，推测这条规则的开销并不高：寻找 id 为 header 的元素，然后将样式规则应用到直系子元素中的a 元素上。<br>我们知道文档中只有一个 id 为 header 的元素，并且它只有几个 a 元素的子节点，所以这个CSS 选择器应该相当高效。<br>事实上恰恰相反，CSS 选择器是从右到左进行规则匹配。浏览器必须遍历页面中所有的 a 元素并且确定其父元素的 id 是否为header 。<br>如果把例子的子选择器改为后代选择器则会开销更多，在遍历页面中所有 a 元素后还需向其上级遍历直到根节点。<br><code>#header a {font-weight:blod;}</code><br>理解了CSS选择器从右到左匹配的机制后，明白只要当前选择符的左边还有其他选择符，样式系统就会继续向左移动，直到找到和规则匹配的选择符，或者因为不匹配而退出。我们把最右边选择符称之为 关键选择器。</p>
+<p>1、避免使用通用选择器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/* Not recommended */</div><div class="line">.content * &#123;color: red;&#125;</div></pre></td></tr></table></figure></p>
+<p>浏览器匹配文档中所有的元素后分别向上逐级匹配 class 为 content 的元素，直到文档的根节点。因此其匹配开销是非常大的，应避免使用关键选择器是通配选择器的情况。</p>
+<p>2、避免使用标签或 class 选择器限制 id 选择器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">/* Not recommended */</div><div class="line">button#backButton &#123;…&#125;</div><div class="line"></div><div class="line">/* Recommended */</div><div class="line">#newMenuIcon &#123;…&#125;</div></pre></td></tr></table></figure></p>
+<p>3、避免使用标签限制 class 选择器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">/* Not recommended */</div><div class="line">treecell.indented &#123;…&#125;</div><div class="line"></div><div class="line">/* Recommended */</div><div class="line">.treecell-indented &#123;…&#125;</div><div class="line"></div><div class="line">/* Much to recommended */</div><div class="line">.hierarchy-deep &#123;…&#125;</div></pre></td></tr></table></figure></p>
+<p>4、避免使用多层标签选择器。使用 class 选择器替换，减少css查找<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">/* Not recommended */</div><div class="line">treeitem[mailfolder=&quot;true&quot;] &gt; treerow &gt; treecell &#123;…&#125;</div><div class="line"></div><div class="line">/* Recommended */</div><div class="line">.treecell-mailfolder &#123;…&#125;</div></pre></td></tr></table></figure></p>
+<p>5、避免使用子选择器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">/* Not recommended */</div><div class="line">treehead treerow treecell &#123;…&#125;</div><div class="line"></div><div class="line">/* Recommended */</div><div class="line">treehead &gt; treerow &gt; treecell &#123;…&#125;</div><div class="line"></div><div class="line">/* Much to recommended */</div><div class="line">.treecell-header &#123;…&#125;</div></pre></td></tr></table></figure></p>
+<p>6、使用继承<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">/* Not recommended */</div><div class="line">#bookmarkMenuItem &gt; .menu-left &#123; list-style-image: url(blah) &#125;</div><div class="line"></div><div class="line">/* Recommended */</div><div class="line">#bookmarkMenuItem &#123; list-style-image: url(blah) &#125;</div></pre></td></tr></table></figure></p>
+
+					</div>
+
+			  <!-- about -->
+			  
+		</div>
+
+		<!-- pagination -->
+	  
+
+		<div class="comment-section">
+  
+  
+
+
+</div>
+	</div>
+
+	
+
+</div>
+
+
+		<footer>
+			
+
+<p>
+  Powered by <a href="https://hexo.io">Hexo</a>  | with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme
+</p>
+<p>
+  &copy; 2016 <a href="http://huangzhike.github.io"> Huangzhike </a>
+</p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	  </div>
+
+		<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>
+
+		<!-- material design -->
+		<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script>
+		<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>
+		<!-- toc -->
+		<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		<script src="/libs/tocify/jquery.tocify.custom.js"></script>
+
+		<script src="/js/main.js"></script>
+
+	</body>
+</html>
