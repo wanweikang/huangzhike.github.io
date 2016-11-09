@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-十、函数参数 | 一切都沉淀为笔记</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="定义函数的时候，参数在小括号里面，这个参数叫做形参。调用函数的时候，参数传在小括号里面，这个参数叫做实参。JavaScript不要求形参数量和实参数量一样多。在Java中，同一个函数名，但是参数个数不一样，视为两个函数（重载）。JavaScript没有重载。
+定义的时候和调用的时候参数个数可以不一样">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-十、函数参数"/>
+		
+		<meta property="og:site_name" content="一切都沉淀为笔记"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="/resume" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-十、函数参数</h2>
+				
+				<div>
+					<span class="post-time">2016-10-28 13:11</span>
+				</div>	
+				
+				<div class="article-content">
+				<p>定义函数的时候，参数在小括号里面，这个参数叫做形参。<br>调用函数的时候，参数传在小括号里面，这个参数叫做实参。<br>JavaScript不要求形参数量和实参数量一样多。<br>在Java中，同一个函数名，但是参数个数不一样，视为两个函数（重载）。<br>JavaScript没有重载。</p>
+<p>定义的时候和调用的时候参数个数可以不一样<br><figure class="highlight scilab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span><span class="params">(a,b)</span>&#123;</span></div><div class="line">	console.<span class="built_in">log</span>(a + b);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">sum</span>(<span class="number">10</span>); <span class="comment">// NaN（ b为 undefined。10+undefined 就是 NaN）</span></div><div class="line"></div><div class="line"><span class="built_in">sum</span>(<span class="number">10</span>,<span class="number">20</span>,<span class="number">32</span>,<span class="number">23</span>);  <span class="comment">// 30</span></div></pre></td></tr></table></figure></p>
+<p>如果参数同名，则取最后那个。<br><figure class="highlight delphi"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">(a, a)</span><span class="comment">&#123;</span></span></div><div class="line">	console.log(a);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="title">f</span><span class="params">(1,2)</span>; <span class="comment">// 2</span></div><div class="line"></div><div class="line">f(<span class="number">1</span>); <span class="comment">// undefined</span></div></pre></td></tr></table></figure></p>
+<p>创建函数时会有一个类数组 arguments 对象。arguments 有三个属性，即 callee（调用方法），length，和caller（调用函数的参考）。</p>
+<p>arguments.callee是一个指针，指向拥有 arguments 对象的函数。该属性常用于解除函数执行与函数名之间的强耦合。<br>arguments.caller返回调用当前函数的函数的引用。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> f = <span class="function"><span class="keyword">function</span>(<span class="params">one</span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="built_in">arguments</span>.callee === f); <span class="comment">// true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>通过 var 关键字定义 arguments 或者将 arguments 声明为一个形式参数， 都将导致原来的 arguments 被覆盖。</p>
+<p>arguments 变量不是一个数组（Array）。 尽管有数组类似的属性 length，但它不从 Array.prototype 继承，它是一个对象（Object）。<br>因此，无法对 arguments 使用标准的数组方法，比如 push, pop 或者slice以及forEach。 </p>
+<p>但 arguments 可以像数组一样，用在某些只用于数组的方法。比如，用在apply方法中，或使用concat方法完成数组合并。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">func</span><span class="selector-class">.apply</span>(<span class="selector-tag">obj</span>, <span class="selector-tag">arguments</span>);</div><div class="line"></div><div class="line"><span class="selector-tag">Array</span><span class="selector-class">.prototype</span><span class="selector-class">.concat</span><span class="selector-class">.apply</span>(<span class="selector-attr">[1,2,3]</span>, <span class="selector-tag">arguments</span>);</div></pre></td></tr></table></figure></p>
+<p>虽然可以使用 for 循环遍历，但为了更好的使用数组方法，最好把它转化为一个真正的数组。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>); </div><div class="line"><span class="comment">// or </span></div><div class="line"><span class="keyword">var</span> args = [];</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="built_in">arguments</span>.length; i++) &#123;</div><div class="line">	args.push(<span class="built_in">arguments</span>[i]);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>自动更新<br>改变形参的值会影响到 arguments 对象的值，反之亦然。<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">function foo(a, b, c) &#123;</div><div class="line">	arguments[<span class="number">0</span>] = <span class="number">2</span>;</div><div class="line">	a; <span class="comment">// 2                                               </span></div><div class="line">	b = <span class="number">4</span>;</div><div class="line">	arguments[<span class="number">1</span>]; <span class="comment">// 4</span></div><div class="line">	var d = c;</div><div class="line">	d = <span class="number">9</span>;</div><div class="line">	c; <span class="comment">// 3</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">foo(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</div></pre></td></tr></table></figure></p>
+<p>arguments 的 getters 和 setters 方法在严格模式（strict mode）不会被创建。<br>arguments.callee会显著影响 JavaScript 的性能。建议不要使用 arguments.callee 和它的属性。<br>在严格模式（strict mode），arguments.callee 会报错 TypeError，因为它已经被废除了。</p>
+<p>arguments 可以模拟函数的重载，使得同一个函数，根据参数个数的不同，有不同的作用。<br>如果传进来一个参数，就得到这个数字的加1；如果是2个参数，那么返回两个数字的和。<br><figure class="highlight scilab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sum</span>(<span class="number">10</span>);  <span class="comment">//1</span></div><div class="line"><span class="built_in">sum</span>(<span class="number">3</span>,<span class="number">4</span>);  <span class="comment">//7</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span><span class="params">(a,b)</span>&#123;</span></div><div class="line">	switch(arguments.<span class="built_in">length</span>)&#123;</div><div class="line">		<span class="keyword">case</span> <span class="number">1</span>:  <span class="comment">//如果实际参数的长度是1</span></div><div class="line">			<span class="keyword">return</span> ++a;</div><div class="line">		<span class="keyword">break</span>;</div><div class="line">		<span class="keyword">case</span> <span class="number">2</span>:</div><div class="line">			<span class="keyword">return</span> a + b;</div><div class="line">		<span class="keyword">break</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>函数是一个引用类型<br>基本类型：number、string、boolean、undefined、null<br>引用类型：object、function、array、RegExp、Math、Date。</p>
+<p>值类型的类型判断用 typeof，引用类型的类型判断用 instanceof。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> fn = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125;;</div><div class="line">fn <span class="keyword">instanceof</span> <span class="built_in">Object</span>; <span class="comment">// true</span></div><div class="line">fn <span class="keyword">instanceof</span> <span class="built_in">Function</span>; <span class="comment">// true</span></div></pre></td></tr></table></figure></p>
+<p>在jQuery中，“jQuery”或者“$”，是一个函数<br><figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">console.<span class="keyword">log</span>(typeof ($)); <span class="comment">// function</span></div><div class="line">console.<span class="keyword">log</span>($.<span class="keyword">trim</span>(<span class="string">" ABC "</span>)); <span class="comment">// $或者jQuery函数有trim属性，属性值是函数，截取前后空格</span></div></pre></td></tr></table></figure></p>
+<p>函数通常使用函数声明语法定义。<br>也可以使用函数表达式定义。<br>还使用Function构造函数。<br>Function构造函数接收任意数量的参数，但最后一个参数始终被看成是函数体，前面的参数是新函数的参数。例：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> sum = <span class="keyword">new</span> <span class="function"><span class="keyword">Function</span><span class="params">(<span class="string">"num1"</span>,<span class="string">"num2"</span>,<span class="string">"return num1+num2"</span>)</span></span>;  <span class="comment">//不推荐</span></div></pre></td></tr></table></figure></p>
+<p>在typeof的输出类型中，function和object都是对象，为何却要输出两种答案呢？</p>
+<p>对象都是通过函数创建的吗？<br><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">var obj</span> = &#123; a: 10&#125;;</div><div class="line"><span class="attribute">var arr</span> = [5];</div></pre></td></tr></table></figure></p>
+<p>这其实叫“语法糖”。<br>本质是<br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> obj = <span class="keyword">new</span> <span class="type">Object</span>();</div><div class="line">obj.a = <span class="number">10</span>;</div><div class="line"></div><div class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="type">Array</span>();</div><div class="line">arr[<span class="number">0</span>] = <span class="number">5</span>;</div></pre></td></tr></table></figure></p>
+<p>Object 和 Array 都是函数：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> (<span class="built_in">Object</span>)); <span class="comment">// function</span></div><div class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> (<span class="built_in">Array</span>)); <span class="comment">// function</span></div></pre></td></tr></table></figure></p>
+<p>所以，对象都是通过函数来创建的。对象是函数创建的，而函数却又是一种对象</p>
+<p>基本类型保存值，引用类型保存地址<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">6</span>; <span class="comment">// a变量里面存储的是6这个数值</span></div><div class="line"><span class="keyword">var</span> a = <span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;&#125;; <span class="comment">//  a里面存储的是function的内存地址</span></div><div class="line"><span class="keyword">var</span> b = a; <span class="comment">//把匿名函数的地址给了b</span></div><div class="line">b.ha = <span class="number">1</span>; <span class="comment">//给b添加一个属性</span></div><div class="line">a.ha; <span class="comment">// 1 （指向的同一个对象）</span></div></pre></td></tr></table></figure></p>
+<p>五种基本数据类型是按值访问的，可以操作保存在变量中的实际值。<br>引用类型的值是按引用访问的，引用类型的值是保存在内存中的对象。<br>当复制保存着对象的某个变量时，操作的是对象的引用。但在为对象添加属性是，操作的是实际的对象。<br>对于引用类型的值，我们可以为其添加属性和方法，也可以改变和删除其属性和方法。<br>但不能给基本类型的值添加属性，尽管这样做不会抛出错误。<br>复制引用操作，两个变量实际上将引用同一个对象。因此，改变其中一个变量，就会影响另一个变量。<br>ECMAScript中所有参数都是按值传递的，不可能通过引用传递参数。<br>当我们给函数传入参数时，实际就是把函数外部的值复制给函数内部的参数，这和把值从一个变量复制到另一个变量一样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">var</span> foo = &#123;</div><div class="line">	<span class="attr">bar</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.baz;</div><div class="line">	&#125;,</div><div class="line">	<span class="attr">baz</span>: <span class="number">1</span></div><div class="line">&#125;; </div><div class="line"></div><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">typeof</span> <span class="built_in">arguments</span>[<span class="number">0</span>]();</div><div class="line">&#125;)(foo.bar); <span class="comment">// "undefined"</span></div></pre></td></tr></table></figure>
+<p>JavaScript的函数参数是传值传递（passes by value），在函数体内修改参数值，不会影响到函数外部。<br><figure class="highlight delphi"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> p = <span class="number">2</span>; </div><div class="line"></div><div class="line">(<span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">(p)</span><span class="comment">&#123;</span></span></div><div class="line">	p = 3; // 修改原始类型的参数值</div><div class="line">&#125;<span class="params">(p)</span>;</div><div class="line"></div><div class="line">p <span class="comment">// 2</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">var</span> a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</div><div class="line"></div><div class="line">(<span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">(a)</span><span class="comment">&#123;</span></span></div><div class="line">	a = [2,3,4]; // 修改复合类型的参数值</div><div class="line">&#125;)<span class="params">(a)</span>;</div><div class="line"></div><div class="line">a <span class="comment">// [1, 2, 3]</span></div></pre></td></tr></table></figure></p>
+<p>函数内部修改原始类型和复合类型的参数值，都不会影响到函数外部。</p>
+<p>虽然参数本身是传值传递，但是复合类型的变量属性值是传址传递（pass by reference）。<br>在函数体内修改复合类型变量的属性值，会影响到函数外部。<br><figure class="highlight delphi"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> o = <span class="comment">&#123; p:1 &#125;</span>;</div><div class="line"></div><div class="line">(<span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">(obj)</span><span class="comment">&#123;</span></span></div><div class="line">	obj.p = 2; // 修改对象的属性值</div><div class="line">&#125;)<span class="params">(o)</span>;</div><div class="line"></div><div class="line">o.p <span class="comment">// 2</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">var</span> a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</div><div class="line"></div><div class="line">(<span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">(a)</span><span class="comment">&#123;</span></span></div><div class="line">	a[0]=4; // 修改数组的属性值</div><div class="line">&#125;)<span class="params">(a)</span>;</div><div class="line"></div><div class="line">a <span class="comment">// [4,2,3]</span></div></pre></td></tr></table></figure></p>
+<p>如果需要对某个变量达到传址传递的效果，可以将它写成全局对象的属性。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</div><div class="line"></div><div class="line">(<span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">p</span>)</span>&#123;</div><div class="line">	<span class="built_in">window</span>[p]=<span class="number">2</span>;</div><div class="line">&#125;)(<span class="string">"a"</span>);</div><div class="line"></div><div class="line">a <span class="comment">// 2 （变量a本来是传值传递，但是写成window对象的属性，就达到了传址传递的效果）</span></div></pre></td></tr></table></figure></p>
+<p>设计一个函数，接收三个参数，返回前两个数字大的数字，与第三个数字的和。如 sum(4,7,9);<br><figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">function</span> <span class="title">sum</span>(a,b,c)&#123; </div><div class="line">	<span class="keyword">return</span> <span class="type">a</span> &gt;= b? a+c : <span class="type">b</span>+c;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>函数调用自身，就是递归（recursion）。<br><figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">function <span class="built_in">fib</span>(<span class="built_in">num</span>) &#123;</div><div class="line">	<span class="keyword">if</span> (<span class="built_in">num</span> &gt; <span class="number">2</span>) &#123;</div><div class="line">		<span class="built_in">return</span> <span class="built_in">fib</span>(<span class="built_in">num</span> - <span class="number">2</span>) + <span class="built_in">fib</span>(<span class="built_in">num</span> - <span class="number">1</span>);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">return</span> <span class="number">1</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">function <span class="built_in">factorial</span>(<span class="built_in">num</span>)&#123;</div><div class="line">	<span class="keyword">if</span> (<span class="built_in">num</span>&lt;=<span class="number">1</span>)&#123;</div><div class="line">		<span class="built_in">return</span> <span class="number">1</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">return</span> <span class="built_in">num</span>*arguments.callee(<span class="built_in">num</span>-<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">var</span> <span class="built_in">factorial</span> = (function f(<span class="built_in">num</span>)&#123;</div><div class="line">	<span class="keyword">if</span> (<span class="built_in">num</span>&lt;=<span class="number">1</span>)&#123;</div><div class="line">		<span class="built_in">return</span> <span class="number">1</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">return</span> <span class="built_in">num</span>*f(<span class="built_in">num</span>-<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="title">factorial</span>(x)&#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">x</span> == <span class="number">0</span> ? <span class="number">1</span> : <span class="type">x</span> * factorial(x-<span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>把多参数的函数变成单参数的函数。如， Math.pow(x, y) 函数：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">p</span>(<span class="params">n</span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="built_in">Math</span>.pow(x, n);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> pow2 = p(<span class="number">2</span>);</div><div class="line"><span class="keyword">var</span> pow3 = p(<span class="number">3</span>);</div><div class="line"></div><div class="line">pow2(<span class="number">5</span>); <span class="comment">// 25</span></div><div class="line">pow3(<span class="number">7</span>); <span class="comment">// 343</span></div></pre></td></tr></table></figure></p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by  Huangzhike </p>
+<p>&copy; 2016 <a href="https://huangzhike.github.io"> Huangzhike </a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

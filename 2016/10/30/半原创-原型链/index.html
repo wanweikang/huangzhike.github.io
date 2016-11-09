@@ -1,0 +1,171 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[半原创]-原型链 | 一切都沉淀为笔记</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="吭，所谓半原创的意思就是一半是原创，后面各个原型链关系是我原创的，图是用processon画的，其它都是整理的笔记。
+JavaScript基于原型（prototype-based）实现面向对象（OOP），但不是所有对象都有原型（prototype）属性：12var obj = &amp;#123;&amp;#125">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[半原创]-原型链"/>
+		
+		<meta property="og:site_name" content="一切都沉淀为笔记"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="/resume" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[半原创]-原型链</h2>
+				
+				<div>
+					<span class="post-time">2016-10-30 14:45</span>
+				</div>	
+				
+				<div class="article-content">
+				<p><strong>吭，所谓半原创的意思就是一半是原创，后面各个原型链关系是我原创的，图是用processon画的，其它都是整理的笔记。</strong></p>
+<p>JavaScript基于原型（prototype-based）实现面向对象（OOP），但不是所有对象都有原型（prototype）属性：<br><figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var obj = &#123;&#125;<span class="comment">;</span></div><div class="line">obj.prototype<span class="comment">;  // undefined</span></div></pre></td></tr></table></figure></p>
+<p>对象实例(Object Instance)没有原型（prototype），而构造器(constructor)有原型，“[constructor].prototype”指向原型。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Foo = <span class="keyword">new</span> <span class="function"><span class="keyword">Function</span><span class="params">()</span></span>;</div><div class="line">Foo.prototype;  <span class="comment">// &#123;&#125;（prototype是function自带属性，function本身也是对象）</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> instance = <span class="keyword">new</span> Foo;</div><div class="line">instance.prototype; <span class="comment">// undefined，对象实例没有原型</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> str = <span class="string">"Hello"</span>;</div><div class="line">str.prototype;  <span class="comment">// undefined</span></div></pre></td></tr></table></figure></p>
+<p>prototype是函数类型自带属性，非函数类型没有（Object，String等类型的构造函数本身也是函数，所以有prototype属性）：<br><figure class="highlight elm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="type">Object</span>.proto<span class="keyword">type</span>; // <span class="type">Object</span> &#123;&#125;</div><div class="line"><span class="type">Function</span>.proto<span class="keyword">type</span>; // function()&#123;&#125;</div><div class="line"><span class="type">String</span>.proto<span class="keyword">type</span>; // <span class="type">String</span> &#123;length: 0, [[<span class="type">PrimitiveValue</span>]]: ""&#125;</div></pre></td></tr></table></figure></p>
+<p>所有对象（undefined、null除外）都有[[Prototype]]属性，即隐式原型。指向它“构造函数”的prototype（原型对象），函数也是一种对象，也有<code>__proto__</code>。</p>
+<p>实例对象的<code>__proto__</code>属性仅指向构造函数的原型（prototype）对象，而不指向构造函数。<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Foo = <span class="function"><span class="keyword">function</span> <span class="params">()</span></span>&#123;&#125;;</div><div class="line"><span class="keyword">var</span> a = &#123;&#125;;</div><div class="line">Foo.prototype = a;</div><div class="line"><span class="keyword">var</span> foo = <span class="keyword">new</span> Foo();</div><div class="line">foo.__proto__ === a <span class="comment">// true</span></div></pre></td></tr></table></figure></p>
+<p>JavaScript引擎通过<code>__proto__</code>属性一级一级形成“原型链”（prototype chain）。<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = &#123; x: <span class="number">1</span> &#125;;</div><div class="line"><span class="keyword">var</span> b = &#123; __proto__: a&#125;;</div><div class="line"><span class="keyword">var</span> <span class="built_in">c</span> = &#123; __proto__: b&#125;;</div><div class="line"><span class="built_in">c</span>.x <span class="comment">// 1</span></div></pre></td></tr></table></figure></p>
+<p>如果Obeject对象没有人为改变<code>__proto__</code>，则指向Object.prototype（Object.prototype 的<code>__proto__</code>指向<code>null</code>，标志着原型链的终结）。<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> obj = <span class="keyword">new</span> <span class="built_in">Object</span>();</div><div class="line"><span class="comment">// 等价于</span></div><div class="line"><span class="keyword">var</span> obj = &#123;&#125;;</div><div class="line"></div><div class="line">obj.prototype; <span class="comment">// undefined （没有prototype属性）</span></div><div class="line">obj.__proto__ === <span class="built_in">Object</span>.prototype <span class="comment">// obj对象是被Object函数创建的</span></div><div class="line">obj.__proto__ === obj.constructor.prototype</div><div class="line">obj.__proto__ === <span class="built_in">Object</span>.getFrototypeOf(obj)</div></pre></td></tr></table></figure></p>
+<p>获取实例对象的原型对象有三种方法：<br><code>obj.__proto__</code><br><code>obj.constructor.prototype</code><br><code>Object.getPrototypeOf(obj)</code><br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">Array</span>.prototype.p = <span class="string">"abc"</span>;</div><div class="line"><span class="keyword">var</span> a = <span class="keyword">new</span> <span class="type">Array</span>();</div><div class="line">a.p <span class="comment">// abc</span></div><div class="line">a.__proto__.p <span class="comment">// abc （通过__proto__读取定义在原型对象上的属性）</span></div><div class="line">a.constructor.prototype.p <span class="comment">// abc （通过constructor.prototype读取定义在原型对象上的属性）</span></div></pre></td></tr></table></figure></p>
+<p>Object.getPrototypeOf方法，检查浏览器是否支持<code>__proto__</code>属性。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Object.getPrototypeOf(&#123; __proto__: <span class="keyword">null</span> &#125;) === <span class="keyword">null</span></div><div class="line">// 将一个对象的__proto__属性设为<span class="keyword">null</span>，然后使用Object.getPrototypeOf方法获取原型，判断是否等于<span class="keyword">null</span>。</div><div class="line">// 如果当前环境支持__proto__属性，比较结果应该是<span class="keyword">true</span>。否则，等式左边的值等于Object。</div></pre></td></tr></table></figure></p>
+<p>原型链（prototype chain）</p>
+<p>所有对象都有构造函数，所有构造函数都有prototype属性（其实所有函数都有prototype属性），所以所有对象都有自己的prototype原型对象。</p>
+<p>JavaScript的继承通过构造函数和原型链的混合模式实现，避免对象共享可以用一个空函数当做中间变量。</p>
+<p>prototype和constructor来构成外部原型链，是开发人员写代码回溯时用到的，<br><code>__proto__</code>形成内部原型链，是JavaScript引擎原型继承机制。</p>
+<p>内部原型链：对象的属性和方法，可能定义在自身上，也可能定义在它的原型对象上。当读取对象的某个属性时（a.b），JavaScript引擎先在当前对象上查找该属性，如果没有，沿着 proto这条链，到其原型对象上找，如果还没有，就到原型的原型找。如果一直上溯到Object.prototype还是找不到，则返回undefined。如果原型链很长，查找对象的属性就会变慢，因此要不要把原型链搞得太长。也就是说，在原型链中回溯查询属性的过程，在内部原型链中进行，这个过程是由JavaScript引擎维护的。</p>
+<p>一般情况下，<code>__proto__</code>属性指向的和prototype属性一样，指向的都是原型对象， </p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">var arr = [];</div><div class="line"><span class="comment">// 原型链：</span></div><div class="line"><span class="function"><span class="title">arr</span> --&gt;</span> A<span class="function"><span class="title">rray</span>.prototype --&gt;</span> O<span class="function"><span class="title">bject</span>.prototype --&gt;</span> null</div><div class="line"><span class="comment">// Array.prototype上有indexOf()、shift()等方法，数组对象都可以调用。</span></div><div class="line"></div><div class="line">function Foo() &#123;&#125;</div><div class="line"><span class="comment">// 原型链：</span></div><div class="line">F<span class="function"><span class="title">oo</span> --&gt;</span> F<span class="function"><span class="title">unction</span>.prototype --&gt;</span> O<span class="function"><span class="title">bject</span>.prototype --&gt;</span> null</div><div class="line"><span class="comment">// Function.prototype上有apply()等方法，函数对象都可以调用。</span></div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Foo = &#123;</div><div class="line">	<span class="attr">name</span>: <span class="string">"Jim"</span>,</div><div class="line">	<span class="attr">sayName</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="keyword">this</span>.name);</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> Bar = &#123;</div><div class="line">	<span class="attr">name</span>: <span class="string">"Sam"</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line">Bar.__proto__ = Foo; <span class="comment">// 把Bar的原型指向对象Foo</span></div><div class="line"></div><div class="line">Bar.sayName===Foo.sayName; <span class="comment">// true</span></div><div class="line"></div><div class="line">Bar.sayName(); <span class="comment">// Sam</span></div></pre></td></tr></table></figure>
+<p>如果让某个函数的prototype属性指向一个数组，该函数可以用作数组的构造函数，因为它生成的实例对象都可以通过prototype属性调用数组方法（这些方法定义在数组的prototype对象上面）。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">arrFunc</span> (<span class="params"></span>)</span>&#123;&#125;</div><div class="line">arrFunc.prototype = <span class="keyword">new</span> <span class="built_in">Array</span>();</div><div class="line">arrFunc.prototype.constructor = arrFunc;</div><div class="line"><span class="keyword">var</span> arrf = <span class="keyword">new</span> arrFunc();</div><div class="line">arrf.push(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</div><div class="line">arrf.length <span class="comment">// 3</span></div><div class="line">arrf <span class="keyword">instanceof</span> <span class="built_in">Array</span> <span class="comment">// true</span></div></pre></td></tr></table></figure></p>
+<p><img src="/imgs/prototype_chain.png" alt="prototype_chain by huangzhike"></p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Foo</span><span class="params">()</span><span class="comment">&#123;&#125;</span></span></div><div class="line"><span class="title">var</span> <span class="title">Foo</span> = <span class="title">function</span><span class="params">()</span><span class="comment">&#123;&#125;</span>;</div><div class="line"><span class="keyword">var</span> Foo = new <span class="function"><span class="keyword">Function</span><span class="params">()</span>;</span></div><div class="line">typeof Foo; <span class="comment">// function</span></div><div class="line"></div><div class="line"><span class="comment">// 函数被Function创建，Function被自身创建，它的 __proto__指向自身的prototype。</span></div><div class="line">Foo.__proto__ === <span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>;</span> <span class="comment">// 对象的 __proto__指向创建它的构造函数的prototype</span></div><div class="line">Foo.__proto__.<span class="keyword">constructor</span> === <span class="function"><span class="keyword">Function</span>;</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">Function</span>.__<span class="title">proto__</span>===<span class="title">Function</span>.<span class="title">prototype</span>;</span></div><div class="line"><span class="function"><span class="keyword">Function</span>.__<span class="title">proto__</span>.<span class="title">constructor</span> === <span class="title">Function</span>;</span></div><div class="line"></div><div class="line">Foo.prototype.__proto__!==Foo.prototype.<span class="keyword">constructor</span>.prototype;</div><div class="line">Foo.prototype.__proto__===<span class="keyword">Object</span>.prototype;</div><div class="line">Foo.prototype.<span class="keyword">constructor</span> === Foo; <span class="comment">// prototype.constructor指向构造函数Foo本身</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>.__<span class="title">proto__</span>===<span class="title">Object</span>.<span class="title">prototype</span>;</span> <span class="comment">// Function.prototype也是被Object创建的对象</span></div><div class="line"><span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>.<span class="title">constructor</span>===<span class="title">Function</span>;</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> foo = new Foo();</div><div class="line">typeof foo; <span class="comment">// object</span></div><div class="line"></div><div class="line">foo.prototype; <span class="comment">// undefined</span></div><div class="line">foo.__proto__===Foo.prototype;</div><div class="line">foo.__proto__==foo.<span class="keyword">constructor</span>.prototype;</div><div class="line"></div><div class="line"><span class="keyword">Object</span>.__proto__ !== <span class="keyword">Object</span>.prototype;</div><div class="line"><span class="keyword">Object</span>.__proto__===<span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>;</span></div><div class="line"><span class="keyword">Object</span>.prototype.<span class="keyword">constructor</span>.__proto__ ===<span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>;</span></div><div class="line"></div><div class="line"><span class="keyword">Object</span>.prototype.__proto__===null; <span class="comment">// 顶级对象</span></div><div class="line"><span class="keyword">Object</span>.prototype.<span class="keyword">constructor</span>===<span class="keyword">Object</span>;</div><div class="line"></div><div class="line"><span class="keyword">String</span>.__proto__ === <span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>;</span></div><div class="line">Number.__proto__ === <span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>;</span></div><div class="line">Boolean.__proto__ === <span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>;</span></div><div class="line"><span class="keyword">Array</span>.__proto__===<span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>;</span></div><div class="line"><span class="function"><span class="keyword">Function</span>.__<span class="title">proto__</span> === <span class="title">Function</span>.<span class="title">prototype</span>;</span></div><div class="line"><span class="keyword">Object</span>.__proto__ === <span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>;</span></div><div class="line"></div><div class="line">RegExp.__proto__ === <span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>;</span></div><div class="line">Date.__proto__ === <span class="function"><span class="keyword">Function</span>.<span class="title">prototype</span>;</span></div><div class="line"></div><div class="line">JSON.__proto__ ===<span class="keyword">Object</span>.prototype;</div><div class="line">Math.__proto__ ===<span class="keyword">Object</span>.prototype;</div></pre></td></tr></table></figure>
+<p>instanceof实际上是判断<code>__proto__</code>（以及<code>__proto__.__proto__</code>…）指向原型：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">foo <span class="keyword">instanceof</span> Foo; <span class="comment">// true</span></div><div class="line">foo <span class="keyword">instanceof</span> <span class="built_in">Object</span>; <span class="comment">// true</span></div><div class="line">foo <span class="keyword">instanceof</span> <span class="built_in">Function</span>; <span class="comment">// false</span></div><div class="line"></div><div class="line">foo.__proto__ === Foo.prototype; <span class="comment">// true</span></div><div class="line">foo.__proto__.__proto__ === <span class="built_in">Object</span>.prototype; <span class="comment">// true</span></div><div class="line">foo.__proto__.__proto__ === <span class="built_in">Function</span>.prototype;  <span class="comment">// false</span></div></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Foo<span class="selector-class">.prototype</span><span class="selector-class">.isPrototypeOf</span>(foo) <span class="comment">// true （实例foo的原型是Foo.prototype而不是Foo）</span></div><div class="line">Object<span class="selector-class">.prototype</span><span class="selector-class">.isPrototypeOf</span>(Foo) <span class="comment">// true</span></div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>();</div><div class="line">arr.__proto__ === <span class="built_in">Array</span>.prototype;</div><div class="line">arr.__proto__.__proto__ === <span class="built_in">Object</span>.prototype; <span class="comment">// Array.prototype.__proto__ === Object.prototype</span></div><div class="line">arr.__proto__.__proto__.__proto__ === <span class="literal">null</span>; <span class="comment">// Object.prototype.__proto__ === null</span></div><div class="line"><span class="built_in">Array</span>.__proto__===<span class="built_in">Function</span>.prototype; <span class="comment">// true</span></div><div class="line"><span class="built_in">Array</span> <span class="keyword">instanceof</span> <span class="built_in">Function</span>; <span class="comment">// true</span></div><div class="line"><span class="built_in">Function</span>.__proto__.__proto__.__proto__ === <span class="literal">null</span>; <span class="comment">// true</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> obj = <span class="keyword">new</span> <span class="built_in">Object</span>();</div><div class="line">obj.__proto__ === <span class="built_in">Object</span>.prototype;  <span class="comment">// true</span></div><div class="line">obj.__proto__.constructor === <span class="built_in">Object</span>; <span class="comment">// true</span></div><div class="line">obj.__proto__.__proto__ === <span class="literal">null</span>;   <span class="comment">// true</span></div></pre></td></tr></table></figure>
+<p>一切皆对象的意思：new Foo， new Object,  new Function 全部指向 Object.prototype，追根溯源，最源头的对象都是从Object构造函数生成（使用new Object()命令），所有对象的原型都可以上溯到Object.prototype。<br>Object.prototype的原型是null，原型链终结。<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Object</span>.getPrototypeOf(<span class="built_in">Object</span>.prototype) <span class="comment">// null</span></div></pre></td></tr></table></figure></p>
+<p>最顶级构造器：Function<br>最顶级原型：Object.prototype</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by  Huangzhike </p>
+<p>&copy; 2016 <a href="https://huangzhike.github.io"> Huangzhike </a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
