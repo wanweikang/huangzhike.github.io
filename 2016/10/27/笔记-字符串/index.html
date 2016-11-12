@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-字符串 | 一切都沉淀为笔记</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="一个放笔记的地方">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-字符串"/>
+		
+		<meta property="og:site_name" content="一切都沉淀为笔记"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="/resume" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-字符串</h2>
+				
+				<div>
+					<span class="post-time">2016-10-27 12:11</span>
+				</div>	
+				
+				<div class="article-content">
+				<p>JavaScript的字符串用’’或””括起来的字符表示。</p>
+<p>如果<code>&#39;</code>本身也是一个字符，可以用<code>&quot;&quot;</code>括起来，字符串内部既包含<code>&#39;</code>又包含<code>&quot;</code>可以用转义字符\来标识，比如：<br><figure class="highlight ada"><table><tr><td class="code"><pre><div class="line"><span class="symbol">'I</span>\<span class="symbol">'m</span> \<span class="string">"OK\"</span>!'; // 表示字符串：I<span class="symbol">'m</span> <span class="string">"OK"</span>!</div></pre></td></tr></table></figure></p>
+<p>转义字符\可以转义很多字符，比如\n表示换行，\t表示制表符，字符\本身也要转义，所以\\表示的字符就是\。</p>
+<p>ASCII字符可以以\x##形式的十六进制表示，例如：<br><figure class="highlight actionscript"><table><tr><td class="code"><pre><div class="line"><span class="string">'\x41'</span>; <span class="comment">// 等同于 'A'</span></div></pre></td></tr></table></figure></p>
+<p>还可以用\u####表示一个Unicode字符：<br><figure class="highlight awk"><table><tr><td class="code"><pre><div class="line"><span class="string">'\u4e2d\u6587'</span>; <span class="regexp">//</span> 等同于 <span class="string">'中文'</span></div></pre></td></tr></table></figure></p>
+<p>多行字符串</p>
+<p>多行字符串用\n写起来比较费事，ES6标准新增了一种多行字符串的表示方法，用`…`表示：<br><figure class="highlight autohotkey"><table><tr><td class="code"><pre><div class="line">`这是一个</div><div class="line">多行</div><div class="line">字符串`;</div></pre></td></tr></table></figure></p>
+<p>要把多个字符串连接起来，可以用<code>+</code>号连接。ES6新增了一种模板字符串，表示方法和多行字符串一样，但是它会自动替换字符串中的变量：<br><figure class="highlight delphi"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> <span class="keyword">name</span> = <span class="string">'小明'</span>;</div><div class="line"><span class="keyword">var</span> age = <span class="number">20</span>;</div><div class="line"><span class="keyword">var</span> <span class="keyword">message</span> = \`你好, $<span class="comment">&#123;name&#125;</span>, 你今年$<span class="comment">&#123;age&#125;</span>岁了!\`;</div><div class="line"><span class="keyword">message</span>; <span class="comment">// "你好, 小明, 你今年20岁了!"</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight lsl"><table><tr><td class="code"><pre><div class="line">var s = <span class="string">"Hello, world!"</span>;</div><div class="line">s.length; <span class="comment">// 13</span></div><div class="line">s[<span class="number">0</span>]; <span class="comment">// "H"</span></div><div class="line">s[<span class="number">6</span>]; <span class="comment">// " "</span></div><div class="line">s[<span class="number">13</span>]; <span class="comment">// undefined 超出范围的索引不报错，返回undefined</span></div></pre></td></tr></table></figure>
+<p>JavaScript为字符串提供了一些常用方法，调用这些方法本身不会改变原有字符串，而是返回一个新字符串：<br><figure class="highlight awk"><table><tr><td class="code"><pre><div class="line">var s = <span class="string">"Hello"</span>;</div><div class="line">s.toUpperCase(); <span class="regexp">//</span> 返回<span class="string">"HELLO"</span> </div><div class="line">s.indexOf(<span class="string">"world"</span>); <span class="regexp">//</span> 返回<span class="number">7</span></div><div class="line">s.indexOf(<span class="string">"World"</span>); <span class="regexp">//</span> 大小写敏感，没有找到指定的子串，返回-<span class="number">1</span> </div><div class="line">s.lastIndexOf(<span class="string">"World"</span>,<span class="number">7</span>) <span class="regexp">//</span> <span class="number">6</span> 由索引<span class="number">7</span>开始从尾到头搜索 </div><div class="line">s.substring(<span class="number">0</span>, <span class="number">3</span>); <span class="regexp">//</span> 从索引<span class="number">0</span>开始到<span class="number">3</span>（不包括<span class="number">3</span>），返回<span class="string">"hel"</span></div><div class="line">s.substring(<span class="number">7</span>); <span class="regexp">//</span> 从索引<span class="number">7</span>开始到结束，返回<span class="string">"world"</span> </div><div class="line">s.substr(<span class="number">0</span>, <span class="number">3</span>); <span class="regexp">//</span> 从索引<span class="number">0</span>开始取<span class="number">3</span>个字符（不建议使用）</div><div class="line">s.replace(<span class="string">"l"</span>,<span class="string">"0"</span>); <span class="regexp">//</span> He0lo 只替换<span class="number">1</span>个</div><div class="line">var a = <span class="string">"1h2h3h4h5"</span>;</div><div class="line">a.split(<span class="string">"h"</span>); <span class="regexp">//</span> [<span class="string">"1"</span>, <span class="string">"2"</span>, <span class="string">"3"</span>, <span class="string">"4"</span>, <span class="string">"5"</span>] 字符串→数组</div><div class="line">a.slice(-<span class="number">3</span>,-<span class="number">1</span>); <span class="regexp">//</span> <span class="number">4</span>h 倒数第三个到倒数第一个（不包括）</div></pre></td></tr></table></figure></p>
+<p> </p>
+<ul>
+<li>String.prototype.concat()字符串拼接</li>
+<li>String.prototype.charAt()  获取某位置上的字符</li>
+<li>String.prototype.charCodeAt()获取某位置上的字符编码</li>
+<li>String.prototype.slice()  截取字符串</li>
+<li>String.prototype.subString()截取字符串</li>
+<li>String.prototype.subStr()截取字符串</li>
+<li>String.prototype.indexOf()  获取字符在字符串中的位置</li>
+<li>String.prototype.lastIndexOf()  获取字符在字符串中的位置 逆向</li>
+<li>String.prototype.search()  获取字符在字符串中的位置</li>
+<li>String.prototype.split()  字符串转化成数组</li>
+<li>String.prototype.replace() 字符串替换 </li>
+<li>String.prototype.trim() 返回一个字符串的副本，删除前置及后缀的所有空格。 </li>
+</ul>
+<p><strong>slice,substr和substring</strong></p>
+<ul>
+<li><p>都接收两个参数<br>slice和substring接收的是起始位置和结束位置(不包括结束位置)<br>substr接收的则是起始位置和所要返回的字符串长度（类似splice）<br>substring是以两个参数中较小一个作为起始位置，较大的参数作为结束位置</p>
+</li>
+<li><p>当接收的参数是负数时<br>slice会将它字符串的长度与对应的负数相加，结果作为参数<br>substr则仅仅是将第一个参数与字符串长度相加后的结果作为第一个参数<br>substring则将负参数直接转换为0</p>
+</li>
+</ul>
+<hr>
+<p>字符串去空格：低版本JavaScript中没有trim函数（新的JavaScript引擎已经有了 trim()的原生实现。）<br><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="built_in">String</span>.prototype.trim = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">this</span>.replace(<span class="regexp">/^\s+|\s+$/g</span>, <span class="string">""</span>);</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>HTML字段转换函数<br><figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">escapeHTML</span><span class="params">(text)</span> </span>&#123;  </div><div class="line">	<span class="keyword">var</span> replacements= &#123;<span class="string">"&lt;"</span>: <span class="string">"&lt;"</span>, <span class="string">"&gt;"</span>: <span class="string">"&gt;"</span>,<span class="string">"&amp;"</span>: <span class="string">"&amp;"</span>, <span class="string">"\""</span>: <span class="string">""</span><span class="string">"&#125;;                      </span></div><div class="line">	return text.replace(/[&lt;&gt;&amp;"]/g, <span class="function"><span class="keyword">function</span><span class="params">(character)</span> </span>&#123;  </div><div class="line">		<span class="keyword">return</span> replacements[character];  </div><div class="line">	&#125;); </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>反转字符串（网上偶然看到的，看看就行）<br>+=方法和数组push join 法<br>+=法在低版本IE下效率较低，但据说V8引擎下效率反而更高，这个，见仁见智吧</p>
+<figure class="highlight actionscript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverseString</span><span class="params">(str)</span> </span>&#123;</div><div class="line">	<span class="keyword">var</span> splitString = str.split(<span class="string">""</span>); <span class="comment">//将字符串拆分   </span></div><div class="line">	<span class="keyword">var</span> reverseArray = splitString.reverse(); 	</div><div class="line">	<span class="keyword">var</span> joinArray = reverseArray.join(<span class="string">""</span>);    </div><div class="line">	<span class="keyword">return</span> joinArray; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight processing"><table><tr><td class="code"><pre><div class="line"></div><div class="line">function reverseString(<span class="built_in">str</span>) &#123;</div><div class="line">	<span class="keyword">return</span> <span class="built_in">str</span>.<span class="built_in">split</span>(<span class="string">""</span>).<span class="built_in">reverse</span>().<span class="built_in">join</span>(<span class="string">""</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverseString</span></span>(str) &#123;   </div><div class="line">	<span class="keyword">var</span> <span class="keyword">new</span><span class="type">String</span> = <span class="string">""</span>;  </div><div class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i = str.length - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123; </div><div class="line">		<span class="keyword">new</span><span class="type">String</span> += str[i]; </div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">new</span><span class="type">String</span>; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverseString</span> </span>(str) &#123;</div><div class="line">	<span class="keyword">var</span> <span class="keyword">new</span><span class="type">String</span> = <span class="string">""</span>;</div><div class="line">	<span class="keyword">var</span> i = str.length;</div><div class="line">	<span class="keyword">while</span> (i &gt; <span class="number">0</span>) &#123;</div><div class="line">		<span class="keyword">new</span><span class="type">String</span> += str.substring(i - <span class="number">1</span>, i);</div><div class="line">		i--;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">new</span><span class="type">String</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight axapta"><table><tr><td class="code"><pre><div class="line"></div><div class="line">function reverseString(<span class="keyword">str</span>) &#123;</div><div class="line">	<span class="keyword">if</span> (<span class="keyword">str</span> === <span class="string">""</span>) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">""</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="keyword">return</span> reverseString(<span class="keyword">str</span>.substr(<span class="number">1</span>)) + <span class="keyword">str</span>.charAt(<span class="number">0</span>);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight ada"><table><tr><td class="code"><pre><div class="line"><span class="keyword">function</span> <span class="title">reverseString</span>(str) &#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">(str</span> === <span class="string">""</span>) ? <span class="string">""</span> : <span class="type">reverseString</span>(str.substr(<span class="number">1</span>)) + str.charAt(<span class="number">0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight openscad"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverseString</span><span class="params">(str)</span> &#123;</span></div><div class="line">	return <span class="built_in">str</span> &amp;&amp; reverseString(<span class="built_in">str</span>.substr(<span class="number">1</span>)) + <span class="built_in">str</span>[<span class="number">0</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverseString</span> </span>(str) &#123;</div><div class="line">	<span class="keyword">var</span> <span class="keyword">new</span><span class="type">String</span> = [];</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i = str.length - <span class="number">1</span>, j = <span class="number">0</span>; i &gt;= <span class="number">0</span>; i--, j++) &#123;</div><div class="line">		<span class="keyword">new</span><span class="type">String</span>[j] = str[i];</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">new</span><span class="type">String</span>.join(<span class="string">""</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverseString</span> </span>(str) &#123;</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i = str.length - <span class="number">1</span>, <span class="keyword">new</span><span class="type">String</span> = <span class="string">""</span>; i &gt;= <span class="number">0</span>; <span class="keyword">new</span><span class="type">String</span> += str[i--] ) &#123;</div><div class="line"></div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">new</span><span class="type">String</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverseString</span> </span>(str) &#123;</div><div class="line">	<span class="function"><span class="keyword">function</span> <span class="title">rev</span></span>(str, len, <span class="keyword">new</span><span class="type">String</span>) &#123;</div><div class="line">		<span class="keyword">return</span> (len === <span class="number">0</span>) ? <span class="keyword">new</span><span class="type">String</span> : <span class="type">rev</span>(str, --len, (<span class="keyword">new</span><span class="type">String</span> += str[len]));</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> rev(str, str.length, <span class="string">""</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight processing"><table><tr><td class="code"><pre><div class="line"></div><div class="line">function reverseString (<span class="built_in">str</span>) &#123;</div><div class="line">	<span class="built_in">str</span> = <span class="built_in">str</span>.<span class="built_in">split</span>(<span class="string">""</span>);</div><div class="line">	var len = <span class="built_in">str</span>.length,</div><div class="line">		halfIndex = Math.<span class="built_in">floor</span>(len / <span class="number">2</span>) - <span class="number">1</span>,</div><div class="line">		newString;</div><div class="line">	<span class="keyword">for</span> (var i = <span class="number">0</span>; i &lt;= halfIndex; i++) &#123;</div><div class="line">		newString = <span class="built_in">str</span>[len - i - <span class="number">1</span>];</div><div class="line">		<span class="built_in">str</span>[len - i - <span class="number">1</span>] = <span class="built_in">str</span>[i];</div><div class="line">		<span class="built_in">str</span>[i] = newString;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="built_in">str</span>.<span class="built_in">join</span>(<span class="string">""</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight openscad"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverseString</span> <span class="params">(str)</span> &#123;</span></div><div class="line">	<span class="keyword">if</span> (<span class="built_in">str</span>.length &lt; <span class="number">2</span>) &#123;</div><div class="line">		return <span class="built_in">str</span>;</div><div class="line">	&#125;</div><div class="line">	var halfIndex = Math.<span class="built_in">ceil</span>(<span class="built_in">str</span>.length / <span class="number">2</span>);</div><div class="line">	return reverseString(<span class="built_in">str</span>.substr(halfIndex)) + reverseString(<span class="built_in">str</span>.substr(<span class="number">0</span>, halfIndex));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight actionscript"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverseString</span><span class="params">(str)</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> [].reduceRight.call(str, <span class="function"><span class="keyword">function</span><span class="params">(prev, curr)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> prev + curr;</div><div class="line">  &#125;, <span class="string">""</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ES6的方法<br><figure class="highlight processing"><table><tr><td class="code"><pre><div class="line">var <span class="built_in">str</span> = <span class="string">"heheda"</span>;</div><div class="line"></div><div class="line">[...<span class="built_in">str</span>].<span class="built_in">reverse</span>().<span class="built_in">join</span>(<span class="string">""</span>);</div><div class="line"></div><div class="line">[...<span class="built_in">str</span>].reduceRight( (prev, curr) =&gt; prev + curr );</div><div class="line"></div><div class="line"><span class="keyword">const</span> <span class="built_in">reverse</span> = <span class="built_in">str</span> =&gt;</div><div class="line">  <span class="built_in">str</span> &amp;&amp; <span class="built_in">reverse</span>(<span class="built_in">str</span>.substr(<span class="number">1</span>)) + <span class="built_in">str</span>[<span class="number">0</span>];</div></pre></td></tr></table></figure></p>
+<p>设计函数 repeat(char,n);<br>接收两个参数，一个字符串char，一个数数值n。返回重复n次的char。<br>比如 repeat(“★”,5)返回★★★★★。</p>
+<p>方法1：<br><figure class="highlight zephir"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">repeat</span><span class="params">(char,n)</span></span>&#123;</div><div class="line">	<span class="keyword">var</span> str = <span class="string">""</span>;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">1</span> ; i &lt;= n ; i++)&#123;</div><div class="line">		str += <span class="keyword">char</span>;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> str;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>字符串如果多，效率非常低，比如拼接64个星星，循环64次。</p>
+<p>方法2：<br>已经有了★★，出现4个五角星，就把★★翻倍就行了。<br>就是把任何数字都要 1、2、4、8、16、32……组成。</p>
+<p>十进制34等于二进制多少？32 + 2<br>100010<br>十进制15等于二进制多少？ 8+4+2+1<br>1111</p>
+<p>有没有系统的方法论，把数字25拆分成为1、2、4、8、16、32、64……的和？有，短除法：25除以2，余数是1，所以这个25必然蕴含一个1。<br>实际上短除法就蕴含了“奇变偶不变”。<br>凑25个星星，实际上就是用16个星星+8个星星+1个星星。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by  Huangzhike </p>
+<p>&copy; 2016 <a href="https://huangzhike.github.io"> Huangzhike </a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

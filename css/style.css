@@ -7,38 +7,82 @@ body {
 	font-weight: normal !important;
 }
 
+::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+	background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+	background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: rgba(0, 0, 0, .1);
+}
+
 a:hover{
 	text-decoration: none;
 }
 
 .btn-group, .btn-group-vertical{
-    margin: 40px 1px;
+	margin: 40px 1px;
 }
 
-
-.col-md-3 .widget{
-	font-size: 0.8em !important;
+.widget {
+	font-size: 0.9em;
 	overflow:hidden;
 	margin: 10px 0;
 }
 
-.tag_box li{
-	float: left ;
-	margin: 5px;
+.trace {
+	font-size: 0.7em !important;
 }
 
-.content .index-item-wrapper .post-time {
+.tag_box li{
+	float: left ;
+	padding: 5px;
+	transition: all 1s;
+	border-radius: 3px;
+}
+
+.tag_box li:hover{
+	background-color: #009688;
+}
+
+.tag_box li:hover a{
+	color: #fff;
+}
+
+.index-item-wrapper .post-time {
 	font-size: 1em ;
 	margin-top: 20px ;
-    margin-right: 20px;
+	margin-right: 20px;
 	float:right;
 }
 
- .content .index-item-wrapper{
-	overflow:hidden;
+.badge{
+	background-color: #ddd;
 }
 
- .content .index-item-wrapper h3{
+.index-item-wrapper{
+	overflow:hidden;
+	transition: all .4s;
+}
+
+/* .content .index-item-wrapper:hover{
+	background-color: #496d76;
+}*/
+
+.index-item-wrapper a{
+	transition: all .4s;
+}
+
+.index-item-wrapper:hover a{
+	color: #496d76;
+}
+
+.index-item-wrapper h3{
 	line-height: 18px !important;
 	font-size: 18px !important;
 	float:left ;
@@ -73,9 +117,9 @@ blockquote{
 .center-content{
 	float: none;
 	margin: 0 auto;
+	
 }
-
-/*toc*/
+/*
 #toc {
 	top: 150px;
 	transition: all ease 0.3s;
@@ -88,7 +132,6 @@ blockquote{
 
 .tocify .tocify-item {
 	border-left: 2px solid transparent;
-	/*truncate text*/
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
@@ -104,11 +147,15 @@ blockquote{
 	color: teal;
 	border-left: 2px solid;
 }
+*/
 
 @media (min-width: 1200px){
 	.container {
 		width: 1100px;
 	}
+    .center-content{
+    width: 90% !important;
+    }
 }
 
 /*disable toc on small screen*/
@@ -204,7 +251,7 @@ figure.highlight {
 	background: #2a2e35;
 	/*border: 1px solid color-border;*/
 	margin-top: 15px;
-	padding: 7px 15px;
+	padding: 7px 10px;
 	border-radius: 2px;
 	text-shadow: 0 0 1px #fff;
 	line-height: 1.6;
@@ -231,14 +278,15 @@ figure.highlight table {
 	border-spacing: 0;
 }
 figure.highlight .gutter {
+	display: none;
 	color: color-meta;
-	padding-right: 15px;
-	border-right: 1px solid color-border;
+	padding-right: 10px;
+	/* border-right: 1px solid color-border; */
 	text-align: right;
 }
 figure.highlight .code {
-	padding-left: 15px;
-	border-left: 1px solid #eee;
+	padding-left: 10px;
+	/*border-left: 1px solid #eee; */
 	color: #666;
 }
 figure.highlight .line {

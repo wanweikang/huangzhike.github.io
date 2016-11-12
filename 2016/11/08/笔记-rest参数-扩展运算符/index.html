@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-rest参数-扩展运算符 | 一切都沉淀为笔记</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="一个放笔记的地方">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-rest参数-扩展运算符"/>
+		
+		<meta property="og:site_name" content="一切都沉淀为笔记"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="/resume" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-rest参数-扩展运算符</h2>
+				
+				<div>
+					<span class="post-time">2016-11-08 12:22</span>
+				</div>	
+				
+				<div class="article-content">
+				<p>rest参数：ES6引入rest参数（形式为“…变量名”），用于获取函数的多余参数，不需要用arguments对象。rest参数搭配的变量是一个数组，将多余的参数放入数组中。<br><figure class="highlight actionscript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span><span class="params">(<span class="rest_arg">...values</span>)</span> </span>&#123;</div><div class="line">	 let sum = <span class="number">0</span>;</div><div class="line"></div><div class="line">	 <span class="keyword">for</span> (<span class="keyword">var</span> val of values) &#123;</div><div class="line">		sum += val;</div><div class="line">	 &#125;</div><div class="line"></div><div class="line">	 <span class="keyword">return</span> sum;</div><div class="line">&#125;</div><div class="line"></div><div class="line">add(<span class="number">2</span>, <span class="number">5</span>, <span class="number">3</span>) <span class="comment">// 10</span></div><div class="line"><span class="comment">// 利用rest参数，可以向该函数传入任意数目的参数。</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// arguments变量的写法</span></div><div class="line"><span class="keyword">const</span> sortNumbers = <span class="function"><span class="params">()</span> =&gt;</span></div><div class="line">	<span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>).sort();</div><div class="line"></div><div class="line"><span class="comment">// rest参数的写法</span></div><div class="line"><span class="keyword">const</span> sortNumbers = <span class="function">(<span class="params">...numbers</span>) =&gt;</span> numbers.sort();</div><div class="line"><span class="comment">// rest参数中的变量代表一个数组，数组方法都可以用于这个变量。</span></div></pre></td></tr></table></figure>
+<figure class="highlight actionscript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 利用rest参数改写数组push方法</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">push</span><span class="params">(arr, <span class="rest_arg">...items</span>)</span> </span>&#123;</div><div class="line">	items.forEach(<span class="function"><span class="keyword">function</span><span class="params">(item)</span> </span>&#123;</div><div class="line">		arr.push(item);</div><div class="line">		console.log(item);</div><div class="line">	&#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> a = [];</div><div class="line">push(a, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</div><div class="line"></div><div class="line"><span class="comment">// 注意，rest参数之后不能再有其他参数（只能是最后一个参数），否则会报错。</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">(a, <span class="rest_arg">...b</span>, c)</span> </span>&#123;&#125; <span class="comment">// 报错</span></div></pre></td></tr></table></figure>
+<figure class="highlight actionscript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 函数的length属性，不包括rest参数</span></div><div class="line">(<span class="function"><span class="keyword">function</span><span class="params">(a)</span> </span>&#123;&#125;).length  <span class="comment">// 1</span></div><div class="line">(<span class="function"><span class="keyword">function</span><span class="params">(<span class="rest_arg">...a</span>)</span> </span>&#123;&#125;).length  <span class="comment">// 0</span></div><div class="line">(<span class="function"><span class="keyword">function</span><span class="params">(a, <span class="rest_arg">...b</span>)</span> </span>&#123;&#125;).length  <span class="comment">// 1</span></div></pre></td></tr></table></figure>
+<p>扩展运算符（spread）是三个点。它好比rest参数的逆运算，将一个数组转为用逗号分隔的参数序列。该运算符主要用于函数调用。</p>
+<figure class="highlight actionscript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">push</span><span class="params">(array, <span class="rest_arg">...items</span>)</span> </span>&#123;</div><div class="line">	array.push(...items); <span class="comment">// 函数调用，使用扩展运算符，将一个数组，变为参数序列</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span><span class="params">(x, y)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> x + y;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> numbers = [<span class="number">4</span>, <span class="number">38</span>];</div><div class="line"><span class="comment">// 函数调用，使用扩展运算符，将一个数组，变为参数序列</span></div><div class="line">add(...numbers) <span class="comment">// 42 </span></div><div class="line"></div><div class="line"><span class="keyword">const</span> date = <span class="keyword">new</span> Date(...[<span class="number">2015</span>, <span class="number">1</span>, <span class="number">1</span>]);</div></pre></td></tr></table></figure>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 扩展运算符与正常的函数参数结合使用</span></div><div class="line">function <span class="function"><span class="title">fun</span><span class="params">(a, b, c, d,)</span></span> &#123;</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> arr = [<span class="number">0</span>, <span class="number">1</span>];</div><div class="line"><span class="function"><span class="title">fun</span><span class="params">(...arr, <span class="number">2</span>, ...[<span class="number">3</span>])</span></span>;</div></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 扩展运算符不需要apply方法展开数组</span></div><div class="line">Math.max(<span class="number">14</span>, <span class="number">3</span>, <span class="number">77</span>);</div><div class="line">Math.max.apply(null, [<span class="number">14</span>, <span class="number">3</span>, <span class="number">77</span>]) <span class="comment">// ES5写法</span></div><div class="line">Math.max(...[<span class="number">14</span>, <span class="number">3</span>, <span class="number">77</span>]) <span class="comment">// ES6写法</span></div><div class="line"></div><div class="line"><span class="comment">// push将一个数组添加到另一个数组尾部</span></div><div class="line">var arr1 = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>];</div><div class="line">var arr2 = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</div><div class="line"></div><div class="line"><span class="comment">// ES5写法</span></div><div class="line">Array.prototype.push.apply(arr1, arr2); <span class="comment">// push方法参数不能是数组，通过apply方法变通使用push方法</span></div><div class="line"></div><div class="line"><span class="comment">// ES6写法</span></div><div class="line">arr1.push(...arr2); <span class="comment">// 扩展运算符直接将数组传入push方法</span></div></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 扩展运算符还可以用于数组的赋值</span></div><div class="line">var a = [<span class="number">1</span>];</div><div class="line">var b = [<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</div><div class="line">var c = [<span class="number">6</span>, <span class="number">7</span>];</div><div class="line">var d = [<span class="number">0</span>, ...a, ...b, <span class="number">5</span>, ...c];</div><div class="line"></div><div class="line">d; <span class="comment">// [0, 1, 2, 3, 4, 5, 6, 7]</span></div><div class="line"></div><div class="line"><span class="comment">// 将一个数组拷贝进另一个数组的便捷方法</span></div><div class="line">const arr2 = [...arr1];</div><div class="line"></div><div class="line"><span class="comment">// 扩展运算符也可以与解构赋值结合起来，用于生成数组</span></div><div class="line">const [first, ...rest] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</div><div class="line">first <span class="comment">// 1</span></div><div class="line">rest <span class="comment">// [2, 3, 4, 5]</span></div><div class="line"></div><div class="line">const [first, ...rest] = [];</div><div class="line">first <span class="comment">// undefined</span></div><div class="line">rest <span class="comment">// []:</span></div><div class="line"></div><div class="line">const [first, ...rest] = [<span class="string">"foo"</span>];</div><div class="line">first  <span class="comment">// "foo"</span></div><div class="line">rest   <span class="comment">// []</span></div><div class="line"></div><div class="line"><span class="comment">// 如果将扩展运算符用于数组赋值，只能放在参数的最后一位，否则会报错</span></div><div class="line"></div><div class="line">const [...butLast, last] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]; <span class="comment">// 报错</span></div><div class="line"></div><div class="line"><span class="comment">// JavaScript的函数只能返回一个值，如果需要返回多个值，只能返回数组或对象。扩展运算符提供了一种变通方法</span></div><div class="line">var dateFields = readDateFields(database);</div><div class="line">var d = new Date(...dateFields);</div><div class="line"><span class="comment">// 从数据库取出一行数据，通过扩展运算符，直接将其传入构造函数Date</span></div><div class="line"></div><div class="line"><span class="comment">// 扩展运算符还可以将字符串转为真正的数组</span></div><div class="line">[...<span class="string">"hello"</span>]</div><div class="line"><span class="comment">// [ "h", "e", "l", "l", "o" ]</span></div><div class="line"></div><div class="line"><span class="comment">// 任何类似数组的对象，都可以用扩展运算符转为真正的数组</span></div><div class="line">var nodeList = document.querySelectorAll('div');</div><div class="line">var array = [...nodeList];</div></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by  Huangzhike </p>
+<p>&copy; 2016 <a href="https://huangzhike.github.io"> Huangzhike </a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
