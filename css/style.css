@@ -2,14 +2,19 @@
 body {
 	line-height: 1.8em;
 	font-size: 1.6em;
-	background-color: #fff;
+	background-color: #F9F9F5;
 	font-family:'Microsoft YaHei',Tahoma,'PT Serif',Georgia,Times,'Times New Roman',Serif;
 	font-weight: normal !important;
+    color: #2C3E50 !important;
+}
+
+a {
+	transition: all 1s;
 }
 
 ::-webkit-scrollbar {
-	width: 5px;
-	height: 5px;
+	width: 8px;
+	height: 8px;
 	background-color: transparent;
 }
 
@@ -21,10 +26,6 @@ body {
 	background-color: rgba(0, 0, 0, .1);
 }
 
-a:hover{
-	text-decoration: none;
-}
-
 .btn-group, .btn-group-vertical{
 	margin: 40px 1px;
 }
@@ -33,6 +34,10 @@ a:hover{
 	font-size: 0.9em;
 	overflow:hidden;
 	margin: 10px 0;
+}
+
+.widget p{
+	margin: 0;
 }
 
 .trace {
@@ -83,8 +88,8 @@ a:hover{
 }
 
 .index-item-wrapper h3{
-	line-height: 18px !important;
-	font-size: 18px !important;
+	line-height: 1.2em !important;
+	font-size: 1.2em !important;
 	float:left ;
 }
 
@@ -96,6 +101,9 @@ a:hover{
 	display: none;
 }
 
+.navbar-brand span{
+    font-size: 12px;
+}
 /*fix icon size*/
 [class^=mdi-], [class*=mdi-]{
 	font: normal normal normal 1em 'Material-Design-Icons';
@@ -149,14 +157,7 @@ blockquote{
 }
 */
 
-@media (min-width: 1200px){
-	.container {
-		width: 1100px;
-	}
-    .center-content{
-    width: 90% !important;
-    }
-}
+
 
 /*disable toc on small screen*/
 @media screen and (max-width:991px) {
@@ -197,11 +198,14 @@ blockquote{
 
 /*make the date beside title wrap to next line on mobile*/
 
-@media screen and (max-width:415px) {
+@media screen and (max-width:480px) {
 	.page h3.title span.date {
 		position: static;
 		display: inline-block;
 	}
+.gutter {
+display: none;
+}
 }
 
 /*code*/
@@ -242,16 +246,16 @@ footer {
 }
 
 pre{
-	background: #2a2e35 !important;
+	background: #F2F3F1 !important;
 	color: #e6e1dc;
 	text-shadow:none;
+    font-size: 14px;
 }
 
 figure.highlight {
-	background: #2a2e35;
+	background: #F2F3F1;
 	/*border: 1px solid color-border;*/
-	margin-top: 15px;
-	padding: 7px 10px;
+	margin-top: 10px;
 	border-radius: 2px;
 	text-shadow: 0 0 1px #fff;
 	line-height: 1.6;
@@ -259,45 +263,107 @@ figure.highlight {
 	position: relative;
 	font-size: 0.9em;
 }
-figure.highlight figcaption {
+figure figcaption {
 	color: color-meta;
 	margin-bottom: 5px;
 	text-shadow: 0 0 1px #fff;
 }
-figure.highlight figcaption a {
+figure figcaption a {
 	position: absolute;
 	right: 15px;
 }
-figure.highlight pre {
+figure pre {
 	border: none;
 	padding: 0;
 	margin: 0;
 }
-figure.highlight table {
+figure table {
 	margin-top: 0;
 	border-spacing: 0;
 }
-figure.highlight .gutter {
-	display: none;
+.gutter pre{
+    width: 2em;
+    background-color: #ECEEED !important;
+}
+
+.gutter {
+    padding: 5px 0;
+	/*display: none;*/
+    background-color: #ECEEED;
 	color: color-meta;
 	padding-right: 10px;
 	/* border-right: 1px solid color-border; */
 	text-align: right;
 }
-figure.highlight .code {
+.code {
 	padding-left: 10px;
 	/*border-left: 1px solid #eee; */
 	color: #666;
 }
-figure.highlight .line {
+.highlight .line {
 	height: 20px;
 }
+/*
+Visual Studio-like style based on original C# coloring by Jason Diamond <jason@diamond.name>
+*/
+.hljs {
+  display: block;
+  overflow-x: auto;
+  color: black;
+}
 
-/* javascript highlight */
-.hljs{display:block;overflow-x:auto;color:#ddd}
-.hljs-tag,.hljs-keyword,.hljs-selector-tag,.hljs-literal,.hljs-strong,.hljs-name{color:#f92672}
-.hljs-code{color:#66d9ef}
-.hljs-class .hljs-title{color:white}
-.hljs-attribute,.hljs-symbol,.hljs-regexp,.hljs-link{color:#bf79db}
-.hljs-string,.hljs-bullet,.hljs-subst,.hljs-title,.hljs-section,.hljs-emphasis,.hljs-type,.hljs-built_in,.hljs-builtin-name,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-addition,.hljs-variable,.hljs-template-tag,.hljs-template-variable{color:#a6e22e}
-.hljs-comment,.hljs-quote,.hljs-deletion,.hljs-meta{color:#75715e}
+.hljs-comment,
+.hljs-quote,
+.hljs-variable {
+  color: #999;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-name,
+.hljs-tag {
+  color: #00f;
+}
+
+.hljs-string,
+.hljs-title,
+.hljs-section,
+.hljs-attribute,
+.hljs-literal,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-addition {
+  color: #a31515;
+}
+
+.hljs-deletion,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-meta {
+  color: #2b91af;
+}
+
+.hljs-doctag {
+  color: #808080;
+}
+
+.hljs-attr {
+  color: #f00;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link {
+  color: #00b0e8;
+}
+
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}

@@ -1,0 +1,224 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-Generator | 一切都沉淀为笔记</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="一个放笔记的地方">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-Generator"/>
+		
+		<meta property="og:site_name" content="一切都沉淀为笔记"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一切都沉淀为笔记 <span>Talk is cheap, show me the code</span></a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="/resume" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Generator</h2>
+				
+				<div>
+					<span class="post-time">2016-11-08 12:22</span>
+				</div>	
+				
+				<div class="article-content">
+				<p><strong>2016-11-16更新</strong></p>
+<ul>
+<li>Generator函数是ES6提供的一种异步编程方案；</li>
+<li>function命令与函数名之间有一个星号；</li>
+<li>函数体内部使用yield语句，定义遍历器的每个成员，即不同的内部状态。</li>
+<li>调用与普通函数一样，调用后，函数并不执行，返回一个指向内部状态的指针对象，也就是遍历器对象（Iterator Object）。</li>
+<li>调用遍历器对象的next方法，使得指针移向下一个状态。</li>
+<li>每次调用next方法，内部指针就从函数头部或上一次停下来的地方开始执行，直到下一个yield语句（或return语句）为止。</li>
+<li><p>Generator函数是分段执行的，yield命令暂停执行，next方法恢复执行。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">helloWorldGenerator</span><span class="params">()</span></span> &#123;</div><div class="line">	// 该函数有三个状态：hello，world和<span class="keyword">return</span>语句（结束执行）</div><div class="line">	yield <span class="string">'hello'</span>;</div><div class="line">	yield <span class="string">'world'</span>;</div><div class="line">	<span class="keyword">return</span> <span class="string">'ending'</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">const hw = helloWorldGenerator();</div><div class="line"></div><div class="line">hw.<span class="built_in">next</span>() // &#123; value: <span class="string">'hello'</span>, done: <span class="keyword">false</span> &#125;</div><div class="line">hw.<span class="built_in">next</span>() // &#123; value: <span class="string">'world'</span>, done: <span class="keyword">false</span> &#125;</div><div class="line">hw.<span class="built_in">next</span>() // &#123; value: <span class="string">'ending'</span>, done: <span class="keyword">true</span> &#125;</div><div class="line">hw.<span class="built_in">next</span>() // &#123; value: undefined, done: <span class="keyword">true</span> &#125;</div><div class="line">// 共调用了四次<span class="built_in">next</span>方法</div></pre></td></tr></table></figure>
+</li>
+<li><p>第一次调用，开始执行，直到第一个yield语句。next方法返回一个对象，value属性就是当前yield语句的值hello，done属性值false，表示遍历没完成。</p>
+</li>
+<li><p>第二次调用，从上次yield语句停下的地方，一直执行到下一个yield语句。</p>
+</li>
+<li><p>第三次调用，从上次yield语句停下的地方，一直执行到return语句（如果没有return语句，就执行到函数结束）。next方法返回的对象的value属性，就是return后面的表达式的值（如果没有return语句，则value属性的值为undefined），done属性的值true，表示遍历已经结束。</p>
+</li>
+<li><p>第四次调用，已经运行完毕，next方法返回对象的value属性为undefined，done属性为true。以后再调用next方法，返回的都是这个值。</p>
+</li>
+<li><p>yield语句后面的表达式，只有调用next方法、指向该语句时才会执行，等于手动的“惰性求值”（Lazy Evaluation）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span></span>&#123;</div><div class="line">	<span class="keyword">yield</span>  <span class="number">123</span> + <span class="number">456</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">// yield后面的表达式123 + 456，不会立即求值，只会在next方法将指针移到这一句时，才会求值。</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>yield语句与return语句都能返回语句后表达式的值。</p>
+</li>
+<li>区别在于遇到yield，函数暂停执行，下一次再从该位置继续向后执行。</li>
+<li>一个函数里面，只能执行一个return语句，但可以执行多个yield语句。</li>
+<li>正常函数只能返回一个值，因为只能执行一次return；</li>
+<li><p>Generator函数可以返回一系列的值，因为可以有任意多个yield。</p>
+</li>
+<li><p>Generator函数不用yield语句，就变成了单纯的暂缓执行函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">f</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'执行了！'</span>)</div><div class="line">&#125;</div><div class="line"><span class="comment">// 只有调用next方法时，函数f才会执行</span></div><div class="line"><span class="keyword">const</span> generator = f();</div><div class="line"></div><div class="line">setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	generator.next()</div><div class="line">&#125;, <span class="number">2000</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>yield语句不能用在普通函数中，否则报错。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> arr = [<span class="number">1</span>, [[<span class="number">2</span>, <span class="number">3</span>], <span class="number">4</span>], [<span class="number">5</span>, <span class="number">6</span>]];</div><div class="line"><span class="comment">// forEach方法的参数是一个普通函数，但是在里面使用了yield语句。</span></div><div class="line"><span class="keyword">const</span> flat = <span class="function"><span class="keyword">function</span>* (<span class="params">a</span>)</span>&#123;</div><div class="line">	a.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>)</span>&#123;</div><div class="line">		<span class="keyword">if</span> (<span class="keyword">typeof</span> item !== <span class="string">'number'</span>)&#123;</div><div class="line">			<span class="keyword">yield</span>* flat(item);</div><div class="line">		&#125; <span class="keyword">else</span> &#123;</div><div class="line">			<span class="keyword">yield</span> item;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">for</span> (<span class="keyword">var</span> f <span class="keyword">of</span> flat(arr))&#123;</div><div class="line">	<span class="built_in">console</span>.log(f);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 一种方法是用for循环</span></div><div class="line"><span class="keyword">const</span> flat = <span class="function"><span class="keyword">function</span>* (<span class="params">a</span>)</span>&#123;</div><div class="line">	<span class="keyword">const</span> length = a.length;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">var</span> i =<span class="number">0</span>;i&lt;length;i++)&#123;</div><div class="line">		<span class="keyword">var</span> item = a[i];</div><div class="line">		<span class="keyword">if</span> (<span class="keyword">typeof</span> item !== <span class="string">'number'</span>)&#123;</div><div class="line">			<span class="keyword">yield</span>* flat(item);</div><div class="line">		&#125; <span class="keyword">else</span> &#123;</div><div class="line">			<span class="keyword">yield</span> item;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">for</span> (<span class="keyword">var</span> f <span class="keyword">of</span> flat(arr))&#123;</div><div class="line">	<span class="built_in">console</span>.log(f);</div><div class="line">&#125;</div><div class="line"><span class="comment">// 1, 2, 3, 4, 5, 6</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>任意一个对象的Symbol.iterator属性，等于该对象的遍历器函数，调用该函数会返回该对象的一个遍历器。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// 遍历器本身也是一个对象，它的Symbol.iterator属性执行后，返回自身</div><div class="line">function* gen()&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line">const g = gen(); // gen是Generator函数，调用它生成遍历器g</div><div class="line">// 遍历器g的Symbol.iterator属性是一个遍历器函数，执行后返回它自己</div><div class="line">g[<span class="string">Symbol.iterator</span>](<span class="link"></span>) === g // true</div></pre></td></tr></table></figure>
+</li>
+<li><p>yield语句本身没有返回值，或者说返回undefined。next方法可以带一个参数，该参数就会被当作上一个yield语句的返回值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 定义了一个可以无限运行的Generator函数f</span></div><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">f</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>; <span class="literal">true</span>; i++) &#123;</div><div class="line">		<span class="comment">// 如果next方法没有参数，每次运行到yield语句，变量reset的值总是undefined</span></div><div class="line">		<span class="keyword">var</span> reset = <span class="keyword">yield</span> i;</div><div class="line">		<span class="comment">// 当next方法带一个参数true时，当前的变量reset就被重置为这个参数（即true）</span></div><div class="line">		<span class="keyword">if</span>(reset) &#123; i = <span class="number">-1</span>; &#125; <span class="comment">// i会等于-1，下一轮循环就会从-1开始递增</span></div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = f();</div><div class="line"></div><div class="line">g.next() <span class="comment">// &#123; value: 0, done: false &#125;</span></div><div class="line">g.next() <span class="comment">// &#123; value: 1, done: false &#125;</span></div><div class="line">g.next(<span class="literal">true</span>) <span class="comment">// &#123; value: 0, done: false &#125;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>Generator函数从暂停状态到恢复运行，上下文状态（context）是不变的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">foo</span>(<span class="params">x</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> y = <span class="number">2</span> * (<span class="keyword">yield</span> (x + <span class="number">1</span>));</div><div class="line">	<span class="keyword">var</span> z = <span class="keyword">yield</span> (y / <span class="number">3</span>);</div><div class="line">	<span class="keyword">return</span> (x + y + z);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> a = foo(<span class="number">5</span>);</div><div class="line"></div><div class="line">a.next() <span class="comment">// Object&#123;value: 6, done: false&#125;</span></div><div class="line">a.next() <span class="comment">// Object&#123;value: NaN, done: false&#125;</span></div><div class="line"><span class="comment">// 第二次运行next方法不带参数，y的值等于2 * undefined（即NaN），除以3是NaN，返回对象的value属性也是NaN。</span></div><div class="line">a.next() <span class="comment">// Object&#123;value: NaN, done: false&#125;</span></div><div class="line"><span class="comment">// 第三次运行Next方法不带参数，z等于undefined，返回对象的value属性等于5 + NaN + undefined，即NaN。</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>如果向next方法提供参数，返回结果就不一样了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">foo</span>(<span class="params">x</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> y = <span class="number">2</span> * (<span class="keyword">yield</span> (x + <span class="number">1</span>));</div><div class="line">	<span class="keyword">var</span> z = <span class="keyword">yield</span> (y / <span class="number">3</span>);</div><div class="line">	<span class="keyword">return</span> (x + y + z);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> it = foo(<span class="number">5</span>);</div><div class="line"></div><div class="line">it.next() <span class="comment">// &#123; value: 6, done: false &#125;</span></div><div class="line"><span class="comment">// 第一次调用next方法时，返回x+1的值6；</span></div><div class="line">it.next(<span class="number">12</span>) <span class="comment">// &#123; value: 8, done: false &#125;</span></div><div class="line"><span class="comment">// 第二次调用next方法，将上一次yield语句的值设为12，y等于24，返回y / 3的值8；</span></div><div class="line">it.next(<span class="number">13</span>) <span class="comment">// &#123; value: 42, done: true &#125;</span></div><div class="line"><span class="comment">// 第三次调用next方法，将上一次yield语句的值设为13，z等于13，x等于5，y等于24，return语句的值等于42。</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>注意，由于next方法的参数表示上一个yield语句的返回值，所以第一次使用next方法时，不能带有参数。</p>
+</li>
+<li><p>for…of循环自动遍历Generator函数，不需要next方法。</p>
+<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">function* foo() &#123;</div><div class="line">	<span class="keyword">yield</span> <span class="number">1</span>;</div><div class="line">	<span class="keyword">yield</span> <span class="number">2</span>;</div><div class="line">	<span class="keyword">yield</span> <span class="number">3</span>;</div><div class="line">	<span class="keyword">yield</span> <span class="number">4</span>;</div><div class="line">	<span class="keyword">yield</span> <span class="number">5</span>;</div><div class="line">	<span class="keyword">return</span> <span class="number">6</span>;</div><div class="line">&#125;</div><div class="line">// 使用<span class="keyword">for</span>...<span class="keyword">of</span>循环，依次显示<span class="number">5</span>个<span class="keyword">yield</span>语句的值。</div><div class="line"><span class="keyword">for</span> (<span class="keyword">let</span> v <span class="keyword">of</span> foo()) &#123;</div><div class="line">	console.log(v);</div><div class="line">&#125;</div><div class="line">// <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span></div><div class="line">// 一旦done为<span class="literal">true</span>，<span class="keyword">for</span>...<span class="keyword">of</span>循环中止，且不包含该返回对象，<span class="keyword">return</span>语句返回的<span class="number">6</span>，不包括在<span class="keyword">for</span>...<span class="keyword">of</span>循环中。</div></pre></td></tr></table></figure>
+</li>
+<li><p>利用generator函数和for…of循环，实现斐波那契数列。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">fibonacci</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">let</span> [prev, curr] = [<span class="number">0</span>, <span class="number">1</span>];</div><div class="line">	<span class="keyword">for</span> (;;) &#123;</div><div class="line">		[prev, curr] = [curr, prev + curr];</div><div class="line">		<span class="keyword">yield</span> curr;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">for</span> (<span class="keyword">let</span> n <span class="keyword">of</span> fibonacci()) &#123;</div><div class="line">	<span class="keyword">if</span> (n &gt; <span class="number">1000</span>) <span class="keyword">break</span>;</div><div class="line">	<span class="built_in">console</span>.log(n);</div><div class="line">&#125;</div><div class="line"><span class="comment">// 使用for...of语句时不需要使用next方法</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>ES6以前，异步方法大概有四种：回调函数，事件监听，发布/订阅，Promise 对象。</p>
+</li>
+<li>异步：所谓”异步”，简单说就是一个任务分成两段，先执行第一段，然后转而执行其他任务，等做好了准备，再回过头执行第二段。比如，有一个任务是读取文件进行处理，任务的第一段是向操作系统发出请求，要求读取文件。然后，程序执行其他任务，等到操作系统返回文件，再接着执行任务的第二段（处理文件）。这种不连续的执行，就叫做异步。</li>
+<li>相应地，连续的执行就叫做同步。由于是连续执行，不能插入其他任务，所以操作系统从硬盘读取文件的这段时间，程序只能干等着。</li>
+<li>为什么Node.js约定，回调函数的第一个参数，必须是错误对象err（如果没有错误，该参数就是null）？原因是执行分成两段，在这两段之间抛出的错误，无法捕捉，只能当作参数，传入第二段。</li>
+<li>JavaScript语言对异步编程的实现，就是回调函数。</li>
+<li><p>回调函数本身并没有问题，问题在多个回调函数嵌套。</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 读取A文件之后，再读取B文件</span></div><div class="line">fs.readFile(fileA, <span class="function"><span class="keyword">function</span> <span class="params">(err, data)</span> </span>&#123;</div><div class="line">	fs.readFile(fileB, <span class="function"><span class="keyword">function</span> <span class="params">(err, data)</span> </span>&#123;</div><div class="line">		<span class="comment">// ...</span></div><div class="line">	&#125;);</div><div class="line">&#125;);</div><div class="line"><span class="comment">// 如果依次读取多个文件，就会出现多重嵌套。</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>Promise解决了这个问题。允许将回调函数的横向加载，改成纵向加载。</p>
+<figure class="highlight scilab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 采用Promise，连续读取多个文件</span></div><div class="line">var readFile = require(<span class="string">'fs-readfile-promise'</span>); <span class="comment">// fs-readfile-promise模块返回Promise版本的readFile函数</span></div><div class="line"><span class="comment">// Promise提供then方法加载回调函数，catch方法捕捉执行过程中抛出的错误。</span></div><div class="line">readFile(fileA)</div><div class="line">	.<span class="keyword">then</span>(<span class="function"><span class="keyword">function</span><span class="params">(data)</span>&#123;</span></div><div class="line">		console.<span class="built_in">log</span>(data.toString());</div><div class="line">	&#125;)</div><div class="line">	.<span class="keyword">then</span>(<span class="function"><span class="keyword">function</span><span class="params">()</span>&#123;</span></div><div class="line">		<span class="keyword">return</span> readFile(fileB);</div><div class="line">	&#125;)</div><div class="line">	.<span class="keyword">then</span>(<span class="function"><span class="keyword">function</span><span class="params">(data)</span>&#123;</span></div><div class="line">		console.<span class="built_in">log</span>(data.toString());</div><div class="line">	&#125;)</div><div class="line">	.<span class="keyword">catch</span>(<span class="function"><span class="keyword">function</span><span class="params">(err)</span> &#123;</span></div><div class="line">		console.<span class="built_in">log</span>(err);</div><div class="line">	&#125;);</div><div class="line"><span class="comment">// Promise最大问题是代码冗余</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>“协程”（coroutine），多个线程互相协作，完成异步任务。<br>   第一步，协程A开始执行。<br>   第二步，协程A执行到一半，进入暂停，执行权转移到协程B。<br>   第三步，（一段时间后）协程B交还执行权。<br>   第四步，协程A恢复执行。上面流程的协程A，就是异步任务，因为它分成两段（或多段）执行。</p>
+   <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 读取文件的协程写法</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">asnycJob</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="comment">// ...其他代码</span></div><div class="line">	<span class="keyword">var</span> f = <span class="keyword">yield</span> readFile(fileA);</div><div class="line">	<span class="comment">// ...其他代码</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// 函数asyncJob是协程，奥妙在yield命令。表示执行到此处，执行权将交给其他协程。</span></div><div class="line"><span class="comment">// yield命令是异步两个阶段的分界线。</span></div><div class="line"><span class="comment">// 协程遇到 yield 命令就暂停，等到执行权返回，再从暂停的地方继续往后执行。</span></div><div class="line"><span class="comment">// 优点是写法像同步操作。</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>Generator函数是协程在ES6的实现，可以交出函数的执行权（即暂停执行）。Generator函数就是一个封装的异步任务，或者说是异步任务的容器。异步操作需要暂停的地方，都用yield语句注明。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params">x</span>)</span>&#123;</div><div class="line">	<span class="keyword">var</span> y = <span class="keyword">yield</span> x + <span class="number">2</span>;</div><div class="line">	<span class="keyword">return</span> y;</div><div class="line">&#125;</div><div class="line"><span class="comment">// Generator函数执行不会返回结果，返回的是指针对象。</span></div><div class="line"><span class="keyword">var</span> g = gen(<span class="number">1</span>); <span class="comment">// 调用Generator函数，返回一个内部指针（即遍历器）g </span></div><div class="line">g.next() <span class="comment">// &#123; value: 3, done: false &#125;</span></div><div class="line"><span class="comment">// 调用指针g的next方法，移动内部指针（即执行异步任务的第一段），指向第一个遇到的yield语句</span></div><div class="line">g.next() <span class="comment">// &#123; value: undefined, done: true &#125;</span></div><div class="line"><span class="comment">// 执行到x + 2为止</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>Generator函数内部部署错误处理代码，捕获函数体外抛出的错误。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params">x</span>)</span>&#123;</div><div class="line">	<span class="keyword">try</span> &#123;</div><div class="line">		<span class="keyword">var</span> y = <span class="keyword">yield</span> x + <span class="number">2</span>;</div><div class="line">	&#125; <span class="keyword">catch</span> (e)&#123;</div><div class="line">		<span class="built_in">console</span>.log(e);</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> y;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> g = gen(<span class="number">1</span>);</div><div class="line">g.next();</div><div class="line">g.throw（<span class="string">'出错了'</span>）<span class="comment">// 出错了</span></div><div class="line"><span class="comment">// 最后一行，Generator函数体外，使用指针对象的throw方法抛出的错误，被函数体内的try ...catch代码块捕获。</span></div><div class="line"><span class="comment">// 出错代码与处理错误代码，实现分离。</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>虽然Generator将异步表示得很简洁，但流程管理却不方便（何时执行第一阶段、何时执行第二阶段）。</p>
+<figure class="highlight qml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">var</span> fetch = <span class="built_in">require</span>(<span class="string">'node-fetch'</span>);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="built_in">var</span> <span class="built_in">url</span> = <span class="string">'https://api.github.com/users/github'</span>;</div><div class="line">	<span class="built_in">var</span> result = <span class="keyword">yield</span> fetch(<span class="built_in">url</span>);</div><div class="line">	<span class="built_in">console</span>.log(result.bio);</div><div class="line">&#125;</div><div class="line"><span class="comment">// enerator函数封装了一个异步操作，先读取一个远程接口，然后从JSON格式的数据解析信息。</span></div><div class="line"><span class="comment">// 非常像同步操作，除了yield命令。</span></div><div class="line"></div><div class="line"><span class="comment">// 执行方法如下</span></div><div class="line"><span class="built_in">var</span> g = gen(); <span class="comment">// 首先执行Generator函数，获取遍历器对象</span></div><div class="line"><span class="built_in">var</span> result = g.next(); <span class="comment">// 然后使用next 方法，执行异步任务第一阶段</span></div><div class="line"></div><div class="line"><span class="comment">// 由于Fetch模块返回的是Promise对象，要用then方法调用下一个next 方法。</span></div><div class="line">result.value.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">	<span class="keyword">return</span> data.json();</div><div class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">	g.next(data);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by  Huangzhike </p>
+<p>&copy; 2016 <a href="https://huangzhike.github.io"> Huangzhike </a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

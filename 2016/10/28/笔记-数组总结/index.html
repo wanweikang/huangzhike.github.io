@@ -55,7 +55,8 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/">一切都沉淀为笔记</a>
+			<a class="navbar-brand" href="/">一切都沉淀为笔记 <span>Talk is cheap, show me the code</span></a>
+           
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
 			<ul class="nav navbar-nav navbar-right">
@@ -194,7 +195,7 @@
 <ul>
 <li>reverse 反转数组项的顺序</li>
 <li>sort 可以传入一个比较函数，比较函数接收两个参数，如果第一个参数应该位于第二个之前则返回一个负数，如果两个参数相等则返回0，如果第一个参数应该位于第二个参数之后则返回一个正数。</li>
-<li>如果数组项是数值类型或者其valueOf方法会返回数值类型的对象类型，可以使用更简单的比较函数。以下这个函数将数组由大到小重排序。<figure class="highlight ada"><table><tr><td class="code"><pre><div class="line"><span class="keyword">function</span> <span class="title">compare</span>(a,b) &#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">b-a</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<li>如果数组项是数值类型或者其valueOf方法会返回数值类型的对象类型，可以使用更简单的比较函数。以下这个函数将数组由大到小重排序。<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">function</span> <span class="title">compare</span>(a,b) &#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">b-a</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 </ul>
 <p><strong>数组操作方法</strong></p>
@@ -221,13 +222,13 @@
 <li>every：对数组中的每一项运行给定函数，如果该函数对每一项都返回true，则返回true；</li>
 <li>some：对数组中的每一项运行给定函数，如果该函数任一项返回true，则返回true。</li>
 </ul>
-<figure class="highlight ada"><table><tr><td class="code"><pre><div class="line"><span class="keyword">array</span>.func(item,index,thisArray&#123;</div><div class="line">	//<span class="keyword">return</span> <span class="keyword">do</span> something</div><div class="line">&#125;,作用域对象（可选）)</div></pre></td></tr></table></figure>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">array</span>.func(item,index,thisArray&#123;</div><div class="line">	//<span class="keyword">return</span> <span class="keyword">do</span> something</div><div class="line">&#125;,作用域对象（可选）)</div></pre></td></tr></table></figure>
 <ul>
 <li>迭代方法不会对原数组造成任何影响。forEach和对数组进行for循环的不同之处也在于此。</li>
 </ul>
 <p><strong>数组归并方法</strong></p>
 <ul>
-<li>reduce和reduceRight<figure class="highlight ada"><table><tr><td class="code"><pre><div class="line"><span class="keyword">array</span>.func(prev,cur,index,thisArray&#123;</div><div class="line">	//<span class="keyword">return</span> <span class="keyword">do</span> something;</div><div class="line">&#125;,)</div></pre></td></tr></table></figure>
+<li>reduce和reduceRight<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">array</span>.func(prev,cur,index,thisArray&#123;</div><div class="line">	//<span class="keyword">return</span> <span class="keyword">do</span> something;</div><div class="line">&#125;,)</div></pre></td></tr></table></figure>
 </li>
 </ul>
 
