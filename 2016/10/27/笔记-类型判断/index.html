@@ -99,210 +99,130 @@
 				</div>	
 				
 				<div class="article-content">
-				<p><strong>基本类型和引用类型</strong></p>
+				<p><strong>2016-11-18重新整理更新</strong></p>
 <ul>
-<li>基本类型如数字，布尔值，在内存中有固定的大小，通过变量直接访问基本类型的数据。</li>
-<li>引用类型如对象，数组和函数，大小原则上不受限制，通过对其引用的访问来访问它们本身，指向存储对象的地址。</li>
-</ul>
-<figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var x = <span class="number">1</span><span class="comment">; // 基本类型</span></div><div class="line">var y = x<span class="comment">; </span></div><div class="line"><span class="attribute">x</span> = <span class="number">2</span><span class="comment">;</span></div><div class="line">y<span class="comment">; // 1 （保存副本，改变一个另外一个不会影响）</span></div></pre></td></tr></table></figure>
-<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var <span class="built_in">R1</span> = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]<span class="comment">; // 引用类型</span></div><div class="line">var <span class="built_in">R2</span> = <span class="built_in">R1</span><span class="comment">;</span></div><div class="line"><span class="built_in">R1</span>.push(<span class="number">4</span>)<span class="comment">;</span></div><div class="line"><span class="built_in">R2</span><span class="comment">; // 1,2,3,4 （R1、R2指向同一个地址）</span></div><div class="line"><span class="built_in">R1</span>===<span class="built_in">R2</span><span class="comment">; // true</span></div><div class="line">var <span class="built_in">R1</span> = [<span class="number">1</span>]<span class="comment">;</span></div><div class="line"><span class="built_in">R1</span>===<span class="built_in">R2</span><span class="comment">; // false （引用指向最终被引用的对象，不是引用本身。）</span></div></pre></td></tr></table></figure>
-<p><strong>数据类型</strong></p>
+<li>基本类型：number、string、boolean、undefined、null</li>
+<li>引用类型：object、function、array、RegExp、Math、Date。</li>
+<li>值类型判断用typeof，引用类型判断用instanceof。</li>
+<li>基本类型保存值，引用类型保存地址。</li>
+<li>五种基本数据类型是按值访问的，可以操作保存在变量中的实际值。</li>
+<li>引用类型的值是按引用访问的，引用类型的值是保存在内存中的对象。</li>
+<li>当复制保存着对象的某个变量时，操作的是对象的引用。</li>
+<li>但在为对象添加属性是，操作的是实际的对象。</li>
+<li>引用类型的值，可以添加属性和方法，也可以改变和删除其属性和方法。</li>
+<li>但不能给基本类型的值添加属性，尽管不会报错。</li>
+<li><p>复制引用操作，两个变量实际上将引用同一个对象。因此，改变其中一个变量，就会影响另一个变量。</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// 基本类型</div><div class="line">var a = <span class="number">1</span><span class="comment">; // a变量存储的是数值1</span></div><div class="line">var b = a<span class="comment">;</span></div><div class="line"><span class="attribute">a</span> = <span class="number">2</span><span class="comment">;</span></div><div class="line">b<span class="comment">; // 1，保存副本，改变一个另一个不会影响</span></div></pre></td></tr></table></figure>
+  <figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 引用类型</span></div><div class="line"><span class="keyword">var</span> a = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;&#125;; <span class="comment">//  a存储的是function的内存地址</span></div><div class="line"><span class="keyword">var</span> b = a; <span class="comment">// 把匿名函数地址给了b</span></div><div class="line">b.ha = <span class="number">1</span>; <span class="comment">// 给b添加属性</span></div><div class="line">a.ha; <span class="comment">// 1，指向同一个对象</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> R1 = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]; <span class="comment">// 存储的是内存地址</span></div><div class="line"><span class="keyword">var</span> R2 = R1;</div><div class="line">R1.push(<span class="number">4</span>);</div><div class="line">R2; <span class="comment">// [1, 2, 3, 4]，R1、R2指向同一个地址</span></div><div class="line">R1 === R2; <span class="comment">// true</span></div><div class="line"><span class="keyword">var</span> R1 = [<span class="number">1</span>];</div><div class="line">R1 === R2; <span class="comment">// false，引用指向最终被引用的对象，不是引用本身</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>JavaScript共有六种数据类型：<code>string</code> <code>number</code> <code>boolean</code> <code>null</code> <code>undefined</code> <code>object</code>。</p>
+</li>
+<li>简单基本类型（string、boolean、number、null、undefined）本身不是对象。</li>
+<li>undefined类型只有一个值，即undefined。使用var声明变量但未初始化时，变量值就是undefined。</li>
+<li>对未初始化的变量执行typeof返回undefined，对未声明的变量执行typeof同样返回undefined。</li>
+<li><p>以下返回undefined：</p>
 <ul>
-<li><p>JavaScript中一共有六种数据类型：<code>string</code> <code>number</code> <code>boolean</code> <code>null</code> <code>undefined</code> <code>object</code>。</p>
-</li>
-<li><p>简单基本类型（string 、 boolean 、 number 、 null 和 undefined）本身并不是对象。</p>
-</li>
-<li><p>undefined 类型只有一个值，即 undefined。在使用 var 声明变量但未对其加以初始化时，这个变量的值就是 undefined。</p>
-</li>
-<li>对未初始化的变量执行 typeof 操作符会返回 undefined 值，而对未声明的变量执行 typeof 操作符同样也会返回 undefined 值。</li>
-</ul>
-<p><strong>以下会返回 undefined：</strong></p>
-<ul>
-<li>访问未修改的全局变量 undefined。</li>
-<li>由于没有定义 return 表达式的函数隐式返回。</li>
-<li>return 表达式没有显式返回内容。</li>
+<li>访问未修改的全局变量undefined。</li>
+<li>没有定义return表达式的函数隐式返回。</li>
+<li>return表达式没有显式返回内容。</li>
 <li>访问不存在的属性。</li>
 <li>函数参数没有被显式的传递值。</li>
-<li><p>被设置为 undefined 值的变量。</p>
-</li>
-<li><p>null 有时会被当作一种对象类型，typeof null 返回字符串 “object” 。实际上， null 是基本类型。</p>
-</li>
+<li>被设置为undefined值的变量。</li>
 </ul>
-<p><strong>内置对象</strong><br>JavaScript中还有一些对象子类型，被称为内置对象。<br><code>String</code> <code>Number</code> <code>Boolean</code> <code>Object</code> <code>Function</code> <code>Array</code> <code>Date</code> <code>RegExp</code> <code>Error</code></p>
-<p>JavaScript有三种方法，可以确定一个值到底是什么类型。</p>
+</li>
+<li><p>null 有时会被当作对象类型，typeof null返回字符串”object”。null是基本类型。</p>
+</li>
+<li><p>内置对象：<code>String</code> <code>Number</code> <code>Boolean</code> <code>Object</code> <code>Function</code> <code>Array</code> <code>Date</code> <code>RegExp</code> <code>Error</code>。</p>
+</li>
+<li><p>确定值类型：</p>
 <ul>
-<li>typeof 运算符</li>
-<li>instanceof 运算符</li>
-<li>constructor 属性</li>
+<li>typeof运算符</li>
+<li>instanceof运算符</li>
+<li>constructor属性</li>
 <li>Object.prototype.toString方法</li>
 </ul>
-<p>typeof 操作符返回下列字符串：</p>
+</li>
+<li><p>typeof 操作符返回下列字符串：</p>
 <ul>
 <li>“undefined”–未定义或者是 undefined；</li>
 <li>“boolean”–布尔值；</li>
 <li>“string”–字符串；</li>
 <li>“number”–数值；</li>
-<li>“object”–对象（包括正则表达式，数组等等）或者 null；</li>
-<li>“function”–函数。</li>
-</ul>
+<li>“object”–对象（正则，数组等）或者 null；</li>
+<li><p>“function”–函数。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typeof</span> <span class="string">"1"</span>; <span class="comment">// "string"</span></div><div class="line"><span class="keyword">typeof</span> <span class="number">1</span>; <span class="comment">// "number"</span></div><div class="line"><span class="keyword">typeof</span> <span class="literal">NaN</span>; <span class="comment">// "number"</span></div><div class="line"><span class="keyword">typeof</span> <span class="literal">true</span>; <span class="comment">// "boolean"</span></div><div class="line"><span class="keyword">typeof</span> !<span class="literal">NaN</span> <span class="comment">// "boolean"</span></div><div class="line"><span class="keyword">typeof</span> <span class="literal">undefined</span>; <span class="comment">// "undefined"</span></div><div class="line"><span class="keyword">typeof</span> a; <span class="comment">// "undefined" (如果未声明)</span></div><div class="line"><span class="keyword">typeof</span> <span class="literal">null</span>; <span class="comment">// "object"</span></div><div class="line"><span class="keyword">typeof</span> []; <span class="comment">// "object"</span></div><div class="line"><span class="keyword">typeof</span> <span class="keyword">new</span> <span class="built_in">Date</span>(); <span class="comment">// "object" </span></div><div class="line"><span class="keyword">typeof</span> <span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">1.2</span>); <span class="comment">// "object" </span></div><div class="line"><span class="keyword">typeof</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125;;  <span class="comment">// "function"</span></div><div class="line"><span class="keyword">typeof</span> <span class="built_in">Math</span>.abs; <span class="comment">// "function"</span></div><div class="line"><span class="keyword">typeof</span>(<span class="built_in">Object</span>); <span class="comment">// "function"  </span></div><div class="line"><span class="keyword">typeof</span>(<span class="built_in">Function</span>); <span class="comment">// "function"</span></div></pre></td></tr></table></figure>
-<p>typeof 操作符可以判断出 number、boolean、string、function 和 undefined</p>
-<p>typeof 一个实际的应用（检查一个没有声明的变量，而不报错），而不是用来检查对象的类型。<br><figure class="highlight gcode"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 错误</span></div><div class="line"><span class="keyword">if</span> <span class="comment">(a)</span>&#123;</div><div class="line"><span class="comment">// ...</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// ReferenceError: a is not defined</span></div></pre></td></tr></table></figure></p>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 正确</span></div><div class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> a === <span class="string">"undefined"</span>)&#123;</div><div class="line"><span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>instanceof 运算符</p>
-<p>对于值类型，可以通过 typeof 判断，string/number/boolean，在引用类型时，返回值只有 object/function，如，typeof 对 array 和 object 的结果都是 object</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> o = &#123;&#125;;</div><div class="line"><span class="keyword">var</span> a = [];</div><div class="line"></div><div class="line">o <span class="keyword">instanceof</span> <span class="built_in">Array</span> <span class="comment">// false</span></div><div class="line">a <span class="keyword">instanceof</span> <span class="built_in">Array</span> <span class="comment">// true</span></div></pre></td></tr></table></figure>
-<p>语法：a instanceof constructor;<br>instanceof 运算符确定一个对象是否为某个构造函数的实例。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> f= <span class="keyword">new</span> F();</div><div class="line">f <span class="keyword">instanceof</span> F; <span class="comment">// true</span></div><div class="line">f <span class="keyword">instanceof</span> <span class="built_in">Object</span>; <span class="comment">// true</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> a = [];</div><div class="line">a <span class="keyword">instanceof</span> <span class="built_in">Array</span> <span class="comment">// true</span></div><div class="line">a <span class="keyword">instanceof</span> <span class="built_in">Object</span> <span class="comment">// true</span></div><div class="line"><span class="comment">// 如果存在继承关系，某个对象是多个构造函数的实例，instanceof 运算符都返回 true</span></div></pre></td></tr></table></figure></p>
-<p>instanceof 操作符可以用来判断某个构造函数的 prototype 属性是否存在另外一个要检测对象的原型链上。也就是判断instanceof前面的对象是否是后面的类或对象的实例。</p>
-<p>instanceof ：沿着实例的 <strong>proto</strong>，同时沿着构造函数的prototype，如果两条线能找到同一个对象，就返回true，否则返回false。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Object</span> <span class="keyword">instanceof</span> <span class="built_in">Object</span> <span class="comment">// true</span></div><div class="line"><span class="built_in">Function</span> <span class="keyword">instanceof</span> <span class="built_in">Object</span> <span class="comment">// true</span></div><div class="line"><span class="built_in">Function</span> <span class="keyword">instanceof</span> <span class="built_in">Function</span> <span class="comment">// true</span></div><div class="line"></div><div class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] <span class="keyword">instanceof</span> <span class="built_in">Array</span> <span class="comment">// true</span></div><div class="line">(&#123;&#125;) <span class="keyword">instanceof</span> <span class="built_in">Object</span> <span class="comment">// true JavaScript引擎把一对大括号解释为一个代码块，而不是对象</span></div></pre></td></tr></table></figure></p>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 仅设置 B.prototype 为函数 A 本身，而不是 A 构造函数的实例</span></div><div class="line">B.prototype = A;</div><div class="line"><span class="keyword">new</span> B() <span class="keyword">instanceof</span> A; <span class="comment">// false</span></div></pre></td></tr></table></figure>
-<p>instanceof 比较内置类型<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">"f"</span>) <span class="keyword">instanceof</span> <span class="built_in">String</span>; <span class="comment">// true</span></div><div class="line"><span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">"f"</span>) <span class="keyword">instanceof</span> <span class="built_in">Object</span>; <span class="comment">// true</span></div></pre></td></tr></table></figure></p>
-<p>原始类型不能使用 instanceof 运算符判断类型。<br><figure class="highlight basic"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">""</span> instanceof String // false</div><div class="line"><span class="symbol">1 </span>instanceof Number // false</div></pre></td></tr></table></figure></p>
-<p>constructor 属性是对构造此对象的函数的引用</p>
-<table>
-<thead>
-<tr>
-<th>A</th>
-<th style="text-align:center">typeof A</th>
-<th style="text-align:center">A.constructor</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>{}</td>
-<td style="text-align:center">object</td>
-<td style="text-align:center">Object</td>
-</tr>
-<tr>
-<td>[]</td>
-<td style="text-align:center">object</td>
-<td style="text-align:center">Array</td>
-</tr>
-<tr>
-<td>function(){}</td>
-<td style="text-align:center">function</td>
-<td style="text-align:center">Function</td>
-</tr>
-<tr>
-<td>“1”</td>
-<td style="text-align:center">string</td>
-<td style="text-align:center">String</td>
-</tr>
-<tr>
-<td>1</td>
-<td style="text-align:center">number</td>
-<td style="text-align:center">Number</td>
-</tr>
-<tr>
-<td>true</td>
-<td style="text-align:center">boolean</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-</tbody>
-</table>
-<figure class="highlight delphi"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[].<span class="keyword">constructor</span> === <span class="keyword">Array</span>;</div></pre></td></tr></table></figure>
-<p>constructor和instanceof 比较属于不同上下文的对象（如，不同frame）时将会出错，每一个frame都有自己的执行环境，跨frame实例化的对象彼此并不共享原型链，<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">var</span> myFrame = <span class="built_in">document</span>.createElement(<span class="string">"iframe"</span>); </div><div class="line"><span class="built_in">document</span>.body.appendChild(myFrame); <span class="comment">//将创建的iframe添加到body中</span></div><div class="line"><span class="keyword">var</span> MyArray = <span class="built_in">window</span>.frames[<span class="built_in">window</span>.frames.length<span class="number">-1</span>].Array;</div><div class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> MyArray(<span class="string">"1"</span>); </div><div class="line">arr <span class="keyword">instanceof</span> <span class="built_in">Array</span>;        <span class="comment">// false</span></div><div class="line">arr.constructor === <span class="built_in">Array</span>;   <span class="comment">// false</span></div><div class="line"><span class="comment">// 构造器不能跨 frame 共享</span></div></pre></td></tr></table></figure></p>
-<p>对象原生toString</p>
-<p>Object.prototype.toString的行为：取得对象的内部属性[[Class]]（[[]]用来表示外部不可直接访问的属性，称为“内部属性”），返回一个类似于”[object Array]”的字符串。<br>再配合call，取得对象的内部属性[[Class]]，然后把类型检测转化为字符串比较。</p>
-<p>[[Class]] 的值只可能是下面字符串：Arguments, Array, Boolean, Date, Error, Function, JSON, Math, Number, Object, RegExp, String</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">input</th>
-<th>[[Class]]</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">“a”</td>
-<td>String</td>
-</tr>
-<tr>
-<td style="text-align:center">new String(“a”)</td>
-<td>String</td>
-</tr>
-<tr>
-<td style="text-align:center">1</td>
-<td>Number</td>
-</tr>
-<tr>
-<td style="text-align:center">new Number(1)</td>
-<td>Number</td>
-</tr>
-<tr>
-<td style="text-align:center">true</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">new Boolean(true)</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">[]</td>
-<td>Array</td>
-</tr>
-<tr>
-<td style="text-align:center">new Array(1)</td>
-<td>Array</td>
-</tr>
-<tr>
-<td style="text-align:center">function () {}</td>
-<td>Function</td>
-</tr>
-<tr>
-<td style="text-align:center">new Function(“”)</td>
-<td>Function</td>
-</tr>
-<tr>
-<td style="text-align:center">{}</td>
-<td>Object</td>
-</tr>
-<tr>
-<td style="text-align:center">new Object()</td>
-<td>Object</td>
-</tr>
-<tr>
-<td style="text-align:center">/abc/g</td>
-<td>RegExp</td>
-</tr>
-<tr>
-<td style="text-align:center">new RegExp(“meow”)</td>
-<td>RegExp</td>
-</tr>
-<tr>
-<td style="text-align:center">new Date()</td>
-<td>Date</td>
-</tr>
-</tbody>
-</table>
-<figure class="highlight sqf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">function <span class="built_in">isArray</span>(obj) &#123;	</div><div class="line">  <span class="built_in">Array</span>.<span class="built_in">isArray</span> ? <span class="built_in">Array</span>.<span class="built_in">isArray</span>(a) : Object.prototype.<span class="built_in">toString</span>.<span class="built_in">call</span>(a) === <span class="string">"[object Array]"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">isArray</span>([]); <span class="comment">// true</span></div></pre></td></tr></table></figure>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ES5 中，对 null 和undefined 调用Object.prototype.toString 方法， 其返回值由 Object 变成了 Null 和 Undefined。</span></div><div class="line"><span class="comment">// Object.prototype.toString 返回标准格式字符串，所以可以通过 slice 截取指定位置的字符串</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">is</span>(<span class="params"><span class="keyword">type</span>, obj</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> clas = <span class="built_in">Object</span>.prototype.toString.call(obj).slice(<span class="number">8</span>, <span class="number">-1</span>);</div><div class="line">	<span class="keyword">return</span> obj !== <span class="literal">undefined</span> &amp;&amp; obj !== <span class="literal">null</span> &amp;&amp; clas === <span class="keyword">type</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">is(<span class="string">"String"</span>, <span class="string">"test"</span>); <span class="comment">// true</span></div><div class="line">is(<span class="string">"String"</span>, <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">"test"</span>)); <span class="comment">// true</span></div></pre></td></tr></table></figure>
-<p>为什么不用obj.toString()？<br>虽然Array继承自Object，有toString方法，但可能被改写，而 Object.prototype很少有人改</p>
-<p>检测对象的类型，推荐使用 Object.prototype.toString 方法； </p>
-<p>其它方法</p>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">isArray</span><span class="params">( arg )</span> </span>&#123;</div><div class="line">	<span class="keyword">if</span> ( <span class="keyword">typeof</span> arg === <span class="string">"object"</span> &amp;&amp; </div><div class="line">		( <span class="string">"join"</span> <span class="keyword">in</span> arg &amp;&amp; <span class="keyword">typeof</span> arg.join === <span class="string">"function"</span> ) &amp;&amp;</div><div class="line">		( <span class="string">"length"</span> <span class="keyword">in</span> arg &amp;&amp; <span class="keyword">typeof</span> arg.length === <span class="string">"number"</span> ) ) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>  <span class="title">isArray</span> <span class="params">(subj)</span> </span>&#123;</div><div class="line">	<span class="keyword">try</span> &#123;</div><div class="line">		subj &amp;&amp; (subj.length = <span class="number">-1</span>);</div><div class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">catch</span> (er) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">	&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function">function <span class="title">isArray</span>(<span class="params"><span class="keyword">value</span></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">value</span> &amp;&amp;</div><div class="line">		<span class="keyword">typeof</span> <span class="keyword">value</span> === <span class="string">"object"</span> &amp;&amp;</div><div class="line">		<span class="keyword">typeof</span> <span class="keyword">value</span>.length === <span class="string">"number"</span> &amp;&amp;</div><div class="line">		<span class="keyword">typeof</span> <span class="keyword">value</span>.splice === <span class="string">"function"</span> &amp;&amp;</div><div class="line">		!(<span class="keyword">value</span>.propertyIsEnumerable(<span class="string">"length"</span>));</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="title">isArray</span>(obj)&#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">Object.prototype.toString.call(obj)</span> === <span class="string">"[object Array]"</span> ;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">function</span> <span class="title">isArray</span>(obj) &#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">(typeof</span> obj !== <span class="string">"undefined"</span> &amp;&amp; obj &amp;&amp; obj.constructor === <span class="keyword">Array</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>ES5引入 Array.isArray()。<br><figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">function</span> <span class="title">isArray</span>(obj) &#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">Array.isArray(obj)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">var</span> isArray = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (<span class="built_in">Array</span>.isArray) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="built_in">Array</span>.isArray;</div><div class="line">	&#125; </div><div class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">subject</span>) </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="built_in">Object</span>.prototype.toString.call(subject) === <span class="built_in">Object</span>.prototype.toString.call([]);</div><div class="line">	&#125;;</div><div class="line">&#125;());</div></pre></td></tr></table></figure>
-<ul>
-<li>typeof运算符不能检测数组</li>
-<li>ECMAScript 5 的 isArray函数是原生的检测方法，但低版本浏览器不支持</li>
-<li>对象自身的constructor属性和instanceof操作符虽然也能检测数组，但在frame中会产生问题</li>
-<li>对象原生toString检测也能检测数组</li>
+</li>
 </ul>
-<p>验证是否是数字<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">isNumber</span>(<span class="params">n</span>)</span>&#123;</div><div class="line">	<span class="keyword">return</span> !<span class="built_in">isNaN</span>(<span class="built_in">parseFloat</span>(n)) &amp;&amp; <span class="built_in">isFinite</span>(n);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+</li>
+<li><p>typeof操作符可以判断number、boolean、string、function、undefined。</p>
+</li>
+<li><p>typeof function和object都是对象，为何输出两种答案？</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">var obj</span> = &#123;a: 10&#125;;</div><div class="line"><span class="attribute">var arr</span> = [5];</div></pre></td></tr></table></figure>
+</li>
+<li><p>这其实叫“语法糖”。本质是：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> obj = <span class="keyword">new</span> <span class="built_in">Object</span>();</div><div class="line">obj.a = <span class="number">10</span>;</div><div class="line"></div><div class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>();</div><div class="line">arr[<span class="number">0</span>] = <span class="number">5</span>;</div><div class="line"></div><div class="line"><span class="comment">// Object和Array都是函数</span></div><div class="line"><span class="keyword">typeof</span> (<span class="built_in">Object</span>); <span class="comment">// function</span></div><div class="line"><span class="keyword">typeof</span> (<span class="built_in">Array</span>); <span class="comment">// function</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>所以，对象都是通过函数创建的。对象是函数创建的，函数却又是一种对象</p>
+</li>
+</ul>
 <ul>
-<li><p>判断Array使用Array.isArray(arr)</p>
+<li><p>typeof应用：检查一个没有声明的变量，而不报错，而不是检查对象的类型。</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> <span class="comment">(a)</span> &#123;</div><div class="line">&#125;</div><div class="line"><span class="comment">// ReferenceError: a is not defined</span></div><div class="line"></div><div class="line"><span class="comment">// 正确</span></div><div class="line"><span class="keyword">if</span> <span class="comment">(typeof a === "undefined")</span> &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
-<li><p>判断null请使用 value === null</p>
+<li><p>值类型通过typeof判断，string/number/boolean，引用类型，返回值只有object/function，如，typeof对array和object结果都是 object。</p>
 </li>
-<li><p>判断全局变量是否存在用 typeof window.value === “undefined”</p>
+<li><p>instanceof确定对象是否为某个构造函数的实例。语法：a instanceof constructor。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> f= <span class="keyword">new</span> F();</div><div class="line">f <span class="keyword">instanceof</span> F; <span class="comment">// true</span></div><div class="line">f <span class="keyword">instanceof</span> <span class="built_in">Object</span>; <span class="comment">// true</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> a = [];</div><div class="line">a <span class="keyword">instanceof</span> <span class="built_in">Array</span> <span class="comment">// true</span></div><div class="line">a <span class="keyword">instanceof</span> <span class="built_in">Object</span> <span class="comment">// true</span></div><div class="line"><span class="comment">// 如果存在继承，对象是多个构造函数的实例，instanceof都返回true</span></div></pre></td></tr></table></figure>
 </li>
-<li><p>函数内部判断某个变量是否存在用 typeof value === “undefined”</p>
+<li><p>instanceof操作符判断构造函数的prototype属性是否在要检测对象的原型链上。即判断instanceof前面的对象是否是后面的对象的实例。</p>
 </li>
+<li><p>instanceof沿着实例的<strong>proto</strong>，同时沿着构造函数的prototype，如果两条线能找到同一个对象，返回true，否则false。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Object</span> <span class="keyword">instanceof</span> <span class="built_in">Object</span> <span class="comment">// true</span></div><div class="line"><span class="built_in">Function</span> <span class="keyword">instanceof</span> <span class="built_in">Object</span> <span class="comment">// true</span></div><div class="line"><span class="built_in">Function</span> <span class="keyword">instanceof</span> <span class="built_in">Function</span> <span class="comment">// true</span></div><div class="line"></div><div class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] <span class="keyword">instanceof</span> <span class="built_in">Array</span> <span class="comment">// true</span></div><div class="line">(&#123;&#125;) <span class="keyword">instanceof</span> <span class="built_in">Object</span> <span class="comment">// true </span></div><div class="line"><span class="comment">// JavaScript引擎把大括号解释为代码块，而不是对象</span></div></pre></td></tr></table></figure>
+   <figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 仅设置B.prototype为函数A本身，而不是A构造函数的实例</span></div><div class="line">B.prototype = A;</div><div class="line"><span class="keyword">new</span> B() <span class="keyword">instanceof</span> A; <span class="comment">// false</span></div></pre></td></tr></table></figure>
+   <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">"f"</span>) <span class="keyword">instanceof</span> <span class="built_in">String</span>; <span class="comment">// true</span></div><div class="line"><span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">"f"</span>) <span class="keyword">instanceof</span> <span class="built_in">Object</span>; <span class="comment">// true</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>原始类型不能使用instanceof。</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">""</span> instanceof String // false</div><div class="line"><span class="symbol">1 </span>instanceof Number // false</div></pre></td></tr></table></figure>
+</li>
+<li><p>constructor属性是对构造此对象的函数的引用。</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[].<span class="keyword">constructor</span> === <span class="keyword">Array</span>;</div></pre></td></tr></table></figure>
+</li>
+<li><p>constructor和instanceof比较不同上下文的对象（如不同frame）出错，每个frame都有自己的执行环境，跨frame实例化的对象不共享原型链。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> myFrame = <span class="built_in">document</span>.createElement(<span class="string">"iframe"</span>); </div><div class="line"><span class="built_in">document</span>.body.appendChild(myFrame); <span class="comment">// 创建的iframe添加到body</span></div><div class="line"><span class="keyword">var</span> MyArray = <span class="built_in">window</span>.frames[<span class="built_in">window</span>.frames.length<span class="number">-1</span>].Array;</div><div class="line"><span class="keyword">var</span> arr = <span class="keyword">new</span> MyArray(<span class="string">"1"</span>); </div><div class="line"><span class="comment">// 构造器不能跨frame</span></div><div class="line">arr <span class="keyword">instanceof</span> <span class="built_in">Array</span>; <span class="comment">// false</span></div><div class="line">arr.constructor === <span class="built_in">Array</span>; <span class="comment">// false</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>Object.prototype.toString：取得对象的内部属性[[Class]]（[[]]表示外部不可直接访问的“内部属性”，返回类似”[object Array]”的字符串。配合call，取得对象的内部属性[[Class]]，然后把类型检测转化为字符串比较。</p>
+</li>
+<li><p>[[Class]] 的值只可能是下面字符串：Arguments, Array, Boolean, Date, Error, Function, JSON, Math, Number, Object, RegExp, String。</p>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">function <span class="built_in">isArray</span>(obj) &#123;</div><div class="line">	<span class="built_in">Array</span>.<span class="built_in">isArray</span> ? <span class="built_in">Array</span>.<span class="built_in">isArray</span>(a) : Object.prototype.<span class="built_in">toString</span>.<span class="built_in">call</span>(a) === <span class="string">"[object Array]"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">isArray</span>([]); <span class="comment">// true</span></div></pre></td></tr></table></figure>
+   <figure class="highlight typescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ES5中，对null和undefined调用Object.prototype.toString，返回值由Object变成了Null 和Undefined</span></div><div class="line"><span class="comment">// Object.prototype.toString返回标准格式字符串，通过slice截取指定位置</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">is</span>(<span class="params"><span class="keyword">type</span>, obj</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> cls = <span class="built_in">Object</span>.prototype.toString.call(obj).slice(<span class="number">8</span>, <span class="number">-1</span>);</div><div class="line">	<span class="keyword">return</span> obj !== <span class="literal">undefined</span> &amp;&amp; obj !== <span class="literal">null</span> &amp;&amp; cls === <span class="keyword">type</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">is(<span class="string">"String"</span>, <span class="string">"test"</span>); <span class="comment">// true</span></div><div class="line">is(<span class="string">"String"</span>, <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">"test"</span>)); <span class="comment">// true</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>不用obj.toString()，虽然Array继承自Object，有toString方法，但可能被改写，而Object.prototype很少改。</p>
+</li>
+<li>检测对象的类型，推荐使用Object.prototype.toString方法。</li>
+<li><p>其它方法：</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">isArray</span><span class="params">( arg )</span> </span>&#123;</div><div class="line">	<span class="keyword">if</span> ( <span class="keyword">typeof</span> arg === <span class="string">"object"</span> &amp;&amp; </div><div class="line">		( <span class="string">"join"</span> <span class="keyword">in</span> arg &amp;&amp; <span class="keyword">typeof</span> arg.join === <span class="string">"function"</span> ) &amp;&amp;</div><div class="line">		( <span class="string">"length"</span> <span class="keyword">in</span> arg &amp;&amp; <span class="keyword">typeof</span> arg.length === <span class="string">"number"</span> ) ) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+   <figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span>  <span class="title">isArray</span> <span class="params">(subj)</span> </span>&#123;</div><div class="line">	<span class="keyword">try</span> &#123;</div><div class="line">		subj &amp;&amp; (subj.length = <span class="number">-1</span>);</div><div class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">catch</span> (er) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">	&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+   <figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function">function <span class="title">isArray</span>(<span class="params"><span class="keyword">value</span></span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">value</span> &amp;&amp;</div><div class="line">		<span class="keyword">typeof</span> <span class="keyword">value</span> === <span class="string">"object"</span> &amp;&amp;</div><div class="line">		<span class="keyword">typeof</span> <span class="keyword">value</span>.length === <span class="string">"number"</span> &amp;&amp;</div><div class="line">		<span class="keyword">typeof</span> <span class="keyword">value</span>.splice === <span class="string">"function"</span> &amp;&amp;</div><div class="line">		!(<span class="keyword">value</span>.propertyIsEnumerable(<span class="string">"length"</span>));</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+   <figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">function</span> <span class="title">isArray</span>(obj)&#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">Object.prototype.toString.call(obj)</span> === <span class="string">"[object Array]"</span> ;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+   <figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">function</span> <span class="title">isArray</span>(obj) &#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">(typeof</span> obj !== <span class="string">"undefined"</span> &amp;&amp; obj &amp;&amp; obj.constructor === <span class="keyword">Array</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>ES5引入Array.isArray()。</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">function</span> <span class="title">isArray</span>(obj) &#123;</div><div class="line">	<span class="keyword">return</span> <span class="type">Array.isArray(obj)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+   <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> isArray = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (<span class="built_in">Array</span>.isArray) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="built_in">Array</span>.isArray;</div><div class="line">	&#125; </div><div class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">subject</span>) </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="built_in">Object</span>.prototype.toString.call(subject) === <span class="built_in">Object</span>.prototype.toString.call([]);</div><div class="line">	&#125;;</div><div class="line">&#125;());</div></pre></td></tr></table></figure>
+</li>
+<li><p>typeof运算符不能检测数组；</p>
+</li>
+<li>ES5的isArray函数是原生方法，但低版本浏览器不支持；</li>
+<li>对象自身的constructor属性和instanceof操作符虽然也能检测数组，但在frame中会产生问题；</li>
+<li>对象原生toString检测也能检测数组；</li>
+<li><p>验证是否数字：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">isNumber</span>(<span class="params">n</span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> !<span class="built_in">isNaN</span>(<span class="built_in">parseFloat</span>(n)) &amp;&amp; <span class="built_in">isFinite</span>(n);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>判断Array用Array.isArray(arr)；</p>
+</li>
+<li>判断null用value === null；</li>
+<li>判断全局变量是否存在用typeof window.value === “undefined”；</li>
+<li>函数内判断变量是否存在用typeof value === “undefined”；</li>
 </ul>
 
 				</div>
