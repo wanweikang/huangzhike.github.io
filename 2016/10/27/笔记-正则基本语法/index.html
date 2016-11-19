@@ -99,17 +99,29 @@
 				</div>	
 				
 				<div class="article-content">
-				<p>正则表达式（regular expression）</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> reg = <span class="regexp">/xyz/</span>; <span class="comment">// 字面量 实际应用基本采用字面量法</span></div><div class="line"><span class="keyword">var</span> reg = <span class="keyword">new</span>  <span class="built_in">RegExp</span>(<span class="string">"xyz"</span>); <span class="comment">// 构造函数</span></div><div class="line"></div><div class="line"><span class="keyword">var</span>  reg = <span class="regexp">/xyz/i</span>;</div><div class="line"><span class="keyword">var</span>  reg = <span class="keyword">new</span>  <span class="built_in">RegExp</span>(<span class="string">"xyz"</span>, <span class="string">"i"</span>);</div></pre></td></tr></table></figure>
+				<p><strong>2016-11-19重新整理更新</strong></p>
 <ul>
-<li>正则相关方法： exec和test</li>
-<li>字符串相关方法： search， match， split，replace</li>
+<li><p>正则表达式（regular expression）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span>  reg = <span class="regexp">/xyz/i</span>; <span class="comment">// 基本采用字面量法</span></div><div class="line"><span class="keyword">var</span>  reg = <span class="keyword">new</span>  <span class="built_in">RegExp</span>(<span class="string">"xyz"</span>, <span class="string">"i"</span>); <span class="comment">// 构造函数</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>正则相关方法：exec，test</p>
+</li>
+<li><p>字符串相关方法：search，match，split，replace</p>
+</li>
+<li><p>字面量字符（literal characters）</p>
+</li>
+<li><p>普通字符包括：字母（abcABC），数字（123），下划线（_）</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/abc/</span>.test(<span class="string">"abc"</span>) <span class="regexp">//</span> true</div></pre></td></tr></table></figure>
+</li>
+<li><p>特殊字符（元字符，metacharacters）</p>
+</li>
+<li><p>转义符：部分字符有特殊含义，不代表字面意思，需要转义，如：<code>(</code> <code>)</code> <code>[</code> <code>]</code> <code>{</code> <code>}</code> <code>^</code> <code>$</code> <code>*</code> <code>?</code> <code>\\</code> <code>|</code> <code>+</code> <code>.</code></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var reg = <span class="regexp">/\^a/</span></div><div class="line">var reg = <span class="regexp">/\\m/</span>; <span class="regexp">//</span> 特殊字符要转义</div><div class="line"></div><div class="line"><span class="regexp">/google\.com/</span> <span class="regexp">//</span> 匹配google.com</div><div class="line"><span class="regexp">/C:\\Windows/</span> <span class="regexp">//</span> 匹配C:\Windows。</div><div class="line"><span class="regexp">/Windows\d+/</span> <span class="regexp">//</span> 匹配Windows后面跟<span class="number">1</span>个或更多数字</div></pre></td></tr></table></figure>
+</li>
+<li><p>用RegExp方法生成正则对象，转义要两个斜杠，因为字符串内部先转义一次。</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/<span class="number">1</span>\+<span class="number">1</span>/.test(<span class="string">"1+1"</span>); <span class="comment">// true</span></div><div class="line">(new RegExp(<span class="string">"1<span class="subst">\\</span>+1"</span>)).test(<span class="string">"1+1"</span>); <span class="comment">// true</span></div></pre></td></tr></table></figure>
+</li>
 </ul>
-<p><strong>字面量字符 literal characters </strong><br>普通字符包括：字母（abcABC），数字（123），下划线（_）<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/abc/</span>.test(<span class="string">"abc"</span>) <span class="regexp">//</span> true</div></pre></td></tr></table></figure></p>
-<p>特殊字符（元字符）（metacharacters）</p>
-<p>转义符<br>部分字符有特殊含义，不代表字面意思，需要转义，如：<code>(</code> <code>)</code> <code>[</code> <code>]</code> <code>{</code> <code>}</code> <code>^</code> <code>$</code> <code>*</code> <code>?</code> <code>\\</code> <code>|</code> <code>+</code> <code>.</code></p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var reg = <span class="regexp">/\^a/</span></div><div class="line">var reg = <span class="regexp">/\\m/</span>; <span class="regexp">//</span> 特殊字符要转义</div><div class="line"></div><div class="line"><span class="regexp">/google\.com/</span> <span class="regexp">//</span> 匹配google.com</div><div class="line"><span class="regexp">/C:\\Windows/</span> <span class="regexp">//</span> 匹配C:\Windows。</div><div class="line"><span class="regexp">/Windows\d+/</span> <span class="regexp">//</span>匹配Windows后面跟<span class="number">1</span>个或更多数字</div></pre></td></tr></table></figure>
-<p>使用 RegExp方法生成正则对象，转义需要两个斜杠，因为字符串内部会先转义一次。<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/<span class="number">1</span>\+<span class="number">1</span>/.test(<span class="string">"1+1"</span>); <span class="comment">// true</span></div><div class="line">(new RegExp(<span class="string">"1<span class="subst">\\</span>+1"</span>)).test(<span class="string">"1+1"</span>); <span class="comment">// true</span></div></pre></td></tr></table></figure></p>
 <p>预定义特殊字符</p>
 <table>
 <thead>
