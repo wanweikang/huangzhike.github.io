@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		
-		<title>[笔记]-数组实践 | 一切都沉淀为笔记</title>
+		<title>[笔记]-数组实践 | 用手记笔记，更用脑记笔记</title>
 		
 		<meta name="author" content="Huangzhike">
 		
@@ -15,7 +15,7 @@
 		
 		<meta property="og:title" content="[笔记]-数组实践"/>
 		
-		<meta property="og:site_name" content="一切都沉淀为笔记"/>
+		<meta property="og:site_name" content="用手记笔记，更用脑记笔记"/>
 		
 		
 		<!-- favicon -->
@@ -55,7 +55,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/">一切都沉淀为笔记 <span>Talk is cheap, show me the code</span></a>
+			<a class="navbar-brand" href="/">用手记笔记，更用脑记笔记 <span>null</span></a>
            
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
@@ -121,7 +121,7 @@
 <li><p>不适合用合并两个大型数组，因为消耗内存存储新创建的数组。</p>
 </li>
 <li><p>用<code>arr1.push.apply(arr1, arr2)</code>不创建新数组，将第一个第二个数组合并，减少内存使用：</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var array1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</div><div class="line">var array2 = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];</div><div class="line">array1.push.apply(array1, array2); <span class="comment">// [1, 2, 3, 4, 5, 6];</span></div></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var array1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</div><div class="line">var array2 = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];</div><div class="line">[].push.apply(array1, array2); <span class="comment">// [1, 2, 3, 4, 5, 6];</span></div></pre></td></tr></table></figure>
 </li>
 <li><p>数组间追加。</p>
 <figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">var</span> array1 = [<span class="number">12</span>, <span class="string">"foo"</span>, &#123;name <span class="string">"Joe"</span>&#125;, -<span class="number">2458</span>];</div><div class="line"><span class="built_in">var</span> array2 = [<span class="string">"Doe"</span>, <span class="number">555</span>, <span class="number">100</span>];</div><div class="line">Array.prototype.<span class="built_in">push</span>.<span class="built_in">apply</span>(array1, array2);</div><div class="line">array1; // [<span class="number">12</span> , <span class="string">"foo"</span> , &#123;name <span class="string">"Joe"</span>&#125; , -<span class="number">2458</span> , <span class="string">"Doe"</span> , <span class="number">555</span> , <span class="number">100</span>]</div></pre></td></tr></table></figure>
