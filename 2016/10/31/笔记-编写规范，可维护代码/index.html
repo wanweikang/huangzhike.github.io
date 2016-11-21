@@ -36,7 +36,7 @@
 		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
 		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
 		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
 		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
 		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
 		
@@ -55,7 +55,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/">用手记笔记，更用脑记笔记 <span>null</span></a>
+			<a class="navbar-brand" href="/">用手记笔记，更用脑记笔记</a>
            
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
@@ -99,157 +99,283 @@
 				</div>	
 				
 				<div class="article-content">
-				<p>缩进<br>在早期的语言规范中，大多数都选择用Tab作为缩进标记，如Delphi、Microsoft C++规<br>范等。但近年来，空格缩进依靠其风格的不变性，逐渐成为了主流。如Python、Ruby甚至C#<br>都采用了空格缩进作为“标准”。但我们选择 两空格 作为Node.js代码的缩进标记，不同于最<br>常见的四空格缩进。这是因为Node.js代码中很容易写出深层的函数嵌套，过多的空格会给阅<br>读带来不便，因此我们选择两空格缩进。</p>
-<p>关联数组的初始化<br>将 var = { 放在一行，下面每行一对键值，保持两空格的缩进，以分号结尾， }; 最后单独另起一行。对于每对键值，除非键名之中有空格或者有非法字符，否则一律不用引号。<br>正确：<br>var anObject = {<br>name: ‘BYVoid’,<br>website: ‘<a href="http://www.byvoid.com/" target="_blank" rel="external">http://www.byvoid.com/</a>‘,<br>‘is good’: true,<br>};<br>错误：<br>var anObject = {‘name’: ‘BYVoid’,<br>website: ‘<a href="http://www.byvoid.com/" target="_blank" rel="external">http://www.byvoid.com/</a>‘<br>, “is good”: true};</p>
-<p>引号</p>
-<p>javascript最外层统一使用单引号。<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// not good</span></div><div class="line"><span class="keyword">var</span> x = <span class="string">"test"</span>;</div><div class="line"></div><div class="line"><span class="comment">// good</span></div><div class="line"><span class="keyword">var</span> y = <span class="string">'foo'</span>,</div><div class="line">	z = <span class="string">'&lt;div id="test"&gt;&lt;/div&gt;'</span>;</div></pre></td></tr></table></figure></p>
-<p>html<br>属性的定义，统一使用双引号。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- Not recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">'j-hook'</span> <span class="attr">class</span>=<span class="string">text</span>&gt;</span>Google<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- Recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"j-hook"</span> <span class="attr">class</span>=<span class="string">"text"</span>&gt;</span>Google<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>css<br>url() 、属性选择符、属性值使用双引号。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Not recommended */</span></div><div class="line">@<span class="keyword">import</span> url(//www.google.com/css/maia.css);</div><div class="line"><span class="selector-tag">html</span> &#123;</div><div class="line">	<span class="attribute">font-family</span>: <span class="string">'open sans'</span>, arial, sans-serif;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* Recommended */</span></div><div class="line">@<span class="keyword">import</span> url(<span class="string">"//www.google.com/css/maia.css"</span>);</div><div class="line"><span class="selector-tag">html</span> &#123;</div><div class="line">	<span class="attribute">font-family</span>: <span class="string">"open sans"</span>, arial, sans-serif;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.element</span><span class="selector-pseudo">:after</span> &#123;</div><div class="line">	<span class="attribute">content</span>: <span class="string">""</span>;</div><div class="line">	<span class="attribute">background-image</span>: <span class="built_in">url</span>(<span class="string">"logo.png"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-tag">li</span><span class="selector-attr">[data-type="single"]</span> &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>注释</p>
-<p>HTML 注释</p>
-<p>模块注释<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 文章列表列表模块 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"article-list"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>区块注释<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!--</span></div><div class="line">@name: Drop Down Menu</div><div class="line">@description: Style of top bar drop down menu.</div><div class="line">@author: Ashu(Aaaaaashu@gmail.com)</div><div class="line">--&gt;</div></pre></td></tr></table></figure></p>
-<p>JavaScript 注释</p>
-<p>单行注释<br>必须独占一行。 // 后跟一个空格，缩进与下一行被注释说明的代码一致。</p>
-<p>多行注释<br>避免使用 /<em>…</em>/ 多行注释。有多行注释内容时，使用多个单行注释。</p>
-<p>函数/方法注释<br>函数/方法注释必须包含函数说明，有参数和返回值时必须使用注释标识。；<br>参数和返回值注释必须包含类型信息和说明；<br>当函数是内部函数，外部不可访问时，可以使用 @inner 标识；<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"><span class="markdown">/**</span></span></div><div class="line"><span class="bullet">* </span>函数描述</div><div class="line"><span class="bullet">*</span></div><div class="line"><span class="bullet">* </span>@param &#123;string&#125; p1 参数1的说明</div><div class="line"><span class="bullet">* </span>@param &#123;string&#125; p2 参数2的说明，比较长</div><div class="line"><span class="bullet">* </span>那就换行了.</div><div class="line"><span class="bullet">* </span>@param &#123;number=&#125; p3 参数3的说明（可选）</div><div class="line"><span class="bullet">* </span>@return &#123;Object&#125; 返回值描述</div><div class="line">*/</div></pre></td></tr></table></figure></p>
-<p>css注释</p>
-<p>注释统一用’/<em> </em>/‘（scss中也不要用’//‘）；<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Modal header */</span></div><div class="line"><span class="selector-class">.modal-header</span> &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* Modal header</div><div class="line">*/</div><div class="line"><span class="selector-class">.modal-header</span> &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 可位于代码行的末尾，与代码间隔一个空格。</span></div><div class="line"><span class="selector-class">.modal-header</span> &#123;</div><div class="line">	<span class="comment">/* 50px */</span></div><div class="line">	<span class="attribute">width</span>: <span class="number">50px</span>;</div><div class="line">	<span class="attribute">color</span>: red; <span class="comment">/* color red */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>关于空格<br>javascript</p>
-<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line">// <span class="keyword">not</span> good</div><div class="line"><span class="keyword">var</span> a = &#123;</div><div class="line">	b :<span class="number">1</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line">// good</div><div class="line"><span class="keyword">var</span> a = &#123;</div><div class="line">	b: <span class="number">1</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line">// <span class="keyword">not</span> good</div><div class="line">++ x;</div><div class="line">y ++;</div><div class="line">z = x?<span class="number">1</span>:<span class="number">2</span>;</div><div class="line"></div><div class="line">// good</div><div class="line">++x;</div><div class="line">y++;</div><div class="line">z = x ? <span class="number">1</span> : <span class="number">2</span>;</div><div class="line"></div><div class="line">// <span class="keyword">not</span> good</div><div class="line"><span class="keyword">var</span> a = [ <span class="number">1</span>, <span class="number">2</span> ];</div><div class="line"></div><div class="line">// good</div><div class="line"><span class="keyword">var</span> a = [<span class="number">1</span>, <span class="number">2</span>];</div><div class="line"></div><div class="line">// <span class="keyword">not</span> good</div><div class="line"><span class="keyword">var</span> a = ( <span class="number">1</span>+<span class="number">2</span> )*<span class="number">3</span>;</div><div class="line"></div><div class="line">// good</div><div class="line"><span class="keyword">var</span> a = (<span class="number">1</span> + <span class="number">2</span>) * <span class="number">3</span>;</div><div class="line"></div><div class="line">// <span class="keyword">not</span> good</div><div class="line"><span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">6</span>;i++)&#123;</div><div class="line">	x++;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// good</div><div class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">6</span>; i++) &#123;</div><div class="line">	x++;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// one space before '&#123;', </div><div class="line">// one space between function parameters</div><div class="line"><span class="keyword">var</span> doSomething = function(a, b, c) &#123;</div><div class="line">	// <span class="keyword">do</span> something</div><div class="line">&#125;;</div><div class="line"></div><div class="line">// no space before '('</div><div class="line">doSomething(item);</div><div class="line"></div><div class="line">// 下面的写法都是不规范的：</div><div class="line"></div><div class="line">foo (bar) // 函数调用时，函数名与左括号之间没有空格。</div><div class="line"><span class="keyword">return</span>(a+b);</div><div class="line"><span class="keyword">if</span>(a === <span class="number">0</span>) <span class="meta">&#123;...&#125;</span></div><div class="line">function foo (b) <span class="meta">&#123;...&#125;</span> // 函数定义时，函数名与左括号之间没有空格。</div><div class="line">function(x) <span class="meta">&#123;...&#125;</span> // function是语法关键字，不是函数名，所以与左括号之间应该要有一个空格。</div><div class="line"></div><div class="line">// 其他情况时，前面位置的语法元素与左括号之间，都有一个空格。</div></pre></td></tr></table></figure>
-<p>css</p>
-<p>以下几种情况不需要空格：</p>
+				<p><strong>2016-11-21重新整理更新</strong></p>
 <ul>
-<li>属性名后</li>
-<li>多个规则的分隔符’,’前</li>
-<li>!important ‘!’后</li>
-<li>属性值中’(‘后和’)’前</li>
-<li>行末不要有多余的空格</li>
-</ul>
-<p>以下几种情况需要空格：</p>
+<li><p>缩进</p>
 <ul>
-<li>属性值前</li>
-<li>选择器’&gt;’, ‘+’, ‘~’前后</li>
-<li>‘{‘前</li>
-<li>!important ‘!’前</li>
-<li>@else 前后</li>
-<li>属性值中的’,’后</li>
-<li>注释’/ ‘后和’ /‘前</li>
+<li>早期语言规范，大多数选用Tab作为缩进标记，如Delphi、Microsoft C++等。</li>
+<li>近年来，空格缩进由于风格不变性，逐渐成为主流，如Python、Ruby甚至C#。</li>
+<li>两空格为Node.js缩进，不同于常见的四空格缩进， Node.js易写出深层的函数嵌套。</li>
+<li>我就喜欢Tab。</li>
 </ul>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* not good */</span></div><div class="line"><span class="selector-class">.element</span> &#123;</div><div class="line">	<span class="attribute">color </span>:red! important;</div><div class="line">	<span class="attribute">background-color</span>: <span class="built_in">rgba</span>(0,0,0,.5);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.element</span> &#123;</div><div class="line">	<span class="attribute">color</span>: red <span class="meta">!important</span>;</div><div class="line">	<span class="attribute">background-color</span>: <span class="built_in">rgba</span>(0, 0, 0, .5);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* not good */</span></div><div class="line"><span class="selector-class">.element</span> ,</div><div class="line"><span class="selector-class">.dialog</span>&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.element</span>,</div><div class="line"><span class="selector-class">.dialog</span> &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* not good */</span></div><div class="line"><span class="selector-class">.element</span>&gt;<span class="selector-class">.dialog</span>&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.element</span> &gt; <span class="selector-class">.dialog</span>&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* not good */</span></div><div class="line"><span class="selector-class">.element</span>&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.element</span> &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* not good */</span></div><div class="line">@<span class="keyword">if</span>&#123;</div><div class="line">	...</div><div class="line">&#125;@<span class="keyword">else</span>&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line">@<span class="keyword">if</span> &#123;</div><div class="line">	...</div><div class="line">&#125; @<span class="keyword">else</span> &#123;</div><div class="line">	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>换行:<br>javascript</p>
-<p>以下情况需要空行：</p>
+</li>
+<li><p>引号</p>
 <ul>
-<li>变量声明后（当变量声明在代码块的最后一行时，则无需空行）</li>
-<li>注释前（当注释在代码块的第一行时，则无需空行）</li>
-<li>代码块后（在函数调用、数组、对象中则无需空行）</li>
-<li>文件最后保留一个空行</li>
+<li><p>JavaScript最外层统一单引号。</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var y = 'foo',</div><div class="line">	z = '&lt;<span class="keyword">div</span> <span class="built_in">id</span>=<span class="string">"test"</span>&gt;&lt;/<span class="keyword">div</span>&gt;';</div></pre></td></tr></table></figure>
+</li>
+<li><p>HTML内id、class等属性的定义，使用双引号。</p>
+</li>
+<li>CSS内url() 、属性选择符、属性值等使用双引号。</li>
 </ul>
-<p>换行的地方，行末必须有’,’或者运算符；</p>
-<p>以下几种情况不需要换行：</p>
+</li>
+<li><p>注释</p>
 <ul>
-<li>下列关键字后： else , catch , finally</li>
-<li>代码块’{‘前</li>
-</ul>
-<p>以下几种情况需要换行：</p>
+<li><p>HTML注释</p>
 <ul>
-<li>代码块’{‘后和’}’前</li>
-<li>变量赋值后</li>
+<li><p>模块注释</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 文章列表列表模块 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"article-list"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>区块注释</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!--</span></div><div class="line">@name: Drop Down Menu</div><div class="line">@description: Style of top bar drop down menu.</div><div class="line">@author: Ashu(Aaaaaashu@gmail.com)</div><div class="line">--&gt;</div></pre></td></tr></table></figure>
+</li>
 </ul>
-<p>css<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* not good */</span></div><div class="line"><span class="selector-class">.element</span></div><div class="line">&#123;<span class="attribute">color</span>: red; <span class="attribute">background-color</span>: black;&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.element</span> &#123;</div><div class="line">	<span class="attribute">color</span>: red;</div><div class="line">	<span class="attribute">background-color</span>: black;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* not good */</span></div><div class="line"><span class="selector-class">.element</span>, <span class="selector-class">.dialog</span> &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* good */</span></div><div class="line"><span class="selector-class">.element</span>,</div><div class="line"><span class="selector-class">.dialog</span> &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>分号<br>javascript<br>不使用分号结尾的语句：分号表示语句的结尾。有一些结构不需要在语句的结尾添加分号，主要是以下三种。</p>
+</li>
+<li><p>JavaScript注释</p>
+<ul>
+<li>单行注释：必须独占一行。<code>//</code>后跟一个空格，缩进与下行被注释代码一致。</li>
+<li>多行注释：避免用<code>/*...*/</code>多行注释。使用多个单行注释。</li>
+<li>函数/方法注释：<ul>
+<li>必须包含函数说明，有参数和返回值时必须使用注释标识；</li>
+<li>参数和返回值注释必须包含类型信息和说明；</li>
+<li>函数是内部函数，外部不可访问时，可以使用<code>@inner</code>标识；<figure class="highlight dart"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"><span class="markdown">/**</span></span></div><div class="line"><span class="bullet">* </span>函数描述</div><div class="line"><span class="bullet">*</span></div><div class="line"><span class="bullet">* </span>@param &#123;string&#125; p1 参数1的说明</div><div class="line"><span class="bullet">* </span>@param &#123;string&#125; p2 参数2的说明，比较长</div><div class="line"><span class="bullet">* </span>那就换行了</div><div class="line"><span class="bullet">* </span>@param &#123;number=&#125; p3 参数3的说明（可选）</div><div class="line"><span class="bullet">* </span>@return &#123;Object&#125; 返回值描述</div><div class="line">*/</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>CSS注释</p>
+<ul>
+<li><p>注释统一用<code>/* */</code>，（scss中也不要用<code>//</code>）；</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Modal header */</span></div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">* Modal header</div><div class="line">*/</div><div class="line"><span class="selector-class">.modal-header</span> &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>//</code>可位于代码行的末尾，与代码间隔一个空格。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.modal-header</span> &#123;</div><div class="line">	<span class="comment">/* 50px */</span></div><div class="line">	<span class="attribute">width</span>: <span class="number">50px</span>;</div><div class="line">	<span class="attribute">color</span>: red; <span class="comment">/* color red */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>空格</p>
+<ul>
+<li><p>JavaScript</p>
+<ul>
+<li>one space before <code>{</code>；</li>
+<li>one space between function parameters；</li>
+<li>no space before <code>(</code>；<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = &#123;</div><div class="line">	b: <span class="number">1</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> a = [<span class="number">1</span>, <span class="number">2</span>];</div><div class="line"></div><div class="line"><span class="keyword">var</span> a = (<span class="number">1</span> + <span class="number">2</span>) * <span class="number">3</span>;</div><div class="line"></div><div class="line">z = x ? <span class="number">1</span> : <span class="number">2</span>;</div><div class="line"></div><div class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">6</span>; i++) &#123;</div><div class="line">	x++;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> doSomething = function(a, b, c) &#123;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line">doSth(item);</div><div class="line"></div><div class="line">// 下面写法都不规范：</div><div class="line">foo (bar) // 函数调用时，函数名与左括号之间没有空格</div><div class="line"><span class="keyword">return</span>(a+b);</div><div class="line"><span class="keyword">if</span>(a === <span class="number">0</span>) <span class="meta">&#123;...&#125;</span></div><div class="line">function foo (b) <span class="meta">&#123;...&#125;</span> // 函数定义时，函数名与左括号间没有空格</div><div class="line">function(x) <span class="meta">&#123;...&#125;</span> // function是关键字，不是函数名，与左括号间应该有空格</div><div class="line">// 其他情况，前面位置的语法元素与左括号间，都有一个空格</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>CSS</p>
+<ul>
+<li>以下不要空格：<ul>
+<li>属性名后；</li>
+<li>多个规则的分隔符<code>,</code>前；</li>
+<li>!important <code>!</code>后；</li>
+<li>属性值中<code>(</code>后和<code>)</code>前；</li>
+<li>行末不要有多余空格；</li>
+</ul>
+</li>
+<li>以下要空格：<ul>
+<li>属性值前；</li>
+<li>选择器<code>&gt;</code>,<code>+</code>,<code>~</code>前后；</li>
+<li><code>{</code>前；</li>
+<li>!important <code>!</code>前；</li>
+<li><code>@else</code>前后；</li>
+<li>属性值中的<code>,</code>后；</li>
+<li>注释<code>/</code>后和<code>/</code>前；<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.element</span> &#123;</div><div class="line">	<span class="attribute">color</span>: red <span class="meta">!important</span>;</div><div class="line">	<span class="attribute">background-color</span>: <span class="built_in">rgba</span>(0, 0, 0, .5);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.element</span>,</div><div class="line"><span class="selector-class">.dialog</span> &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.element</span> &gt; <span class="selector-class">.dialog</span> &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@<span class="keyword">if</span> &#123;</div><div class="line">	...</div><div class="line">&#125; @<span class="keyword">else</span> &#123;</div><div class="line">	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>换行:</p>
+<ul>
+<li>JavaScript<ul>
+<li>以下要空行：<ul>
+<li>变量声明后（当变量声明在代码块的最后一行时，则无需空行）；</li>
+<li>注释前（当注释在代码块的第一行时，则无需空行）；</li>
+<li>代码块后（在函数调用、数组、对象中则无需空行）；</li>
+<li>文件最后保留一个空行；</li>
+</ul>
+</li>
+<li>换行的地方，行末必须有<code>,</code>或运算符；</li>
+<li>以下不要换行：<ul>
+<li>下列关键字后： else , catch , finally；</li>
+<li>代码块<code>{</code>前；</li>
+</ul>
+</li>
+<li>以下要换行：<ul>
+<li>代码块<code>{</code>后和<code>}</code>前；</li>
+<li>变量赋值后；<br>CSS<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.element</span> &#123;</div><div class="line">	<span class="attribute">color</span>: red;</div><div class="line">	<span class="attribute">background-color</span>: black;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.element</span>,</div><div class="line"><span class="selector-class">.dialog</span> &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>分号</p>
+<ul>
+<li><p>JavaScript：分号表示语句的结尾，一些结构不需要在语句的结尾添加分号，主要以下三种：</p>
 <ul>
 <li><p>for和while循环</p>
-<figure class="highlight gcode"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">for<span class="comment">(;;)</span>&#123;&#125; <span class="comment">// 没有分号</span></div><div class="line"></div><div class="line"><span class="keyword">while</span><span class="comment">(true)</span>&#123;&#125; <span class="comment">// 没有分号</span></div><div class="line"></div><div class="line"><span class="comment">// do...while循环是有分号的。</span></div><div class="line"><span class="keyword">do</span> &#123;</div><div class="line">a--;</div><div class="line">&#125; <span class="keyword">while</span><span class="comment">(a &gt; 0)</span>; <span class="comment">// 分号不能省略</span></div></pre></td></tr></table></figure>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">for <span class="comment">(var i = 0; i &lt; Things.length; i++)</span> &#123;</div><div class="line"></div><div class="line">&#125; <span class="comment">// 没分号</span></div><div class="line"></div><div class="line"><span class="keyword">while</span> <span class="comment">(true)</span> &#123;</div><div class="line">	</div><div class="line">&#125; <span class="comment">// 没分号</span></div><div class="line"></div><div class="line"><span class="comment">// do...while循环有分号</span></div><div class="line"><span class="keyword">do</span> &#123;</div><div class="line">	a--;</div><div class="line">&#125; <span class="keyword">while</span> <span class="comment">(a &gt; 0)</span>; <span class="comment">// 分号不能省略</span></div></pre></td></tr></table></figure>
 </li>
 <li><p>分支语句：if， switch， try</p>
-<figure class="highlight xquery"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (<span class="literal">true</span>) &#123;&#125; // 没有分号</div><div class="line"></div><div class="line"><span class="keyword">switch</span> () &#123;&#125; // 没有分号</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;&#125; <span class="keyword">catch</span> &#123;&#125; // 没有分号</div></pre></td></tr></table></figure>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (<span class="literal">true</span>) &#123;</div><div class="line">	</div><div class="line">&#125; // 没分号</div><div class="line"></div><div class="line"><span class="keyword">switch</span> () &#123;</div><div class="line">	</div><div class="line">&#125; // 没分号</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">	</div><div class="line">&#125; <span class="keyword">catch</span> &#123;</div><div class="line">	</div><div class="line">&#125; // 没分号</div></pre></td></tr></table></figure>
 </li>
-<li><p>函数的声明语句</p>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">()</span> </span>&#123;&#125; <span class="comment">// 没有分号</span></div><div class="line"><span class="comment">// 函数表达式仍然要使用分号。</span></div><div class="line"><span class="keyword">var</span> f = <span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">()</span> </span>&#123;&#125;;</div></pre></td></tr></table></figure>
+<li><p>函数声明语句</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</div><div class="line">	</div><div class="line">&#125; <span class="comment">// 没分号</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> f = <span class="function"><span class="keyword">function</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</div><div class="line">	</div><div class="line">&#125;; <span class="comment">// 函数表达式仍然要用分号</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>以上三种情况用了分号不会出错，解释引擎把这个分号解释为空语句。</p>
 </li>
 </ul>
-<p>以上三种情况，如果使用了分号，并不会出错。因为，解释引擎会把这个分号解释为空语句。</p>
-<p>css</p>
-<p>每个属性声明末尾都要加分号。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.element</span> &#123;</div><div class="line">	<span class="attribute">width</span>: <span class="number">20px</span>;</div><div class="line">	<span class="attribute">height</span>: <span class="number">20px</span>;</div><div class="line">	<span class="attribute">background-color</span>: red;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>命名<br>Javascript</p>
-<p>变量命名<br>变量采用驼峰式命名（除了对象的属性外，主要是考虑到cgi返回的数据）<br><figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var thisIsMyName<span class="comment">;</span></div></pre></td></tr></table></figure></p>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="string">'ID'</span> <span class="comment">// 在变量名中全大写</span></div><div class="line"><span class="string">'URL'</span> <span class="comment">// 在变量名中全大写</span></div><div class="line"><span class="string">'Android'</span> <span class="comment">// 在变量名中大写第一个字母</span></div><div class="line"><span class="string">'iOS'</span> <span class="comment">// 在变量名中小写第一个，大写后两个字母</span></div><div class="line"><span class="keyword">var</span> goodID;</div><div class="line"><span class="keyword">var</span> reportURL;</div><div class="line"><span class="keyword">var</span> AndroidVersion;</div><div class="line"><span class="keyword">var</span> iOSVersion;</div></pre></td></tr></table></figure>
-<p>常量全大写，用下划线连接<br><figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var MAX_COUNT = <span class="number">10</span><span class="comment">;</span></div></pre></td></tr></table></figure></p>
-<p>构造函数，大写第一个字母<br><figure class="highlight fortran"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span></span> Person(<span class="keyword">name</span>) &#123;</div><div class="line">	this.<span class="keyword">name</span> = <span class="keyword">name</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>jquery对象必须以’$’开头命名<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// not good</span></div><div class="line"><span class="keyword">var</span> body = $(<span class="string">'body'</span>);</div><div class="line"></div><div class="line"><span class="comment">// good</span></div><div class="line"><span class="keyword">var</span> $body = $(<span class="string">'body'</span>);</div></pre></td></tr></table></figure></p>
-<p>项目命名：全部采用小写方式， 以下划线分隔。<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">my_project_name</div></pre></td></tr></table></figure></p>
-<p>目录命名<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 有复数结构时，采用复数命名法</span></div><div class="line">scripts , styles , images , data_models</div></pre></td></tr></table></figure></p>
-<p>JS文件命名<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">account_model</span><span class="selector-class">.js</span></div></pre></td></tr></table></figure></p>
-<p>CSS, SCSS文件命名<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">retin<span class="built_in">a_sprites</span>.scss</div></pre></td></tr></table></figure></p>
-<p>HTML文件命名<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">error_report</span><span class="selector-class">.html</span></div></pre></td></tr></table></figure></p>
-<p>私有属性、变量和方法以下划线 _ 开头。<br><figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var _privateMethod = &#123;&#125;<span class="comment">;</span></div></pre></td></tr></table></figure></p>
-<p>函数使用 Camel 命名法。<br>函数的参数, 使用 Camel 命名法。<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">stringFormat</span><span class="params">(source)</span> </span>&#123;&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">hear</span><span class="params">(theBells)</span> </span>&#123;&#125;</div></pre></td></tr></table></figure></p>
-<p>类名，使用名词。<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Engine</span><span class="params">(options)</span> </span>&#123;&#125;</div></pre></td></tr></table></figure></p>
-<p>函数名，使用动宾短语。<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getStyle</span><span class="params">(element)</span> </span>&#123;&#125;</div></pre></td></tr></table></figure></p>
-<p>boolean 类型的变量使用 is 或 has 开头。<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> isReady = <span class="literal">false</span>;</div><div class="line"><span class="keyword">var</span> hasMoreCommands = <span class="literal">false</span>;</div></pre></td></tr></table></figure></p>
-<p>css命名</p>
-<ul>
-<li>类名使用小写字母，以中划线分隔</li>
-<li>id采用驼峰式命名</li>
-<li>scss中的变量、函数、混合、placeholder采用驼峰式命名</li>
-<li>使用唯一的 id 作为 Javascript hook, 同时避免创建无样式信息的 class；</li>
-<li>class 应以功能或内容命名，不以表现形式命名</li>
+</li>
+<li>CSS<ul>
+<li>每个属性声明末都要加分号。<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.element</span> &#123;</div><div class="line">	<span class="attribute">width</span>: <span class="number">20px</span>;</div><div class="line">	<span class="attribute">height</span>: <span class="number">20px</span>;</div><div class="line">	<span class="attribute">background-color</span>: red;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
 </ul>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* class */</span></div><div class="line">.element-content &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* id */</span></div><div class="line"><span class="comment">#myDialog &#123;</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* 变量 */</span></div><div class="line">$colorBlack: <span class="comment">#000;</span></div><div class="line"></div><div class="line"><span class="comment">/* 函数 */</span></div><div class="line">@<span class="function"><span class="keyword">function</span> <span class="title">pxToRem</span><span class="params">($px)</span> </span>&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* 混合 */</span></div><div class="line">@mixin centerBlock &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* placeholder */</span></div><div class="line">%myDialog &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Naming components （组件命名）<br>Components 最少以两个单词命名，通过 - 分离，例如：<br>点赞按钮 ( .like-button )<br>搜索框 ( .search-form )<br>文章卡片 ( .article-card )</p>
-<p>Naming elements （元素命名）<br>Elements （元素）是 Components 中的元素。<br>Elements 的类名应尽可能仅有一个单词。<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.search-form</span> &#123;</div><div class="line">	&gt; <span class="selector-class">.field</span> &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	&gt; <span class="selector-class">.action</span> &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>On multiple words （多个单词）<br>对于倘若需要两个或以上单词表达的 Elements 类名，不应使用中划线和下划线连接，应直接连接。<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.profile-box</span> &#123;</div><div class="line">	&gt; <span class="selector-class">.firstname</span> &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	&gt; <span class="selector-class">.lastname</span> &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	&gt; <span class="selector-class">.avatar</span> &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Avoid tag selectors （避免标签选择器）<br>任何时候尽可能使用 classnames 。标签选择器在使用上没有问题，但是其性能上稍弱，并且表意不明确。<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.article-card</span> &#123;</div><div class="line">	&gt; <span class="selector-tag">h3</span> &#123; <span class="comment">/* ? avoid */</span> &#125;</div><div class="line">	&gt; <span class="selector-class">.name</span> &#123; <span class="comment">/* ? better */</span> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Naming variants （变体命名）<br>Components 和 Elements 可能都会拥有 Variants 。<br>Variants 的 classname 应带有前缀中划线 -<br><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">.like-<span class="class">button </span>&#123;</div><div class="line">	&amp;.-<span class="class">wide </span>&#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	&amp;.-<span class="class">short </span>&#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	&amp;.-<span class="class">disabled </span>&#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Element variants （元素变体）<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.shopping-card</span> &#123;</div><div class="line">	&gt; <span class="selector-class">.title</span> &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	&gt; <span class="selector-class">.title</span>.-small &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Components 应该在不同的上下文中都可以复用，所以应避免设置以下属性：</p>
-<ul>
-<li>Positioning (position, top, left, right, bottom)</li>
-<li>Floats (float, clear)</li>
-<li>Margins (margin)</li>
-<li>Dimensions (width, height) *</li>
-<li>Fixed dimensions （固定尺寸）</li>
-<li>头像和 logos 这些元素应该设置固定尺寸（宽度，高度…）。</li>
-<li>Define positioning in parents （在父元素中设置定位）</li>
+</li>
 </ul>
-<p>倘若需要为组件设置定位，应将在组件的上下文（父元素）中进行处理，比如以下例子中，<br>将 widths和 floats 应用在 list component(.article-list) 当中，而不是 component(.article-card) 自身。</p>
-<p>Avoid over-nesting （避免过分嵌套）<br>当出现多个嵌套的时候容易失去控制，应保持不超过一个嵌套。</p>
-<p>Apprehensions （顾虑）<br>中划线 - - 是一坨糟糕的玩意：可以选择性的使用，只要将 Components, Elements, Variants记在心上即可。<br>有时候想不出两个单词：有些组件的确使用一个单词就能表意，比如 aleter 。但其实你可以使用后缀，使其意识更加明确。<br>比如块级元素：<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.alert-box</span></div><div class="line"><span class="selector-class">.alert-card</span></div><div class="line">.alert-block</div></pre></td></tr></table></figure></p>
-<p>或行内级元素<br><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="title">.link-button</span></div><div class="line"><span class="title">.link-span</span></div></pre></td></tr></table></figure></p>
-<p>Summary （总结）</p>
+</li>
+<li><p>初始化</p>
 <ul>
-<li>以 Components 的角度思考，以两个单词命名（ .screenshot-image ）</li>
-<li>Components 中的 Elements ，以一个单词命名（ .blog-post .title ）</li>
-<li>Variants ，以中划线 - 作为前缀（ .shop-banner.-with-icon ）</li>
-<li>Components 可以互相嵌套</li>
-<li>可以通过继承让事情变得更简单</li>
+<li><p>初始值不长, 写在单行上：</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">var</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];  // No <span class="built_in">space</span> after [ <span class="keyword">or</span> before ]</div><div class="line"><span class="built_in">var</span> obj = &#123;a: <span class="number">1</span>, b: <span class="number">2</span>, c: <span class="number">3</span>&#125;;  // No <span class="built_in">space</span> after &#123; <span class="keyword">or</span> before &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>占用多行时，缩进2个空格：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> inset = &#123;</div><div class="line">	name: <span class="symbol">'BYVoi</span>d',</div><div class="line">	website: <span class="symbol">'http</span>:<span class="comment">//www.byvoid.com/',</span></div><div class="line">	<span class="symbol">'is</span> good': <span class="literal">true</span>,</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">this</span>.rows_ = [</div><div class="line">	'<span class="string">"Slartibartfast"</span> &lt;fjordmaster<span class="meta">@magrathea</span>.com&gt;',</div><div class="line">	'<span class="string">"Zaphod Beeblebrox"</span> &lt;theprez<span class="meta">@universe</span>.gov&gt;',</div><div class="line">	'<span class="string">"Ford Prefect"</span> &lt;ford<span class="meta">@theguide</span>.com&gt;',</div><div class="line">	<span class="comment">// 注意最后一个元素需要加上,</span></div><div class="line">];</div><div class="line"></div><div class="line">goog.dom.createDom(goog.dom.<span class="type">TagName</span>.<span class="type">DIV</span>, &#123;</div><div class="line">	id: <span class="symbol">'fo</span>o',</div><div class="line">	className: <span class="symbol">'some</span>-css-<span class="class"><span class="keyword">class</span>',</span></div><div class="line">	style: <span class="symbol">'display</span>:none'</div><div class="line">&#125;, <span class="symbol">'Hello</span>, world!');</div></pre></td></tr></table></figure>
+</li>
 </ul>
-<p>一律使用小写字母<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- Recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"google.png"</span> <span class="attr">alt</span>=<span class="string">"Google"</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- Not recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">A</span> <span class="attr">HREF</span>=<span class="string">"/"</span>&gt;</span>Home<span class="tag">&lt;/<span class="name">A</span>&gt;</span></div><div class="line"></div><div class="line">/* Recommended */</div><div class="line">color: #e5e5e5;</div><div class="line"></div><div class="line">/* Not recommended */</div><div class="line">color: #E5E5E5;</div></pre></td></tr></table></figure></p>
-<p>省略外链资源URL 中的 http / https 协议，使 URL 成为相对地址，避免Mixed Content 问题，减小文件字节数。<br>其它协议（ftp 等）的 URL 不省略。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- Recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"//www.google.com/js/gweb/analytics/autotrack.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- Not recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://www.google.com/js/gweb/analytics/autotrack.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"></div><div class="line">/* Recommended */</div><div class="line">.example &#123;</div><div class="line">	background: url(//www.google.com/images/example);</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* Not recommended */</div><div class="line">.example &#123;</div><div class="line">	background: url(http://www.google.com/images/example);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>尽量使用最少的标签并保持最小的复杂度。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- Not recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"avatar"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"..."</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- Recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">"avatar"</span> <span class="attr">src</span>=<span class="string">"..."</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>HTML 属性应该按照特定的顺序出现以保证易读性。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;a id=<span class="string">"..."</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"..."</span> data-modal=<span class="string">"toggle"</span> href=<span class="string">"###"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></div><div class="line">&lt;input <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-control"</span> type=<span class="string">"text"</span>&gt;</div><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"..."</span> <span class="attr">alt</span>=<span class="string">"..."</span>&gt;</span></span></div></pre></td></tr></table></figure></p>
-<p>避免选择器嵌套层级过多，尽量少于 3 级；<br>避免选择器和 Class、ID 叠加使用；<br>元素选择器和 ID、Class 混合使用也违反关注分离原则。如果HTML标签修改了，就要再去修改 CSS 代码，不利于后期维护。<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Not recommended */</span></div><div class="line"><span class="selector-class">.red</span> &#123;&#125;</div><div class="line"><span class="selector-class">.box_green</span> &#123;&#125;</div><div class="line"><span class="selector-class">.page</span> <span class="selector-class">.header</span> <span class="selector-class">.login</span> <span class="selector-id">#username</span> <span class="selector-tag">input</span> &#123;&#125;</div><div class="line">ul<span class="selector-id">#example</span> &#123;&#125;</div><div class="line"></div><div class="line"><span class="comment">/* Recommended */</span></div><div class="line"><span class="selector-id">#nav</span> &#123;&#125;</div><div class="line"><span class="selector-class">.box-video</span> &#123;&#125;</div><div class="line"><span class="selector-id">#username</span> <span class="selector-tag">input</span> &#123;&#125;</div><div class="line"><span class="selector-id">#example</span> &#123;&#125;</div></pre></td></tr></table></figure></p>
-<p>a 不允许嵌套 div 这种约束属于语义嵌套约束，与之区别的约束还有严格嵌套约束，比如a 不允许嵌套 a 。<br>严格嵌套约束在所有的浏览器下都不被允许；而语义嵌套约束，浏览器大多会容错处理，生成的文档树可能相互不太一样。</p>
-<p>语义嵌套约束</p>
+</li>
+<li><p>命名</p>
+<ul>
+<li><p>Javascript</p>
+<ul>
+<li><p>变量命名：驼峰式命名（除了对象的属性，主要考虑到cgi返回数据）：<code>var thisIsMyName;</code></p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="string">'ID'</span></div><div class="line"><span class="string">'URL'</span></div><div class="line"><span class="string">'Android'</span></div><div class="line"><span class="string">'iOS'</span></div><div class="line"><span class="keyword">var</span> goodID;</div><div class="line"><span class="keyword">var</span> reportURL;</div><div class="line"><span class="keyword">var</span> AndroidVersion;</div><div class="line"><span class="keyword">var</span> iOSVersion;</div></pre></td></tr></table></figure>
+</li>
+<li><p>常量全大写，下划线连接：<code>var MAX_COUNT = 10;</code>；</p>
+</li>
+<li>构造函数，大写第一个字母；</li>
+<li>jQuery对象必须以<code>$</code>开头命名：<code>var $body = $(&#39;body&#39;);</code>；</li>
+<li>项目命名：全部小写，下划线分隔：<code>my_project_name</code>；</li>
+<li>目录命名：有复数结构时，复数命名法：<code>scripts</code>，<code>styles</code>，<code>images</code>；</li>
+<li>JS文件命名：<code>account_model.js</code></li>
+<li>CSS, SCSS文件命名：<code>retina_sprites.sCSS</code></li>
+<li>HTML文件命名：<code>error_report.HTML</code></li>
+<li>私有属性、变量和方法以下划线 _ 开头：<code>var _privateMethod = {};</code></li>
+<li>函数，函数的参数，用Camel命名法<code>function stringFormat(theBells) {}</code></li>
+<li>类名，用名词：<code>function Engine(options) {}</code></li>
+<li>函数名，使用动宾短语：<code>function getStyle(element) {}</code></li>
+<li>boolean类型的变量用 is 或 has 开头：<code>var isReady = false, hasMoreCommands = false;</code></li>
+</ul>
+</li>
+<li><p>CSS</p>
+<ul>
+<li>class类名小写，中划线分隔：<code>.element-content</code>，以功能或内容命名，不以表现命名；</li>
+<li>唯一的id作为Javascript hook，驼峰式命名，避免无样式信息的class：<code>#myDialog</code>；</li>
+<li>scss的变量、函数、混合、placeholder用驼峰命名：<code>$colorBlack</code>，<code>@function pxToRem($px)</code>，<code>@mixin centerBlock</code>，<code>%myDialog</code>；</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>组件命名（Naming components）：Components最少以两个单词命名，通过<code>-</code>分离：</p>
+<ul>
+<li>点赞按钮：<code>.like-button</code>；</li>
+<li>搜索框：<code>.search-form</code>；</li>
+<li>文章卡片：<code>.article-card</code>；</li>
+</ul>
+</li>
+<li><p>元素命名（Naming elements）：Elements是Components的元素，Elements类名尽可能仅有一个单词：</p>
+  <figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.search-form</span> &#123;</div><div class="line">	&gt; <span class="selector-class">.field</span> &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	&gt; <span class="selector-class">.action</span> &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><p>多个单词（On multiple words）：两个或以上单词的Elements类名，不应用中划线和下划线，应直接连接：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.profile-box</span> &#123;</div><div class="line">	&gt; <span class="selector-class">.firstname</span> &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	&gt; <span class="selector-class">.lastname</span> &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>避免标签选择器（Avoid tag selectors）：尽可能用classname，标签选择器性能上稍弱，并且表意不明。</p>
+</li>
+</ul>
+</li>
+<li><p>变体命名（Naming variants）：Components和Elements的Variants的classname应带有前缀中划线<code>-</code>；</p>
+  <figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">.like-<span class="class">button </span>&#123;</div><div class="line">	&amp;.-<span class="class">wide </span>&#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	&amp;.-<span class="class">short </span>&#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	&amp;.-<span class="class">disabled </span>&#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	<span class="comment">// Element variants</span></div><div class="line">	&gt; .<span class="class">title </span>&#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">	&gt; .title.-<span class="class">small </span>&#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Components应该可以复用，避免设置以下属性：</p>
+<ul>
+<li>Positioning (position, top, left, right, bottom)；</li>
+<li>Floats (float, clear)；</li>
+<li>Margins (margin)；</li>
+<li>Dimensions (width, height)；</li>
+<li>Fixed dimensions （固定尺寸）。</li>
+<li>头像logos 应设置固定尺寸（宽，高…）；</li>
+<li>Define positioning in parents （应该在父元素中设置定位）。</li>
+</ul>
+</li>
+<li><p>避免过分嵌套（Avoid over-nesting）：保持不超过一个嵌套。</p>
+</li>
+<li><p>顾虑（Apprehensions）：</p>
+<ul>
+<li>中划线<code>-</code>可选择性的使用，只要将Components，Elements，Variants记在心上即可；</li>
+<li>有时候想不出两个单词：有些组件使用一个单词就能表意，其实可以使用后缀，使其意识更加明确；<ul>
+<li>如块级元素：<code>.alert-box</code>，<code>.alert-card</code>，<code>.alert-block</code>；</li>
+<li>或行内元素：<code>.link-button</code>，<code>.link-span</code>；</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>总结（Summary）</p>
+<ul>
+<li>Components，以两个单词命名（ .screenshot-image ）；</li>
+<li>Components的Elements，以一个单词命名（ .blog-post .title ）；</li>
+<li>Variants，以中划线 - 为前缀（ .shop-banner.-with-icon ）；</li>
+<li>Components，可以互相嵌套；</li>
+<li>使用继承更简单；</li>
+</ul>
+</li>
+<li><p>一律使用小写字母</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- Recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"google.png"</span> <span class="attr">alt</span>=<span class="string">"Google"</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- Not recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">A</span> <span class="attr">HREF</span>=<span class="string">"/"</span>&gt;</span>Home<span class="tag">&lt;/<span class="name">A</span>&gt;</span></div><div class="line"></div><div class="line">/* Recommended */</div><div class="line">color: #e5e5e5;</div><div class="line"></div><div class="line">/* Not recommended */</div><div class="line">color: #E5E5E5;</div></pre></td></tr></table></figure>
+</li>
+<li><p>省略外链URL的http/https协议，使URL成为相对地址，避免Mixed Content，其它协议（ftp等）不省略：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"//www.google.com/js/gweb/analytics/autotrack.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"></div><div class="line">.example &#123;</div><div class="line">	background: url("//www.google.com/images/example");</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用最少的标签并保持最小复杂度。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- Not recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"avatar"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"..."</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- Recommended --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">"avatar"</span> <span class="attr">src</span>=<span class="string">"..."</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>HTML属性应该按照特定的顺序出现。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;a id=<span class="string">"..."</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"..."</span> data-modal=<span class="string">"toggle"</span> href=<span class="string">"###"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></div><div class="line">&lt;input <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-control"</span> type=<span class="string">"text"</span>&gt;</div><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"..."</span> <span class="attr">alt</span>=<span class="string">"..."</span>&gt;</span></span></div></pre></td></tr></table></figure>
+</li>
+<li><p>避免选择器嵌套过多；</p>
+</li>
+<li><p>避免选择器和Class、ID叠加使用；</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Not recommended */</span></div><div class="line"><span class="selector-class">.red</span> &#123;&#125;</div><div class="line"><span class="selector-class">.box_green</span> &#123;&#125;</div><div class="line"><span class="selector-class">.page</span> <span class="selector-class">.header</span> <span class="selector-class">.login</span> <span class="selector-id">#username</span> <span class="selector-tag">input</span> &#123;&#125;</div><div class="line">ul<span class="selector-id">#example</span> &#123;&#125;</div><div class="line"></div><div class="line"><span class="comment">/* Recommended */</span></div><div class="line"><span class="selector-id">#nav</span> &#123;&#125;</div><div class="line"><span class="selector-class">.box-video</span> &#123;&#125;</div><div class="line"><span class="selector-id">#username</span> <span class="selector-tag">input</span> &#123;&#125;</div><div class="line"><span class="selector-id">#example</span> &#123;&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>语义嵌套约束：如a不允许嵌套div （容错处理）。</p>
 <ul>
 <li><code>&lt;li&gt;</code>用于<code>&lt;ul&gt;</code>或<code>&lt;ol&gt;</code>下；</li>
 <li><code>&lt;dd&gt;</code>,<code>&lt;dt&gt;</code>用于<code>&lt;dl&gt;</code>下；</li>
 <li><code>&lt;thead&gt;</code>,<code>&lt;tbody&gt;</code>,<code>&lt;tfoot&gt;</code>,<code>&lt;tr&gt;</code>,<code>&lt;td&gt;</code>用于<code>&lt;table&gt;</code>下；</li>
 </ul>
-<p>严格嵌套约束<br>inline-Level 元素，仅可以包含文本或其它 inline-Level 元素;</p>
+</li>
+<li><p>严格嵌套约束：如a不允许嵌套（所有浏览器都不允许） 。</p>
 <ul>
-<li><code>&lt;a&gt;</code>里不可以嵌套交互式元素<code>&lt;a&gt;</code>、<code>&lt;button&gt;</code>、<code>&lt;select&gt;</code>等;</li>
-<li><code>&lt;p&gt;</code>里不可以嵌套块级元素<code>&lt;div&gt;</code>、<code>&lt;h1&gt;~&lt;h6&gt;</code>、<code>&lt;p&gt;</code>、<code>&lt;ul&gt;/&lt;ol&gt;/&lt;li&gt;</code>、<code>&lt;dl&gt;/&lt;dt&gt;/&lt;dd&gt;</code>、<code>&lt;form&gt;</code>等。</li>
+<li>inline-Level元素，仅可包含文本或其它inline-Level元素;</li>
+<li><code>&lt;a&gt;</code>不可嵌套交互式元素<code>&lt;a&gt;</code>、<code>&lt;button&gt;</code>、<code>&lt;select&gt;</code>等;</li>
+<li><code>&lt;p&gt;</code>不可嵌套块级元素<code>&lt;div&gt;</code>、<code>&lt;h1&gt;~&lt;h6&gt;</code>、<code>&lt;p&gt;</code>、<code>&lt;ul&gt;/&lt;ol&gt;/&lt;li&gt;</code>、<code>&lt;dl&gt;/&lt;dt&gt;/&lt;dd&gt;</code>、<code>&lt;form&gt;</code>等。</li>
 </ul>
-<p>HTML5 规范中 disabled 、 checked 、 selected 等属性不用设置值。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">disabled</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">value</span>=<span class="string">"1"</span> <span class="attr">checked</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">select</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">"1"</span> <span class="attr">selected</span>&gt;</span>1<span class="tag">&lt;/<span class="name">option</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>将媒体查询放在尽可能相关规则的附近。不要将他们打包放在一个单一样式文件中或者放在文档底部。如果分开了，将来会被遗忘。<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.element</span> &#123; ... &#125;</div><div class="line"><span class="selector-class">.element-avatar</span> &#123; ... &#125;</div><div class="line"><span class="selector-class">.element-selected</span> &#123; ... &#125;</div><div class="line">@media (<span class="attribute">max-width</span>: <span class="number">768px</span>) &#123;</div><div class="line">	<span class="selector-class">.element</span> &#123; ...&#125;</div><div class="line">	<span class="selector-class">.element-avatar</span> &#123; ... &#125;</div><div class="line">	<span class="selector-class">.element-selected</span> &#123; ... &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>其它：</p>
+</li>
+<li><p>HTML5 规范中 disabled 、 checked 、 selected 等属性不用设置值。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">disabled</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">value</span>=<span class="string">"1"</span> <span class="attr">checked</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">select</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">"1"</span> <span class="attr">selected</span>&gt;</span>1<span class="tag">&lt;/<span class="name">option</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>媒体查询放在相关规则附近，不要打包放在单一样式文件中或文档底部。如果分开了，将来会被遗忘。</p>
+</li>
+<li><p>其它：</p>
 <ul>
-<li>结构、样式、行为分离：尽量确保文档和模板只包含 HTML 结构，样式都放到样式表里，行为都放到脚本里。</li>
+<li>结构、样式、行为分离：文档和模板只包含 HTML ，样式放到样式表里，行为放到脚本里。</li>
 <li>统一缩进，不要使用 Tab 或者 Tab 、空格混搭。</li>
-<li>不允许有空的规则；</li>
+<li>不允许空的规则；</li>
 <li>元素选择器用小写字母；</li>
 <li>去掉小数点前面的0；</li>
 <li>去掉数字中不必要的小数点和末尾的0；</li>
@@ -258,12 +384,13 @@
 <li>不要在同个规则里出现重复的属性，如果重复的属性是连续的则没关系；</li>
 <li>不要在一个文件里出现两个相同的规则；</li>
 <li>用 border: 0; 代替 border: none; ；</li>
-<li>选择器不要超过4层（在scss中如果超过4层应该考虑用嵌套的方式来写）；</li>
-<li>发布的代码中不要有 @import ；</li>
-<li>尽量少用’*’选择器。</li>
+<li>选择器不要超过4层（在sCSS中如果超过4层应该考虑用嵌套的方式来写）；</li>
+<li>发布代码中不要有 @import ；</li>
+<li>少用’*’选择器。</li>
 <li>链接的样式顺序：a:link -&gt; a:visited -&gt; a:hover -&gt; a:active（LoVeHAte）</li>
 </ul>
-<p>声明块格式</p>
+</li>
+<li><p>声明块格式</p>
 <ul>
 <li>选择器分组时，保持独立的选择器占用一行；</li>
 <li>声明块的左括号 { 前添加一个空格；</li>
@@ -276,23 +403,17 @@
 <li>十六进制值应该全部小写和尽量简写，例如， #fff 代替 #ffffff ；</li>
 <li>避免为 0 值指定单位，例如，用 margin: 0; 代替 margin: 0px; ；</li>
 </ul>
-<p>声明顺序：相关属性应为一组，推荐的样式编写顺序</p>
-<ol>
-<li>Positioning</li>
-<li>Box model</li>
-<li>Typographic</li>
-<li>Visual</li>
-</ol>
-<p>定位（positioning）可以从正常的文档流中移除元素，还能覆盖盒模型（box model）相关样式，因此排在首位。<br>盒模型决定了组件的尺寸和位置，因此排在第二位。<br>其他属性只是影响组件的内部（inside）或者是不影响前两组属性，因此排在后面。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.declaration-order</span> &#123;</div><div class="line">	<span class="comment">/* Positioning */</span></div><div class="line">	<span class="attribute">position</span>: absolute;</div><div class="line">	<span class="attribute">top</span>: <span class="number">0</span>;</div><div class="line">	<span class="attribute">right</span>: <span class="number">0</span>;</div><div class="line">	<span class="attribute">bottom</span>: <span class="number">0</span>;</div><div class="line">	<span class="attribute">left</span>: <span class="number">0</span>;</div><div class="line">	<span class="attribute">z-index</span>: <span class="number">100</span>;</div><div class="line">	<span class="comment">/* Box model */</span></div><div class="line">	<span class="attribute">display</span>: block;</div><div class="line">	<span class="attribute">box-sizing</span>: border-box;</div><div class="line">	<span class="attribute">width</span>: <span class="number">100px</span>;</div><div class="line">	<span class="attribute">height</span>: <span class="number">100px</span>;</div><div class="line">	<span class="attribute">padding</span>: <span class="number">10px</span>;</div><div class="line">	<span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#e5e5e5</span>;</div><div class="line">	<span class="attribute">border-radius</span>: <span class="number">3px</span>;</div><div class="line">	<span class="attribute">margin</span>: <span class="number">10px</span>;</div><div class="line">	<span class="attribute">float</span>: right;</div><div class="line">	<span class="attribute">overflow</span>: hidden;</div><div class="line">	<span class="comment">/* Typographic */</span></div><div class="line">	<span class="attribute">font</span>: normal <span class="number">13px</span> <span class="string">"Helvetica Neue"</span>, sans-serif;</div><div class="line">	<span class="attribute">line-height</span>: <span class="number">1.5</span>;</div><div class="line">	<span class="attribute">text-align</span>: center;</div><div class="line">	<span class="comment">/* Visual */</span></div><div class="line">	<span class="attribute">background-color</span>: <span class="number">#f5f5f5</span>;</div><div class="line">	<span class="attribute">color</span>: <span class="number">#fff</span>;</div><div class="line">	<span class="attribute">opacity</span>: .<span class="number">8</span>;</div><div class="line">	<span class="comment">/* Other */</span></div><div class="line">	<span class="attribute">cursor</span>: pointer;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>使用 lang=”zh-cmn-Hans” 而不是 lang=”zh-CN”；<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 中文 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"zh-Hans"</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 简体中文 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"zh-cmn-Hans"</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 繁体中文 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"zh-cmn-Hant"</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- English --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>以无 BOM 的 utf-8 编码作为文件格式；</p>
-<p>指定字符编码的 meta 必须是 head 的第一个直接子元素；<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></div><div class="line">		......</div><div class="line">	<span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">		......</div><div class="line">	<span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>优先使用最新版本的IE 和 Chrome 内核<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge,chrome=1"</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>SEO 优化<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge,chrome=1"</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- SEO --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>Style Guide<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"keywords"</span> <span class="attr">content</span>=<span class="string">"your keywords"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"description"</span> <span class="attr">content</span>=<span class="string">"your description"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"author"</span> <span class="attr">content</span>=<span class="string">"author,email address"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>viewport : 一般指的是浏览器窗口内容区的大小，不包含工具条、选项卡等内容；<br>width : 浏览器宽度，输出设备中的页面可见区域宽度；<br>device-width : 设备分辨率宽度，输出设备的屏幕可见宽度；<br>initial-scale : 初始缩放比例；<br>maximum-scale : 最大缩放比例；<br>为移动端设备优化，设置可见区域的宽度和初始缩放比例。<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;meta <span class="built_in">name</span>=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</div></pre></td></tr></table></figure></p>
-<p>iOS 图标<br>apple-touch-icon 图片自动处理成圆角和高光等效果;<br>apple-touch-icon-precomposed 禁止系统自动添加效果，直接显示设计原图;<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- iPhone 和 iTouch，默认 57x57 像素，必须有 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"apple-touch-icon-precomposed"</span> <span class="attr">href</span>=<span class="string">"/apple-touch-icon-57x57-precomposed.png"</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- iPad，72x72 像素，可以没有，但推荐有 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"apple-touch-icon-precomposed"</span> <span class="attr">href</span>=<span class="string">"/apple-touch-icon-72x72-precomposed.png"</span> <span class="attr">sizes</span>=<span class="string">"72x72"</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- Retina iPhone 和 Retina iTouch，114x114 像素，可以没有，但推荐有 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"apple-touch-icon-precomposed"</span> <span class="attr">href</span>=<span class="string">"/apple-touch-icon-114x114-precomposed.png"</span> <span class="attr">sizes</span>=<span class="string">"114x114"</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- Retina iPad，144x144 像素，可以没有，但推荐有 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"apple-touch-icon-precomposed"</span> <span class="attr">href</span>=<span class="string">"/apple-touch-icon-144x144-precomposed.png"</span> <span class="attr">sizes</span>=<span class="string">"144x144"</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>favicon：未指定 favicon 时，大多数浏览器会请求 Web Server 根目录下的 favicon.ico 。为了保证 favicon 可访问，避免404，必须遵循以下两种方法之一：<br>在 Web Server 根目录放置 favicon.ico 文件；<br>使用 link 指定 favicon；<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"shortcut icon"</span> <span class="attr">href</span>=<span class="string">"path/to/favicon.ico"</span>&gt;</span></div></pre></td></tr></table></figure></p>
+</li>
+<li><p>声明顺序：相关属性应为一组</p>
+<ul>
+<li>Positioning：可从正常文档流中移除元素，还能覆盖盒模型（box model）相关样式，因此排首位；</li>
+<li>Box model：决定了组件的尺寸和位置；</li>
+<li>Typographic：其他属性只影响组件的内部或不影响前两组属性；</li>
+<li>Visual；<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.declaration-order</span> &#123;</div><div class="line">	<span class="comment">/* Positioning */</span></div><div class="line">	<span class="attribute">position</span>: absolute;</div><div class="line">	<span class="attribute">top</span>: <span class="number">0</span>;</div><div class="line">	<span class="attribute">right</span>: <span class="number">0</span>;</div><div class="line">	<span class="attribute">bottom</span>: <span class="number">0</span>;</div><div class="line">	<span class="attribute">left</span>: <span class="number">0</span>;</div><div class="line">	<span class="attribute">z-index</span>: <span class="number">100</span>;</div><div class="line">	<span class="comment">/* Box model */</span></div><div class="line">	<span class="attribute">display</span>: block;</div><div class="line">	<span class="attribute">box-sizing</span>: border-box;</div><div class="line">	<span class="attribute">width</span>: <span class="number">100px</span>;</div><div class="line">	<span class="attribute">height</span>: <span class="number">100px</span>;</div><div class="line">	<span class="attribute">padding</span>: <span class="number">10px</span>;</div><div class="line">	<span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#e5e5e5</span>;</div><div class="line">	<span class="attribute">border-radius</span>: <span class="number">3px</span>;</div><div class="line">	<span class="attribute">margin</span>: <span class="number">10px</span>;</div><div class="line">	<span class="attribute">float</span>: right;</div><div class="line">	<span class="attribute">overflow</span>: hidden;</div><div class="line">	<span class="comment">/* Typographic */</span></div><div class="line">	<span class="attribute">font</span>: normal <span class="number">13px</span> <span class="string">"Helvetica Neue"</span>, sans-serif;</div><div class="line">	<span class="attribute">line-height</span>: <span class="number">1.5</span>;</div><div class="line">	<span class="attribute">text-align</span>: center;</div><div class="line">	<span class="comment">/* Visual */</span></div><div class="line">	<span class="attribute">background-color</span>: <span class="number">#f5f5f5</span>;</div><div class="line">	<span class="attribute">color</span>: <span class="number">#fff</span>;</div><div class="line">	<span class="attribute">opacity</span>: .<span class="number">8</span>;</div><div class="line">	<span class="comment">/* Other */</span></div><div class="line">	<span class="attribute">cursor</span>: pointer;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
 
 				</div>
 				<!-- about -->
@@ -313,8 +434,8 @@
 
 		<footer>
 			
-<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by  Huangzhike </p>
-<p>&copy; 2016 <a href="https://huangzhike.github.io"> Huangzhike </a></p>
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2016 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
 		</footer>

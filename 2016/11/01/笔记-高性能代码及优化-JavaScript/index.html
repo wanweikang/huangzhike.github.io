@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		
-		<title>[笔记]-高性能代码及优化 | 用手记笔记，更用脑记笔记</title>
+		<title>[笔记]-高性能代码及优化-JavaScript | 用手记笔记，更用脑记笔记</title>
 		
 		<meta name="author" content="Huangzhike">
 		
@@ -13,7 +13,7 @@
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		
-		<meta property="og:title" content="[笔记]-高性能代码及优化"/>
+		<meta property="og:title" content="[笔记]-高性能代码及优化-JavaScript"/>
 		
 		<meta property="og:site_name" content="用手记笔记，更用脑记笔记"/>
 		
@@ -36,7 +36,7 @@
 		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
 		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
 		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css">
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
 		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
 		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
 		
@@ -55,7 +55,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/">用手记笔记，更用脑记笔记 <span>null</span></a>
+			<a class="navbar-brand" href="/">用手记笔记，更用脑记笔记</a>
            
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
@@ -92,14 +92,18 @@
 			<div class="content">
 				<!-- index -->
 				
-				<h2>[笔记]-高性能代码及优化</h2>
+				<h2>[笔记]-高性能代码及优化-JavaScript</h2>
 				
 				<div>
 					<span class="post-time">2016-11-01 18:20</span>
 				</div>	
 				
 				<div class="article-content">
-				<p>全局变量：变量定义在全局作用域中，引擎默认不会将其回收，可能存活到进程退出，如果对象很大，比如在JavaScript中做模版渲染。<br>尽量选用局部变量而不是全局变量。局部变量的访问速度比全局变量的快，因为全局变量是window对象的属性，而局部变量放在函数的栈里。缓存重复使用的全局变量。</p>
+				<p><strong>2016-11-21重新整理更新</strong></p>
+<ul>
+<li>全局变量：变量定义在全局作用域中，引擎默认不会将其回收，可能存活到进程退出，如果对象很大，如在JavaScript中做模版渲染。</li>
+<li>尽量选用局部变量而不是全局变量。局部变量的访问速度比全局变量的快，因为全局变量是window对象的属性，而局部变量放在函数的栈里。缓存重复使用的全局变量。</li>
+</ul>
 <p>全局变量缺点：不利于内存释放；多人协作时容易混淆；在作用域链中容易被干扰；需要搜索更长的作用域链。</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> <span class="keyword">data</span> = &#123; <span class="comment">/* big data */</span> &#125;;</div><div class="line"><span class="keyword">data</span> = <span class="literal">null</span>; <span class="comment">// 手工解除变量引用</span></div></pre></td></tr></table></figure>
 <figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// 首次为变量赋值时务必使用var，未声明直接赋值，默认作为新的全局变量</div><div class="line">var a = b = <span class="number">0</span><span class="comment">;</span></div><div class="line">// 等同于</div><div class="line"><span class="attribute">b</span> = <span class="number">0</span><span class="comment">;</span></div><div class="line">var a = b<span class="comment">;</span></div></pre></td></tr></table></figure>
@@ -226,8 +230,8 @@
 
 		<footer>
 			
-<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by  Huangzhike </p>
-<p>&copy; 2016 <a href="https://huangzhike.github.io"> Huangzhike </a></p>
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2016 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
 		</footer>
