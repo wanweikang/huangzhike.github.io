@@ -1,0 +1,233 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-高性能代码及优化-Other | 用手记笔记，用心记笔记，用脑记笔记</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="一个放笔记的地方">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-高性能代码及优化-Other"/>
+		
+		<meta property="og:site_name" content="用手记笔记，用心记笔记，用脑记笔记"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">用手记笔记，用心记笔记，用脑记笔记</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="/resume" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-高性能代码及优化-Other</h2>
+				
+				<div>
+					<span class="post-time">2016-11-01 18:20</span>
+				</div>	
+				
+				<div class="article-content">
+				<p><strong>2016-11-22重新整理更新</strong></p>
+<ul>
+<li>减少HTTP请求：将js，css用combo方式合并成单个资源；使用CSS ,SVG 替换图片；CSS Sprites；</li>
+<li>使用CDN加速：从最近的节点取数据。在CDN上存放静态文件，如图片、字体、JavaScript库等；最好在文件引用时加一个时间戳，避免CDN服务器上过期文件影响。每次改动文件时更新时间戳；</li>
+<li>避免空的src和href，如图片和iFrame等：依然会发起一个HTTP请求；空Src点击会重载当前页面；</li>
+<li>增加过期头：在所有的静态文件上加过期头。过期日期定得非常远，基本永不过期。用户第二次访问网站时，不会再次请求已被缓存的静态文件。为防止只能看到老版本，最好有一套版本控制机制，一种方式是在文件名上加入时间戳；</li>
+<li>使用GZIP：HTTP 1.1 引入Accept-Encoding，表明HTTP请求的内容被压缩过；有些浏览器和代理服务器不支持，需要在头部加上Vary字段，这样能获得未压缩的数据；图片和PDF不应当被压缩，它们本身提供了压缩方式，如果压缩PDF和图片，可能越压越大；</li>
+<li>CSS放head标签中；</li>
+<li>JavaScript放body标签尾部；</li>
+<li>避免CSS表达式；</li>
+<li>删除不使用的CSS语句：避免无意义CSS匹配；减少CSS文件体积；</li>
+<li>对JavaScript和CSS代码压缩：去掉不必要的非功能性字符，如空白行、换行符、注释、分隔符；JS还可以把变量名换成abc；</li>
+<li><p>减少重绘；</p>
+</li>
+<li><p>JS（不包括动态插入的JS）执行完之后，才会触发DOMContentLoaded事件，</p>
+</li>
+<li>DOMContentLoaded不会等待CSS文件、图片、iframe加载完成，它触发时机是：加载完页面，解析完所有标签（不包括执行CSS和JS），并设置interactive 和执行每个静态的script标签中的JS，然后触发。</li>
+<li>JS的执行，需要等待它前面的CSS加载（如果是外联）、执行完成，因为JS可能会依赖位于它前面的CSS计算出来的样式。</li>
+<li>当浏览器从服务器接收到了HTML文档，并把HTML在内存中转换成DOM树，在转换过程中如果发现某个节点(node)上引用了CSS或IMAGE，就会再发1个request去请求CSS或image，然后继续执行下面的转换，而不需要等待request的返回。</li>
+<li>但当引用了JS时，浏览器发送1个js request就会一直等待该request的返回。</li>
+<li>因为浏览器需要稳定的DOM树结构，而JS中可能有代码改变了DOM树结构，为了防止出现JS修改DOM树，需要重新构建DOM树，所以会阻塞其他的下载和呈现.</li>
+<li>浏览器不会等全部HTML解析完成之后才渲染元素，而是同时进行。</li>
+</ul>
+<ul>
+<li><p>合理使用IconFont</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">@<span class="keyword">font-face</span> &#123;</div><div class="line">	<span class="attribute">font-family</span>: <span class="string">"iconfont"</span>;</div><div class="line">	<span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">'iconfont.eot'</span>); <span class="comment">/* IE9*/</span></div><div class="line">	<span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">'iconfont.eot?#iefix'</span>) </div><div class="line">	<span class="built_in">format</span>(<span class="string">'embedded-opentype'</span>), <span class="comment">/* IE6-IE8 */</span></div><div class="line">	<span class="built_in">url</span>(<span class="string">'iconfont.woff'</span>) </div><div class="line">	<span class="built_in">format</span>(<span class="string">'woff'</span>), <span class="comment">/* chrome、firefox */</span></div><div class="line">	<span class="built_in">url</span>(<span class="string">'iconfont.ttf'</span>) </div><div class="line">	<span class="built_in">format</span>(<span class="string">'truetype'</span>), <span class="comment">/* chrome、firefox、opera、Safari, Android, iOS 4.2+*/</span></div><div class="line">	<span class="built_in">url</span>(<span class="string">'iconfont.svg#iconfont'</span>) </div><div class="line">	<span class="built_in">format</span>(<span class="string">'svg'</span>); <span class="comment">/* iOS 4.1- */</span></div><div class="line">&#125;</div><div class="line">&lt;!<span class="selector-tag">--</span> </div><div class="line">这样造成了极大的带宽消耗，这些<span class="selector-tag">icon</span>资源往往在渲染中占重要位置</div><div class="line">减少加载字体文件，较小的文件也可以考虑<span class="selector-tag">base64</span>在<span class="selector-tag">css</span>文件中</div><div class="line"> <span class="selector-tag">--</span>&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用WebP格式；</p>
+</li>
+<li>base64编码实际上是将图片存储为字符。IE7不支持base64编码图片。<ul>
+<li>HTML中添加base64编码图片，不会被缓存，但如果在CSS中，会随着CSS文件一并缓存</li>
+<li>获取与CSS文件或HTML文件一起，不需要HTTP请求</li>
+</ul>
+</li>
+<li>SVG基于XML语言，但IE9以下不支持。<ul>
+<li>可以缩放到任意尺寸的复杂图形。</li>
+<li>减少HTTP请求，因为包含在HTML代码中，同时SVG属于文本，能够享受GZIP压缩。</li>
+<li>同图片相比，SVG可获得更好性能</li>
+<li>能够通过JavaScript交互</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">	<span class="comment">&lt;!-- 以无 BOM 的 utf-8 编码作为文件格式，指定字符编码的 meta 必须是 head 的第一个直接子元素 --&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></div><div class="line">	<span class="comment">&lt;!-- 优先使用最新版本的IE 和 Chrome 内核 --&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge,chrome=1"</span>&gt;</span></div><div class="line">	<span class="comment">&lt;!-- 优化移动端设备，设置可见区域的宽度和初始缩放比例 --&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span></div><div class="line">	<span class="comment">&lt;!-- SEO优化 --&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>Style Guide<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"keywords"</span> <span class="attr">content</span>=<span class="string">"your keywords"</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"description"</span> <span class="attr">content</span>=<span class="string">"your description"</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"author"</span> <span class="attr">content</span>=<span class="string">"author,email address"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>viewport : 浏览器窗口内容区的大小，不含工具条、选项卡；</li>
+<li>width : 浏览器宽度，输出设备中的页面可见区域宽度；</li>
+<li>device-width : 设备分辨率宽度，输出设备的屏幕可见宽度；</li>
+<li>initial-scale : 初始缩放比例；</li>
+<li><p>maximum-scale : 最大缩放比例；</p>
+</li>
+<li><p>未指定 favicon 时，大多数浏览器请求 Server 根目录下的 favicon.ico 。保证 favicon 可访问：</p>
+<ul>
+<li>在 Web Server 根目录放置 favicon.ico 文件；</li>
+<li>用 link 指定 favicon：<code>&lt;link rel=&quot;shortcut icon&quot; href=&quot;path/to/favicon.ico&quot;&gt;</code>；</li>
+</ul>
+</li>
+<li><p>通过条件注释解决IE兼容：一个CSS文件解决，不需要hack，也不需要为每个版本的IE准备CSS文件，节省了HTTP请求。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!--[if lt IE 7]&gt; &lt;HTML class="ie6" lang="en"&gt; &lt;![endif]--&gt;</span></div><div class="line"><span class="comment">&lt;!--[if IE 7]&gt; &lt;HTML class="ie7" lang="en"&gt; &lt;![endif]--&gt;</span></div><div class="line"><span class="comment">&lt;!--[if IE 8]&gt; &lt;HTML class="ie8" lang="en"&gt; &lt;![endif]--&gt;</span></div><div class="line"><span class="comment">&lt;!--[if IE 9]&gt; &lt;HTML class="ie9" lang="en"&gt; &lt;![endif]--&gt;</span></div><div class="line"><span class="comment">&lt;!--[if (gt IE 9)|!(IE)]&gt;&lt;!--&gt;</span> <span class="tag">&lt;<span class="name">HTML</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span> <span class="comment">&lt;!--&lt;![endif]--&gt;</span></div><div class="line"></div><div class="line">.paddingDefinition &#123;</div><div class="line">	padding: 10px;</div><div class="line">&#125;</div><div class="line">.ie7 .paddingDefinition &#123;</div><div class="line">	padding: 12px;</div><div class="line">&#125;</div><div class="line">.ie8 .paddingDefinition &#123;</div><div class="line">	padding: 24px;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>移动端优化：</p>
+</li>
+<li>click 的 300ms 延迟是双击缩放(double tap to zoom)导致的，点击屏幕之后，浏览器不能立刻判断是点击，还是双击。</li>
+<li>因此，移动端浏览器等待 300 毫秒，以判断是否再次点击了屏幕。</li>
+<li>随着响应式网页增多，双击缩放机会减少，浏览器开发商也随之提供相应的解决方案。</li>
+<li><p>在5 Ways to Prevent the 300ms Click Delay on Mobile Devices 中，被提及的包括「禁用缩放」和「width=device-width」等，但并不完美，需要针对某些版本浏览器，或仅在 Android 浏览器上使用。</p>
+</li>
+<li><p>FT Labs 专为解决移动端浏览器 300 毫秒点击延迟开发的一个轻量级的库 FastClick 是很好的选择。</p>
+</li>
+<li>FastClick 在检测到 touchend 事件时，通过 DOM 自定义事件立即触发模拟 click 事件，并把浏览器在 300 毫秒之后真正触发的 click 事件阻止掉。</li>
+<li><p>使用方法：在 window load 后，在 <body> 上调用 FastClick.attach() 即可。</body></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">window</span>.addEventListener(<span class="string">"load"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	FastClick.attach(<span class="built_in">document</span>.body);</div><div class="line">&#125;, <span class="literal">false</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用touchstart、touchend代替click，注意Touch响应过快，易引发误操作；</p>
+</li>
+<li><p>PC 端滚动条的值通过 <code>document.scrollTop</code> 和 <code>document.scrollLeft</code> ，但 iOS 中没有滚动条的概念，仅能通过 <code>window.scrollY</code>、<code>window.scrollX</code>获取，同时兼容 Android 。</p>
+</li>
+<li><p>iOS 上，输入框默认有内部阴影，但无法用 box-shadow 清除：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">input</span>,</div><div class="line"><span class="selector-tag">textarea</span> &#123;</div><div class="line">	<span class="attribute">border</span>: <span class="number">0</span>; <span class="comment">/* 方法1 */</span></div><div class="line">	<span class="attribute">-webkit-appearance</span>: none; <span class="comment">/* 方法2 */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>iOS ( Android 或其他不会) 会自动识别看起来像电话号码的数字，将其处理为电话号码链接。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 关闭电话号码识别： --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"format-detection"</span> <span class="attr">content</span>=<span class="string">"telephone=no"</span> /&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 开启电话功能： --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"tel:123456"</span>&gt;</span>123456<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 开启短信功能： --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"sms:123456"</span>&gt;</span>123456<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>Android （ iOS 不会）上，会自动识别看起来像邮箱地址的字符串，长按弹出发邮件的提示。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 关闭邮箱地址识别： --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"format-detection"</span> <span class="attr">content</span>=<span class="string">"email=no"</span> /&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>指定 iOS 的 safari 顶端状态条的样式</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"apple-mobile-web-app-status-bar-style"</span> <span class="attr">content</span>=<span class="string">"black"</span> /&gt;</span></div><div class="line"><span class="comment">&lt;!-- 可选default、black、black-translucent --&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2016 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

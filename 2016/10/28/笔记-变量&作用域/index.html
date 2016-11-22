@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		
-		<title>[笔记]-变量&amp;作用域 | 用手记笔记，更用脑记笔记</title>
+		<title>[笔记]-变量&amp;作用域 | 用手记笔记，用心记笔记，用脑记笔记</title>
 		
 		<meta name="author" content="Huangzhike">
 		
@@ -15,7 +15,7 @@
 		
 		<meta property="og:title" content="[笔记]-变量&amp;作用域"/>
 		
-		<meta property="og:site_name" content="用手记笔记，更用脑记笔记"/>
+		<meta property="og:site_name" content="用手记笔记，用心记笔记，用脑记笔记"/>
 		
 		
 		<!-- favicon -->
@@ -31,7 +31,7 @@
 		<!-- toc -->
 		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
 		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
 		<!-- material design -->
 		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
 		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
@@ -55,7 +55,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/">用手记笔记，更用脑记笔记</a>
+			<a class="navbar-brand" href="/">用手记笔记，用心记笔记，用脑记笔记</a>
            
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
@@ -105,7 +105,7 @@
 <figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">1</span>; <span class="comment">// 全局变量</span></div><div class="line"></div><div class="line">(<span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">(i)</span> </span>&#123;</div><div class="line">	<span class="comment">// 函数test内的局部作用域</span></div><div class="line">	i = <span class="number">5</span>; <span class="comment">// 局部变量</span></div><div class="line">	<span class="keyword">var</span> a = <span class="number">3</span>; <span class="comment">// 局部变量</span></div><div class="line">&#125;)(<span class="number">10</span>);</div></pre></td></tr></table></figure>
 </li>
 <li><p>不使用var声明变量会产生隐式全局变量。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 全局作用域</span></div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">	<span class="comment">// 外部循环在第一次Loop后就终止，因为Loop覆盖了全局变量 i</span></div><div class="line">	<span class="comment">// 在Loop的for循环中使用var声明可以避免</span></div><div class="line">	(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">		<span class="comment">// 函数作用域</span></div><div class="line">		<span class="comment">// 没用var声明</span></div><div class="line">		<span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123; </div><div class="line">			<span class="built_in">console</span>.log(i);</div><div class="line">		&#125;</div><div class="line">	&#125;)();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 全局作用域</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">	<span class="comment">// 外部循环在第一次Loop后就终止，因为Loop覆盖了全局变量 i</span></div><div class="line">	<span class="comment">// 在Loop的for循环中使用var声明可以避免</span></div><div class="line">	(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">		<span class="comment">// 函数作用域</span></div><div class="line">		<span class="comment">// 没用var声明</span></div><div class="line">		<span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123; </div><div class="line">			<span class="built_in">console</span>.log(i);</div><div class="line">		&#125;</div><div class="line">	&#125;)();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
   <figure class="highlight delphi"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span><span class="params">()</span> <span class="comment">&#123;</span></span></div><div class="line">	var a = 1;</div><div class="line">	a = 2;</div><div class="line">&#125;)<span class="params">()</span>;</div><div class="line">a; <span class="comment">// Uncaught ReferenceError: a is not defined(…)</span></div></pre></td></tr></table></figure>
 </li>
 <li><p>隐式全局变量和明确定义的全局变量的差异，在于delete操作符能否删除。</p>
