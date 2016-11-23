@@ -1,0 +1,191 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-AMD-CMD | 用手记笔记，用心记笔记，用脑记笔记</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="一个放笔记的地方">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-AMD-CMD"/>
+		
+		<meta property="og:site_name" content="用手记笔记，用心记笔记，用脑记笔记"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">用手记笔记，用心记笔记，用脑记笔记</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="/resume" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-AMD-CMD</h2>
+				
+				<div>
+					<span class="post-time">2016-11-23 12:31</span>
+				</div>	
+				
+				<div class="article-content">
+				<p><strong>参考</strong>：<br><a href="http://blog.csdn.net/jackwen110200/article/details/52105493" target="_blank" rel="external">http://blog.csdn.net/jackwen110200/article/details/52105493</a><br><a href="https://www.zhihu.com/question/20342350" target="_blank" rel="external">https://www.zhihu.com/question/20342350</a></p>
+<ul>
+<li><p>JS阻塞浏览器渲染：alert执行时，html一片空白，<span>body</span>并显示，点击确定后才出现。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"main.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">span</span>&gt;</span>body<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"></div><div class="line">main.js:</div><div class="line">(function()&#123;alert("it works");&#125;)()</div></pre></td></tr></table></figure>
+</li>
+<li><p>body已出现在页面中。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"require.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"><span class="built_in">require</span>([<span class="string">"a"</span>]);</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">span</span>&gt;</span>body<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"></div><div class="line">// a.js: </div><div class="line">define(function()&#123;alert("it works");&#125;)</div></pre></td></tr></table></figure>
+</li>
+<li><p>CommonJS（服务端）：NodeJS参照CommonJS规范实现模块。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var <span class="built_in">math</span> = <span class="built_in">require</span>(<span class="string">'math'</span>);</div><div class="line"><span class="built_in">math</span>.add(<span class="number">2</span>,<span class="number">3</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>AMD（Asynchronous Module Definition）：RequireJS基于AMD实现，CommonJS不适用于浏览器端，因为脚本来自服务端，请求需要时间，如果等待math.js加载完，页面渲染就卡住了，浏览器端不能用同步加载（synchronous），要异步加载（asynchronous）。</p>
+</li>
+<li><p>AMD也用require()语句加载模块，它要求两个参数：<code>require([module], callback);</code>：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">require</span>([<span class="string">'math'</span>], <span class="function"><span class="keyword">function</span> <span class="params">(math)</span></span> &#123;</div><div class="line">	<span class="built_in">math</span>.add(<span class="number">2</span>, <span class="number">3</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>加载这个文件，也可能使网页失去响应。</p>
+<ul>
+<li>一，放网页底部；</li>
+<li>二，<code>&lt;script src=&quot;path/to/require.js&quot; defer async&gt;&lt;/script&gt;</code>，async：异步加载。IE只支持defer。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>RequireJS：JavaScript模块载入框架，基本功能“模块化加载”</p>
+<ul>
+<li>防止js加载阻塞页面渲染</li>
+<li>可以按需、并行、延时载入js库</li>
+<li>声明不同js文件之间的依赖</li>
+<li>让代码以模块化方式组织</li>
+<li>使用程序调用的方式加载js，防出现如下场景：<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"a.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"b.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"c.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>CMD（Common Module Definition）：浏览器实现SeaJS，解决的问题和requireJS一样。</p>
+</li>
+<li><p>AMD与CMD区别：对依赖模块的执行不同，不是加载方式不同。</p>
+<ul>
+<li>“requireJS异步加载模块，SeaJS同步加载模块”，实际上不准确，加载模块都是异步的</li>
+<li>AMD推崇依赖前置，在定义模块时就要声明其依赖的模块</li>
+<li>CMD推崇就近依赖，在用到模块时再require，才知道依赖了哪些模块</li>
+<li>requireJS和SeaJS都支持对方的写法</li>
+<li>同样都是异步加载模块，AMD在加载模块完成后就会执行改模块，所有模块都加载完后进入回调执行</li>
+<li>CMD加载完依赖模块后并不执行，所有依赖模块加载完后进入主逻辑，遇到require语句时才执行</li>
+</ul>
+</li>
+</ul>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2016 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
