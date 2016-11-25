@@ -1,0 +1,247 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-Node.js abc_3_API | 用手记笔记，用心记笔记，用脑记笔记</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="一个放笔记的地方">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-Node.js abc_3_API"/>
+		
+		<meta property="og:site_name" content="用手记笔记，用心记笔记，用脑记笔记"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">用手记笔记，用心记笔记，用脑记笔记</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="/resume" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Node.js abc_3_API</h2>
+				
+				<div>
+					<span class="post-time">2016-11-11 0:20</span>
+				</div>	
+				
+				<div class="article-content">
+				<p><strong>参考：</strong></p>
+<ul>
+<li><a href="http://www.runoob.com/nodejs/nodejs-tutorial.html" target="_blank" rel="external">http://www.runoob.com/nodejs/nodejs-tutorial.html</a></li>
+<li><a href="http://www.liaoxuefeng.com/" target="_blank" rel="external">http://www.liaoxuefeng.com/</a></li>
+<li>Node.js开发指南 BYVoid</li>
+</ul>
+<p><strong>Buffer(缓冲区)</strong></p>
+<ul>
+<li>JavaScript 语言自身只有字符串数据类型，没有二进制数据类型。</li>
+<li>但在处理像TCP流或文件流时，必须使用到二进制数据。</li>
+<li>因此在 Node.js中，定义了一个 Buffer 类，用来创建一个专门存放二进制数据的缓存区。</li>
+<li>需要在 Node.js 中处理I/O操作中移动的数据时，就有可能使用 Buffer 库。</li>
+<li>原始数据存储在 Buffer 类的实例中。 Buffer 类似整数数组，但对应于 V8 堆内存外的一块原始内存。</li>
+<li>创建 Buffer 类：<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 创建长度为 10 字节的 Buffer 实例：</span></div><div class="line"><span class="keyword">var</span> buf = <span class="keyword">new</span> <span class="type">Buffer</span>(<span class="number">10</span>);</div><div class="line"><span class="comment">// 通过给定的数组创建 Buffer 实例：</span></div><div class="line"><span class="keyword">var</span> buf = <span class="keyword">new</span> <span class="type">Buffer</span>([<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>]);</div><div class="line"><span class="comment">// 通过一个字符串来创建 Buffer 实例：</span></div><div class="line"><span class="keyword">var</span> buf = <span class="keyword">new</span> <span class="type">Buffer</span>(<span class="string">"www.runoob.com"</span>, <span class="string">"utf-8"</span>);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>fs模块：</strong>文件系统模块，封装了文件的读取、写入、更名、删除、遍历目录、链接等 POSIX 文件系统操作。提供了异步如 fs.readFile()和同步如fs.readFileSync()方法。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line"><span class="comment">// sample.txt文件必须在当前目录下，且文件编码为utf-8</span></div><div class="line">fs.readFile(<span class="string">'sample.txt'</span>, <span class="string">'utf-8'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (err) &#123;</div><div class="line">		<span class="built_in">console</span>.log(err);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">console</span>.log(data);</div><div class="line">	&#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 读取图片</span></div><div class="line">fs.readFile(<span class="string">'sample.png'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (err) &#123;</div><div class="line">		<span class="built_in">console</span>.log(err);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">console</span>.log(data);</div><div class="line">		<span class="built_in">console</span>.log(data.length + <span class="string">' bytes'</span>);</div><div class="line">	&#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<ul>
+<li>不传入文件编码时，回调函数的data参数将返回一个Buffer对象。</li>
+<li><p>Node.js中，Buffer对象就是一个包含零个或任意个字节的数组（和Array不同）。</p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// <span class="keyword">Buffer</span> -&gt; <span class="built_in">String</span></div><div class="line">var <span class="literal">text</span> = data.toString(<span class="symbol">'utf</span>-<span class="number">8</span>');</div><div class="line"></div><div class="line">// <span class="built_in">String</span> -&gt; <span class="keyword">Buffer</span></div><div class="line">var buf = <span class="keyword">new</span> <span class="keyword">Buffer</span>(<span class="literal">text</span>, <span class="symbol">'utf</span>-<span class="number">8</span>');</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>fs.open(path, flags, [mode], [callback(err, fd)])</code> ： POSIX open 函数的封装，与 C 语言标准库中的 fopen 函数类似。</p>
+</li>
+<li><code>fs.read(fd, buffer, offset, length, position, [callback(err, bytesRead,buffer)])</code>： POSIX read 函数的封装，提供了更底层的接口。</li>
+<li><code>fs.writeFile()</code>：将数据写入文件。</li>
+<li><code>fs.stat()</code>：获取文件信息。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>);</div><div class="line"><span class="keyword">var</span> buf = <span class="keyword">new</span> Buffer(<span class="number">1024</span>);</div><div class="line"></div><div class="line">fs.open(<span class="string">'input.txt'</span>, <span class="string">'r+'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, fd</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (err) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">	&#125;</div><div class="line">	fs.read(fd, buf, <span class="number">0</span>, buf.length, <span class="number">0</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, bytes</span>) </span>&#123;</div><div class="line">			<span class="keyword">if</span> (err) &#123;</div><div class="line">				<span class="built_in">console</span>.log(err);</div><div class="line">			&#125;</div><div class="line">			<span class="built_in">console</span>.log(bytes + <span class="string">"  字节被读取"</span>);</div><div class="line">	&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>Stream</strong>是Node.js提供的仅在服务端可用的模块，目的是支持“流”这种数据结构。</p>
+<ul>
+<li>Stream是抽象接口，对http服务器发起请求的request对象就是一个Stream。</li>
+<li>可以把数据看成数据流，敲键盘时把每个字符连起来，看成字符流。这个流从键盘输入到应用程序：标准输入流（stdin）。</li>
+<li>如果应用程序把字符一个一个输出到显示器上，这也可以看成是一个流：标准输出流（stdout）。</li>
+<li>流的特点是数据是有序的，而且必须依次读取，或者依次写入，不能像Array那样随机定位。</li>
+<li>有些流用来读取数据，从文件读取数据时，打开一个文件流，然后从文件流中不断读取数据。</li>
+<li>有些流用来写入数据，向文件写入数据时，把数据不断地往文件流中写进去。</li>
+<li>所有的 Stream 对象都是 EventEmitter 的实例：<ul>
+<li>data事件：当有数据可读时触发</li>
+<li>end事件：没有更多的数据可读时触发</li>
+<li>error事件：出错</li>
+<li>finish事件：所有数据已被写入到底层系统时触发。</li>
+</ul>
+</li>
+<li>Stream 有四种流类型：<ul>
+<li>Readable：可读操作。</li>
+<li>Writable：可写操作。</li>
+<li>Duplex：可读可写操作.</li>
+<li>Transform：操作被写入数据，然后读出结果。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>从文件流读取文本：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line"><span class="comment">// 打开一个流:</span></div><div class="line"><span class="keyword">var</span> readerStream = fs.createReadStream(<span class="string">'sample.txt'</span>, <span class="string">'utf-8'</span>);</div><div class="line"></div><div class="line">readerStream.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">chunk</span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'DATA:'</span>)</div><div class="line">	<span class="built_in">console</span>.log(chunk);</div><div class="line">	<span class="comment">// data事件可能会有多次，每次传递的chunk是流的一部分数据</span></div><div class="line">&#125;);</div><div class="line"></div><div class="line">readerStream.on(<span class="string">'end'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'END'</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">readerStream.on(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(err.stack);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>);</div><div class="line"><span class="keyword">var</span> data = <span class="string">''</span>;</div><div class="line"></div><div class="line"><span class="comment">// 创建可读流</span></div><div class="line"><span class="keyword">var</span> readerStream = fs.createReadStream(<span class="string">'input.txt'</span>);</div><div class="line"></div><div class="line"><span class="comment">// 设置编码为 utf8</span></div><div class="line">readerStream.setEncoding(<span class="string">'UTF8'</span>);</div><div class="line"></div><div class="line"><span class="comment">// 处理流事件 --&gt; data, end, and error</span></div><div class="line">readerStream.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">chunk</span>) </span>&#123;</div><div class="line">	 data += chunk;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">readerStream.on(<span class="string">'end'</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	 <span class="built_in">console</span>.log(data);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>要以流的形式写入文件，只需要不断调用write()方法，最后以end()结束：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>);</div><div class="line"><span class="keyword">var</span> data = <span class="string">''</span>;</div><div class="line"></div><div class="line"><span class="comment">// 创建一个可以写入的流，写入到文件 output.txt 中</span></div><div class="line"><span class="keyword">var</span> writerStream = fs.createWriteStream(<span class="string">'output.txt'</span>);</div><div class="line"></div><div class="line"><span class="comment">// 使用 utf8 编码写入数据</span></div><div class="line">writerStream.write(data, <span class="string">'UTF8'</span>);</div><div class="line"></div><div class="line"><span class="comment">// 标记文件末尾</span></div><div class="line">writerStream.end();</div><div class="line"></div><div class="line"><span class="comment">// 处理流事件 --&gt; data, end, and error</span></div><div class="line">writerStream.on(<span class="string">'finish'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">"写入完成。"</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">writerStream.on(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</div><div class="line">	 <span class="built_in">console</span>.log(err.stack);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>所有可读流都继承自stream.Readable，所有可写流都继承自stream.Writable。</p>
+</li>
+<li>流也可以串起来。Readable流和Writable流串起来后，数据从Readable流进入Writable流，这叫pipe。</li>
+<li><p>Readable流有一个pipe()方法，源文件的数据自动写入到目标文件里，实际上是复制文件：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> rs = fs.createReadStream(<span class="string">'sample.txt'</span>);</div><div class="line"><span class="keyword">var</span> ws = fs.createWriteStream(<span class="string">'copied.txt'</span>);</div><div class="line"></div><div class="line">rs.pipe(ws);</div></pre></td></tr></table></figure>
+</li>
+<li><p>链式流是通过连接输出流到另外一个流并创建多个对个流操作链的机制。</p>
+</li>
+<li>用管道和链式来压缩和解压文件：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// compress.js</span></div><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>);</div><div class="line"><span class="keyword">var</span> zlib = <span class="built_in">require</span>(<span class="string">'zlib'</span>);</div><div class="line"></div><div class="line"><span class="comment">// 压缩 input.txt 文件为 input.txt.gz</span></div><div class="line">fs.createReadStream(<span class="string">'input.txt'</span>)</div><div class="line">	.pipe(zlib.createGzip())</div><div class="line">	.pipe(fs.createWriteStream(<span class="string">'input.txt.gz'</span>));</div><div class="line">	</div><div class="line"><span class="comment">// node compress.js</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>Node.js 使用<strong>事件驱动模型</strong>，webserver一直接受请求而不等待任何读写操作（被称为非阻塞式IO或事件驱动IO）。</p>
+<ul>
+<li>事件驱动模型中，会生成一个主循环来监听事件，当检测到事件时触发回调函数。</li>
+<li>事件驱动的流程类似观察者模式，事件相当于主题(Subject)，所有注册到这个事件上的处理函数相当于观察者(Observer)。</li>
+<li>Node.js 所有的异步 I/O 操作在完成时都会发送一个事件到事件队列。</li>
+<li><p>Node.js里面的许多对象都会分发事件：</p>
+<ul>
+<li>net.Server对象会在每次有新连接时分发一个事件，</li>
+<li>fs.readStream对象会在文件被打开的时候发出一个事件。 </li>
+<li>所有这些产生事件的对象都是 events.EventEmitter 的实例。</li>
+</ul>
+</li>
+<li><p>Node.js 有多个内置的事件，通过引入 events 模块，并实例化 EventEmitter 类来绑定和监听事件；</p>
+</li>
+<li>events 模块只提供了一个对象： events.EventEmitter，核心就是事件触发与事件监听器功能的封装。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// event.js </span></div><div class="line"><span class="comment">// 引入 events 模块</span></div><div class="line"><span class="keyword">var</span> events = <span class="built_in">require</span>(<span class="string">'events'</span>);</div><div class="line"><span class="comment">// 创建 eventEmitter 对象</span></div><div class="line"><span class="keyword">var</span> eventEmitter = <span class="keyword">new</span> events.EventEmitter();</div><div class="line"><span class="comment">// 绑定事件及事件的处理程序</span></div><div class="line">eventEmitter.on(<span class="string">'eventName'</span>, eventHandler);</div><div class="line"><span class="comment">// 绑定事件及事件的处理程序2 </span></div><div class="line">eventEmitter.addListener(<span class="string">'eventName'</span>, eventHandler2);</div><div class="line"><span class="comment">// 监听器数量</span></div><div class="line"><span class="keyword">var</span> eventListeners = <span class="built_in">require</span>(<span class="string">'events'</span>).EventEmitter.listenerCount(eventEmitter,<span class="string">'eventName'</span>);</div><div class="line"><span class="comment">// 触发事件</span></div><div class="line">eventEmitter.emit(<span class="string">'eventName'</span>);</div><div class="line"><span class="comment">// 移除绑定的eventHandler</span></div><div class="line">eventEmitter.removeListener(<span class="string">'eventName'</span>, eventHandler);</div><div class="line"><span class="comment">// 触发事件</span></div><div class="line">eventEmitter.emit(<span class="string">'eventName'</span>);</div><div class="line">eventListeners = <span class="built_in">require</span>(<span class="string">'events'</span>).EventEmitter.listenerCount(eventEmitter,<span class="string">'eventName'</span>);</div><div class="line"></div><div class="line">emitter.on(<span class="string">'someEvent'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">arg1, arg2</span>) </span>&#123; </div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'listener1'</span>, arg1, arg2); </div><div class="line">&#125;); </div><div class="line"></div><div class="line">emitter.emit(<span class="string">'someEvent'</span>, <span class="string">'a'</span>, <span class="string">'b'</span>); </div><div class="line"><span class="comment">// node event.js </span></div><div class="line"><span class="comment">// listener1 a b</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>EventEmitter 常用API</strong></p>
+<ul>
+<li>EventEmitter.on(event, listener) 为指定事件注册监听器，接受一个字符串 event 和一个回调函数 listener 。</li>
+<li>EventEmitter.emit(event, [arg1], [arg2], […]) 触发 event 事件，传递若干可选参数到事件监听器的参数表。</li>
+<li>EventEmitter.once(event, listener) 为指定事件注册单次监听器，监听器只触发一次，触发后立刻解除该监听器。</li>
+<li>EventEmitter.removeListener(event, listener) 移除指定事件的某个监听器， listener 必须是该事件已经注册过的监听器。</li>
+<li>EventEmitter.removeAllListeners([event]) 移除所有事件的所有监听器，如果指定 event ，则移除指定事件的所有监听器。</li>
+<li>EventEmitter 定义了 error 事件，在遇到异常的时候通常会发射 error 事件。</li>
+<li>当 error 被发射时， EventEmitter 如果没有响应的监听器，Node.js 会把它当作异常，退出程序并打印调用栈。</li>
+<li>一般要为会发射 error事件的对象设置监听器，避免遇到错误后整个程序崩溃。</li>
+</ul>
+<p><strong>继承 EventEmitter</strong></p>
+<ul>
+<li>大多数时候不会直接使用 EventEmitter ，而是在对象中继承它。包括 fs 、 net 、http 在内，只要支持事件响应的核心模块都是 EventEmitter 的子类。</li>
+</ul>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2016 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
