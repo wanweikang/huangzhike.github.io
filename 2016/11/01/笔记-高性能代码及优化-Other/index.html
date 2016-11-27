@@ -101,13 +101,13 @@
 				<div class="article-content">
 				<p><strong>2016-11-22重新整理更新</strong></p>
 <ul>
-<li>减少HTTP请求：将js，css用combo方式合并成单个资源；使用CSS ,SVG 替换图片；CSS Sprites；</li>
+<li>减少HTTP请求：将CSS、Javascript合并；使用CSS、SVG 替换图片；CSS Sprites； Lazy Load Image；Lazy Load Javascript；模块化加载；</li>
 <li>使用CDN加速：从最近的节点取数据。在CDN上存放静态文件，如图片、字体、JavaScript库等；最好在文件引用时加一个时间戳，避免CDN服务器上过期文件影响。每次改动文件时更新时间戳；</li>
 <li>避免空的src和href，如图片和iFrame等：依然会发起一个HTTP请求；空Src点击会重载当前页面；</li>
 <li>增加过期头：在所有的静态文件上加过期头。过期日期定得非常远，基本永不过期。用户第二次访问网站时，不会再次请求已被缓存的静态文件。为防止只能看到老版本，最好有一套版本控制机制，一种方式是在文件名上加入时间戳；</li>
 <li>使用GZIP：HTTP 1.1 引入Accept-Encoding，表明HTTP请求的内容被压缩过；有些浏览器和代理服务器不支持，需要在头部加上Vary字段，这样能获得未压缩的数据；图片和PDF不应当被压缩，它们本身提供了压缩方式，如果压缩PDF和图片，可能越压越大；</li>
 <li>CSS放head标签中；</li>
-<li>JavaScript放body标签尾部；</li>
+<li>JavaScript放body标签尾部：外链脚本加载时会阻塞其他资源；</li>
 <li>避免CSS表达式；</li>
 <li>删除不使用的CSS语句：避免无意义CSS匹配；减少CSS文件体积；</li>
 <li>对JavaScript和CSS代码压缩：去掉不必要的非功能性字符，如空白行、换行符、注释、分隔符；JS还可以把变量名换成abc；</li>
@@ -158,7 +158,7 @@
 <li><p>通过条件注释解决IE兼容：一个CSS文件解决，不需要hack，也不需要为每个版本的IE准备CSS文件，节省了HTTP请求。</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!--[if lt IE 7]&gt; &lt;HTML class="ie6" lang="en"&gt; &lt;![endif]--&gt;</span></div><div class="line"><span class="comment">&lt;!--[if IE 7]&gt; &lt;HTML class="ie7" lang="en"&gt; &lt;![endif]--&gt;</span></div><div class="line"><span class="comment">&lt;!--[if IE 8]&gt; &lt;HTML class="ie8" lang="en"&gt; &lt;![endif]--&gt;</span></div><div class="line"><span class="comment">&lt;!--[if IE 9]&gt; &lt;HTML class="ie9" lang="en"&gt; &lt;![endif]--&gt;</span></div><div class="line"><span class="comment">&lt;!--[if (gt IE 9)|!(IE)]&gt;&lt;!--&gt;</span> <span class="tag">&lt;<span class="name">HTML</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span> <span class="comment">&lt;!--&lt;![endif]--&gt;</span></div><div class="line"></div><div class="line">.paddingDefinition &#123;</div><div class="line">	padding: 10px;</div><div class="line">&#125;</div><div class="line">.ie7 .paddingDefinition &#123;</div><div class="line">	padding: 12px;</div><div class="line">&#125;</div><div class="line">.ie8 .paddingDefinition &#123;</div><div class="line">	padding: 24px;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
-<li><p>移动端优化：</p>
+<li><p>移动端：</p>
 </li>
 <li>click 的 300ms 延迟是双击缩放(double tap to zoom)导致的，点击屏幕之后，浏览器不能立刻判断是点击，还是双击。</li>
 <li>因此，移动端浏览器等待 300 毫秒，以判断是否再次点击了屏幕。</li>
