@@ -99,18 +99,27 @@
 				</div>	
 				
 				<div class="article-content">
-				<p><strong>来源</strong>：<a href="http://www.liaoxuefeng.com" target="_blank" rel="external">http://www.liaoxuefeng.com</a></p>
-<p>JavaScript在浏览器中操作HTML，经历了若干发展阶段：</p>
+				<p><strong>2016-12-02更新</strong><br><strong>参考</strong>：<br><a href="http://www.liaoxuefeng.com" target="_blank" rel="external">http://www.liaoxuefeng.com</a><br><a href="https://github.com/ruanyf/jstraining" target="_blank" rel="external">https://github.com/ruanyf/jstraining</a> </p>
+<p>JavaScript在浏览器中操作HTML，经历了若干阶段：</p>
 <ul>
 <li>直接用JavaScript操作DOM节点，使用浏览器提供的原生API；</li>
 <li>由于原生API不好用，还要考虑浏览器兼容性，jQuery横空出世；</li>
-<li>MVC模式，需要服务器端配合，JavaScript可以在前端修改服务器渲染后的数据；</li>
-<li><p>现在前端页面越来越复杂，用户对于交互性要求也越来越高，MVVM模型应运而生。</p>
-<ul>
+<li>后端MVC模式，需要服务器端配合，JavaScript在前端修改服务器渲染后的数据，前端只是后端 MVC 的 V；<ul>
+<li>Model（模型层）：提供/保存数据</li>
+<li>Controller（控制层）：处理数据，实现业务逻辑</li>
+<li>View（视图层）：展示数据，提供用户界面</li>
+</ul>
+</li>
+<li>前端 MVC 框架：前端通过 Ajax 得到数据，因此也有了处理数据的需求。前端代码也要保存数据、处理数据、生成视图，形成了前端 MVC 框架。</li>
+<li>前端页面越来越复杂，交互要求也越来越高，MVVM模型应运而生，用 View Model 代替 Controller。<ul>
+<li>Model</li>
+<li>View</li>
+<li>View-Model：简化的 Controller，唯一作用就是为 View 提供处理好的数据，不含其他逻辑</li>
+</ul>
+</li>
 <li>MVVM最早由微软提出来，它借鉴了桌面应用程序的MVC思想，在前端页面中，把Model用纯JavaScript对象表示，View负责显示，两者做到了最大限度的分离。</li>
 <li>把Model和View关联起来的就是ViewModel。ViewModel把Model的数据同步到View显示出来，还把View的修改同步回Model。</li>
-<li>用JavaScript编写一个通用的ViewModel，这样，就可以复用整个MVVM模型了。</li>
-</ul>
+<li><p>用JavaScript编写一个通用的ViewModel，这样，就可以复用整个MVVM模型了。</p>
 </li>
 <li><p>MVVM框架和jQuery操作DOM区别？</p>
 <ul>
@@ -125,6 +134,18 @@
 <li>MVVM就是在前端上，应用了扩展的MVC模式，关心Model的变化，MVVM框架自动把Model的变化映射到DOM结构上。</li>
 <li>单向绑定，就是把Model绑定到View，用JavaScript代码更新Model时，View就会自动更新。</li>
 <li>双向绑定，如果用户更新了View，Model的数据也自动被更新了，就是双向绑定。</li>
+</ul>
+</li>
+<li><p>前端还有一种天然的方法，切换视图，那就是 URL，这就是 Router（路由）的作用。</p>
+</li>
+<li>Angular：风格属于 HTML 语言的增强，核心概念是双向绑定。</li>
+<li>Vue.js：引入了响应式编程的概念。Vue 的模板与数据，是双向绑定的。</li>
+<li>React：虚拟 DOM；使用 JSX 语法，JavaScript 代码中可以写 HTML 代码。<ul>
+<li>目前最流行的两个 React 框架<ul>
+<li>MobX：采用观察者模式，自动响应数据变化</li>
+<li>Redux：Flux 的函数式实现</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
