@@ -102,9 +102,8 @@
 				<p>目前只是简单的学习</p>
 <ul>
 <li>SVG参考：<a href="http://www.runoob.com/svg/svg-tutorial.html" target="_blank" rel="external">http://www.runoob.com/svg/svg-tutorial.html</a></li>
-<li>Canvas参考：HTML5 Canvas核心技术 by David Greary</li>
-</ul>
-<ul>
+<li><p>Canvas参考：HTML5 Canvas核心技术 by David Greary</p>
+</li>
 <li><p>SVG：可缩放矢量图形（Scalable Vector Graphics），使用 XML 格式定义图像。</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> standalone=<span class="string">"no"</span><span class="meta">?&gt;</span></span></div><div class="line"><span class="meta">&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" </span></div><div class="line">	"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;</div><div class="line"><span class="tag">&lt;<span class="name">svg</span> <span class="attr">xmlns</span>=<span class="string">"http://www.w3.org/2000/svg"</span> <span class="attr">version</span>=<span class="string">"1.1"</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">circle</span> <span class="attr">cx</span>=<span class="string">"100"</span> <span class="attr">cy</span>=<span class="string">"50"</span> <span class="attr">r</span>=<span class="string">"40"</span> <span class="attr">stroke</span>=<span class="string">"black"</span> <span class="attr">stroke-width</span>=<span class="string">"2"</span> <span class="attr">fill</span>=<span class="string">"red"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></div></pre></td></tr></table></figure>
 </li>
@@ -161,9 +160,8 @@
 <li>线 <line></line></li>
 <li>折线 <polyline></polyline></li>
 <li>多边形 <polygon></polygon></li>
-<li>路径 <path></path></li>
-</ul>
-<ul>
+<li><p>路径 <path></path></p>
+</li>
 <li><p><code>&lt;rect&gt;</code> 标签创建矩形，以及矩形的变种：</p>
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;svg xmlns=<span class="string">"http://www.w3.org/2000/svg"</span> version=<span class="string">"1.1"</span>&gt;</div><div class="line">	&lt;<span class="built_in">rect</span> x=<span class="string">"50"</span> y=<span class="string">"20"</span> rx=<span class="string">"20"</span> ry=<span class="string">"20"</span> <span class="built_in">width</span>=<span class="string">"300"</span> <span class="built_in">height</span>=<span class="string">"100"</span> </div><div class="line">		style=<span class="string">"fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0);fill-opacity:0.1;stroke-opacity:0.9;opacity:0.5"</span>/&gt;</div><div class="line">&lt;/svg&gt;</div></pre></td></tr></table></figure>
 </li>
@@ -187,9 +185,8 @@
 </li>
 <li><p>cx和cy属性定义圆点的x和y坐标。如果省略，圆的中心会被设置为(0, 0)</p>
 </li>
-<li>r属性定义圆的半径</li>
-</ul>
-<ul>
+<li><p>r属性定义圆的半径</p>
+</li>
 <li><p><code>&lt;ellipse&gt;</code> 元素创建椭圆，椭圆与圆不同之处在于椭圆有不同的x和y半径，而圆的x和y半径是相同的：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">svg</span> <span class="attr">xmlns</span>=<span class="string">"http://www.w3.org/2000/svg"</span> <span class="attr">version</span>=<span class="string">"1.1"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">ellipse</span> <span class="attr">cx</span>=<span class="string">"300"</span> <span class="attr">cy</span>=<span class="string">"80"</span> <span class="attr">rx</span>=<span class="string">"100"</span> <span class="attr">ry</span>=<span class="string">"50"</span></span></div><div class="line">  <span class="attr">style</span>=<span class="string">"fill:yellow;stroke:purple;stroke-width:2"</span>/&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></div></pre></td></tr></table></figure>
 </li>
@@ -307,10 +304,10 @@
 </li>
 <li><p>两个用来创建线性路径的方法：moveTo()和lineTo()，用来绘制线段</p>
 </li>
-<li>如果在某两个像素的边界处绘制一条1像素宽的线段，但实际上会占据两个像素的宽度。此时，canvas的绘图环境对象会试着将半个像素华仔边界中线的右边，另外半个像素在左边。但是半个像素宽的线段不可能，所以会占据两个像素。但目前很多浏览器都是使用了“抗锯齿”技术，以便创建出“亚像素的绘制效果”。</li>
-</ul>
+<li><p>如果在某两个像素的边界处绘制一条1像素宽的线段，但实际上会占据两个像素的宽度。此时，canvas的绘图环境对象会试着将半个像素华仔边界中线的右边，另外半个像素在左边。但是半个像素宽的线段不可能，所以会占据两个像素。但目前很多浏览器都是使用了“抗锯齿”技术，以便创建出“亚像素的绘制效果”。</p>
+</li>
+<li><p>圆弧和圆形都用arc()方法绘制，有6个参数：</p>
 <ul>
-<li>圆弧和圆形都用arc()方法绘制，有6个参数：<ul>
 <li>x</li>
 <li>y</li>
 <li>radius</li>
