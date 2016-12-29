@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		
-		<title>第 4 页 | Archives | 一个放笔记的地方而已</title>
+		<title>[笔记]-PJAX | 一个放笔记的地方而已</title>
 		
 		<meta name="author" content="Huangzhike">
 		
@@ -12,6 +12,8 @@
 		
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-PJAX"/>
 		
 		<meta property="og:site_name" content="一个放笔记的地方而已"/>
 		
@@ -90,75 +92,81 @@
 			<div class="content">
 				<!-- index -->
 				
-				<h2>归档</h2>
+				<h2>[笔记]-PJAX</h2>
 				
-				<p class="archive-item">
-					<a href="/2016/10/31/笔记-编写规范，可维护代码/" class="archive-title">[笔记]-编写规范，可维护代码</a><span class="archive post-time">2016-10-31</span>
-				</p>
+				<div>
+					<span class="post-time">2016-12-04 20:15</span>
+				</div>	
 				
-				<p class="archive-item">
-					<a href="/2016/10/31/闲谈-为什么我选择了编程/" class="archive-title">[闲谈]-为什么我选择了编程</a><span class="archive post-time">2016-10-31</span>
-				</p>
-				
-				<p class="archive-item">
-					<a href="/2016/10/31/笔记-DOM单例模式/" class="archive-title">[笔记]-DOM单例模式</a><span class="archive post-time">2016-10-31</span>
-				</p>
-				
-				<p class="archive-item">
-					<a href="/2016/10/31/笔记-模块&amp;封装（二）/" class="archive-title">[笔记]-模块&amp;封装（二）</a><span class="archive post-time">2016-10-31</span>
-				</p>
-				
-				<p class="archive-item">
-					<a href="/2016/10/31/笔记-模块&amp;封装（一）/" class="archive-title">[笔记]-模块&amp;封装（一）</a><span class="archive post-time">2016-10-31</span>
-				</p>
-				
-				<p class="archive-item">
-					<a href="/2016/10/30/半原创-继承/" class="archive-title">[半原创]-继承</a><span class="archive post-time">2016-10-30</span>
-				</p>
-				
-				<p class="archive-item">
-					<a href="/2016/10/30/半原创-原型链/" class="archive-title">[半原创]-原型链</a><span class="archive post-time">2016-10-30</span>
-				</p>
-				
-				<p class="archive-item">
-					<a href="/2016/10/29/笔记-创建对象的七种模式/" class="archive-title">[笔记]-创建对象的七种模式</a><span class="archive post-time">2016-10-29</span>
-				</p>
-				
-				<p class="archive-item">
-					<a href="/2016/10/29/笔记-this（二）/" class="archive-title">[笔记]-this（二）</a><span class="archive post-time">2016-10-29</span>
-				</p>
-				
-				<p class="archive-item">
-					<a href="/2016/10/29/笔记-对象/" class="archive-title">[笔记]-对象</a><span class="archive post-time">2016-10-29</span>
-				</p>
-				
-				<p class="archive-item">
-					<a href="/2016/10/29/笔记-对象相关（补充）/" class="archive-title">[笔记]-对象相关（补充）</a><span class="archive post-time">2016-10-29</span>
-				</p>
-				
-				<p class="archive-item">
-					<a href="/2016/10/29/笔记-Object-create及其它/" class="archive-title">[笔记]-Object.create及其它</a><span class="archive post-time">2016-10-29</span>
-				</p>
-				
-				<p class="archive-item">
-					<a href="/2016/10/29/笔记-constructor/" class="archive-title">[笔记]-constructor</a><span class="archive post-time">2016-10-29</span>
-				</p>
-				
-				<!-- post -->
+				<div class="article-content">
+				<p>来源于网络，整理于12月29日</p>
+<ul>
+<li>前端路由有2种实现方式，一种是HTML5 HISTORY API，另一种hash路由，就是 # 号。</li>
+<li>Github、百度、微博等，不使用普通的a标签跳转，大多使用Ajax请求替代了a标签的默认跳转，然后用HTML5的新API修改了Url，在F12的Network面板里可以发现。</li>
+<li><p>这项技术称为Pjax，PushState + Ajax，还有Hash + Ajax等方法。</p>
+<ul>
+<li>可以在页面切换间平滑过渡，增加Loading动画；</li>
+<li>可以在各个页面间传递数据，不依赖URL；</li>
+<li>可以选择性的保留状态，如音乐网站，切换页面时不会停止播放歌曲；</li>
+<li>所有的标签都可以用来跳转，不仅仅是a标签；</li>
+<li>避免了公共JS的反复执行，如无需在各个页面打开时都判断是否登录过等等；</li>
+<li>减少了请求体积，节省流量，加快页面响应速度；</li>
+<li>平滑降级到低版本浏览器上，对SEO也不会有影响。</li>
+</ul>
+</li>
+<li><p>Pjax的原理：</p>
+<ul>
+<li>拦截a标签的默认跳转动作；</li>
+<li>使用Ajax请求新页面；</li>
+<li>将返回的Html替换到页面中；</li>
+<li>使用HTML5的History API或者Url的Hash修改Url。</li>
+</ul>
+</li>
+<li><p>HTML5 HISTORY API：</p>
+</li>
+<li><p><code>history.pushState(state, title, url)</code></p>
+<ul>
+<li>pushState方法：将当前url添加到历史记录中，然后修改当前url为新url。只修改地址栏的Url显示，不发出任何请求，基于此特性实现Pjax；</li>
+<li>state：放任意数据，它将附加到新url上，作为该页面信息的补充；</li>
+<li>title：document.title。这个参数目前无作用；</li>
+<li>url：新url，要显示在地址栏上的url。</li>
+</ul>
+</li>
+<li><p><code>history.replaceState(state, title, url)</code></p>
+<ul>
+<li>replaceState方法与pushState大同小异，区别在于pushState将当前url添加到历史记录，再修改url，而replaceState只修改url，不添加历史记录。</li>
+</ul>
+</li>
+<li><p><code>window.onpopstate</code>事件</p>
+<ul>
+<li>每当url变动时，popstate事件都会被触发。但调用pushState修改url，该事件不会触发，因此可把它用作浏览器的前进后退事件。该事件有一个参数，就是上面pushState方法的第一个参数state。</li>
+</ul>
+</li>
+<li><p>F12 Console，输入：<code>history.pushState({ a: 1, b: 2 }, null, &quot;http://www.daipig.com/abcdefg&quot;);</code></p>
+</li>
+<li>发现url变成输入的url了，但页面并没有刷新，也没有发出任何请求。再输入<code>history.state</code>，就可以看到刚刚传过来的第一个参数state了。</li>
+<li>这时点击后退，url会回到www.daipig.com，同样没有刷新。只不过后退的时候其实是触发了<code>window.onpopstate</code>事件。</li>
+</ul>
+<ul>
+<li>IE6到IE9不支持pushState，要修改Url，只能利用Url的Hash，也即是#号。</li>
+<li>随意找个网站，在url后面加上#号和任意内容，页面不会刷新。此时点击后退也只回到上一条#号，同样不刷新。</li>
+<li><p>那只需把<code>pushState(newUrl)</code>换成<code>localtion.hash = newUrl</code>，把<code>onpopstate</code>事件换成<code>onhashchange</code>事件就可以兼容IE了。</p>
+</li>
+<li><p>由于处理单页应用的时候页面是不刷新的，会导致网页内容很难被搜索引擎抓取到。搜索引擎抓取页面要遵循http协议，可#不是协议内的内容。</p>
+</li>
+<li>解决的方法是用 #!号代替#号，因为谷歌会抓取带有#!的URL。</li>
+</ul>
+
+				</div>
+				<!-- about -->
 				
 			</div>
 			<!-- pagination -->
 			
-			<div class="btn-group btn-group-justified">
-				
-				<a class="btn btn-default " href="/archives/page/3/" >上一页</a>
-				<a class="btn btn-default" href="/https://huangzhike.github.io/">首页</a>
-				<a class="btn btn-default " href="/archives/page/5/" >下一页</a>
-				
-			</div>
-			
 			<div class="comment-section">
 	
+	
+
 
 </div>
 		</div>
