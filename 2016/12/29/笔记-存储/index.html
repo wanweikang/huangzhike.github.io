@@ -1,0 +1,320 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-存储 | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="用手记笔记，用心记笔记，用脑记笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-存储"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-存储</h2>
+				
+				<div>
+					<span class="post-time">2016-12-29 20:15</span>
+				</div>	
+				
+				<div class="article-content">
+				<p>来源于网络，整理于2016-12-29</p>
+<ul>
+<li>cookie<ul>
+<li>cookie给保存客户端数据提供了方便，分担了服务器存储的负担</li>
+<li>特定域名下生成的cookie数量和大小有限制</li>
+<li>cookie的最大约为4096字节，4KB</li>
+<li>IE 提供了一种存储可以持久化用户数据，uerData，从IE5.0开始支持</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>浏览器本地存储<ul>
+<li>HTML5的Web Storage包括了两种存储方式：sessionStorage和localStorage</li>
+<li>HTML5，加入了localStorage，用来作为本地存储来使用的，解决了cookie存储空间不足的问题（每条cookie最大为4k），localStorage中一般浏览器支持的是5M，在不同的浏览器中会有所不同。</li>
+<li>目前所有的浏览器中都会把localStorage的值类型限定为string类型，对JSON对象类型需要转换</li>
+<li>localStorage在浏览器的隐私模式下面是不可读取的</li>
+<li>localStorage本质上是对字符串的读取，如果存储内容多的话会消耗内存空间，会导致页面变卡</li>
+<li>localStorage不能被爬虫抓取到</li>
+<li>sessionStorage用于本地存储一个会话（session）中的数据，只有在同一个会话中的页面才能访问，会话结束后数据也随之销毁</li>
+<li>sessionStorage不是持久化的本地存储，是会话级别的存储。</li>
+<li>localStorage用于持久化的本地存储，除非主动删除数据，否则永不过期</li>
+<li>都会在浏览器端保存，有大小限制，同源限制</li>
+<li>web storage（sessionStorage和localStorage）和cookie的区别</li>
+<li>cookie是网站为了标示用户身份而储存在用户本地终端（Client Side）上的数据（通常经过加密）</li>
+<li>cookie数据始终在同源的http请求中携带（即使不需要），会在浏览器和服务器间来回</li>
+<li>cookie的大小是受限的，并且每次请求一个新的页面Cookie都会被发送过去，应该尽量减少cookie数量和大小</li>
+<li>Web Storage的和cookie相似，它是为了更大容量存储设计的</li>
+<li>sessionStorage和localStorage不会自动把数据发给服务器，仅在本地保存</li>
+<li>Web Storage拥有setItem，getItem，removeItem，clear等方法</li>
+<li>localStorage和sessionStorage都具有相同的操作方法，如setItem、getItem和removeItem等</li>
+<li>cookie需要自己封装setCookie,getCookie</li>
+<li>cookie不是很安全，可以分析存放在本地的COOKIE并进行COOKIE欺骗</li>
+<li>cookie数据大小不能超过4k</li>
+<li>sessionStorage和localStorage 虽然也有大小的限制，但可以达到5M</li>
+<li>localStorage：存储持久数据，浏览器关闭后数据不丢失除非主动删除数据</li>
+<li>sessionStorage：数据在当前浏览器窗口关闭后自动删除</li>
+<li>cookie：设置的cookie过期时间之前一直有效，即使窗口或浏览器关闭</li>
+<li>cookie有path概念，子路径可以访问父路径cookie，父路径不能访问子路径cookie</li>
+<li>sessionStorage不能共享，localStorage在同源文档之间共享，cookie在同源且符合path规则的文档之间共享</li>
+<li>localStorage的修改会促发其他文档窗口的update事件</li>
+<li>cookie有secure属性要求HTTPS传输</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>浏览器内多个标签页之间的通信：调用localstorge、cookies等本地存储方式</li>
+</ul>
+<ul>
+<li>什么是Cookie 隔离？（请求资源的时候不要让它带cookie怎么做）<ul>
+<li>如果静态文件都放在主域名下，那静态文件请求的时候都带有的cookie的数据提交给server的，非常浪费流量，所以不如隔离开。</li>
+<li>因为cookie有域的限制，因此不能跨域提交请求，故使用非主要域名的时候，请求头中就不会带有cookie数据，    这样可以降低请求头的大小，降低请求时间，达到降低整体请求延时的目的。</li>
+<li>同时这种方式不会将cookie传入Web Server，也减少了Web Server对cookie的处理分析环节，提高了webserver的http请求的解析速度。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>HTML5的离线储存<ul>
+<li>在用户没有与因特网连接时，可以正常访问站点或应用，在用户与因特网连接时，更新用户机器上的缓存文件。</li>
+<li>原理：HTML5的离线存储是基于一个新建的.appcache文件的缓存机制，通过这个文件上的解析清单离线存储资源，这些资源就会像cookie一样被存储了下来。当网络在处于离线状态下时，浏览器会通过被离线存储的数据进行页面展示。  </li>
+<li>如何使用：<ul>
+<li>页面头部像下面一样加入一个manifest的属性；</li>
+<li>在cache.manifest文件的编写离线存储的资源；</li>
+<li>在离线状态时，操作window.applicationCache进行需求实现。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>浏览器怎么对HTML5的离线储存资源进行管理和加载<ul>
+<li>在线的情况下，浏览器发现html头部有manifest属性，它会请求manifest文件；</li>
+<li>如果是第一次访问app，浏览器就会根据manifest文件的内容下载相应的资源并且进行离线存储。</li>
+<li>如果已经访问过app并且资源已经离线存储了，浏览器就会使用离线的资源加载页面，浏览器会对比新的manifest文件与旧的manifest文件，如果文件没有发生改变，就不做任何操作，如果文件改变了，就会重新下载文件中的资源并进行离线存储。</li>
+<li>离线的情况下，浏览器就直接使用离线存储的资源。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Cookie/Session机制<ul>
+<li>会话（Session）跟踪是Web程序中常用的技术，用来跟踪用户的整个会话。</li>
+<li>常用的会话跟踪技术是Cookie与Session。</li>
+<li>Cookie通过在客户端记录信息确定用户身份，Session通过在服务器端记录信息确定用户身份。</li>
+<li>HTTP协议是无状态的协议。一旦数据交换完毕，客户端与服务器端的连接就会关闭，再次交换数据需要建立新的连接，服务器无法从连接上跟踪会话。</li>
+<li>用户A购买了一件商品放入购物车内，当再次购买商品时服务器无法判断该购买行为是属于用户A的会话还是用户B的会话。</li>
+<li>要跟踪该会话，引入Cookie，它可以弥补HTTP协议无状态的不足。</li>
+<li>Session出现之前，基本上所有的网站都采用Cookie来跟踪会话。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Cookie实际上是一小段的文本信息。<ul>
+<li>客户端请求服务器，如果服务器需要记录该用户状态，就用response向客户端浏览器颁发一个Cookie。</li>
+<li>客户端浏览器会把Cookie保存起来，当浏览器再请求该网站时，浏览器把请求的网址连同该Cookie一同提交给服务器。</li>
+<li>服务器检查该Cookie，以此来辨认用户状态。服务器还可以根据需要修改Cookie的内容。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Cookie具有不可跨域名性。<ul>
+<li>浏览器访问Google只会携带Google的Cookie，而不会携带Baidu的Cookie。</li>
+<li>Google也只能操作Google的Cookie，而不能操作Baidu的Cookie。</li>
+<li>虽然网站images.google.com与网站www.google.com同属于Google，但是域名不一样，二者同样不能互相操作彼此的Cookie。</li>
+<li>注意：用户登录网站www.google.com之后会发现访问images.google.com时登录信息仍然有效，这是因为Google做了特殊处理。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Unicode编码：保存中文<ul>
+<li>中文与英文字符不同，中文属于Unicode字符，在内存中占4个字符，而英文属于ASCII字符，内存中只占2个字节。</li>
+<li>Cookie中使用Unicode字符时需要对Unicode字符进行编码，否则会乱码。</li>
+<li>Cookie中保存中文只能编码。一般使用UTF-8编码即可。不推荐使用GBK等中文编码。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>cookie不支持逗号、空格、分号，在设置cookie的时候，需要转码。</li>
+</ul>
+<ul>
+<li>Session<ul>
+<li>Session是另一种记录客户状态的机制，不同的是Cookie保存在客户端浏览器中，而Session保存在服务器上。</li>
+<li>客户端浏览器访问服务器的时候，服务器把客户端信息以某种形式记录在服务器上。这就是Session。</li>
+<li>客户端浏览器再次访问时只需要从该Session中查找该客户的状态就可以了。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Session机制<ul>
+<li>除了使用Cookie，Web应用程序中还经常使用Session来记录客户端状态。</li>
+<li>Session是服务器端使用的一种记录客户端状态的机制，相应的也增加了服务器的存储压力。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><a href="http://www.cnblogs.com/st-leslie/p/5720460.html" target="_blank" rel="external">http://www.cnblogs.com/st-leslie/p/5720460.html</a></li>
+<li><a href="http://www.cnblogs.com/st-leslie/p/5735147.html" target="_blank" rel="external">http://www.cnblogs.com/st-leslie/p/5735147.html</a></li>
+</ul>
+<ul>
+<li>cookie 有域和路径。<ul>
+<li>域就是domain，为了安全，不同的域之间不能互相访问 cookie 的，当然可以通过特殊设置的达到 cookie 跨域访问。</li>
+<li>路径就是routing，一个网页所创建的 cookie 只能被与这个网页在同一目录或子目录下得所有网页访问，而不能被其他目录下的网页访问</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>cookie属性<ul>
+<li>exprise</li>
+<li>path：设置可访问到cookie的路径，默认当前cookie页面的子目录下可以访问到，但是默认无法在其他父目录下访问到这个cookie，假设文件存放在 www.leslieyong.com/cn/dowload/index.html，那么默认dowload目录下才可以访问到cookie，可以设置path属性实现在www.leslieyong.com根目录下面也可以访问：<code>document.cookie = &quot;name=value;expires=date;path=/&quot;</code>，要实现在cn目录下面可以访问：<code>document.cookie = &quot;name=value;expires=date;path=/cn/&quot;</code>，这样可以实现在同域之间的传值。</li>
+<li>domain：跨域之间的传值，必须保证这两个域名有公共部分，像www.qq.com和weather.qq.com：<code>document.cookie = &quot;name=value;expires=date;path=/;domain=qq.com&quot;</code></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>cookie是由键值对组成的一种存储方式，格式为name=value</li>
+</ul>
+<ul>
+<li><p>创建两个cookie通过重复doucment.cookie属性，每创建一个cookie都要调用doucment.cookie，这样只会创建cookie不会覆盖掉之前的cookie内容，但同名会覆盖：</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">document</span>.cookie = <span class="string">"userName=123"</span>;</div><div class="line"><span class="built_in">document</span>.cookie = <span class="string">"userPwd="</span> + input_pwd;</div></pre></td></tr></table></figure>
+</li>
+<li><p>删除cookie，可以设置过期时间</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 设置过期时间</span></div><div class="line"><span class="built_in">document</span>.cookie = <span class="string">"uerName="</span> + input + <span class="string">";expires="</span> + <span class="keyword">new</span> <span class="built_in">Date</span>(<span class="number">0</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>假设有两个cookie，在删除的时候应该把相应的domian、path附带上：</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">document</span>.cookie=<span class="string">"'a'=1;domain=test.com;path=../good/"</span>;</div><div class="line"><span class="built_in">document</span>.cookie=<span class="string">"'a'=1;domain=test.com;path=../test/"</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">setCookie</span>(<span class="params">key, value, expires, path, domain, secure</span>) </span>&#123;</div><div class="line">	<span class="comment">// 转码</span></div><div class="line">	<span class="keyword">var</span> cookieText = <span class="built_in">encodeURIComponent</span>(key) + <span class="string">'='</span> + <span class="built_in">encodeURIComponent</span>(value);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (expires <span class="keyword">instanceof</span> <span class="built_in">Date</span>) &#123;</div><div class="line">		cookieText += <span class="string">';expires='</span> + expires;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">if</span> (path) &#123;</div><div class="line">		cookieText += <span class="string">';expires='</span> + expires;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">if</span> (domain) &#123;</div><div class="line">		cookieText += <span class="string">';domain='</span> + domain;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">if</span> (secure) &#123;</div><div class="line">		cookieText += <span class="string">';secure'</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="built_in">document</span>.cookie = cookieText;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getCookie</span>(<span class="params">key</span>) </span>&#123;</div><div class="line">	<span class="comment">// 没有就return</span></div><div class="line">	<span class="keyword">if</span> (<span class="built_in">document</span>.cookie.length === <span class="number">0</span>) <span class="keyword">return</span> <span class="string">""</span></div><div class="line">	<span class="comment">// 包括"="，获取cookie值开始位置</span></div><div class="line">	<span class="keyword">var</span> name = <span class="built_in">encodeURIComponent</span>(key) + <span class="string">'='</span>;</div><div class="line">	<span class="keyword">var</span> start = <span class="built_in">document</span>.cookie.indexOf(name);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (start &gt; <span class="number">-1</span>) &#123;</div><div class="line">		<span class="comment">// 第二个参数指定开始索引，得到值的结束位置</span></div><div class="line">		<span class="keyword">var</span> end = <span class="built_in">document</span>.cookie.indexOf(<span class="string">';'</span>, start);</div><div class="line">		<span class="comment">// 通过";"号是否存在来判断是否是最后一项</span></div><div class="line">		<span class="keyword">if</span> (end == <span class="number">-1</span>) &#123;</div><div class="line">			end = <span class="built_in">document</span>.cookie.length;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">var</span> value = <span class="built_in">decodeURIComponent</span>(<span class="built_in">document</span>.cookie.substring(start + name.length, end));</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> value;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight qml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getCookie</span>(<span class="params">key</span>) </span>&#123;</div><div class="line">	<span class="built_in">var</span> <span class="built_in">list</span> = <span class="built_in">document</span>.cookie.split(<span class="string">';'</span>)</div><div class="line">	<span class="keyword">for</span> (<span class="built_in">var</span> i = <span class="number">0</span>; i &lt; <span class="built_in">list</span>.length; i++) &#123;</div><div class="line">		<span class="built_in">var</span> item = <span class="built_in">list</span>[i].split(<span class="string">'='</span>)</div><div class="line">		<span class="keyword">if</span>(item[<span class="number">0</span>] == key)&#123;</div><div class="line">			<span class="keyword">return</span> item[<span class="number">1</span>]</div><div class="line">		&#125;</div><div class="line">	&#125;;</div><div class="line">	<span class="keyword">return</span> <span class="string">''</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>删除全部cookie，通过字符串切割获取如：name=value的字符串，然后对这些字符串后面加上一个过期的时间</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> s = <span class="built_in">window</span>.localStorage;</div><div class="line"><span class="comment">// 设</span></div><div class="line">s[<span class="string">"a"</span>] = <span class="number">1</span>;</div><div class="line">s.a = <span class="number">1</span>;</div><div class="line">s.setItem(<span class="string">"a"</span>, <span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> s[<span class="string">"a"</span>]); </div><div class="line"></div><div class="line"><span class="comment">// 读</span></div><div class="line"><span class="keyword">var</span> a=s.a;</div><div class="line"><span class="keyword">var</span> b=s[<span class="string">"a"</span>];</div><div class="line"><span class="keyword">var</span> c=s.getItem(<span class="string">"a"</span>);</div><div class="line"></div><div class="line"><span class="comment">// 改</span></div><div class="line">s[<span class="string">"a"</span>]=<span class="number">1</span>;</div><div class="line">s.b=<span class="number">1</span>;</div><div class="line">s.setItem(<span class="string">"c"</span>,<span class="number">3</span>);</div><div class="line"></div><div class="line"><span class="comment">// 清空</span></div><div class="line">s.clear();</div><div class="line"></div><div class="line"><span class="comment">// 某个键值对删除</span></div><div class="line">s.removeItem(<span class="string">"a"</span>);</div><div class="line"></div><div class="line"><span class="comment">// 获取键</span></div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; s.length; i++)&#123;</div><div class="line">	<span class="keyword">var</span> key = s.key(i);</div><div class="line">	<span class="built_in">console</span>.log(key);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> data = &#123;</div><div class="line">	<span class="attr">name</span>: <span class="string">'xiecanyong'</span>,</div><div class="line">	<span class="attr">sex</span>: <span class="string">'man'</span>,</div><div class="line">	<span class="attr">hobby</span>: <span class="string">'program'</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> d = <span class="built_in">JSON</span>.stringify(data);</div><div class="line">s.setItem(<span class="string">"data"</span>, d);</div><div class="line"><span class="built_in">console</span>.log(s.data);</div><div class="line"></div><div class="line"><span class="comment">// 将JSON字符串转换成为JSON对象，使用JSON.parse()方法</span></div><div class="line"><span class="comment">// 将JSON字符串转换成为JSON对象输出</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> json = s.getItem(<span class="string">"data"</span>);</div><div class="line"><span class="keyword">var</span> jsonObj = <span class="built_in">JSON</span>.parse(json);</div></pre></td></tr></table></figure>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 方法已封装</span></div><div class="line"><span class="keyword">window</span>.localStorage ?	localStorage.setItem(<span class="string">"menuTitle"</span>, a) : Cookie.write(<span class="string">"menuTitle"</span>, a);	</div><div class="line"></div><div class="line"><span class="keyword">var</span> strStoreDate = <span class="keyword">window</span>.localStorage ? localStorage.getItem(<span class="string">"menuTitle"</span>) : Cookie.<span class="keyword">read</span>(<span class="string">"menuTitle"</span>);</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">// 计数器</div><div class="line"><span class="keyword">if</span> (<span class="built_in">local</span>Storage.pagecount) &#123;</div><div class="line">	<span class="built_in">local</span>Storage.pagecount = Number(<span class="built_in">local</span>Storage.pagecount) + 1;</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">	<span class="built_in">local</span>Storage.pagecount = 1;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// sessionStorage缓存</span></div><div class="line"><span class="keyword">var</span> Cache = &#123;</div><div class="line">	<span class="keyword">set</span>: <span class="function"><span class="keyword">function</span><span class="params">(path, value)</span> </span>&#123;</div><div class="line">		sessionStorage.setItem(path, JSON.stringify(value));</div><div class="line">	&#125;,</div><div class="line">	<span class="keyword">get</span>: <span class="function"><span class="keyword">function</span><span class="params">(path)</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> JSON.parse(sessionStorage.getItem(path));</div><div class="line">	&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">(<span class="name">function</span>() &#123;</div><div class="line">	var strMenuKey = <span class="string">"memMenuTitle"</span>, </div><div class="line">		eleLeftMenuTit = $$(<span class="string">"."</span> + strMenuKey)<span class="comment">;</span></div><div class="line">	</div><div class="line">	// 存储垂直菜单的展开收起信息</div><div class="line">	var funStoreDisplay = function() &#123;</div><div class="line">		var arrDisplay = []<span class="comment">;</span></div><div class="line">		eleLeftMenuTit.each(<span class="name">function</span>(<span class="name">title</span>, index) &#123;</div><div class="line">			arrDisplay[index] = title.retrieve(<span class="string">"display"</span>) === <span class="literal">false</span> ? <span class="number">0</span> : <span class="number">1</span><span class="comment">;	</span></div><div class="line">		&#125;)<span class="comment">;	</span></div><div class="line">		</div><div class="line">		// 存储，IE6~<span class="number">7</span> cookie 其他浏览器HTML5本地存储</div><div class="line">		if (<span class="name">window.localStorage</span>) &#123;</div><div class="line">			localStorage.setItem(<span class="name">strMenuKey</span>, arrDisplay)<span class="comment">;	</span></div><div class="line">		&#125; else &#123;</div><div class="line">			Cookie.write(<span class="name">strMenuKey</span>, arrDisplay)<span class="comment">;	</span></div><div class="line">		&#125;</div><div class="line">	&#125;<span class="comment">;</span></div><div class="line">	</div><div class="line">	// 默认存储与事件绑定</div><div class="line">	eleLeftMenuTit.store(<span class="string">"display"</span>, <span class="literal">true</span>).addEvent(<span class="string">"click"</span>, function() &#123;</div><div class="line">		var eleTarget = $(<span class="name">this.getProperty</span>(<span class="string">"data-rel"</span>))<span class="comment">;</span></div><div class="line">		if (<span class="name">eleTarget</span>) &#123;</div><div class="line">			if (<span class="name">this.retrieve</span>(<span class="string">"display"</span>)) &#123;</div><div class="line">				eleTarget.setStyles(&#123;</div><div class="line">					position: <span class="string">"absolute"</span>,</div><div class="line">					left: <span class="string">"-9999em"</span>	</div><div class="line">				&#125;)<span class="comment">;</span></div><div class="line">				this.setProperty(<span class="string">"title"</span>, <span class="string">"展开"</span>).getElement(<span class="string">".u"</span>).removeClass(<span class="string">"u29"</span>).addClass(<span class="string">"u39"</span>)<span class="comment">;</span></div><div class="line">				this.store(<span class="string">"display"</span>, <span class="literal">false</span>)<span class="comment">;</span></div><div class="line">			&#125; else &#123;</div><div class="line">				eleTarget.setStyle(<span class="string">"position"</span>, <span class="string">"static"</span>)<span class="comment">;</span></div><div class="line">				this.setProperty(<span class="string">"title"</span>, <span class="string">"收起"</span>).getElement(<span class="string">".u"</span>).removeClass(<span class="string">"u39"</span>).addClass(<span class="string">"u29"</span>)<span class="comment">;</span></div><div class="line">				this.store(<span class="string">"display"</span>, <span class="literal">true</span>)<span class="comment">;</span></div><div class="line">			&#125;</div><div class="line">			// 存储</div><div class="line">			funStoreDisplay()<span class="comment">;</span></div><div class="line">		&#125;</div><div class="line">		return <span class="literal">false</span><span class="comment">;</span></div><div class="line">	&#125;)<span class="comment">;</span></div><div class="line">	</div><div class="line">	// 检测触发是否收起</div><div class="line">	var strStoreDate = window.localStorage? localStorage.getItem(<span class="name">strMenuKey</span>): Cookie.read(<span class="name">strMenuKey</span>)<span class="comment">;	</span></div><div class="line">	if (<span class="name">strStoreDate</span>) &#123;</div><div class="line">		strStoreDate.split(<span class="string">","</span>).each(<span class="name">function</span>(<span class="name">display</span>, index) &#123;</div><div class="line">			if (<span class="name">display.toInt</span>() === <span class="number">0</span>) &#123;</div><div class="line">				eleLeftMenuTit[index].fireEvent(<span class="string">"click"</span>)<span class="comment">;</span></div><div class="line">			&#125;</div><div class="line">		&#125;)<span class="comment">;	</span></div><div class="line">	&#125;</div><div class="line">&#125;)()<span class="comment">;</span></div></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2016 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
