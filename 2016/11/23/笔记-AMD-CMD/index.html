@@ -99,7 +99,7 @@
 				</div>	
 				
 				<div class="article-content">
-				<p><strong>参考</strong>：<br><a href="http://blog.csdn.net/jackwen110200/article/details/52105493" target="_blank" rel="external">http://blog.csdn.net/jackwen110200/article/details/52105493</a><br><a href="https://www.zhihu.com/question/20342350" target="_blank" rel="external">https://www.zhihu.com/question/20342350</a></p>
+				<p><strong>参考</strong>：<br><a href="http://blog.csdn.net/jackwen110200/article/details/52105493" target="_blank" rel="external">http://blog.csdn.net/jackwen110200/article/details/52105493</a><br><a href="https://www.zhihu.com/question/20342350" target="_blank" rel="external">https://www.zhihu.com/question/20342350</a><br><a href="https://yuguo.us/weblog/javascript-module-development-history/" target="_blank" rel="external">https://yuguo.us/weblog/javascript-module-development-history/</a></p>
 <ul>
 <li><p>JS阻塞浏览器渲染：alert执行时，html一片空白，<span>body</span>并显示，点击确定后才出现。</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"main.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">span</span>&gt;</span>body<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"></div><div class="line">main.js:</div><div class="line">(function()&#123;alert("it works");&#125;)()</div></pre></td></tr></table></figure>
@@ -143,6 +143,97 @@
 <li>requireJS和SeaJS都支持对方的写法</li>
 <li>同样都是异步加载模块，AMD在加载模块完成后就会执行改模块，所有模块都加载完后进入回调执行</li>
 <li>CMD加载完依赖模块后并不执行，所有依赖模块加载完后进入主逻辑，遇到require语句时才执行</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>模块：<ul>
+<li>可维护性。</li>
+<li>命名空间。</li>
+<li>重用代码。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>使用匿名函数</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">(<span class="name">function</span> () &#123;</div><div class="line"></div><div class="line">&#125;())<span class="comment">;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>把全局函数注入到匿名函数，如Query。</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">(<span class="name">function</span> (<span class="name">globalVariable</span>) &#123;</div><div class="line"></div><div class="line"> &#125;(<span class="name">globalVariable</span>))<span class="comment">;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>globalVarible 是唯一一个全局的变量。这种做法比完全匿名的闭包的好处是，代码结构更清晰，而且性能更好。</p>
+</li>
+<li>能够看到函数内部传递进来了全局变量，所以依赖关系非常清晰。</li>
+<li>其次在函数内部调用 globalVarible 的时候，解释器能够直接找到局部的 globalVarible，就不用上溯到外部的 globalVarible。</li>
+<li>因为是 JavaScript 是引用传值，也可以在函数内，对这个全局的 globalVarible 进行修改。</li>
+<li>比如<code>globalVarible = &quot;foo&quot;</code>; 不会改变全局的 globalVarible 对象， 但<code>globalVarible.name =&quot;foo&quot;</code>; 会改变全局的 globalVariable 对象的 name 属性。</li>
+</ul>
+<ul>
+<li>提供一个对象作为接口</li>
+<li><p>上面的方式没有区分“私有属性”和“公开属性”。 下面使用一个返回的函数，来指定对象接口，就像这样：</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> myGradesCalculate = (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">var</span> myGrades = [<span class="number">93</span>, <span class="number">95</span>, <span class="number">88</span>, <span class="number">0</span>, <span class="number">55</span>, <span class="number">91</span>];</div><div class="line"></div><div class="line">	<span class="keyword">return</span> &#123;</div><div class="line">		average: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">			<span class="keyword">var</span> total = myGrades.reduce(<span class="function"><span class="keyword">function</span><span class="params">(accumulator, item)</span> </span>&#123;</div><div class="line">					<span class="keyword">return</span> accumulator + item;</div><div class="line">				&#125;, <span class="number">0</span>);</div><div class="line">				</div><div class="line">			<span class="keyword">return</span> <span class="string">'Your average grade is '</span> + total / myGrades.length + <span class="string">'.'</span>;</div><div class="line"></div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;)();</div><div class="line"></div><div class="line">myGradesCalculate.average();</div></pre></td></tr></table></figure>
+</li>
+<li><p>立即执行的匿名函数返回了一个对象。通过这种方式，我们可以定义 failing() 和 average() 是公开的接口，而 myGrades 是私有属性。</p>
+</li>
+</ul>
+<ul>
+<li><p>上一段代码不是很清晰，因为声明跟实现放在一起了，改良成更加清晰的代码，把要公开的属性专门放在一个对象声明中返回：</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> myGradesCalculate = (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">var</span> myGrades = [<span class="number">93</span>, <span class="number">95</span>, <span class="number">88</span>, <span class="number">0</span>, <span class="number">55</span>, <span class="number">91</span>];</div><div class="line"></div><div class="line">	<span class="keyword">var</span> average = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">var</span> total = myGrades.reduce(<span class="function"><span class="keyword">function</span><span class="params">(accumulator, item)</span> </span>&#123;</div><div class="line">				<span class="keyword">return</span> accumulator + item;</div><div class="line">			&#125;, <span class="number">0</span>);</div><div class="line"></div><div class="line">		<span class="keyword">return</span><span class="string">'Your average grade is '</span> + total / myGrades.length + <span class="string">'.'</span>;</div><div class="line">	&#125;;</div><div class="line"></div><div class="line">	<span class="keyword">return</span> &#123;</div><div class="line">		average: average</div><div class="line">	&#125;</div><div class="line">&#125;)();</div><div class="line"></div><div class="line">myGradesCalculate.average();</div></pre></td></tr></table></figure>
+</li>
+<li><p>这段代码中，默认所有的变量和方法都是私有的，只有在最后显示 return 一个对象的时候，才选择性暴露出对外接口，接口很清晰。</p>
+</li>
+</ul>
+<ul>
+<li><p>CommonJS 和 AMD</p>
+<ul>
+<li>上面这些方法都有一个共同点：使用一个特定的全局模块名来把一些私有变量和方法包起来，然后通过闭包来创建一个私有的命名空间。</li>
+<li>这样也就有一个共同的缺点，就是无法管理不同模块之间的依赖关系。</li>
+<li>比如说，如果项目用到了 Backbone.js 库，会把 Backbone.js 的代码引入到项目中。</li>
+<li>不过，由于 Backbone 依赖 Underscore.js，所以 Backbone.js 的代码需要放在 Underscore.js 之后。</li>
+<li>当依赖的库多起来了，记住这些库应该以什么样的顺序去加载就是一件很头疼的事情了。</li>
+<li>另一个明显的缺点是，依次引入这些模块仍然没有解决命名空间冲突的问题。</li>
+<li>比如 jQuery 和其他库可能都使用了 $ 来作为暴露的名字，或者引用了同一个模块的两个不同版本怎么办？</li>
+<li>幸运的是，有两个已经得到广泛支持的解决方案：CommonJS 和 AMD</li>
+<li>CommonJS 最开始是 Mozilla 的工程师于 2009 年开始的一个项目，它的目的是让浏览器之外的 JavaScript （比如服务器端或者桌面端）能够通过模块化的方式来开发和协作。</li>
+<li>在 CommonJS 的规范中，每个 JavaScript 文件就是一个独立的模块上下文（module context），在这个上下文中默认创建的属性都是私有的。</li>
+<li>也就是说，在一个文件定义的变量（还包括函数和类），都是私有的，对其他文件是不可见的。</li>
+<li>推荐的做法是，通过 module.exports 对象来暴露对外的接口。</li>
+<li>Node 就采用了 CommonJS 规范来实现模块依赖。</li>
+</ul>
+</li>
+<li><p>创建一个最简单的模块：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">myModule</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">this</span>.hello = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">'hello!'</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">module</span>.exports = myModule;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在定义了自己的 function 之后，通过 module.exports 来暴露了出去。</p>
+</li>
+<li>为什么可以在没有定义 module 的情况下就使用它？因为 module 是 CommonJS 规范中预先已经定义好的对象，就像 global 一样。</li>
+<li><p>如果其他代码想使用 myModule 模块，只需要 require 就可以了。</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> myModule = require(<span class="string">'myModule'</span>);</div><div class="line"><span class="keyword">var</span> myModuleInstance = <span class="keyword">new</span> <span class="type">myModule</span>();</div><div class="line">myModuleInstance.hello(); <span class="comment">// 'hello!'</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>这种做法有两个明显的优势：</p>
+<ul>
+<li>避免全局命名空间污染，require 进来的模块可以被赋值到自己随意定义的局部变量中，所以即使是同一个模块的不同版本也可以完美兼容</li>
+<li>让各个模块的依赖关系变得很清晰</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>需要注意的是，CommonJS 规范的主要适用场景是服务器端编程，所以采用同步加载模块的策略。如果我们依赖3个模块，代码会一个一个依次加载它们。</p>
+</li>
+<li><p>因为服务器端的模块加载主要来源硬盘、或者内存，所以加载速度比较快，同步加载并不是很大问题。但是如果是在浏览器场景中，同步加载就有很大问题，因为从网络中加载一个模块比从硬盘加载慢得多。在等待加载的过程中，浏览器会挂起当前的进程，直到模块下载完成。</p>
+</li>
+</ul>
+<ul>
+<li><p>AMD</p>
+<ul>
+<li>有同步方案，当然也有异步方案。在浏览器端，更常用 AMD 来实现模块化开发。AMD 是 Asynchronous Module Definition 的简称，即“异步模块定义”。</li>
+<li>AMD 模块的使用方式：<figure class="highlight lisp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">define(['myModule', 'myOtherModule'], function(<span class="name">myModule</span>, myOtherModule) &#123;</div><div class="line">	console.log(<span class="name">myModule</span>.hello())<span class="comment">;</span></div><div class="line">&#125;)<span class="comment">;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>ES6 模块</p>
+<ul>
+<li>上面所有这些模型定义，没有一种是 JavaScript 语言原生支持的。无论是 AMD 还是 CommonJS，这些都是 JavaScript 函数来模拟的，ES6 开始引入了原生的模块功能。</li>
 </ul>
 </li>
 </ul>
