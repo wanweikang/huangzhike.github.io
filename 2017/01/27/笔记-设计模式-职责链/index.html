@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-设计模式-职责链 | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="用手记笔记，用心记笔记，用脑记笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-设计模式-职责链"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-设计模式-职责链</h2>
+				
+				<div>
+					<span class="post-time">2017-01-27 18:18</span>
+				</div>	
+				
+				<div class="article-content">
+				<p>参考：<br>JavaScript设计模式与开发实践 曾探<br>深入理解JavaScript 汤姆大叔<br><strong>职责链模式</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> order = <span class="function"><span class="keyword">function</span>(<span class="params">orderType, pay, stock</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (orderType === <span class="number">1</span>) &#123; <span class="comment">// 500 元定金购买模式</span></div><div class="line">		<span class="keyword">if</span> (pay === <span class="literal">true</span>) &#123; <span class="comment">// 已支付定金</span></div><div class="line">			<span class="built_in">console</span>.log(<span class="string">'500 元定金预购, 得到 100 优惠券'</span>);</div><div class="line">		&#125; <span class="keyword">else</span> &#123; <span class="comment">// 未支付定金，降级到普通购买模式</span></div><div class="line">			<span class="keyword">if</span> (stock &gt; <span class="number">0</span>) &#123; <span class="comment">// 用于普通购买的手机还有库存</span></div><div class="line">				<span class="built_in">console</span>.log(<span class="string">'普通购买, 无优惠券'</span>);</div><div class="line">			&#125; <span class="keyword">else</span> &#123;</div><div class="line">				<span class="built_in">console</span>.log(<span class="string">'手机库存不足'</span>);</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (orderType === <span class="number">2</span>) &#123; <span class="comment">// 200 元定金购买模式</span></div><div class="line">		<span class="keyword">if</span> (pay === <span class="literal">true</span>) &#123;</div><div class="line">			<span class="built_in">console</span>.log(<span class="string">'200 元定金预购, 得到 50 优惠券'</span>);</div><div class="line">		&#125; <span class="keyword">else</span> &#123;</div><div class="line">			<span class="keyword">if</span> (stock &gt; <span class="number">0</span>) &#123;</div><div class="line">				<span class="built_in">console</span>.log(<span class="string">'普通购买, 无优惠券'</span>);</div><div class="line">			&#125; <span class="keyword">else</span> &#123;</div><div class="line">				<span class="built_in">console</span>.log(<span class="string">'手机库存不足'</span>);</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (orderType === <span class="number">3</span>) &#123;</div><div class="line">		<span class="keyword">if</span> (stock &gt; <span class="number">0</span>) &#123;</div><div class="line">			<span class="built_in">console</span>.log(<span class="string">'普通购买, 无优惠券'</span>);</div><div class="line">		&#125; <span class="keyword">else</span> &#123;</div><div class="line">			<span class="built_in">console</span>.log(<span class="string">'手机库存不足'</span>);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line">order(<span class="number">1</span>, <span class="literal">true</span>, <span class="number">500</span>); <span class="comment">// 输出： 500 元定金预购, 得到 100 优惠券</span></div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 500 元订单</span></div><div class="line"><span class="keyword">var</span> order500 = <span class="function"><span class="keyword">function</span>(<span class="params">orderType, pay, stock</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (orderType === <span class="number">1</span> &amp;&amp; pay === <span class="literal">true</span>) &#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="string">'500 元定金预购, 得到 100 优惠券'</span>);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="comment">// order200 和 order500 耦合在一起</span></div><div class="line">		order200(orderType, pay, stock); <span class="comment">// 将请求传递给 200 元订单</span></div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"><span class="comment">// 200 元订单</span></div><div class="line"><span class="keyword">var</span> order200 = <span class="function"><span class="keyword">function</span>(<span class="params">orderType, pay, stock</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (orderType === <span class="number">2</span> &amp;&amp; pay === <span class="literal">true</span>) &#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="string">'200 元定金预购, 得到 50 优惠券'</span>);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		orderNormal(orderType, pay, stock); <span class="comment">// 将请求传递给普通订单</span></div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"><span class="comment">// 普通购买订单</span></div><div class="line"><span class="keyword">var</span> orderNormal = <span class="function"><span class="keyword">function</span>(<span class="params">orderType, pay, stock</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (stock &gt; <span class="number">0</span>) &#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="string">'普通购买, 无优惠券'</span>);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="string">'手机库存不足'</span>);</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"><span class="comment">// 测试结果：</span></div><div class="line">order500(<span class="number">1</span>, <span class="literal">true</span>, <span class="number">500</span>); <span class="comment">// 输出：500 元定金预购, 得到 100 优惠券</span></div><div class="line">order500(<span class="number">1</span>, <span class="literal">false</span>, <span class="number">500</span>); <span class="comment">// 输出：普通购买, 无优惠券</span></div><div class="line">order500(<span class="number">2</span>, <span class="literal">true</span>, <span class="number">500</span>); <span class="comment">// 输出：200 元定金预购, 得到 500 优惠券</span></div><div class="line">order500(<span class="number">3</span>, <span class="literal">false</span>, <span class="number">500</span>); <span class="comment">// 输出：普通购买, 无优惠券</span></div><div class="line">order500(<span class="number">3</span>, <span class="literal">false</span>, <span class="number">0</span>); <span class="comment">// 输出：手机库存不足</span></div></pre></td></tr></table></figure>
+<p>这依然是违反开放 封闭原则的， 如果要增加 300 元预订或去掉 200 元预订， 就必须改动这些业务函数内部。<br>就像一根环环相扣打了死结的链条， 如果要增加、 拆除或者移动一个节点， 就必须得先砸烂这根链条。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> order500 = <span class="function"><span class="keyword">function</span>(<span class="params">orderType, pay, stock</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (orderType === <span class="number">1</span> &amp;&amp; pay === <span class="literal">true</span>) &#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="string">'500 元定金预购，得到 100 优惠券'</span>);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">'nextSuccessor'</span>; <span class="comment">// 我不知道下一个节点是谁，反正把请求往后面传递</span></div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"><span class="keyword">var</span> order200 = <span class="function"><span class="keyword">function</span>(<span class="params">orderType, pay, stock</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (orderType === <span class="number">2</span> &amp;&amp; pay === <span class="literal">true</span>) &#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="string">'200 元定金预购，得到 50 优惠券'</span>);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">'nextSuccessor'</span>; <span class="comment">// 我不知道下一个节点是谁，反正把请求往后面传递</span></div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"><span class="keyword">var</span> orderNormal = <span class="function"><span class="keyword">function</span>(<span class="params">orderType, pay, stock</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (stock &gt; <span class="number">0</span>) &#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="string">'普通购买，无优惠券'</span>);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="string">'手机库存不足'</span>);</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"><span class="comment">// Chain.prototype.setNextSuccessor 指定在链中的下一个节点</span></div><div class="line"><span class="comment">// Chain.prototype.passRequest 传递请求给某个节点</span></div><div class="line"><span class="keyword">var</span> Chain = <span class="function"><span class="keyword">function</span>(<span class="params">fn</span>) </span>&#123;</div><div class="line">	<span class="keyword">this</span>.fn = fn;</div><div class="line">	<span class="keyword">this</span>.successor = <span class="literal">null</span>;</div><div class="line">&#125;;</div><div class="line">Chain.prototype.setNextSuccessor = <span class="function"><span class="keyword">function</span>(<span class="params">successor</span>) </span>&#123;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">this</span>.successor = successor;</div><div class="line">&#125;;</div><div class="line">Chain.prototype.passRequest = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> ret = <span class="keyword">this</span>.fn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</div><div class="line">	<span class="keyword">if</span> (ret === <span class="string">'nextSuccessor'</span>) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.successor &amp;&amp; <span class="keyword">this</span>.successor.passRequest.apply(<span class="keyword">this</span>.successor, <span class="built_in">arguments</span>);</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> ret;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">// 现在把 3 个订单函数分别包装成职责链的节点：</span></div><div class="line"><span class="keyword">var</span> chainOrder500 = <span class="keyword">new</span> Chain(order500);</div><div class="line"><span class="keyword">var</span> chainOrder200 = <span class="keyword">new</span> Chain(order200);</div><div class="line"><span class="keyword">var</span> chainOrderNormal = <span class="keyword">new</span> Chain(orderNormal);</div><div class="line"><span class="comment">// 然后指定节点在职责链中的顺序：</span></div><div class="line">chainOrder500.setNextSuccessor(chainOrder200);</div><div class="line">chainOrder200.setNextSuccessor(chainOrderNormal);</div><div class="line"><span class="comment">// 最后把请求传递给第一个节点：</span></div><div class="line">chainOrder500.passRequest(<span class="number">1</span>, <span class="literal">true</span>, <span class="number">500</span>); <span class="comment">// 输出：500 元定金预购，得到 100 优惠券</span></div><div class="line">chainOrder500.passRequest(<span class="number">2</span>, <span class="literal">true</span>, <span class="number">500</span>); <span class="comment">// 输出：200 元定金预购，得到 50 优惠券</span></div><div class="line">chainOrder500.passRequest(<span class="number">3</span>, <span class="literal">true</span>, <span class="number">500</span>); <span class="comment">// 输出：普通购买，无优惠券</span></div><div class="line">chainOrder500.passRequest(<span class="number">1</span>, <span class="literal">false</span>, <span class="number">0</span>); <span class="comment">// 输出：手机库存不足</span></div><div class="line"></div><div class="line"><span class="comment">// 通过改进， 可以自由灵活地增加、 移除和修改链中的节点顺序</span></div><div class="line"><span class="keyword">var</span> order300 = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="comment">// 具体实现略</span></div><div class="line">&#125;;</div><div class="line">chainOrder300 = <span class="keyword">new</span> Chain(order300);</div><div class="line">chainOrder500.setNextSuccessor(chainOrder300);</div><div class="line">chainOrder300.setNextSuccessor(chainOrder200);</div></pre></td></tr></table></figure>
+<p>用 AOP 实现职责链<br>之前的职责链实现中， 利用了一个 Chain 类来把普通函数包装成职责链的节点。 其实利用 JavaScript的函数式特性， 有更加方便的方法来创建职责链。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Function</span>.prototype.after = <span class="function"><span class="keyword">function</span>(<span class="params">fn</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> self = <span class="keyword">this</span>;</div><div class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">		<span class="keyword">var</span> ret = self.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</div><div class="line">		<span class="keyword">if</span> (ret === <span class="string">'nextSuccessor'</span>) &#123;</div><div class="line">			<span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> ret;</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"><span class="keyword">var</span> order = order500yuan.after(order200yuan).after(orderNormal);</div><div class="line">order(<span class="number">1</span>, <span class="literal">true</span>, <span class="number">500</span>); <span class="comment">// 输出：500 元定金预购，得到 100 优惠券</span></div><div class="line">order(<span class="number">2</span>, <span class="literal">true</span>, <span class="number">500</span>); <span class="comment">// 输出：200 元定金预购，得到 50 优惠券</span></div><div class="line">order(<span class="number">1</span>, <span class="literal">false</span>, <span class="number">500</span>); <span class="comment">// 输出：普通购买，无优惠券</span></div></pre></td></tr></table></figure></p>
+<p>用 AOP 来实现职责链既简单又巧妙， 但这种把函数叠在一起的方式， 同时也叠加了函数的作用域， 如果链条太长的话， 也会对性能有较大的影响。</p>
+<p>对于JavaScript实现， 可以利用其原型特性来实现职责链模式。</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> NO_TOPIC = <span class="number">-1</span>;</div><div class="line"><span class="keyword">var</span> Topic;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Handler</span><span class="params">(s, t)</span> </span>&#123;</div><div class="line">	<span class="keyword">this</span>.successor = s || <span class="literal">null</span>;</div><div class="line">	<span class="keyword">this</span>.topic = t || <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line">Handler.prototype = &#123;</div><div class="line">	handle: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">if</span> (<span class="keyword">this</span>.successor) &#123; <span class="keyword">this</span>.successor.handle() &#125;</div><div class="line">	&#125;,</div><div class="line">	has: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.topic != NO_TOPIC;</div><div class="line">	&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>Handler只接受2个参数， 第一个是继任者（ 将处理请求传下去）， 第二个是传递层级（ 控制在某个层级下是否执行某个操作， 也可以不用）， Handler原型暴露了一个handle方法， 这是实现该模式的重点。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> app = <span class="keyword">new</span> Handler(&#123; <span class="attr">handle</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="built_in">console</span>.log(<span class="string">'app handle'</span>); &#125; &#125;, <span class="number">3</span>);</div><div class="line"><span class="keyword">var</span> dialog = <span class="keyword">new</span> Handler(app, <span class="number">1</span>);</div><div class="line"><span class="keyword">var</span> button = <span class="keyword">new</span> Handler(dialog, <span class="number">2</span>);</div><div class="line">button.handle();</div></pre></td></tr></table></figure>
+<p>调用代码从button.handle() - &gt; dialog.handle() - &gt; app.handle() - &gt; 参数里的handle()， 前三个都是调用原型的handle， 最后才查找到传入的参数里的handle， 然后输出结果， 也就是说其实只有最后一层才处理。</p>
+<p>如何做到调用的时候， 只让dialog的这个对象处理呢？ 定义dialog实例对象的handle方法就可以了， 但需要在new button的之前来做， 代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> app = <span class="keyword">new</span> Handler(&#123; <span class="attr">handle</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="built_in">console</span>.log(<span class="string">'app handle'</span>); &#125; &#125;, <span class="number">3</span>);</div><div class="line"><span class="keyword">var</span> dialog = <span class="keyword">new</span> Handler(app, <span class="number">1</span>);</div><div class="line">dialog.handle = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'dialog before ...'</span>)</div><div class="line">	<span class="comment">// 这里做具体的处理操作        </span></div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'dialog after ...'</span>)</div><div class="line">&#125;;</div><div class="line"><span class="keyword">var</span> button = <span class="keyword">new</span> Handler(dialog, <span class="number">2</span>);</div><div class="line">button.handle();</div></pre></td></tr></table></figure>
+<p>该代码的执行结果即时dialog.handle里的处理结果， 而不再是给app传入的参数里定义的handle的执行操作。</p>
+<p>能不能做到自身处理完以后， 然后在让继任者继续处理呢？ 答案是肯定的， 但是在调用的handle以后， 需要利用原型的特性调用如下代码：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">Handler</span><span class="selector-class">.prototype</span><span class="selector-class">.handle</span><span class="selector-class">.call</span>(<span class="selector-tag">this</span>);</div></pre></td></tr></table></figure></p>
+<p>调用原型的handle方法， 来继续调用其继任者（ 也就是successor） 的handle方法， 以下代码表现为： button / dialog / app三个对象定义的handle都会执行。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> app = <span class="keyword">new</span> Handler(&#123; <span class="attr">handle</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="built_in">console</span>.log(<span class="string">'app handle'</span>); &#125; &#125;, <span class="number">3</span>);</div><div class="line"><span class="keyword">var</span> dialog = <span class="keyword">new</span> Handler(app, <span class="number">1</span>);</div><div class="line">dialog.handle = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'dialog before ...'</span>)</div><div class="line">	<span class="comment">// 这里做具体的处理操作  </span></div><div class="line">	Handler.prototype.handle.call(<span class="keyword">this</span>); <span class="comment">// 继续往上走 </span></div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'dialog after ...'</span>)</div><div class="line">&#125;;</div><div class="line"><span class="keyword">var</span> button = <span class="keyword">new</span> Handler(dialog, <span class="number">2</span>);</div><div class="line">button.handle = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'button before ...'</span>)</div><div class="line">	<span class="comment">// 这里做具体的处理操作  </span></div><div class="line">	Handler.prototype.handle.call(<span class="keyword">this</span>);</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'button after ...'</span>)</div><div class="line">&#125;;</div><div class="line">button.handle();</div></pre></td></tr></table></figure>
+<p>如果想先自身处理， 然后再调用继任者处理的话， 就在末尾执行Handler.prototype.handle.call(this);代码， 如果想先处理继任者的代码， 就在开头执行Handler.prototype.handle.call(this);代码。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2017 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
