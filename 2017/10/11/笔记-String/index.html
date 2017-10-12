@@ -1,0 +1,176 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-String | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="用手记笔记，用心记笔记，用脑记笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-String"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-String</h2>
+				
+				<div>
+					<span class="post-time">2017-10-11 19:45</span>
+				</div>	
+				
+				<div class="article-content">
+				<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">String</span> str1; <span class="comment">// null</span></div><div class="line"><span class="keyword">String</span> str2 = <span class="string">""</span>; <span class="comment">// 指向一个空字符串对象</span></div><div class="line"><span class="keyword">String</span> str3 = <span class="keyword">new</span> <span class="keyword">String</span>(); <span class="comment">// 同上</span></div></pre></td></tr></table></figure>
+<ul>
+<li>null 表示 String 还没有 new ，对象的引用还没有创建，也没有分配内存空间。</li>
+<li>“”、new String() 说明已经 new ，创建了对象的引用，分配内存空间。</li>
+</ul>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">String</span> <span class="built_in">str</span> =<span class="string">"abc"</span>; <span class="comment">// 创建字面量字符串对象</span></div><div class="line"><span class="built_in">str</span> = <span class="built_in">str</span> + <span class="string">"cde"</span>; <span class="comment">// 内存地址“断开-连接”</span></div><div class="line"><span class="built_in">str</span> += <span class="string">"efg"</span>;</div></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="string">"abc"</span>.length(); <span class="comment">// 字符串字面量是有效的对象</span></div><div class="line"><span class="keyword">char</span>[] data = &#123;<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>&#125;;</div><div class="line"><span class="keyword">String</span> abc = <span class="keyword">new</span> <span class="keyword">String</span>(data);</div></pre></td></tr></table></figure>
+<ul>
+<li>基本类型，==直接比较值，引用类型，==还比较地址。</li>
+<li>Object类equals方法与==相同，但是String类重写了equals方法。</li>
+<li>所有对象都从 Object 类继承了 equals() 方法， 默认实现是 == 测试引用相同， 不测试内容，可自定义 equals() 方法。</li>
+</ul>
+<p>超类 Object 中 equals() 方法：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> (<span class="keyword">this</span> == obj);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>“==”比较两个对象的的内存地址，若 object1.equals(object2) 为 true，equals1 和 equals2 实际上是引用同一个对象。</li>
+</ul>
+<p>String、Math 等封装类都重写了 equals() 方法。<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// String 的 equals()</span></div><div class="line"><span class="keyword">public</span> <span class="built_in">boolean</span> equals(<span class="keyword">Object</span> anObject) &#123;</div><div class="line">	<span class="keyword">if</span> (<span class="keyword">this</span> == anObject) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">if</span> (anObject <span class="keyword">instanceof</span> <span class="keyword">String</span>) &#123;</div><div class="line">		<span class="keyword">String</span> anotherString = (<span class="keyword">String</span>) anObject;</div><div class="line">		<span class="built_in">int</span> n = count;</div><div class="line">		<span class="keyword">if</span> (n == anotherString.count) &#123;</div><div class="line">			<span class="built_in">char</span> v1[] = value;</div><div class="line">			<span class="built_in">char</span> v2[] = anotherString.value;</div><div class="line">			<span class="built_in">int</span> i = offset;</div><div class="line">			<span class="built_in">int</span> j = anotherString.offset;</div><div class="line">			<span class="keyword">while</span> (n-- != <span class="number">0</span>) &#123;</div><div class="line">				<span class="keyword">if</span> (v1[i++] != v2[j++])</div><div class="line">					<span class="comment">// String 的 equals() 方法是进行内容比较，而不是引用比较</span></div><div class="line">					<span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">			&#125;</div><div class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">int x =<span class="number">1</span>;</div><div class="line">int y =<span class="number">1</span>;</div><div class="line">x==y <span class="comment">// true</span></div><div class="line"></div><div class="line"><span class="built_in">String</span> s = <span class="string">"o"</span>;</div><div class="line"><span class="built_in">String</span> h = <span class="literal">new</span> <span class="built_in">String</span>(<span class="string">"o"</span>);</div><div class="line">s == h <span class="comment">// false</span></div><div class="line">s.<span class="keyword">equals</span>(h) <span class="comment">// true</span></div><div class="line"></div><div class="line"><span class="built_in">String</span> j = s;</div><div class="line">j == s <span class="comment">// true</span></div><div class="line"></div><div class="line"><span class="built_in">String</span> a = <span class="string">"hello"</span>;</div><div class="line"><span class="built_in">String</span> b = <span class="string">"hell"</span> + s; </div><div class="line">a ==b <span class="comment">// false</span></div><div class="line">a.<span class="keyword">equals</span>(b) <span class="comment">// true</span></div><div class="line"></div><div class="line"><span class="comment">// 不能使用 ==判断两个字符串是否相等</span></div><div class="line"><span class="built_in">String</span> str1 = <span class="literal">new</span> <span class="built_in">String</span>(<span class="string">"abc"</span>);</div><div class="line"><span class="built_in">String</span> str2 = <span class="literal">new</span> <span class="built_in">String</span>(<span class="string">"abc"</span>);</div><div class="line"></div><div class="line">str1 == str2; <span class="comment">// false </span></div><div class="line">str1.<span class="keyword">equals</span>(str2); <span class="comment">// true</span></div></pre></td></tr></table></figure>
+<ul>
+<li>检查空串使用if (str.length()==0)或if(str.equals(“”))</li>
+</ul>
+<ul>
+<li>对象域，使用 equals 方法 。</li>
+<li>类型安全的枚举，使用 equals 或== 。</li>
+<li>可能为 null 的对象域 : 使用 == 和 equals 。</li>
+<li>数组域 : 使用 Arrays.equals 。</li>
+<li>除 float 和 double 外的原始数据类型 : 使用 == 。</li>
+<li>float 类型: 使用 Float.foatToIntBits 转换成 int 类型，然后使用==。</li>
+<li>double 类型: 使用 Double.doubleToLongBit 转换成 long 类型，然后使用==。</li>
+</ul>
+<p>在覆写 equals() 方法时，推荐使用 getClass 来进行类型判断，不是使用 instanceof。<br>instanceof 的作用是判断其左边对象是否为其右边类的实例，返回 boolean 类型的数据。</p>
+<p>String 类为 final 型（不可被继承），每个修改 String 对象的操作，都创建了一个新的 String 对象。<br>创建字符串对象时，先检查字符串池中是否存在值相等的，有则不再创建，直接返回该对象的引用，没有则创建然后放入到字符串池中并返回引用。<br>直接赋值（String s=”a”），（String s = new String(“a”)）新建了一个 String 对象。<br>String 类不可改变，修改字符串，使用 StringBuffer 和 StringBuilder 。<br>StringBuffer （线程不安全，能同步访问，速度快）和 StringBuilder 类的对象能被多次修改，不产生新对象。<br>StringBuffer 不能用=初始化，必须产生 StringBuffer 实例，通过构造方法初始化。<br>不是所有的 String 字符串操作都比 StringBuffer 慢。<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">String</span> a1 = <span class="string">"wo "</span> + <span class="string">"cnm"</span>; <span class="comment">// String a1 = "wo cnm" ; </span></div><div class="line"><span class="built_in">StringBuffer</span> a2 = <span class="keyword">new</span> <span class="built_in">StringBuffer</span>(<span class="string">"wo "</span>).append(<span class="string">"cnm"</span>);</div></pre></td></tr></table></figure></p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">class StrB &#123;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span> args[]) &#123;</div><div class="line">		StringBuffer buf = <span class="keyword">new</span> StringBuffer();</div><div class="line"></div><div class="line">		buf.<span class="built_in">append</span>(<span class="string">"数字 = "</span>).<span class="built_in">append</span>(<span class="number">1</span>).<span class="built_in">append</span>(<span class="string">"\n"</span>);</div><div class="line">		buf.<span class="built_in">append</span>(<span class="string">"字符 = "</span>).<span class="built_in">append</span>(<span class="string">'C'</span>).<span class="built_in">append</span>(<span class="string">"\n"</span>);</div><div class="line">		buf.<span class="built_in">append</span>(<span class="string">"布尔 = "</span>).<span class="built_in">append</span>(<span class="keyword">true</span>);</div><div class="line"></div><div class="line">		buf.insert(buf.length(), <span class="string">"Hello "</span>);</div><div class="line">		buf.indexOf(<span class="string">"Hello"</span>) == <span class="number">-1</span>;</div><div class="line"></div><div class="line">		<span class="keyword">String</span> <span class="built_in">str</span> = buf.<span class="built_in">reverse</span>().toString();</div><div class="line"></div><div class="line">		buf.replace(<span class="number">6</span>, <span class="number">11</span>, <span class="string">"mdzz"</span>);</div><div class="line">		<span class="keyword">String</span> str1 = buf.substring(<span class="number">6</span>, <span class="number">15</span>); <span class="comment">// 从 beginIndex 到 endIndex-1 </span></div><div class="line">		<span class="keyword">String</span> str2 = buf.delete(<span class="number">6</span>, <span class="number">15</span>).toString();</div><div class="line">		System.out.<span class="built_in">println</span>(buf); <span class="comment">// 调用toString()</span></div><div class="line"></div><div class="line">	&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2017 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
