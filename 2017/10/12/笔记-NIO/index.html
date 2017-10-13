@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-NIO | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="用手记笔记，用心记笔记，用脑记笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-NIO"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-NIO</h2>
+				
+				<div>
+					<span class="post-time">2017-10-12 16:35</span>
+				</div>	
+				
+				<div class="article-content">
+				<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> Work &#123;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span> args[]) &#123;</div><div class="line">		IntBuffer buf = IntBuffer.allocate(<span class="number">10</span>); <span class="comment">// 10个大小的缓冲区</span></div><div class="line"></div><div class="line">		System.out.<span class="built_in">println</span>(<span class="string">"写入前"</span> + buf.<span class="built_in">position</span>() + buf.limit() + buf.capacity());</div><div class="line">		<span class="comment">// position：索引，由0开始，写了4个，position=4，放在第5个位置</span></div><div class="line">		<span class="comment">// limit表示还有多少数据要存储或读取，position&lt;=limit，capacity表示最大容量</span></div><div class="line">		<span class="keyword">int</span> temp[] = &#123; <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span> &#125;;</div><div class="line">		buf.<span class="built_in">put</span>(<span class="number">3</span>);</div><div class="line">		buf.<span class="built_in">put</span>(temp); <span class="comment">// 此时已经存放了四个记录</span></div><div class="line"></div><div class="line">		System.out.<span class="built_in">println</span>(<span class="string">"写入后"</span> + buf.<span class="built_in">position</span>() + buf.limit() + buf.capacity());</div><div class="line"></div><div class="line">		buf.flip(); <span class="comment">// 重设缓冲区，limit = position; postion = 0 ,</span></div><div class="line">		System.out.<span class="built_in">println</span>(<span class="string">"输出时"</span> + buf.<span class="built_in">position</span>() + buf.limit() + buf.capacity());</div><div class="line"></div><div class="line">		<span class="built_in">while</span> (buf.hasRemaining()) &#123;</div><div class="line">			<span class="keyword">int</span> x = buf.<span class="built_in">get</span>();</div><div class="line">			System.out.<span class="built_in">print</span>(x + <span class="string">"、"</span>);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">public class Work &#123;</div><div class="line">	public static void main(String args[]) &#123;</div><div class="line">		IntBuffer buf = IntBuffer.allocate(<span class="number">10</span>); </div><div class="line"></div><div class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">			buf.put(<span class="number">2</span> * i + <span class="number">1</span>); <span class="regexp">//</span> 在主缓冲区中加入<span class="number">10</span>个奇数</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		buf.position(<span class="number">2</span>); <span class="regexp">//</span> 指针在第<span class="number">3</span>个元素上</div><div class="line">		buf.limit(<span class="number">6</span>);</div><div class="line">		IntBuffer <span class="function"><span class="keyword">sub</span> = <span class="title">buf</span>.<span class="title">slice</span></span>();// 定义子缓冲区，由第<span class="number">3</span>个元素开始到第<span class="number">6</span>个元素</div><div class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="function"><span class="keyword">sub</span>.<span class="title">capacity</span></span>(); i++) &#123;</div><div class="line">			<span class="keyword">int</span> temp = <span class="function"><span class="keyword">sub</span>.<span class="title">get</span></span>(i);</div><div class="line">			<span class="function"><span class="keyword">sub</span>.<span class="title">put</span></span>(temp - 1);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		buf.flip(); <span class="regexp">//</span> 重设缓冲区</div><div class="line">		buf.limit(buf.capacity());</div><div class="line"></div><div class="line">		<span class="keyword">while</span> (buf.hasRemaining()) &#123;</div><div class="line">			<span class="keyword">int</span> <span class="keyword">x</span> = buf.get();</div><div class="line">			System.out.<span class="keyword">print</span>(<span class="keyword">x</span> + <span class="string">"、"</span>);</div><div class="line">		&#125;</div><div class="line">		IntBuffer <span class="keyword">read</span> = buf.asReadOnlyBuffer(); <span class="regexp">//</span> 创建只读缓冲区</div><div class="line"></div><div class="line">		read.flip(); <span class="regexp">//</span> 重设缓冲区</div><div class="line"></div><div class="line">		read.put(<span class="number">30</span>); <span class="regexp">//</span> 修改，错误</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> Work &#123;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span> args[]) throws Exception &#123;</div><div class="line">		<span class="built_in">File</span> file1 = <span class="keyword">new</span> <span class="built_in">File</span>(<span class="string">"d:"</span> + <span class="built_in">File</span>.separator + <span class="string">"note.txt"</span>);</div><div class="line">		<span class="built_in">File</span> file2 = <span class="keyword">new</span> <span class="built_in">File</span>(<span class="string">"d:"</span> + <span class="built_in">File</span>.separator + <span class="string">"outnote.txt"</span>);</div><div class="line"></div><div class="line">		FileOutputStream output = <span class="keyword">new</span> FileOutputStream(file2);</div><div class="line">		FileInputStream input = <span class="keyword">new</span> FileInputStream(file1);</div><div class="line">		FileChannel fout = output.getChannel(); <span class="comment">// 得到输出的通道</span></div><div class="line">		FileChannel fin = input.getChannel(); <span class="comment">// 得到输入的通道</span></div><div class="line">		ByteBuffer buf = ByteBuffer.allocate(<span class="number">1024</span>);</div><div class="line"></div><div class="line">		<span class="keyword">int</span> temp = <span class="number">0</span>;</div><div class="line">		<span class="built_in">while</span> ((temp = fin.<span class="built_in">read</span>(buf)) != <span class="number">-1</span>) &#123;</div><div class="line">			buf.flip();</div><div class="line">			fout.<span class="built_in">write</span>(buf);</div><div class="line">			buf.<span class="built_in">clear</span>(); <span class="comment">// position limit capacity 恢复原点，数据不变</span></div><div class="line">		&#125;</div><div class="line">		fin.<span class="built_in">close</span>();</div><div class="line">		fout.<span class="built_in">close</span>();</div><div class="line">		input.<span class="built_in">close</span>();</div><div class="line">		output.<span class="built_in">close</span>();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> Work &#123;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span> args[]) throws Exception &#123;</div><div class="line">		<span class="built_in">File</span> file = <span class="keyword">new</span> <span class="built_in">File</span>(<span class="string">"d:"</span> + <span class="built_in">File</span>.separator + <span class="string">"cnm.txt"</span>);</div><div class="line">		FileInputStream input = <span class="keyword">new</span> FileInputStream(file);</div><div class="line"></div><div class="line">		FileChannel fin = input.getChannel(); <span class="comment">// 得到输入的通道</span></div><div class="line"></div><div class="line">		MappedByteBuffer mbb = fin.<span class="built_in">map</span>(FileChannel.MapMode.READ_ONLY, <span class="number">0</span>, file.length());</div><div class="line">		<span class="keyword">byte</span> data[] = <span class="keyword">new</span> <span class="keyword">byte</span>[(<span class="keyword">int</span>) file.length()]; <span class="comment">// 开辟空间接收内容</span></div><div class="line">		<span class="keyword">int</span> foot = <span class="number">0</span>;</div><div class="line">		<span class="built_in">while</span> (mbb.hasRemaining()) &#123;</div><div class="line">			data[foot++] = mbb.<span class="built_in">get</span>(); <span class="comment">// 读取数据</span></div><div class="line">		&#125;</div><div class="line">		System.out.<span class="built_in">println</span>(<span class="keyword">new</span> <span class="keyword">String</span>(data)); <span class="comment">// 输出内容</span></div><div class="line">		fin.<span class="built_in">close</span>();</div><div class="line">		input.<span class="built_in">close</span>();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> Work &#123;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(String args[]) <span class="keyword">throws</span> Exception &#123;</div><div class="line">		<span class="keyword">File</span> <span class="keyword">file</span> = <span class="keyword">new</span> <span class="keyword">File</span>(<span class="string">"d:"</span> + <span class="keyword">File</span>.separator + <span class="string">"cnm.txt"</span>);</div><div class="line"></div><div class="line">		FileOutputStream output = <span class="keyword">new</span> FileOutputStream(<span class="keyword">file</span>, <span class="keyword">true</span>);</div><div class="line"></div><div class="line">		FileChannel fout = output.getChannel();<span class="comment">// 得到通道</span></div><div class="line">		FileLock lock = fout.tryLock(); <span class="comment">// 独占锁</span></div><div class="line">		<span class="keyword">if</span> (lock != <span class="keyword">null</span>) &#123;</div><div class="line">			System.out.<span class="keyword">println</span>(<span class="keyword">file</span>.getName() + <span class="string">"文件锁定300秒"</span>);</div><div class="line">			Thread.sleep(<span class="number">300000</span>);</div><div class="line">			lock.release(); <span class="comment">// 释放</span></div><div class="line">			System.out.<span class="keyword">println</span>(<span class="keyword">file</span>.getName() + <span class="string">"文件解除锁定。"</span>);</div><div class="line">		&#125;</div><div class="line">		fout.close();</div><div class="line">		output.close();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2017 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

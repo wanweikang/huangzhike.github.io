@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-反射 | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="用手记笔记，用心记笔记，用脑记笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-反射"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-反射</h2>
+				
+				<div>
+					<span class="post-time">2017-10-12 16:35</span>
+				</div>	
+				
+				<div class="article-content">
+				<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="type">Class</span>&lt;?&gt; <span class="built_in">c</span> = o.getClass();</div><div class="line"></div><div class="line"><span class="comment">// 类字面量</span></div><div class="line"><span class="built_in">c</span> = int.<span class="keyword">class</span>; <span class="comment">// 等同于Integer.TYPE</span></div><div class="line"><span class="built_in">c</span> = <span class="type">String</span>.<span class="keyword">class</span>; <span class="comment">// 等同于"a string".getClass()</span></div><div class="line"><span class="built_in">c</span> = byte[].<span class="keyword">class</span>; <span class="comment">// 字节数组的类型</span></div><div class="line"><span class="comment">// 基本类型和 void 也能使用字面量表示类对象：</span></div><div class="line"><span class="comment">// 使用预先定义好的常量获取基本类型的类对象</span></div><div class="line"><span class="built_in">c</span> = <span class="type">Void</span>.<span class="type">TYPE</span>; <span class="comment">// 特殊的“没有返回值”类型</span></div><div class="line"><span class="built_in">c</span> = <span class="type">Byte</span>.<span class="type">TYPE</span>; <span class="comment">// 表示byte类型的类对象</span></div><div class="line"><span class="built_in">c</span> = <span class="type">Integer</span>.<span class="type">TYPE</span>; <span class="comment">// 表示int类型的类对象</span></div><div class="line"><span class="built_in">c</span> = <span class="type">Double</span>.<span class="type">TYPE</span>; <span class="comment">// Short、Character、Long、Float等类型也可以</span></div></pre></td></tr></table></figure>
+<figure class="highlight pony"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="type">Class</span>&lt;?&gt; clazz = <span class="type">Class</span>.forName(<span class="string">"cnm.mdzz.X"</span>);</div><div class="line"><span class="type">Class</span>&lt;?&gt; clazz = <span class="function"><span class="keyword">new</span> <span class="title">X</span>().<span class="title">getClass</span>(); <span class="comment">// 通过Object类中的方法实例化</span></span></div><div class="line"><span class="title">Class</span>&lt;?&gt; <span class="title">clazz</span> = <span class="title">X</span>.<span class="title">class</span>; <span class="comment">// 通过类.class实例化</span></div><div class="line"></div><div class="line"><span class="title">clazz</span>.<span class="title">getName</span>(); <span class="comment">// 得到类的名称</span></div><div class="line"><span class="title">clazz</span>.<span class="title">getSuperclass</span>(); <span class="comment">// 父类</span></div><div class="line"><span class="title">clazz</span>.<span class="title">getPackage</span>(); <span class="comment">// 包</span></div><div class="line"><span class="title">Class</span>&lt;?&gt; <span class="title">c</span>[] = <span class="title">clazz</span>.<span class="title">getInterfaces</span>(); <span class="comment">// 以数组形式返回实现的全部接口</span></div><div class="line"><span class="title">Class</span>&lt;?&gt;[] <span class="title">inners</span> = <span class="title">clazz</span>.<span class="title">getDeclaredClasses</span>(); <span class="comment">// 全部内部类</span></div><div class="line"><span class="title">Class</span> <span class="title">inClazz</span> = <span class="title">Class</span>.<span class="title">forName</span>("<span class="type">X</span>$<span class="type">Inner</span>"); <span class="comment">// 内部类</span></div><div class="line"><span class="title">inClazz</span>.<span class="title">getDeclaringClass</span>(); <span class="comment">// 外部类</span></div><div class="line"></div><div class="line"><span class="title">X</span> <span class="title">x</span> = (<span class="type">X</span>) <span class="title">clazz</span>.<span class="title">newInstance</span>(); <span class="comment">// 无参实例化</span></div><div class="line"><span class="title">Constructor</span>&lt;?&gt; <span class="title">cons</span>[] = <span class="title">clazz</span>.<span class="title">getConstructors</span>(); <span class="comment">// public构造器</span></div><div class="line"><span class="title">Constructor</span>&lt;?&gt; <span class="title">cons</span>[] = <span class="title">clazz</span>.<span class="title">getDeclaredConstructors</span>(); <span class="comment">// 全部构造器</span></div><div class="line"><span class="title">X</span> <span class="title">x</span> = (<span class="type">X</span>) <span class="title">cons</span>[0].<span class="title">newInstance</span>("cnm", <span class="number">18</span>); <span class="comment">// 有参实例化对象</span></div><div class="line"><span class="title">Constructor</span> <span class="title">ctor</span> = <span class="title">clazz</span>.<span class="title">getConstructor</span>(<span class="type">String</span>.class); <span class="comment">// 带一个字符串参数的构造器</span></div><div class="line"><span class="title">Object</span> <span class="title">obj</span> = <span class="title">ctor</span>.<span class="title">newInstance</span>("cnm"); <span class="comment">// 调用Constructor的newInstance方法创建对象</span></div><div class="line"></div><div class="line"><span class="title">Method</span>[] <span class="title">mtds</span> = <span class="title">clazz</span>.<span class="title">getMethods</span>(); <span class="comment">// 全部public方法</span></div><div class="line"><span class="title">Method</span> <span class="title">metd</span> = <span class="title">clazz</span>.<span class="title">getMethod</span>("info");</div><div class="line"><span class="title">Method</span>[] <span class="title">mtds</span> = <span class="title">clazz</span>.<span class="title">getMethod</span>("info", <span class="type">String</span>.class); <span class="comment">// 带一个字符串参数的info方法</span></div><div class="line"><span class="title">Method</span> <span class="title">metd</span> = <span class="title">clazz</span>.<span class="title">getMethod</span>("info", <span class="type">String</span>.class, int.class);</div><div class="line"><span class="title">String</span> <span class="title">rv</span> = (<span class="type">String</span>) <span class="title">metd</span>.<span class="title">invoke</span>(clazz.newInstance(), "<span class="title">cnm</span>", 18); <span class="comment">// 调用方法</span></div><div class="line"></div><div class="line"><span class="title">Annotation</span>[] <span class="title">anns</span> = <span class="title">clazz</span>.<span class="title">getAnnotations</span>(); <span class="comment">// 全部注释</span></div><div class="line"></div><div class="line"><span class="title">Field</span> <span class="title">nameField</span> = <span class="title">clazz</span>.<span class="title">getDeclaredField</span>("name"); <span class="comment">// 取得name属性</span></div><div class="line"><span class="title">nameField</span>.<span class="title">setAccessible</span>(true); <span class="comment">// 此属性对外部可见</span></div><div class="line"><span class="title">nameField</span>.<span class="title">set</span>(obj, "cnm"); <span class="comment">// 设置name属性内容</span></div><div class="line"><span class="title">System</span>.<span class="title">out</span>.<span class="title">println</span>("姓名：" + nameField.get(obj));</div></pre></td></tr></table></figure>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> class Work &#123;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span> args[]) <span class="keyword">throws</span> Exception &#123;</div><div class="line">		<span class="built_in">int</span> temp[] = &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;;</div><div class="line">		<span class="built_in">int</span> newTemp[] = (<span class="built_in">int</span>[]) arrayInc(temp, <span class="number">5</span>); <span class="comment">// 重新开辟空间5</span></div><div class="line">		<span class="built_in">print</span>(newTemp);</div><div class="line">		System.out.<span class="built_in">println</span>(<span class="string">"\n-------------------------"</span>);</div><div class="line">		<span class="keyword">String</span> t[] = &#123; <span class="string">"cnm"</span>, <span class="string">"mdzz"</span>, <span class="string">"heheda"</span> &#125;;</div><div class="line">		<span class="keyword">String</span> nt[] = (<span class="keyword">String</span>[]) arrayInc(t, <span class="number">8</span>);</div><div class="line">		<span class="built_in">print</span>(nt);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">Object</span> arrayInc(<span class="keyword">Object</span> obj, <span class="built_in">int</span> len) &#123;</div><div class="line">		Class&lt;?&gt; c = obj.getClass();</div><div class="line">		Class&lt;?&gt; arr = c.getComponentType();</div><div class="line">		<span class="keyword">Object</span> newO = <span class="keyword">Array</span>.newInstance(arr, len); <span class="comment">// 开辟新的大小</span></div><div class="line">		<span class="built_in">int</span> co = <span class="keyword">Array</span>.getLength(obj);</div><div class="line">		System.arraycopy(obj, <span class="number">0</span>, newO, <span class="number">0</span>, co); <span class="comment">// 拷贝内容</span></div><div class="line">		<span class="keyword">return</span> newO;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="built_in">print</span>(<span class="keyword">Object</span> obj) &#123;</div><div class="line">		Class&lt;?&gt; c = obj.getClass();</div><div class="line">		<span class="keyword">if</span> (!c.isArray())</div><div class="line">			<span class="keyword">return</span>;</div><div class="line">		Class&lt;?&gt; arr = c.getComponentType();</div><div class="line">		System.out.<span class="built_in">println</span>(arr.getName() + <span class="string">"数组的长度："</span> + <span class="keyword">Array</span>.getLength(obj));</div><div class="line">		<span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="keyword">Array</span>.getLength(obj); i++) &#123;</div><div class="line">			System.out.<span class="built_in">print</span>(<span class="keyword">Array</span>.<span class="built_in">get</span>(obj, i) + <span class="string">"、"</span>);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Work</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; T[] <span class="keyword">new</span><span class="type">Instance</span>(Class&lt;T&gt; componentType, int length) &#123;</div><div class="line">		<span class="keyword">return</span> (T[]) <span class="keyword">Array</span>.<span class="keyword">new</span><span class="type">Instance</span>(componentType, length);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> void main(<span class="keyword">String</span>[] args) &#123;</div><div class="line"></div><div class="line">		<span class="keyword">String</span>[] a = Work.<span class="keyword">new</span><span class="type">Instance</span>(<span class="keyword">String</span>.class, <span class="number">10</span>);</div><div class="line">		a[<span class="number">5</span>] = <span class="string">"mdzz"</span>;</div><div class="line">		int[][] b = Work.<span class="keyword">new</span><span class="type">Instance</span>(int[].class, <span class="number">5</span>);<span class="comment">// 二维数组</span></div><div class="line"></div><div class="line">		b[<span class="number">1</span>] = <span class="keyword">new</span> <span class="type">int</span>[] &#123; <span class="number">23</span>, <span class="number">12</span> &#125;;</div><div class="line"></div><div class="line">		<span class="comment">// 三维数组是数组元素是二维数组的一维数组</span></div><div class="line">		Object arr = <span class="keyword">Array</span>.<span class="keyword">new</span><span class="type">Instance</span>(<span class="keyword">String</span>.class, <span class="number">3</span>, <span class="number">4</span>, <span class="number">10</span>);</div><div class="line">		<span class="comment">// 获取arr数组中index为2的元素，二维数组</span></div><div class="line">		Object arrObj = <span class="keyword">Array</span>.<span class="keyword">get</span>(arr, <span class="number">2</span>);</div><div class="line"></div><div class="line">		<span class="comment">// 二维数组的数组元素是一维数组</span></div><div class="line">		<span class="keyword">Array</span>.<span class="keyword">set</span>(arrObj, <span class="number">2</span>, <span class="keyword">new</span> <span class="type">String</span>[] &#123; <span class="string">"cnm"</span>, <span class="string">"mdzz"</span> &#125;);</div><div class="line">		<span class="comment">// 获取arrObj数组中index为3的元素，一维数组</span></div><div class="line">		Object anArr = <span class="keyword">Array</span>.<span class="keyword">get</span>(arrObj, <span class="number">3</span>);</div><div class="line">		<span class="keyword">Array</span>.<span class="keyword">set</span>(anArr, <span class="number">8</span>, <span class="string">"heheda"</span>);</div><div class="line">		<span class="comment">// 将arr强制类型转换为三维数组</span></div><div class="line">		<span class="keyword">String</span>[][][] <span class="keyword">cast</span> = (<span class="keyword">String</span>[][][]) arr;</div><div class="line">		<span class="comment">// 获取cast三维数组中指定元素的值</span></div><div class="line">		System.out.println(<span class="keyword">cast</span>[<span class="number">2</span>][<span class="number">3</span>][<span class="number">8</span>]);</div><div class="line">		System.out.println(<span class="keyword">cast</span>[<span class="number">2</span>][<span class="number">2</span>][<span class="number">0</span>]);</div><div class="line">		System.out.println(<span class="keyword">cast</span>[<span class="number">2</span>][<span class="number">2</span>][<span class="number">1</span>]);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2017 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
