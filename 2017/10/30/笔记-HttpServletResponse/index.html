@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-HttpServletResponse | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="用手记笔记，用心记笔记，用脑记笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-HttpServletResponse"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-HttpServletResponse</h2>
+				
+				<div>
+					<span class="post-time">2017-10-30 12:34</span>
+				</div>	
+				
+				<div class="article-content">
+				<p>使用OutputStream或者PrintWriter向客户端浏览器输出汉字与数字<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp.response.study;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> Response1 <span class="keyword">extends</span> HttpServlet &#123;</div><div class="line"></div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">4312868947607181532</span>L;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">void</span> doGet(HttpServletRequest request, HttpServletResponse response) </div><div class="line">		<span class="keyword">throws</span> ServletException, IOException &#123;</div><div class="line">			<span class="comment">// 略</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">void</span> outputOneByOutputStream(HttpServletResponse response)</div><div class="line">		<span class="keyword">throws</span> ServletException, IOException &#123;</div><div class="line">			response.setHeader(<span class="string">"content-type"</span>, <span class="string">"text/html;charset=UTF-8"</span>);</div><div class="line"></div><div class="line">			OutputStream outputStream = response.getOutputStream(); <span class="comment">// 获取OutputStream输出流</span></div><div class="line"></div><div class="line">			String data = <span class="string">"中国"</span>;</div><div class="line">			<span class="comment">// data.getBytes()将字符转换成字节数组，不带参数中文环境默认GB2312，查码表转成对应数字</span></div><div class="line">			<span class="keyword">byte</span>[] dataByteArr = data.getBytes(<span class="string">"UTF-8"</span>);</div><div class="line">			outputStream.<span class="keyword">write</span>(dataByteArr);</div><div class="line">			<span class="comment">// outputStream.write("中国".getBytes("UTF-8"));</span></div><div class="line"></div><div class="line">			<span class="comment">// outputStream.write(1); 数字1没输出</span></div><div class="line">			outputStream.<span class="keyword">write</span>((<span class="number">1</span> + <span class="string">""</span>).getBytes());</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">void</span> outputOneByPrintWriter(HttpServletResponse response)</div><div class="line">		<span class="keyword">throws</span> ServletException, IOException &#123;</div><div class="line">			<span class="comment">// 这两个步骤不能颠倒</span></div><div class="line">			response.setCharacterEncoding(<span class="string">"UTF-8"</span>); <span class="comment">// 设置输出客户端编码</span></div><div class="line">			PrintWriter out = response.getWriter(); <span class="comment">// 获取PrintWriter输出流</span></div><div class="line">			out.<span class="keyword">write</span>(<span class="string">"&lt;meta http-equiv='content-type' content='text/html;charset=UTF-8'/&gt;"</span>);</div><div class="line">			<span class="comment">// 等同于response.setHeader("content-type", "text/html;charset=UTF-8");</span></div><div class="line"></div><div class="line">			String data = <span class="string">"中国"</span>;</div><div class="line">			out.<span class="keyword">write</span>(data);</div><div class="line"></div><div class="line">			out.<span class="keyword">write</span>(<span class="number">1</span> + <span class="string">""</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 略</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>需要向浏览器输出字符数据时，使用PrintWriter比较方便，省去了将字符转换成字节数组。</p>
+<p>使用Response实现文件下载<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp.response.study;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Response2</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> &#123;</span></div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="keyword">void</span> doGet(HttpServletRequest request, HttpServletResponse response) </div><div class="line">		<span class="keyword">throws</span> ServletException, IOException &#123;</div><div class="line">			downloadFileByOutputStream(response);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">private</span> <span class="keyword">void</span> downloadFileByOutputStream(HttpServletResponse response) </div><div class="line">		<span class="keyword">throws</span> FileNotFoundException, IOException &#123;</div><div class="line">			<span class="comment">// 下载的文件的绝对路径</span></div><div class="line">			String realPath = <span class="keyword">this</span>.getServletContext().getRealPath(<span class="string">"/download/1.JPG"</span>);</div><div class="line">			<span class="comment">// 要下载的文件名</span></div><div class="line">			String fileName = realPath.substring(realPath.lastIndexOf(<span class="string">"\\"</span>) + <span class="number">1</span>);</div><div class="line">			<span class="comment">// 设置content-disposition响应头控制浏览器以下载的形式打开文件</span></div><div class="line">			response.setHeader(<span class="string">"content-disposition"</span>, <span class="string">"attachment; filename="</span> + fileName);</div><div class="line">			<span class="comment">// 中文名用URLEncoder.encode，否则文件名乱码</span></div><div class="line">			<span class="comment">// response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));</span></div><div class="line">			<span class="comment">// 要下载的文件输入流</span></div><div class="line">			InputStream <span class="keyword">in</span> = <span class="keyword">new</span> FileInputStream(realPath);</div><div class="line">			<span class="keyword">int</span> len = <span class="number">0</span>;</div><div class="line">			<span class="comment">// 创建数据缓冲区</span></div><div class="line">			<span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</div><div class="line">			<span class="comment">// 通过response对象获取OutputStream流</span></div><div class="line">			OutputStream out = response.getOutputStream();</div><div class="line">			<span class="comment">// 将FileInputStream流写入到buffer缓冲区</span></div><div class="line">			<span class="keyword">while</span> ((len = <span class="keyword">in</span>.read(buffer)) &gt; <span class="number">0</span>) &#123;</div><div class="line">				<span class="comment">// 用OutputStream将缓冲区的数据输出到客户端浏览器</span></div><div class="line">				out.write(buffer, <span class="number">0</span>, len);</div><div class="line">			&#125;</div><div class="line">			<span class="keyword">in</span>.close();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 略</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>文件下载时用OutputStream流，避免PrintWriter流，因为OutputStream流是字节流，可以处理任意类型的数据，而PrintWriter流是字符流，只能处理字符数据，如果用字符流处理字节数据，会导致数据丢失。<br>getOutputStream和getWriter方法分别用于得到输出二进制数据、输出文本数据的ServletOuputStream、Printwriter对象。<br>getOutputStream和getWriter方法互相排斥，调用了其中的任何一个方法后，就不能再调用另一方法。<br>Serlvet的service方法结束后，将检查输出流对象是否已经调用过close方法，如果没有，将调用close方法关闭。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp.response.study;</div><div class="line"></div><div class="line">public <span class="class"><span class="keyword">class</span> <span class="title">Response3</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</div><div class="line"></div><div class="line">	public void doGet(<span class="type">HttpServletRequest</span> request, <span class="type">HttpServletResponse</span> response) </div><div class="line">		<span class="keyword">throws</span> <span class="type">ServletException</span>, <span class="type">IOException</span> &#123;</div><div class="line">			<span class="comment">// 将数据的缓存时间设置为1天，当前时间+要缓存的时长</span></div><div class="line">			response.setDateHeader(<span class="string">"expires"</span>, <span class="type">System</span>.currentTimeMillis() + <span class="number">24</span> * <span class="number">3600</span> * <span class="number">1000</span>);</div><div class="line">			<span class="comment">// 设置http响应头控制浏览器禁止缓存当前内容</span></div><div class="line">			response.setDateHeader(<span class="string">"expires"</span>, <span class="number">-1</span>);</div><div class="line">			response.setHeader(<span class="string">"Cache-Control"</span>, <span class="string">"no-cache"</span>);</div><div class="line">			response.setHeader(<span class="string">"Pragma"</span>, <span class="string">"no-cache"</span>);</div><div class="line">			<span class="comment">// 设置refresh响应头控制浏览器每隔5秒钟刷新，一般不在servlet里加refresh头，而在jsp加&lt;meta&gt;模拟</span></div><div class="line">			response.setHeader(<span class="string">"refresh"</span>, <span class="string">"5"</span>);</div><div class="line">			<span class="comment">// 通过response实现请求重定向</span></div><div class="line">			response.sendRedirect(<span class="string">"/JavaWebXxx/index.jsp"</span>);</div><div class="line">			<span class="comment">// sendRedirect内部原理：使用response设置302状态码和设置location响应头实现重定向</span></div><div class="line">			<span class="comment">// response.setHeader("Location", "/JavaWebXxx/index.jsp");</span></div><div class="line">			<span class="comment">// response.setStatus(HttpServletResponse.SC_FOUND); // 设置302状态码，等同于response.setStatus(302);</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 略</span></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>重定向：设置状态码和<code>location</code>头即可，或者直接使用<code>response</code>的<code>sendRedirect</code>方法。向服务器两次请求。浏览器会改变地址栏，一般适用于登录、购物等场景。</p>
+<p>转发:是调用<code>ServletContex</code>对象的<code>getRequestDispatcher</code>方法，再调用<code>forward</code>方法。向服务器一次请求，浏览器地址栏不变。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2017 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

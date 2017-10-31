@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-Tomcat | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="用手记笔记，用心记笔记，用脑记笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-Tomcat"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Tomcat</h2>
+				
+				<div>
+					<span class="post-time">2017-10-30 12:34</span>
+				</div>	
+				
+				<div class="article-content">
+				<p><strong>JavaWeb的笔记主要参考：</strong></p>
+<ul>
+<li><a href="http://www.cnblogs.com/xdp-mmp" target="_blank" rel="external">孤傲苍狼的博客</a></li>
+</ul>
+<p><strong>其它：</strong></p>
+<ul>
+<li>Tomcat与Java Web开发技术详解(第2版)</li>
+<li>Java Web开发实战经典</li>
+<li>Java Web高级编程</li>
+</ul>
+<hr>
+<p><strong>Tomcat虚拟目录映射</strong></p>
+<p>方式一：server.xml<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 将JavaProject这个JavaWeb应用映射到JavaWebApp虚拟目录上 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">Host</span> <span class="attr">name</span>=<span class="string">"localhost"</span> <span class="attr">appBase</span>=<span class="string">"webapps"</span> <span class="attr">unpackWARs</span>=<span class="string">"true"</span> <span class="attr">autoDeploy</span>=<span class="string">"true"</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- Context：表示上下文，代表一个JavaWeb应用 --&gt;</span></div><div class="line"><span class="comment">&lt;!-- path：虚似目录，必须以"/"开头 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">Context</span> <span class="attr">path</span>=<span class="string">"/JavaWebApp"</span> <span class="attr">docBase</span>=<span class="string">"F:\JavaProject"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">Host</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>不建议使用，每次修改后，必须重启才能重新加载server.xml。</p>
+<p>方式二：自动映射</p>
+<p>把JavaProject这个JavaWeb应用copy到tomcat服务器webapps目录，自动映射同名的虚拟目录”/JavaProject”。</p>
+<p>方式三</p>
+<p>在tomcat服务器的<code>\conf\Catalina\localhost</code>目录下添加xml文件，虚似目录的名称就是这个xml文件的名称。不用重启Tomcat。<br>$CATALINA_BASE：tomcat服务器根目录，[enginename]：Tomcat服务器使用的引擎名称，Catalina。</p>
+<p>在abc.xml文件中添加Context元素映射JavaWeb应用：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 不用指明path属性来设置虚拟目录的名称 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">Context</span> <span class="attr">docBase</span>=<span class="string">"F:\JavaProject"</span>/&gt;</span></div></pre></td></tr></table></figure></p>
+<p><strong>Tomcat虚似主机</strong></p>
+<p>配置虚似主机就是配置一个网站，需要修改<code>conf/server.xml</code>，使用Host元素配置，Tomcat服务器自带名为localhost的虚拟主机，将开发好的JavaWeb应用放到webapps文件夹下，使用<code>http://localhost:端口号/JavaWebAppName</code>的方式访问，访问的就是name是”localhost”的虚拟主机(Host)，这台虚拟主机管理webapps文件夹下的所有web应用。</p>
+<p>配置一个虚拟主机：<code>&lt;Host name=&quot;www.mmp.cn&quot; appBase=&quot;F:\JavaWebApps&quot;&gt;&lt;/Host&gt;</code></p>
+<p>配置的主机(网站)要想通过域名被访问，必须在DNS服务器或windows系统中注册访问网站时的域名，编辑hosts文件，将新添加的网站的域名和IP地址绑定。</p>
+<p>浏览器根据主机名”www.mmp.cn”去Hosts文件中查找对应IP地址，没找到，就去DNS服务器上找，找到后，使用IP地址连接到Web服务器。<br>浏览器连接到web服务器后，使用http协议向服务器发送请求，发送请求的过程中，浏览器向Web服务器以Stream(流)的形式传输数据，说明要访问的Web资源。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- WEB-INF\web.xml --&gt;</span></div><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span><span class="meta">?&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">web-app</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">display-name</span>&gt;</span>Welcome to Tomcat<span class="tag">&lt;/<span class="name">display-name</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">description</span>&gt;</span></div><div class="line">		Welcome to Tomcat</div><div class="line">	<span class="tag">&lt;/<span class="name">description</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></div></pre></td></tr></table></figure>
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2017 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
