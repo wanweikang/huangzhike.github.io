@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-JavaBean | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="用手记笔记，用心记笔记，用脑记笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-JavaBean"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-JavaBean</h2>
+				
+				<div>
+					<span class="post-time">2017-11-01 9:24</span>
+				</div>	
+				
+				<div class="article-content">
+				<ul>
+<li>JavaBean是一个遵循特定写法的Java类：<ul>
+<li>必须有一个无参构造</li>
+<li>属性必须私有化</li>
+<li>私有属性必须通过public方法暴露，方法命名必须遵守规范</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp.javabean.study;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</div><div class="line">	<span class="comment">// 封装私有属性</span></div><div class="line">	<span class="keyword">private</span> String name;</div><div class="line">	</div><div class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span> married;</div><div class="line"></div><div class="line">	<span class="comment">// 无参构造</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 对外提供访问私有属性的public方法</span></div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> name;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.name = name;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMarried</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> married;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMarried</span><span class="params">(<span class="keyword">boolean</span> married)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.married = married;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	<span class="comment">// 略</span></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>每个属性通常都要具有相应的setter、 getter方法。<br>属性修改器以小写的set前缀开始，后跟属性名，且属性名的第一个字母要大写。<br>属性访问器以小写的get前缀开始，后跟属性名，且属性名的第一个字母要大写。<br>某个属性也可以只有set方法或get方法，也称只写、只读属性。</p>
+<p>JSP提供了三个关于JavaBean组件的动作元素，即JSP标签：</p>
+<p><code>&lt;jsp:useBean&gt;</code>：在JSP中查找或实例化JavaBean组件。<br><code>&lt;jsp:setProperty&gt;</code>：在JSP中设置JavaBean组件的属性。<br><code>&lt;jsp:getProperty&gt;</code>：在JSP中获取JavaBean组件的属性。</p>
+<figure class="highlight vbscript-html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="xml"></span><span class="vbscript">&lt;%@ page language=<span class="string">"java"</span> import=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><span class="xml"></span></div><div class="line"><span class="comment">&lt;!-- 在指定的域范围查找，存在返回引用，不存在则实例化 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">jsp:useBean</span> <span class="attr">id</span>=<span class="string">"person"</span> <span class="attr">class</span>=<span class="string">"mmp.javabean.study.Person"</span> <span class="attr">scope</span>=<span class="string">"page"</span>/&gt;</span></div><div class="line"><span class="vbscript">&lt;%</span></div><div class="line">	// person对象使用jsp:useBean标签实例化了，直接使用</div><div class="line">	person.setName(<span class="string">"cnm"</span>);</div><div class="line">%&gt;<span class="xml"></span></div><div class="line"><span class="comment">&lt;!-- 自动把字符串转换成8种基本数据类型,但复合数据类型无法自动转换 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">jsp:setProperty</span> <span class="attr">property</span>=<span class="string">"married"</span> <span class="attr">name</span>=<span class="string">"person"</span> <span class="attr">value</span>=<span class="string">"false"</span>/&gt;</span></div><div class="line"><span class="vbscript">&lt;%--</span></div><div class="line">	birthday属性是一个<span class="built_in">Date</span>类型，无法将字符串自动转换成<span class="built_in">Date</span> ，下面写法报错</div><div class="line">	&lt;jsp:setProperty <span class="keyword">property</span>=<span class="string">"birthday"</span> name=<span class="string">"person"</span> value=<span class="string">"1999-09-09"</span>/&gt;</div><div class="line">--%&gt;<span class="xml"></span></div><div class="line"><span class="tag">&lt;<span class="name">jsp:setProperty</span> <span class="attr">property</span>=<span class="string">"birthday"</span> <span class="attr">name</span>=<span class="string">"person"</span> <span class="attr">value</span>=<span class="string">"</span></span><span class="vbscript">&lt;%=<span class="keyword">new</span> <span class="built_in">Date</span>()%&gt;</span><span class="xml"><span class="tag"><span class="string">"</span>/&gt;</span></span></div><div class="line"><span class="comment">&lt;!-- param="param_name"接收参数名为param_name的参数值，将接收到的值赋给name属性 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">jsp:setProperty</span> <span class="attr">property</span>=<span class="string">"name"</span> <span class="attr">name</span>=<span class="string">"person"</span> <span class="attr">param</span>=<span class="string">"param_name"</span>/&gt;</span></div><div class="line"><span class="comment">&lt;!-- 用所有的请求参数为bean的属性赋值,property="*"代表bean的所有属性 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">jsp:setProperty</span> <span class="attr">property</span>=<span class="string">"*"</span> <span class="attr">name</span>=<span class="string">"person"</span>/&gt;</span></div><div class="line"><span class="meta">&lt;!DOCTYPE&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">title</span>&gt;</span> <span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">h2</span>&gt;</span>姓名：<span class="vbscript">&lt;%=person.getName()%&gt;</span><span class="xml"><span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span></div><div class="line">		<span class="tag">&lt;<span class="name">h2</span>&gt;</span>已婚：<span class="tag">&lt;<span class="name">jsp:getProperty</span> <span class="attr">property</span>=<span class="string">"married"</span> <span class="attr">name</span>=<span class="string">"person"</span>/&gt;</span><span class="tag">&lt;/<span class="name">h2</span>&gt;</span></div><div class="line">		<span class="comment">&lt;!-- 如果JavaBean实例对象的属性的值为null，&lt;jsp:getProperty&gt;输出“null”字符串 --&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2017 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
