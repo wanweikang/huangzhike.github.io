@@ -101,10 +101,10 @@
 				<div class="article-content">
 				<p>变量类型：局部变量，成员变量，类变量<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> <span class="title">C</span> &#123;</div><div class="line">	<span class="comment">// 静态变量（类变量）</span></div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">double</span> a;<span class="comment">// 默认值：数值型是0，布尔型是false，引用类型是null</span></div><div class="line"></div><div class="line">	<span class="keyword">private</span> <span class="keyword">double</span> b;<span class="comment">// 成员变量，有默认值，同上</span></div><div class="line">	<span class="comment">// 实例变量可直接通过变量名访问，在静态方法及其他类中用完全限定名：ObejectReference.VariableName</span></div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">xxx</span>(<span class="params"></span>) </span>&#123;</div><div class="line">		<span class="comment">// 访问修饰符不能用于局部变量，只在声明它的方法或块中可见，在栈上分配</span></div><div class="line">		<span class="keyword">int</span> a = <span class="number">0</span>; <span class="comment">// 没有默认值，声明后必须初始化</span></div><div class="line">		a += <span class="number">1</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <ul>
-<li>访问器方法命名：以“get”和“set”开头，boolean 类型，方法名以“is”开头。</li>
-</ul>
-<ul>
-<li>static 变量和方法关联在类身上，不依赖实例，被所有实例共享，无论实例化多少对象，只有一份拷贝。</li>
+<li><p>访问器方法命名：以“get”和“set”开头，boolean 类型，方法名以“is”开头。</p>
+</li>
+<li><p>static 变量和方法关联在类身上，不依赖实例，被所有实例共享，无论实例化多少对象，只有一份拷贝。</p>
+</li>
 <li>static 方法通过类调用，也可以通过实例对象访问。</li>
 <li>static 方法只能调用 static 变量和方法。</li>
 <li>static 方法不能引用 this、super。</li>
@@ -119,9 +119,8 @@
 <li>父类的 private 方法不能被子类覆盖，所有 private 方法都隐式添加了 final 。</li>
 <li>final 声明的类， 其中所有方法也都隐式 final 。</li>
 <li>final 对象的引用不能指向不同的对象，但是值可以改变。</li>
-<li>如果字段同时使用 static 和 final ，就是编译时常量， javac 会将其内联化。</li>
-</ul>
-<ul>
+<li><p>如果字段同时使用 static 和 final ，就是编译时常量， javac 会将其内联化。</p>
+</li>
 <li><p>修饰类</p>
 <ul>
 <li>public：任何类都可以访问该类</li>

@@ -102,23 +102,23 @@
 				<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Circle</span> </span>&#123;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> PI = <span class="number">3.14</span>;</div><div class="line">	<span class="keyword">protected</span> <span class="keyword">double</span> r;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Circle</span><span class="params">(<span class="keyword">double</span> r)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.r = r; </div><div class="line">		c(); <span class="comment">// 实例方法，也可用this.c()</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Circle</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>(<span class="number">1.0</span>); <span class="comment">// 第一行</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">c</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> (PI * r * r);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PlaneCircle</span> <span class="keyword">extends</span> <span class="title">Circle</span> </span>&#123;</div><div class="line">	<span class="comment">// 自动继承了Circle类的字段和方法</span></div><div class="line">	<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">double</span> cx, cy; </div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">PlaneCircle</span><span class="params">(<span class="keyword">double</span> r, <span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</div><div class="line">		<span class="keyword">super</span>(r); <span class="comment">// 调用超类的构造方法</span></div><div class="line">		<span class="comment">// super() 和 this() 在第一句用</span></div><div class="line">		<span class="keyword">this</span>.cx = x; </div><div class="line">		<span class="keyword">this</span>.cy = y; </div><div class="line">	&#125;</div><div class="line">	<span class="comment">// 用了继承的实例字段r</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isInside</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</div><div class="line">		<span class="keyword">double</span> dx = x - cx, dy = y - cy; <span class="comment">// 到圆心的距离</span></div><div class="line">		<span class="keyword">double</span> distance = Math.sqrt(dx * dx + dy * dy); <span class="comment">// 勾股定理</span></div><div class="line">		<span class="keyword">return</span> (distance &lt; r); </div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 声明变量p，存储PlaneCircle对象的引用</span></div><div class="line">PlaneCircle p = new PlaneCircle(<span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>);</div><div class="line">Circle c = p; <span class="comment">// 无需校正，赋值给Circle类型的变量</span></div><div class="line">PlaneCircle p = (PlaneCircle) c; <span class="comment">// 缩小转换要校正</span></div><div class="line">boolean origininside = ((PlaneCircle) c).isInside(<span class="number">0.0</span>, <span class="number">0.0</span>);</div></pre></td></tr></table></figure>
 <ul>
-<li>每个类都有超类。 如果没使用 extends 子句指定超类， 超类是 java.lang.Object。<ul>
+<li><p>每个类都有超类。 如果没使用 extends 子句指定超类， 超类是 java.lang.Object。</p>
+<ul>
 <li>Object 是特殊的类：<br>  • Object 是唯一一个没有超类的类；<br>  • 所有 Java 类都从 Object 类中继承方法。</li>
 </ul>
 </li>
-</ul>
-<ul>
-<li>创建类的实例时，一定会调用这个类的构造方法。</li>
+<li><p>创建类的实例时，一定会调用这个类的构造方法。</p>
+</li>
 <li>创建子类的实例时，一定会调用超类的构造方法。</li>
 <li>每个构造方法都会调用超类的构造方法。</li>
 <li>如果构造方法的第一句没有 this() 或 super()，javac 编译器插入 super() ，调用超类的无参构造方法。</li>
 <li>如果超类没有无参数的可见构造方法，这种隐式调用会导致编译出错。</li>
 <li>如果类没有定义无参构造方法，它的所有子类必须定义显式调用超类构造方法，传入参数。</li>
 <li>实例字段在构造方法中初始化， 即使不创建类的实例， 类字段也关联在类身上， 类字段在首次加载类时初始化。</li>
-<li>静态初始化程序和类方法一样不能使用 this 关键字， 也不能使用类中的任何实例字段或实例方法。</li>
-</ul>
+<li><p>静态初始化程序和类方法一样不能使用 this 关键字， 也不能使用类中的任何实例字段或实例方法。</p>
+</li>
+<li><p>PlaneCircle 类创建实例时：</p>
 <ul>
-<li>PlaneCircle 类创建实例时：<ul>
 <li>调用 PlaneCircle 类的构造方法；</li>
 <li>这个构造方法显示调用了 super(r) ，调用 Circle 类的一个构造方法；</li>
 <li>Circle() 构造方法隐式调用 super() ，调用 Circle 的超类 Object 的构造方法；</li>
@@ -136,15 +136,15 @@
 <p>不要在父类构造器中调用被子类覆盖的方法。<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> <span class="title">A</span> &#123; </div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">A</span> (<span class="params"></span>) </span>&#123; f(); &#125;</div><div class="line">	<span class="function"><span class="keyword">int</span> <span class="title">f</span>(<span class="params"></span>) </span>&#123; System.<span class="keyword">out</span>.println(<span class="string">"被覆盖"</span>); &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">class</span> <span class="title">B</span> <span class="title">extends</span> <span class="title">A</span> &#123; </div><div class="line">	<span class="keyword">int</span> i; </div><div class="line">	<span class="function"><span class="keyword">int</span> <span class="title">f</span>(<span class="params"></span>) </span>&#123; System.<span class="keyword">out</span>.println(i); &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Override</span> &#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(<span class="params">String args[]</span>) </span>&#123;</div><div class="line">		B b = <span class="keyword">new</span> B(); <span class="comment">// 调用父类构造方法，然后调用被覆盖的f方法，i未赋值</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>编译器在编译时并不知道要调用哪个方法，在运行时使用“ 虚拟方法查找”，查找适用于对象的方法。<br>解释o.c() 时，检查变量 o 引用的对象的真正运行时类型， 然后找到适用于这个类型的 c() 方法。<br>不会直接使用关联在变量 o 表示的静态类型身上的 c() 方法， 如果这么做， 方法覆盖就不成立了。<br>实例方法默认使用虚拟查找。</p>
 <ul>
-<li>继承规则：两同两小一大<ul>
+<li><p>继承规则：两同两小一大</p>
+<ul>
 <li>方法名，形参列表相同</li>
 <li>子类方法返回值、抛出异常比父类小或相同，</li>
 <li>子类方法的访问权限比父类大或相同</li>
 </ul>
 </li>
-</ul>
-<ul>
-<li>父类中声明为 public 的方法在子类中也必须为 public（不能缩小）。</li>
+<li><p>父类中声明为 public 的方法在子类中也必须为 public（不能缩小）。</p>
+</li>
 <li>父类中声明为 protected 的方法在子类中要么声明为 protected，要么为 public，不能为 private。</li>
 <li>父类中声明为 private 的方法，不能被继承。</li>
 </ul>

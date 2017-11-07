@@ -120,7 +120,7 @@
 </ul>
 <p>session对象由服务器创建,一个浏览器(会话)独占一个session对象。</p>
 <ul>
-<li>创建：调用<code>request</code>对象的<code>getSession</code>方法后才会创建session对象，<code>getSession(false)</code>只获取， 不创建</li>
+<li>创建：调用<code>request</code>对象的<code>getSession</code>方法后才会创建session对象，<code>getSession(false)</code>只获取，不创建</li>
 <li>销毁：默认30分钟没使用则自动销毁。失效时间可在<code>web.xml</code>的<code>&lt;session-config&gt;</code>标签中使用<code>&lt;session-timeout&gt;</code>，单位分钟，也可调用<code>session</code>对象的<code>invalidate</code>方法销毁</li>
 </ul>
 <p>session基于cookie实现，将<code>JSESSIONID</code>写回浏览器，这个cookie(<code>JSESSIONID</code>)默认没设置有效期,关浏览器即销毁。可以自行回写<code>JSESSIONID</code>覆盖原cookie值。</p>
@@ -163,9 +163,8 @@
 <li>禁止表单重复提交：在javascript或者服务器实现。javascript防不死，用户可通过修改js、自建表单提交，刷新页面，后退等方法重复提交；服务器实现是给每个表单一个随机表单号</li>
 <li>生成表单号使用“令牌发生器”，为保证唯一性(减小重复概率)，使用单例。</li>
 <li>base64编码，三字节变四字节，每6位变8位(一字节)，高位补零，每字节最大值为63，故得名。</li>
-<li>md5，常用于保存密码(可能为防止破解会加随机数)，校验数据完整性</li>
-</ul>
-<ul>
+<li><p>md5，常用于保存密码(可能为防止破解会加随机数)，校验数据完整性</p>
+</li>
 <li><p>三个域对象</p>
 <ul>
 <li>Session</li>

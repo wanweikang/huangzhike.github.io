@@ -142,8 +142,6 @@
 </li>
 <li><p>boolean默认值是false</p>
 </li>
-</ul>
-<ul>
 <li><p>char类型是一个单一的16位Unicode字符</p>
 <ul>
 <li>最小值是\u0000（即为0）</li>
@@ -159,8 +157,6 @@
 <li>1真值：boolean</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><p>8种包装类</p>
 <ul>
 <li>Number子类<ul>
@@ -181,9 +177,8 @@
 </li>
 <li><p>null 关键字是特殊的字面量，可以赋值给属于任何引用类型的变量。</p>
 </li>
-</ul>
-<ul>
-<li>&amp;&amp;与||：短路</li>
+<li><p>&amp;&amp;与||：短路</p>
+</li>
 <li>&amp;与|：不短路</li>
 </ul>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 自动装箱</span></div><div class="line">Integer i =<span class="number">30</span>;</div><div class="line"><span class="keyword">Float</span> f =<span class="number">30.3</span>f;</div><div class="line"><span class="comment">// 自动拆箱</span></div><div class="line"><span class="keyword">int</span> x=i;</div><div class="line"><span class="keyword">float</span> y=f;</div></pre></td></tr></table></figure>
@@ -194,13 +189,13 @@
 <p>浮点数转换成整数时，小数部分直接截掉。</p>
 <p>大多数情况下， 字符类型和整数类型类似， 需要 int 或 long 类型的地方都可以使用字符。<br>字符类型没有符号， 即便字符和 short 类型都是 16 位， 也有差异：<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">short</span> s = (<span class="keyword">short</span>) <span class="number">0xffff</span>; <span class="comment">// 表示数字-1</span></div><div class="line"><span class="keyword">char</span> c = <span class="string">'\uffff'</span>; <span class="comment">// 一个Unicode字符</span></div><div class="line"><span class="keyword">int</span> i1 = s; <span class="comment">// 把short类型转换成int类型，得-1</span></div><div class="line"><span class="keyword">int</span> i2 = c; <span class="comment">// 把字符转换成int类型，得65535</span></div></pre></td></tr></table></figure></p>
 <ul>
-<li>自动类型转换：转换前位数低于转换后，short为16位，可以自动转换为32的int。<ul>
+<li><p>自动类型转换：转换前位数低于转换后，short为16位，可以自动转换为32的int。</p>
+<ul>
 <li>byte,short,char—&gt; int —&gt; long—&gt; float —&gt; double</li>
 </ul>
 </li>
-</ul>
-<ul>
-<li>不能对boolean类型进行类型转换。</li>
+<li><p>不能对boolean类型进行类型转换。</p>
+</li>
 <li>不能把对象类型转换成不相关类的对象。</li>
 <li>在把容量大的类型转换为容量小的类型时必须使用强制类型转换。</li>
 <li>转换过程中可能溢出或损失精度，例如：  <figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> i =<span class="number">128</span>;</div><div class="line"><span class="keyword">byte</span> b = (<span class="keyword">byte</span>)i; <span class="comment">// byte最大值为127</span></div></pre></td></tr></table></figure>
