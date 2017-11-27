@@ -101,10 +101,15 @@
 				<div class="article-content">
 				<p>MVC（Model-View-Controller）</p>
 <ul>
-<li>Model（模型）：数据模型，包含数据和行为，可以认为是领域模型(domain)或JavaBean组件（包含数据和行为），现在一般分离开来：Value Object（数据） 和 服务层（行为）。模型提供了模型数据查询和状态更新等。</li>
-<li>View（视图）：负责模型的展示，一般是用户界面。</li>
-<li>Controller（控制器）：接收用户请求，委托给模型处理（状态改变），处理完毕后把返回的模型数据返回给视图，由视图负责展示。调度工作。</li>
+<li>Model（模型）：数据模型，包含数据和行为，可以认为是领域模型(domain)或JavaBean组件（包含数据和行为），现在一般分离开来：Value Object（数据） 和 服务层（行为）。模型提供了模型数据查询和状态更新等。<ul>
+<li>数据承载 Bean ：实体类，如 Student、User 等。</li>
+<li>业务处理 Bean ： Service 或 Dao 对象，处理用户提交请求。</li>
 </ul>
+</li>
+<li>View（视图）：负责模型的展示，一般是用户界面。</li>
+<li>Controller（控制器）：接收用户请求，委托给Model处理（状态改变），处理完毕后把返回的Model数据返回给视图，由View负责展示。调度工作。</li>
+</ul>
+<p>用户通过 View 页面向服务端提出请求，可以是表单请求、超链接请求、AJAX 请求等<br>服务端 Controller 控制器接收到请求后解析请求，找到相应的 Model 处理用户请求<br>Model 处理后，将处理结果再交给 Controller<br>Controller 接到处理结果后，根据处理结果响应 View 页面。页面经渲染（数据填充）后发送给客户端</p>
 <p>一般都是Web客户端发起请求，Web服务器响应。<br>一般Web服务器不能主动通知Web客户端。虽然服务器推（如Comet）、HTML5 websocket可以实现主动通知Web客户端。</p>
 <p>标准的MVC中模型能主动推数据给视图进行更新（观察者设计模式，在模型上注册视图，模型更新时自动更新视图），但在Web开发中模型无法主动推给视图（无法主动更新用户界面），因为请求-响应模型。</p>
 <ul>
