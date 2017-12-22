@@ -148,23 +148,20 @@
 <li>第一种：ModelAndView</li>
 <li>第二种：String</li>
 <li>第三种：无返回值 void</li>
-<li>第四种：返回自定义类型对象</li>
-</ul>
+<li><p>第四种：返回自定义类型对象</p>
+</li>
+<li><p>返回 ModelAndView<br>若处理器方法处理完后，需要跳转到其它资源，且又要在跳转的资源间传递数据，返回 ModelAndView 比较好。<br>要返回 ModelAndView，则处理器方法中需要定义 ModelAndView 对象。<br>若该处理器方法只是进行跳转而不传递数据，或只是传递数据而并不向任何资源跳转（如 Ajax 异步响应），返回 ModelAndView，总是有一部分多余：要么 Model 多余，要么 View 多余。<br>此时返回 ModelAndView 不合适。</p>
+</li>
+<li><p>返回 String<br>返回的字符串可以指定逻辑视图名，通过视图解析器解析将其转换为物理视图地址。<br>也可以直接返回资源的物理视图名，此时不需要在视图解析器中配置前辍与后辍。<br>返回 View 对象名，若要跳转的资源为外部资源，则视图解析器用 BeanNameViewResolver，<br>然后在配置文件中再定义一些外部资源视图 View 对象，此时处理器方法返回的字符串就是要跳转资源视图 View 的名称。</p>
+</li>
+<li><p>返回 void<br>主要有两种：</p>
 <ul>
-<li>返回 ModelAndView<br>若处理器方法处理完后，需要跳转到其它资源，且又要在跳转的资源间传递数据，返回 ModelAndView 比较好。<br>要返回 ModelAndView，则处理器方法中需要定义 ModelAndView 对象。<br>若该处理器方法只是进行跳转而不传递数据，或只是传递数据而并不向任何资源跳转（如 Ajax 异步响应），返回 ModelAndView，总是有一部分多余：要么 Model 多余，要么 View 多余。<br>此时返回 ModelAndView 不合适。</li>
-</ul>
-<ul>
-<li>返回 String<br>返回的字符串可以指定逻辑视图名，通过视图解析器解析将其转换为物理视图地址。<br>也可以直接返回资源的物理视图名，此时不需要在视图解析器中配置前辍与后辍。<br>返回 View 对象名，若要跳转的资源为外部资源，则视图解析器用 BeanNameViewResolver，<br>然后在配置文件中再定义一些外部资源视图 View 对象，此时处理器方法返回的字符串就是要跳转资源视图 View 的名称。</li>
-</ul>
-<ul>
-<li>返回 void<br>主要有两种：<ul>
 <li>在方法参数中放入 HttpServletRequest 或 HttpSession，使方法中可以直接将数据放入到 request、session 的域中，也可通过 request.getServletContext()获取 ServletContext，将数据放入到 application 的域中。<br>可在方法参数中放入 HttpServletRequest 与 HttpServletResponse，使方法完成请求转发与重定向。<br>重定向是无法访问/WEB-INF/下资源的。<br>请求转发：request.getRequestDispatcher(“目标页面”).forward(request,response);<br>重定向：response.sendRedirect(“目标页面”);</li>
 <li>AJAX 响应：若处理器对请求处理后，无需跳转，返回 void。</li>
 </ul>
 </li>
-</ul>
-<ul>
-<li>返回 Object<br>返回的这个 Object 对象不是作为逻辑视图出现，而是直接在页面显示的数据出现。<br>返回 Object 对象，需要使用@ResponseBody 注解，将转换后的 JSON 数据放入到响应体中。</li>
+<li><p>返回 Object<br>返回的这个 Object 对象不是作为逻辑视图出现，而是直接在页面显示的数据出现。<br>返回 Object 对象，需要使用@ResponseBody 注解，将转换后的 JSON 数据放入到响应体中。</p>
+</li>
 </ul>
 <p>请求转发与重定向</p>
 <ul>
@@ -191,8 +188,6 @@
 <li>重定向到 Controller<br>  重定向到Controller时，携带参数的方式，除了可以使用请求URL后携带方式，HttpSession携带方式，Model 形参携带方式，及 RedirectAttributes 形参的 addAttibute()携带方式外，还可以用 RedirectAttributes 形参的 addFlushAttibute()携带方式。</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><p>返回 void 时的请求转发<br>使用 HttpServletRequest 的请求转发方法。<br>无论下一级资源是页面，还是 Controller，用法相同。<br>若有数据需要向下一级资源传递，则需要将数据放入到 request或 session 中。<br>不能将数据放到 Model、RedirectAttributes 中。<br>因为它们中的数据都是通过拼接到处理器方法的返回值中，作为请求的一部分出现向下传递的。<br>没有返回值，它们中的数据便无法向下传递了。</p>
 </li>
 <li><p>返回 void 时的重定向<br>使用 HttpServletResponse 的重定向方法 sendRedirect()。<br>若有数据需要向下一级资源传递，则需要将数据放入到 session中。</p>
