@@ -99,98 +99,228 @@
 				</div>	
 				
 				<div class="article-content">
-				<p>注解式开发：处理器基于注解的类。无需在配置文件中逐个注册处理器，在代码中通过对类与方法的注解完成注册。<br>注解替换的是配置文件中对于处理器的注册部分。<br>注解式开发是重点。</p>
-<p>@Controller：标识是处理器类；<br>@RequestMapping：请求到处理器功能方法的映射规则；<br>@RequestParam：请求参数到处理器功能处理方法的方法参数上的绑定；<br>@ModelAttribute：请求参数到命令对象的绑定；<br>@InitBinder：自定义数据绑定注册支持,用于将请求参数转换到命令对象属性的对应类型；</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="meta">@RequestMapping(value = <span class="meta-string">"/login.do"</span>)</span> <span class="comment">// 通用映射前缀</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Login</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping(value=<span class="meta-string">"/login2.do"</span>)</span> <span class="comment">// 映射窄化  </span></div><div class="line">	<span class="keyword">public</span> ModelAndView hello()&#123;</div><div class="line">		ModelAndView mv = new ModelAndView();</div><div class="line">		mv.addObject(<span class="string">"message"</span>, <span class="string">"Hello World!"</span>);</div><div class="line">		<span class="comment">// 设置逻辑视图名，视图解析器会根据该名字解析到具体的视图页面</span></div><div class="line">		mv.setViewName(<span class="string">"login"</span>);</div><div class="line">		<span class="keyword">return</span> mv; <span class="comment">// 模型数据和逻辑视图名</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>此时URL就应该为：<code>http://xxx/xxx/login/login2.do</code></p>
+				<p><strong>12-27重新整理更新Spring笔记</strong></p>
+<p>注解式开发：处理器基于注解，无需在配置文件中逐个注册处理器，通过对类与方法的注解完成注册。</p>
+<ul>
+<li>注解替换的是配置文件中对于处理器的注册部分。</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 激活SpringMVC注解扫描，如@Controller和@RequestMapping --&gt;</span></div><div class="line"><span class="comment">&lt;!-- 默认扫描的包路径，base-package后的内容只是包路径，不能把类名也写出来 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"mmp"</span>/&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">context:annotation-config</span>/&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 注解驱动 --&gt;</span></div><div class="line"><span class="comment">&lt;!-- 默认加载很多参数绑定方法，如JSON转换解析器 --&gt;</span></div><div class="line"><span class="comment">&lt;!-- 不用配置RequestMappingHandlerMapping和RequestMappingHandlerAdapter --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span>/&gt;</span></div></pre></td></tr></table></figure>
+<p><code>@Controller</code>：说明是处理器类；</p>
+<p><code>@RequestMapping</code>：请求到处理器方法的映射；</p>
+<p><code>@RequestParam</code>：请求参数到处理器方法的方法参数的绑定；</p>
+<p><code>@ModelAttribute</code>：请求参数到命令对象的绑定；</p>
+<p><code>@InitBinder</code>：自定义数据绑定注册支持，将请求参数转换到命令对象属性的对应类型；</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="meta">@RequestMapping(value = <span class="meta-string">"/login.do"</span>)</span> <span class="comment">// 通用映射前缀</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Login</span> </span>&#123;</div><div class="line">	<span class="meta">@RequestMapping(value=<span class="meta-string">"/login2.do"</span>)</span> <span class="comment">// 映射窄化  </span></div><div class="line">	<span class="keyword">public</span> ModelAndView hello()&#123;</div><div class="line"></div><div class="line">		ModelAndView mv = new ModelAndView();</div><div class="line">		mv.addObject(<span class="string">"message"</span>, <span class="string">"Hello World!"</span>);</div><div class="line">		<span class="comment">// 设置逻辑视图名，视图解析器会根据该名字解析到具体的视图页面</span></div><div class="line">		mv.setViewName(<span class="string">"login"</span>);</div><div class="line">		<span class="keyword">return</span> mv; <span class="comment">// 模型数据和逻辑视图名</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>URL：<code>http://xxx/xxx/login/login2.do</code></p>
+<hr>
 <p>处理器方法可以包含五类参数，由系统自动赋值。</p>
 <ul>
 <li>HttpServletRequest</li>
 <li>HttpServletResponse</li>
 <li>HttpSession</li>
 <li>Model（承载数据）</li>
-<li>请求中携带的请求参数</li>
+<li>请求参数</li>
 </ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 默认加载很多参数绑定方法，如JSON转换解析器，不用配置RequestMappingHandlerMapping和RequestMappingHandlerAdapter --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span>/&gt;</span></div></pre></td></tr></table></figure>
-<p>加载Handler<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 单个配置处理器 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"mmp.Login"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>注册组件扫描器：指定处理器所在基本包<br><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;<span class="keyword">context</span>:<span class="keyword">component</span>-scan base-<span class="keyword">package</span>=<span class="string">"mmp"</span>/&gt;</div></pre></td></tr></table></figure></p>
-<p><code>@RequestMapping(value={&quot;/login.do&quot;,&quot;/user/login.do&quot;})</code><br><code>@RequestMapping(value=&quot;/users/{userId}&quot;)</code>：{xxx}占位符，匹配”/users/123456”或”/users/abcd”。<br><code>@RequestMapping(value=&quot;/users/**&quot;)</code>:匹配”/users/abc/abc”。<br><code>@RequestMapping(value=&quot;/model?&quot;)</code>:匹配”/model1”或”/modela”，不匹配”/model”或”/modelaa”。<br><code>@RequestMapping(value=&quot;/model*&quot;)</code>:匹配”/modelabc”或”/model”，不匹配”/modelabc/abc”。<br><code>@RequestMapping(value=&quot;/model/*&quot;)</code>:匹配”/model/abc”，不匹配”/modelabc”。<br><code>@RequestMapping(value=&quot;/model/**/{modelId}&quot;)</code>：匹配”/model/abc/abc/123”或”/model/123”。<br><code>@RequestMapping(value=&quot;/login/{userId:\\d+}.do&quot;)</code>:{变量名:正则表达式}，匹配”/login/123.do”，不匹配”/login/abc.do”。</p>
-<p>@RequestMapping 中 params 属性中定义了请求中必须携带的参数的要求。<br><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;name&quot;,&quot;age&quot;})</code>：请求中必须携带参数 name 与 age。<br><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;!name&quot;,&quot;age&quot;})</code>：请求中必须携带参数 age，不能携带 name。<br><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;name=zs&quot;,&quot;ag=23&quot;})</code>：请求中必须携带参数 name，值为 zs；必须携带 age，值为 23。<br><code>@RequestMapping(value=&quot;/xxx.do&quot;, params=&quot;name!=zs&quot;)</code>：请求中必须携带参数 name，值不能为 zs。</p>
-<p>RequestMethod.GET 与 RequestMethod.POST</p>
+<hr>
+<p><code>@RequestMapping(value={&quot;/login.do&quot;,&quot;/user/login.do&quot;})</code>。</p>
+<p><code>@RequestMapping(value=&quot;/users/{userId}&quot;)</code>：{xxx}占位符，匹配”/users/123456”或”/users/abcd”。</p>
+<p><code>@RequestMapping(value=&quot;/users/**&quot;)</code>:匹配”/users/abc/abc”。</p>
+<p><code>@RequestMapping(value=&quot;/model?&quot;)</code>:匹配”/model1”或”/modela”，不匹配”/model”或”/modelaa”。</p>
+<p><code>@RequestMapping(value=&quot;/model*&quot;)</code>:匹配”/modelabc”或”/model”，不匹配”/modelabc/abc”。</p>
+<p><code>@RequestMapping(value=&quot;/model/*&quot;)</code>:匹配”/model/abc”，不匹配”/modelabc”。</p>
+<p><code>@RequestMapping(value=&quot;/model/**/{modelId}&quot;)</code>：匹配”/model/abc/abc/123”或”/model/123”。</p>
+<p><code>@RequestMapping(value=&quot;/login/{userId:\\d+}.do&quot;)</code>:{变量名:正则表达式}，匹配”/login/123.do”，不匹配”/login/abc.do”。</p>
+<hr>
+<p>@RequestMapping 中 params 属性中定义了请求中必须携带的参数的要求。</p>
+<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;name&quot;,&quot;age&quot;})</code>：请求中必须携带参数name与age。</p>
+<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;!name&quot;,&quot;age&quot;})</code>：请求中必须携带参数age，不能携带name。</p>
+<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;name=mdzz&quot;,&quot;ag=23&quot;})</code>：请求中必须携带参数name，值为mdzz；必须携带age，值为23。</p>
+<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params=&quot;name!=mdzz&quot;)</code>：请求中必须携带参数name，值不能为mdzz。</p>
+<hr>
+<p><code>RequestMethod.GET</code>与<code>RequestMethod.POST</code></p>
 <ul>
-<li>表单请求：默认 GET，可以指定 POST</li>
-<li>AJAX 请求：默认 GET，可以指定 POST</li>
-<li>地址栏请求：GET 请求</li>
-<li>超链接请求：GET 请求</li>
-<li>src 资源路径请求：GET 请求</li>
+<li>表单请求：默认GET，可以指定POST</li>
+<li>AJAX请求：默认GET，可以指定POST</li>
+<li>地址栏请求：GET请求</li>
+<li>超链接请求：GET请求</li>
+<li>src资源路径请求：GET请求</li>
 </ul>
-<p>校正请求参数名@RequestParam</p>
-<p>若请求 URL 携带的参数名与处理方法中的参数名不相同时，在处理方法参数前，添加@RequestParam(“请求参数名”)，指定请求 URL 所携带参数名。</p>
+<hr>
+<p><code>@RequestParam</code>校正请求参数名，URL携带的参数名与处理方法中的参数名不同时，在处理方法参数前，添加<code>@RequestParam(&quot;请求参数名&quot;)</code>，将请求参数绑定控制器方法参数。</p>
 <ul>
 <li>value：指定请求参数的名称。</li>
-<li>required：是否必须，boolean 类型。</li>
+<li>required：是否必须，boolean类型。</li>
 <li>defaultValue：默认值。若请求 URI 中没有，当前方法参数将取该默认值。</li>
 </ul>
-<p>@RequestParam 将请求参数绑定控制器方法参数。</p>
-<p><code>http://localhost:8080/HelloSpringMVC/user?name=admin</code></p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp.springmvc;</div><div class="line"></div><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RequestParamExampleController</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/user"</span>)</span></div><div class="line">	<span class="keyword">public</span> String userInfo(Model model, </div><div class="line">		<span class="meta">@RequestParam(value = <span class="meta-string">"name"</span>, defaultValue = <span class="meta-string">"Guest"</span>)</span> String name) &#123;</div><div class="line"></div><div class="line">		model.addAttribute(<span class="string">"name"</span>, name);</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (<span class="string">"admin"</span>.equals(name)) &#123;</div><div class="line">			model.addAttribute(<span class="string">"email"</span>, <span class="string">"admin@baidu.com"</span>);</div><div class="line">		&#125; <span class="keyword">else</span> &#123;</div><div class="line">			model.addAttribute(<span class="string">"email"</span>, <span class="string">"Not set"</span>);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> <span class="string">"userInfo"</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>路径变量@PathVariable</p>
-<p>处理器方法中所接收的请求参数，可以来自于请求中所携带的参数，也可以来自于请求的 URI 中所携带的变量，即路径变量。<br>在不指定参数的情况下，默认其参数名，即路径变量名与用于接收其值的属性名相同。<br>若路径变量名与用于接收其值的属性名不同，@PathVariable 可通过参数指出路径变量名称。</p>
-<p><code>http://localhost:8080/HelloSpringMVC/web/fe/default/en/document/8108/spring-mvc-for-beginners</code></p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp.springmvc;</div><div class="line"></div><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PathVariableExampleController</span> </span>&#123;</div><div class="line">	<span class="comment">// URI模板，@PathVariable注释将一个方法参数绑定到一个变量的值</span></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/web/fe/&#123;sitePrefix&#125;/&#123;language&#125;/document/&#123;id&#125;/&#123;naturalText&#125;"</span>)</span></div><div class="line">	<span class="keyword">public</span> String documentView(Model model, </div><div class="line">			<span class="meta">@PathVariable(value = <span class="meta-string">"sitePrefix"</span>)</span> String sitePrefix,</div><div class="line">			<span class="meta">@PathVariable(value = <span class="meta-string">"language"</span>)</span> String language, </div><div class="line">			<span class="meta">@PathVariable(value = <span class="meta-string">"id"</span>)</span> <span class="built_in">Long</span> id,</div><div class="line">			<span class="meta">@PathVariable(value = <span class="meta-string">"naturalText"</span>)</span> String naturalText) &#123;</div><div class="line"></div><div class="line">		model.addAttribute(<span class="string">"sitePrefix"</span>, sitePrefix);</div><div class="line">		model.addAttribute(<span class="string">"language"</span>, language);</div><div class="line">		model.addAttribute(<span class="string">"id"</span>, id);</div><div class="line">		model.addAttribute(<span class="string">"naturalText"</span>, naturalText);</div><div class="line">		<span class="comment">// ...</span></div><div class="line">		<span class="keyword">return</span> <span class="string">"documentView"</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp.springmvc;</div><div class="line"></div><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResponseBodyExample1Controller</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="comment">// Simple example, method returns String.</span></div><div class="line">	<span class="meta">@RequestMapping(value = <span class="meta-string">"/saveResult"</span>)</span></div><div class="line">	<span class="meta">@ResponseBody</span></div><div class="line">	<span class="keyword">public</span> String authorInfo(Model model) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"saved"</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp;</div><div class="line"></div><div class="line">@Controller</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Login</span> </span>&#123;</div><div class="line"></div><div class="line">	@RequestMapping(value = <span class="string">"welcome"</span>)</div><div class="line">	<span class="keyword">public</span> <span class="keyword">String</span> welcome() &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"welcome"</span>; <span class="comment">// 返回welcome.jsp</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	@RequestMapping(value = <span class="string">"login"</span>)</div><div class="line">	<span class="keyword">public</span> ModelAndView login() &#123;</div><div class="line">		ModelAndView mav = <span class="keyword">new</span> <span class="type">ModelAndView</span>();</div><div class="line">		mav.setViewName(<span class="string">"welcome"</span>); <span class="comment">// 返回的文件名</span></div><div class="line">		mav.addObject(<span class="string">"message"</span>, <span class="string">"hello kitty"</span>);</div><div class="line"></div><div class="line">		<span class="comment">// Map</span></div><div class="line">		Map&lt;<span class="keyword">String</span>, <span class="keyword">String</span>&gt; map = <span class="keyword">new</span> <span class="type">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">String</span>&gt;();</div><div class="line">		map.put(<span class="string">"zhangsan"</span>, <span class="string">"北京"</span>);</div><div class="line">		mav.addObject(<span class="string">"map"</span>, map);</div><div class="line">		<span class="comment">// 返回到DispatcherServlet</span></div><div class="line">		<span class="keyword">return</span> mav;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	@RequestMapping(value = <span class="string">"logout"</span>)</div><div class="line">	<span class="keyword">public</span> ModelAndView logout() &#123;</div><div class="line">		<span class="keyword">String</span> message = <span class="string">""</span>;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">new</span> <span class="type">ModelAndView</span>(<span class="string">"logout"</span>,<span class="string">"message"</span>,message);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductController</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping</span>(<span class="string">"/addProduct"</span>)</div><div class="line">	<span class="function"><span class="keyword">public</span> ModelAndView <span class="title">add</span><span class="params">(Product product)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		ModelAndView mav = <span class="keyword">new</span> ModelAndView(<span class="string">"showProduct"</span>);</div><div class="line">		<span class="keyword">return</span> mav;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>参数product会默认被当做值加入到ModelAndView 中，相当于：<br><code>mav.addObject(&quot;product&quot;, product);</code></p>
-<p>ModelAndView 即模型与视图，addObject()方法向模型添加数据，setViewName()方法向模型添加视图名称。<br>ModelAndView 的模型对象是 ModelMap，本质是个 HashMap。<br>ModelMap作为替代[request.getAttribute()/request.setAttribute()] 设定值作为请求属性。<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">//</span> 相当于request.setAttribute(<span class="string">"name"</span>, student.getName());</div><div class="line">model.addAttribute(<span class="string">"name"</span>, student.getName());</div></pre></td></tr></table></figure></p>
-<p>@Controller 注解的处理器的处理器方法，返回值有四种：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// http://localhost:8080/HelloSpringMVC/user?name=admin</span></div><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RequestParamExampleController</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/user"</span>)</span></div><div class="line">	<span class="keyword">public</span> String userInfo(Model model, </div><div class="line">		<span class="meta">@RequestParam(value = <span class="meta-string">"name"</span>, defaultValue = <span class="meta-string">"Guest"</span>)</span> String name) &#123;</div><div class="line">		<span class="comment">// 如果@RequestParam注解的参数是int基本类型，但是required=false</span></div><div class="line">		<span class="comment">// 这时如果不传参数值会报错，因为不传值，会赋值为null给int</span></div><div class="line">		<span class="comment">// 建议使用包装类型代替基本类型，用Integer代替int</span></div><div class="line">		model.addAttribute(<span class="string">"name"</span>, name);</div><div class="line">		<span class="keyword">return</span> <span class="string">"userInfo"</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<p><code>@PathVariable</code>：处理器方法中接收的请求参数，可以来自请求携带的参数，也可以来自于请求<code>URI</code>中的变量，即路径变量。</p>
 <ul>
-<li>第一种：ModelAndView</li>
-<li>第二种：String</li>
-<li>第三种：无返回值 void</li>
-<li><p>第四种：返回自定义类型对象</p>
+<li><p>不指定参数，默认其参数名，即路径变量名与用于接收其值的属性名相同。</p>
 </li>
-<li><p>返回 ModelAndView<br>若处理器方法处理完后，需要跳转到其它资源，且又要在跳转的资源间传递数据，返回 ModelAndView 比较好。<br>要返回 ModelAndView，则处理器方法中需要定义 ModelAndView 对象。<br>若该处理器方法只是进行跳转而不传递数据，或只是传递数据而并不向任何资源跳转（如 Ajax 异步响应），返回 ModelAndView，总是有一部分多余：要么 Model 多余，要么 View 多余。<br>此时返回 ModelAndView 不合适。</p>
-</li>
-<li><p>返回 String<br>返回的字符串可以指定逻辑视图名，通过视图解析器解析将其转换为物理视图地址。<br>也可以直接返回资源的物理视图名，此时不需要在视图解析器中配置前辍与后辍。<br>返回 View 对象名，若要跳转的资源为外部资源，则视图解析器用 BeanNameViewResolver，<br>然后在配置文件中再定义一些外部资源视图 View 对象，此时处理器方法返回的字符串就是要跳转资源视图 View 的名称。</p>
-</li>
-<li><p>返回 void<br>主要有两种：</p>
-<ul>
-<li>在方法参数中放入 HttpServletRequest 或 HttpSession，使方法中可以直接将数据放入到 request、session 的域中，也可通过 request.getServletContext()获取 ServletContext，将数据放入到 application 的域中。<br>可在方法参数中放入 HttpServletRequest 与 HttpServletResponse，使方法完成请求转发与重定向。<br>重定向是无法访问/WEB-INF/下资源的。<br>请求转发：request.getRequestDispatcher(“目标页面”).forward(request,response);<br>重定向：response.sendRedirect(“目标页面”);</li>
-<li>AJAX 响应：若处理器对请求处理后，无需跳转，返回 void。</li>
-</ul>
-</li>
-<li><p>返回 Object<br>返回的这个 Object 对象不是作为逻辑视图出现，而是直接在页面显示的数据出现。<br>返回 Object 对象，需要使用@ResponseBody 注解，将转换后的 JSON 数据放入到响应体中。</p>
+<li><p>若路径变量名与接收其值的属性名不同，<code>@PathVariable</code>可通过参数指出路径变量名称。</p>
 </li>
 </ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// http://localhost:8080/xxx/web/fe/default/en/document/8108/spring-mvc-for-beginners</span></div><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PathVariableExampleController</span> </span>&#123;</div><div class="line">	<span class="comment">// URI模板，@PathVariable注释将一个方法参数绑定到一个变量的值</span></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/web/fe/&#123;sitePrefix&#125;/&#123;language&#125;/document/&#123;id&#125;/&#123;naturalText&#125;"</span>)</span></div><div class="line">	<span class="keyword">public</span> String documentView(Model model, </div><div class="line">			<span class="meta">@PathVariable(value = <span class="meta-string">"sitePrefix"</span>)</span> String sitePrefix,</div><div class="line">			<span class="meta">@PathVariable(value = <span class="meta-string">"language"</span>)</span> String language, </div><div class="line">			<span class="meta">@PathVariable(value = <span class="meta-string">"id"</span>)</span> <span class="built_in">Long</span> id,</div><div class="line">			<span class="meta">@PathVariable(value = <span class="meta-string">"naturalText"</span>)</span> String naturalText) &#123;</div><div class="line"></div><div class="line">		model.addAttribute(<span class="string">"sitePrefix"</span>, sitePrefix);</div><div class="line">		model.addAttribute(<span class="string">"language"</span>, language);</div><div class="line">		model.addAttribute(<span class="string">"id"</span>, id);</div><div class="line">		model.addAttribute(<span class="string">"naturalText"</span>, naturalText);</div><div class="line">		<span class="comment">// ...</span></div><div class="line">		<span class="keyword">return</span> <span class="string">"documentView"</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">@Controller</div><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> Login &#123;</div><div class="line"></div><div class="line">	@RequestMapping(value = <span class="string">"welcome"</span>)</div><div class="line">	<span class="keyword">public</span> <span class="keyword">String</span> welcome() &#123;</div><div class="line">		<span class="built_in">return</span> <span class="string">"welcome"</span>; <span class="comment">// 返回welcome.jsp</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	@RequestMapping(value = <span class="string">"login"</span>)</div><div class="line">	<span class="keyword">public</span> ModelAndView login() &#123;</div><div class="line">		ModelAndView mav = <span class="keyword">new</span> ModelAndView();</div><div class="line">		mav.setViewName(<span class="string">"welcome"</span>); <span class="comment">// 返回的文件名</span></div><div class="line">		mav.addObject(<span class="string">"message"</span>, <span class="string">"hello kitty"</span>);</div><div class="line"></div><div class="line">		<span class="comment">// Map</span></div><div class="line">		Map&lt;<span class="keyword">String</span>, <span class="keyword">String</span>&gt; <span class="built_in">map</span> = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">		<span class="built_in">map</span>.<span class="built_in">put</span>(<span class="string">"zhangsan"</span>, <span class="string">"北京"</span>);</div><div class="line"></div><div class="line">		mav.addObject(<span class="string">"map"</span>, <span class="built_in">map</span>);</div><div class="line">		<span class="comment">// 返回到DispatcherServlet</span></div><div class="line">		<span class="built_in">return</span> mav;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	@RequestMapping(value = <span class="string">"logout"</span>)</div><div class="line">	<span class="keyword">public</span> ModelAndView logout() &#123;</div><div class="line">		<span class="keyword">String</span> message = <span class="string">""</span>;</div><div class="line">		<span class="built_in">return</span> <span class="keyword">new</span> ModelAndView(<span class="string">"logout"</span>, <span class="string">"message"</span>, message);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductController</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping</span>(<span class="string">"/addProduct"</span>)</div><div class="line">	<span class="function"><span class="keyword">public</span> ModelAndView <span class="title">add</span><span class="params">(Product product)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		ModelAndView mav = <span class="keyword">new</span> ModelAndView(<span class="string">"showProduct"</span>);</div><div class="line">		<span class="comment">// 参数product会默认被当做值加入到ModelAndView中，等于：</span></div><div class="line">		<span class="comment">// mav.addObject("product", product);</span></div><div class="line">		<span class="keyword">return</span> mav;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>ModelAndView</code>即模型与视图，<code>addObject()</code>方法向模型添加数据，<code>setViewName()</code>方法向模型添加视图名称。</p>
+<p><code>ModelAndView</code>的模型对象是<code>ModelMap</code>，本质是个<code>HashMap</code>。</p>
+<ul>
+<li><code>ModelMap</code>替代<code>request.getAttribute()</code>/<code>request.setAttribute()</code><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">//</span> 相当于request.setAttribute(<span class="string">"name"</span>, student.getName());</div><div class="line">model.addAttribute(<span class="string">"name"</span>, student.getName());</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<p>处理器方法，返回值有四种：</p>
+<ul>
+<li>第一种：<code>ModelAndView</code></li>
+<li>第二种：<code>String</code></li>
+<li>第三种：无返回值<code>void</code></li>
+<li><p>第四种：返回自定义对象</p>
+</li>
+<li><p>返回<code>ModelAndView</code></p>
+<ul>
+<li>处理器方法需要跳转到其它资源，又要在跳转的资源间传递数据，返回<code>ModelAndView</code>较好。</li>
+<li>返回<code>ModelAndView</code>，则需要定义<code>ModelAndView</code>对象，若只跳转不传递数据，或只传递数据不跳转（如Ajax），返回<code>ModelAndView</code>，总是有部分多余。</li>
+</ul>
+</li>
+<li><p>返回<code>String</code></p>
+<ul>
+<li>字符串可以指定逻辑视图名，通过视图解析器解析将其转换为物理视图地址。</li>
+<li>也可以直接返回物理视图名，此时不需要在视图解析器中配置前辍与后辍。</li>
+</ul>
+</li>
+<li><p>返回<code>void</code></p>
+<ul>
+<li>方法参数中放入<code>HttpServletRequest</code>或<code>HttpSession</code>，可以直接将数据放入到<code>request</code>、<code>session</code>域中，也可通过<code>request.getServletContext()</code>获取<code>ServletContext</code>，将数据放入到<code>application</code>域中，然后完成请求转发与重定向。<ul>
+<li>请求转发：<code>request.getRequestDispatcher(&quot;目标页面&quot;).forward(request, response);</code>。</li>
+<li>重定向：<code>response.sendRedirect(&quot;目标页面&quot;);</code>。</li>
+</ul>
+</li>
+<li>AJAX 响应：处理器对请求处理后，无需跳转，返回<code>void</code>。</li>
+</ul>
+</li>
+<li><p>返回<code>Object</code></p>
+<ul>
+<li>返回的<code>Object</code>对象不是作为逻辑视图出现，而是直接在页面显示的数据出现，需要使用<code>@ResponseBody</code>注解，将转换后的<code>JSON</code>数据放入到响应体中。</li>
+</ul>
+</li>
+</ul>
+<hr>
 <p>请求转发与重定向</p>
 <ul>
-<li>处理器向其它资源跳转：请求转发与重定向。</li>
-<li>跳转的资源类型：跳转到页面与跳转到其它处理器。</li>
+<li><p>跳转的资源类型：跳转到页面与跳转到其它处理器。</p>
+</li>
+<li><p>处理器向其它资源跳转：请求转发与重定向。</p>
+<ul>
+<li>请求转发的页面，可以是<code>WEB-INF</code>中页面；<ul>
+<li><code>forward</code>：地址栏URL不变。</li>
 </ul>
-<p>请求转发的页面，可以是WEB-INF中页面；<br>重定向的页面，不能为WEB-INF中的，重定向相当于再次发出一次请求，而用户不能直接访问 WEB-INF 中资源。</p>
-<p>redirect和forward跳转：forward跳转后地址栏URL不会改变，而redirect会改变。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Login</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="comment">// 转发</span></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/login.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String login(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		request.setAttribute(<span class="string">"message"</span>, <span class="string">"hello"</span>);</div><div class="line">		<span class="keyword">return</span> <span class="string">"forward:/index.do"</span>;<span class="comment">// forward在跳转后可以取到message值</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/index.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String index(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"welcome"</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 重定向</span></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/logout.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String logout(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		request.setAttribute(<span class="string">"message"</span>, <span class="string">"hello"</span>);</div><div class="line">		<span class="keyword">return</span> <span class="string">"redirect:/register.do"</span>;<span class="comment">// redirect在跳转后无法取到message值</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/register.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String register(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"register"</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+</li>
+<li>重定向的页面，不能为<code>WEB-INF</code>中的，重定向相当于再发一次请求，用户不能直接访问<code>WEB-INF</code>中资源。<ul>
+<li><code>redirect</code>：地址栏URL改变。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Login</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="comment">// 转发</span></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/login.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String login(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		request.setAttribute(<span class="string">"message"</span>, <span class="string">"hello"</span>);</div><div class="line">		<span class="keyword">return</span> <span class="string">"forward:/index.do"</span>; <span class="comment">// forward在跳转后可以取到message值</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/index.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String index(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"welcome"</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 重定向</span></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/logout.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String logout(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		request.setAttribute(<span class="string">"message"</span>, <span class="string">"hello"</span>);</div><div class="line">		<span class="keyword">return</span> <span class="string">"redirect:/register.do"</span>; <span class="comment">// redirect在跳转后无法取到message值</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/register.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String register(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"register"</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ul>
-<li><p>返回 ModelAndView 时的请求转发<br>处理器方法返回 ModelAndView 时，跳转到指定的 View，使用的是请求转发。<br>也可显式指出，在 setViewName()指定的视图前添加 forward:，此时视图不会与视图解析器中的前辍与后辍拼接。<br>此时的视图解析器不再需要前辍与后辍，必须写出相对于项目根的路径。<br>请求转发到页面：<code>mv.setViewName(&quot;forward:/WEB-INF/jsp/show.jsp&quot;);</code><br>请求转发到其它 Controller：<code>mv.setViewName(&quot;forward:other.do&quot;);</code><br>通过请求转发跳转到目标资源（页面或 Controller）时，若需要向下传递数据，除了使用 request，session 外，还可以将数据存放于 ModelAndView 中的 Model 中,页面通过 EL 表达式可直接访问该数据。</p>
-</li>
-<li><p>返回 ModelAndView 时的重定向<br>返回 ModelAndView 时的重定向，需在 setViewName()指定的视图前添加 redirect:，此时视图不会与视图解析器中的前辍与后辍拼接。<br>此时的视图解析器不再需要前辍与后辍，必须写出相对于项目根的路径。<br>重定向的目标资源中，将无法访问用户提交请求 request 中的数据。<br>重定向到页面：<code>mv.setViewName(&quot;redirect:/show.jsp&quot;);</code><br>重定向到其它 Controller：<code>mv.setViewName(&quot;redirect:other.do&quot;);</code><br>重定向时，请求参数无法通过 request 向下一级资源传递。<br>可以通过 ModelAndView 的 Model 携带参数。<br>当 ModelAndView 中的 Model 存入数据后，视图解析器 InternalResourceViewResolver 会将 map 中的 key 与 value，以请求参数的形式放到请求的 URL 后。<br>由于放入到 URL 后，什么类型的 value 均会变为 String。放入到 Model 中的 value，只能是基本数据类型与 String。<br>重定向的面页中无法从 request 中读取数据。但 map 中的 key 与 value 以请求参数的形式放到了请求 URL 后，所以页面可以通过 EL 表达式中的请求参数 param读取。<br>重定向的页面不能是/WEB-INF 中的页面。<br>目标 Controller 在接收参数时，目标 Controller 方法形参名与发送Controller发送的参数名必须相同。</p>
-</li>
-<li><p>返回 String 时的请求转发<br>当处理器方法返回 String 时，该 String 即为要跳转的视图。<br>在其前面加上前辍 forward:，可显式的指定跳转方式为请求转发。<br>同样，视图解析器不会进行前辍与后辍的拼接。<br>请求转发的目标资源无论是一个页面，还是一个 Controller，用法相同。<br>此时不能使用 ModelAndView 传递数据。<br>因为在处理器方法中定义的ModelAndView 对象是局部变量，方法结束变量销毁。<br>而返回的为 String，非 ModelAndView，创建的 ModelAndView 不起作用。<br>对于处理器方法返回字符串的情况，当处理器接收到请求中的参数后，发现用于接收这些参数的处理器方法形参为包装类对象，则除了会将参数封装为对象传递给形参外，还会存放到 request 域属性中。</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@RequestMapping(<span class="meta-string">"/logout.do"</span>)</span></div><div class="line"><span class="keyword">public</span> String logout(Person person) &#123;</div><div class="line">	<span class="comment">// 对象已存入request域</span></div><div class="line">	<span class="keyword">return</span> <span class="string">"redirect:/register.do"</span>; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>返回 String 时的重定向<br>在处理器方法返回的视图字符串的前面添加前辍 redirect:，则可实现重定向跳转。<br>当重定向到目标资源时，若需要向下传递参数值，除了通过请求 URL 和 HttpSession 携带参数外，还可使用其它方式。</p>
+<li><p>返回<code>ModelAndView</code>时的请求转发</p>
 <ul>
+<li>默认：<ul>
+<li><code>return new ModelAndView(&quot;other&quot;);</code></li>
+</ul>
+</li>
+<li>显式指出<ul>
+<li>请求转发到页面，此时视图不会与视图解析器中的前辍与后辍拼接，必须写出相对于项目根的路径：<ul>
+<li><code>return new ModelAndView(&quot;forward:/WEB-INF/jsp/show.jsp&quot;);</code></li>
+</ul>
+</li>
+<li>请求转发到其它Controller：<ul>
+<li><code>return new ModelAndView(&quot;forward:other.do&quot;);</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>请求转发向下传递数据，除了<code>request</code>，<code>session</code>外，还可存放于<code>ModelAndView</code>的<code>Model</code>中，页面通过EL表达式访问。</li>
+</ul>
+</li>
+<li><p>返回<code>ModelAndView</code>时的重定向</p>
+<ul>
+<li>重定向到页面，视图不会与前辍与后辍拼接，必须写出相对于项目根的路径：<ul>
+<li><code>return new ModelAndView(&quot;redirect:/show.jsp&quot;);</code></li>
+</ul>
+</li>
+<li>重定向到其它Controller：<ul>
+<li><code>return new ModelAndView(&quot;redirect:other.do&quot;);</code></li>
+</ul>
+</li>
+<li>重定向的目标资源中，无法访问用户<code>request</code>中的数据，可以通过<code>ModelAndView</code>的<code>Model</code>携带参数。<ul>
+<li>将<code>map</code>中的<code>key-value</code>，以请求参数的形式放到请求的<code>URL</code>后。</li>
+<li>放入到<code>Model</code>中的<code>value</code>，只能是基本类型与<code>String</code>。</li>
+<li><code>map</code>中的<code>key-value</code>以请求参数的形式放到了请求<code>URL</code>后，可以通过EL表达式中的请求参数<code>param</code>读取。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>返回<code>String</code>时的请求转发</p>
+<ul>
+<li>同样不会进行前辍与后辍的拼接。<ul>
+<li><code>return &quot;forward:/index.do&quot;;</code></li>
+</ul>
+</li>
+<li>此时不能用<code>ModelAndView</code>传递数据，因为<code>ModelAndView</code>对象是局部变量，方法结束变量销毁。</li>
+<li>当处理器接收到请求参数后，发现接收参数的处理器方法形参为包装类对象，除了会将参数封装为对象传递给形参外，还会存放到<code>request</code>域中。<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@RequestMapping(<span class="meta-string">"/logout.do"</span>)</span></div><div class="line"><span class="keyword">public</span> String logout(Person person) &#123;</div><div class="line">	<span class="comment">// 对象已存入request域</span></div><div class="line">	<span class="keyword">return</span> <span class="string">"redirect:/register.do"</span>; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>返回<code>String</code>时的重定向</p>
+<ul>
+<li><code>return &quot;redirect:/register.do&quot;;</code></li>
+<li>重定向时，向下传递参数值<ul>
 <li>重定向到页面<ul>
-<li>通过 Model 形参携带参数<br>在 Controller 形参中添加 Model参数，将要传递的数据放入 Model 中传递。<br>该方式同样也是将参数拼接到了重定向请求的 URL 后，所以只能是基本类型数据。</li>
-<li>通过形参 RedirectAttributes 的 addAttribute() 携带参数<br>RedirectAttributes 是继承自 Model 的接口，使用 ModelMap 实现，专门用于携带重定向参数。<br>它通过 addAttribute()方法将参数名及参数值放入该 Map 中，视图解析器将其拼接到请求的 URL 中。<br>这种携带参数的方式，不能携带自定义对象。<br>RedirectAttributes 是个接口，接口参数的实参值是由 MVC 的注解驱动为其自动赋值，需要在 SpringMVC 的配置文件中注册MVC 的注解驱动。</li>
+<li>请求<code>URL</code></li>
+<li><code>HttpSession</code></li>
+<li><code>Model</code>形参<ul>
+<li>该方式同样也是将参数拼接到了重定向请求的<code>URL</code>后，只能是基本类型数据。</li>
 </ul>
 </li>
-<li>重定向到 Controller<br>  重定向到Controller时，携带参数的方式，除了可以使用请求URL后携带方式，HttpSession携带方式，Model 形参携带方式，及 RedirectAttributes 形参的 addAttibute()携带方式外，还可以用 RedirectAttributes 形参的 addFlushAttibute()携带方式。</li>
+<li><code>RedirectAttributes</code>形参的<code>addAttribute()</code><ul>
+<li>需要注册MVC注解驱动。</li>
+<li>该方式同样也是将参数拼接到了重定向请求的<code>URL</code>后，只能是基本类型数据。</li>
 </ul>
 </li>
-<li><p>返回 void 时的请求转发<br>使用 HttpServletRequest 的请求转发方法。<br>无论下一级资源是页面，还是 Controller，用法相同。<br>若有数据需要向下一级资源传递，则需要将数据放入到 request或 session 中。<br>不能将数据放到 Model、RedirectAttributes 中。<br>因为它们中的数据都是通过拼接到处理器方法的返回值中，作为请求的一部分出现向下传递的。<br>没有返回值，它们中的数据便无法向下传递了。</p>
+</ul>
 </li>
-<li><p>返回 void 时的重定向<br>使用 HttpServletResponse 的重定向方法 sendRedirect()。<br>若有数据需要向下一级资源传递，则需要将数据放入到 session中。</p>
+<li>重定向到Controller<ul>
+<li>请求<code>URL</code>后携带</li>
+<li><code>HttpSession</code></li>
+<li><code>Model</code>形参</li>
+<li><code>RedirectAttributes</code>形参的<code>addAttibute()</code></li>
+<li><code>RedirectAttributes</code>形参的<code>addFlushAttibute()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>返回<code>void</code>时的请求转发</p>
+<ul>
+<li><code>request.getRequestDispatcher(&quot;目标页面&quot;).forward(request, response);</code>。</li>
+<li>向下一级传递数据<ul>
+<li>将数据放到<code>request</code>或<code>session</code>中。</li>
+<li>不能放到<code>Model</code>、<code>RedirectAttributes</code>中，因为它们的数据都是通过拼接到处理器方法的返回值中，作为请求的一部分向下传递，没有返回值，便无法向下传递了。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>返回<code>void</code>时的重定向</p>
+<ul>
+<li><code>response.sendRedirect(&quot;目标页面&quot;);</code>。</li>
+<li>若有数据向下一级传递，将数据放到<code>session</code>中。</li>
+</ul>
 </li>
 </ul>
 

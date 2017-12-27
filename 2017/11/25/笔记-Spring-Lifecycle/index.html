@@ -1,0 +1,217 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-Spring-Lifecycle | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="用手记笔记，用心记笔记，用脑记笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-Spring-Lifecycle"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Spring-Lifecycle</h2>
+				
+				<div>
+					<span class="post-time">2017-11-25 10:24</span>
+				</div>	
+				
+				<div class="article-content">
+				<p><strong>12-27重新整理更新Spring笔记</strong></p>
+<ul>
+<li><p>实现初始化方法和销毁方法3种方式</p>
+<ul>
+<li><p>实现标识接口<code>InitializingBean</code>，<code>DisposableBean</code></p>
+</li>
+<li><p>设置bean属性<code>Init-method</code>，<code>destroy-method</code></p>
+</li>
+<li><p>使用注释配置后，调用<code>@PostConstruct</code>，<code>@PreDestroy</code>注解</p>
+</li>
+</ul>
+</li>
+<li><p><code>InitializingBean</code>和<code>DisposableBean</code>是两个标记接口，为Spring执行时bean的初始化和销毁某些行为时的有用方法。</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp.services;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomerService</span> <span class="keyword">implements</span> <span class="title">InitializingBean</span>, <span class="title">DisposableBean</span> </span>&#123;</div><div class="line"></div><div class="line">	String message;</div><div class="line"></div><div class="line">	<span class="comment">// getter setter</span></div><div class="line"></div><div class="line">	<span class="comment">// Bean实现InitializingBean，运行afterPropertiesSet()，在所有bean属性被设置后</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		<span class="comment">// message属性设置后调用</span></div><div class="line">		System.out.println(<span class="string">"Init method after properties are set : "</span> + message);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// Bean实现DisposableBean，运行destroy()，在Spring容器释放该bean后</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		<span class="comment">// 调用 applicationContext.close()之后</span></div><div class="line">		System.out.println(<span class="string">"Spring Container is destroy! Customer clean up"</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=<span class="string">"customerService"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"mmp.services.CustomerService"</span>&gt;</div><div class="line">	<span class="xml"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"message"</span> <span class="attr">value</span>=<span class="string">"msg"</span>/&gt;</span></span></div><div class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>使用<code>init-method</code>和<code>destroy-method</code>在bean配置文件属性，替代<code>InitializingBean</code>和<code>DisposableBean</code>接口，减少耦合。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp.services;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomerService</span> </span>&#123;</div><div class="line"></div><div class="line">	String message;</div><div class="line"></div><div class="line">	<span class="comment">// getter setter</span></div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initIt</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		System.out.println(<span class="string">"Init method after properties are set : "</span> + message);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cleanUp</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		System.out.println(<span class="string">"Spring Container is destroy! Customer clean up"</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></div><div class="line">	<span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></div><div class="line">	<span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></div><div class="line">		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"</div><div class="line">	<span class="attr">default-init-method</span>=<span class="string">"init"</span> <span class="attr">default-destroy-method</span>=<span class="string">"destroy"</span>&gt;</div><div class="line">	<span class="comment">&lt;!-- 如果有太多同名初始化或销毁方法的Bean，不需要在每个bean上声明，用上面的就行了 --&gt;</span></div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"customerService"</span> <span class="attr">class</span>=<span class="string">"mmp.services.CustomerService"</span> </span></div><div class="line">		<span class="attr">init-method</span>=<span class="string">"initIt"</span> <span class="attr">destroy-method</span>=<span class="string">"cleanUp"</span>&gt;</div><div class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"message"</span> <span class="attr">value</span>=<span class="string">"msg"</span>/&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>使用<code>@PostConstruct</code>和<code>@PreDestroy</code>注解。该注解不属于Spring，它在J2EE库-<code>common-annotations.jar</code>。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp.services;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomerService</span> </span>&#123;</div><div class="line"></div><div class="line">	String message;</div><div class="line"></div><div class="line">	<span class="comment">// getter setter</span></div><div class="line"></div><div class="line">	<span class="meta">@PostConstruct</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initIt</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		System.out.println(<span class="string">"Init method after properties are set : "</span> + message);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@PreDestroy</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cleanUp</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">		System.out.println(<span class="string">"Spring Container is destroy! Customer clean up"</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><p>启用<code>@PostConstruct</code>和<code>@PreDestroy</code>注解两种方式</p>
+<ul>
+<li><p>注册<code>CommonAnnotationBeanPostProcessor</code></p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;bean <span class="keyword">class</span>=<span class="string">"org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"</span>/&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>指定<code>&lt;context:annotation-config/&gt;</code></p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;<span class="keyword">context</span>:annotation-<span class="keyword">config</span>/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=<span class="string">"customerService"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"mmp.services.CustomerService"</span>&gt;</div><div class="line">	<span class="xml"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"message"</span> <span class="attr">value</span>=<span class="string">"msg"</span>/&gt;</span></span></div><div class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Bean后处理器是特殊的Bean，容器中所有Bean在初始化时，均会自动执行该类的两个方法，该Bean自动执行，无须id属性。</p>
+<p>Bean初始化完毕有一个标志：某个方法将被执行。即当该方法被执行时，表示该Bean被初始化完毕。</p>
+<p>Bean后处理器中两个方法，在这个方法之前之后执行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> String message;</div><div class="line">	<span class="comment">// getter setter</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> mmp;</div><div class="line"></div><div class="line"><span class="keyword">public</span> class Init implements BeanPostProcessor &#123;</div><div class="line">	<span class="comment">// 目标Bean初始化完前调用</span></div><div class="line">	<span class="comment">// 第一个参数：将初始化的Bean实例</span></div><div class="line">	<span class="comment">// 第二个参数：该Bean实例的id，没有id就是name</span></div><div class="line">	<span class="keyword">public</span> <span class="keyword">Object</span> postProcessBeforeInitialization(<span class="keyword">Object</span> bean, <span class="keyword">String</span> beanName) <span class="keyword">throws</span> BeansException &#123;</div><div class="line">		System.out.<span class="built_in">println</span>(<span class="string">"BeforeInitialization : "</span> + beanName);</div><div class="line">		<span class="comment">// 返回增过的Bean对象</span></div><div class="line">		<span class="keyword">return</span> bean;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 目标Bean初始化完后调用</span></div><div class="line">	<span class="keyword">public</span> <span class="keyword">Object</span> postProcessAfterInitialization(<span class="keyword">Object</span> bean, <span class="keyword">String</span> beanName) <span class="keyword">throws</span> BeansException &#123;</div><div class="line">		System.out.<span class="built_in">println</span>(<span class="string">"AfterInitialization : "</span> + beanName);</div><div class="line">		<span class="keyword">return</span> bean;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=<span class="string">"helloWorld"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"mmp.HelloWorld"</span> init-method=<span class="string">"init"</span> destroy-method=<span class="string">"destroy"</span>&gt;</div><div class="line">	<span class="xml"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"message"</span> <span class="attr">value</span>=<span class="string">"Hello World!"</span>/&gt;</span></span></div><div class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"></div><div class="line">&lt;bean <span class="class"><span class="keyword">class</span></span>=<span class="string">"mmp.Init"</span>/&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">AbstractApplicationContext <span class="built_in">context</span> = new ClassPathXmlApplicationContext(<span class="string">"Beans.xml"</span>)<span class="comment">;</span></div><div class="line">HelloWorld obj = (HelloWorld) <span class="built_in">context</span>.getBean(<span class="string">"helloWorld"</span>)<span class="comment">;</span></div><div class="line">obj.getMessage()<span class="comment">;</span></div><div class="line"><span class="built_in">context</span>.registerShutdownHook()<span class="comment">;</span></div></pre></td></tr></table></figure>
+<ul>
+<li><p>调用无参构造器，创建实例对象。</p>
+</li>
+<li><p>调用参数的<code>setter</code>，为属性注入值。</p>
+</li>
+<li><p>若Bean实现了<code>BeanNameAware</code>接口，执行接口方法<code>setBeanName(String beanId)</code>，使Bean类可以获取其在容器中的id名称。</p>
+</li>
+<li><p>若Bean实现了<code>BeanFactoryAware</code>接口，则执行接口方法<code>setBeanFactory(BeanFactoryfactory)</code>，使Bean类可以获取<code>BeanFactory</code>对象。</p>
+</li>
+<li><p>若定义并注册了Bean后处理器<code>BeanPostProcessor</code>，则执行接口方法<code>postProcessBeforeInitialization()</code>。</p>
+</li>
+<li><p>若Bean实现了<code>InitializingBean</code>接口，则执行接口方法<code>afterPropertiesSet()</code>。</p>
+<ul>
+<li>在Bean的所有属性的set方法执行完毕后执行，是Bean初始化结束的标志，Bean实例化结束。</li>
+</ul>
+</li>
+<li><p>若设置了<code>init-method</code>方法，则执行。</p>
+</li>
+<li><p>若定义并注册了Bean后处理器<code>BeanPostProcessor</code>，则执行接口方法<code>postProcessAfterInitialization()</code>。</p>
+</li>
+<li><p>执行业务方法。</p>
+</li>
+<li><p>若Bean实现了<code>DisposableBean</code>接口，则执行接口方法<code>destroy()</code>。</p>
+</li>
+<li><p>若设置了<code>destroy-method</code>方法，则执行。</p>
+</li>
+</ul>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2017 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
