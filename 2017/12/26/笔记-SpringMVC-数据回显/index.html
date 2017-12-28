@@ -103,21 +103,21 @@
 <p><strong>12-27重新整理更新Spring笔记</strong></p>
 <p>数据回显：提交后，如果出现错误，将刚才提交的数据回显到刚才的提交页面。</p>
 <ul>
-<li><p>将数据放在request域中，然后请求转发到表单页面，EL表达式将数据回显。</p>
+<li><p>将数据放在<code>request</code>域中，然后请求转发到表单页面，EL表达式将数据回显。</p>
 <figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@RequestMapping(<span class="string">"/editItemSubmit"</span>)</div><div class="line">public String editItemSubmit(<span class="keyword">Model</span> <span class="keyword">model</span>, <span class="keyword">Integer</span> id, ItemsCustom itemsCustom) &#123;</div><div class="line">	<span class="comment">// 数据回显</span></div><div class="line">	<span class="keyword">model</span>.addAttribute(<span class="string">"id"</span>, id); <span class="comment">// 传入到request域</span></div><div class="line">	<span class="comment">// POJO</span></div><div class="line">	<span class="keyword">model</span>.addAttribute(<span class="string">"item"</span>, itemsCustom); <span class="comment">// 传入到request域</span></div><div class="line">	return <span class="string">"editItem"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
-<li><p><code>@ModelAttribute()</code>，括号内传入要回显的POJO，指定POJO回显到页面在request中的key，还可以将方法的返回值传到页面。</p>
+<li><p><code>@ModelAttribute()</code>，括号内传入要回显的POJO，指定POJO回显到页面在<code>request</code>中的key，还可以将方法的返回值传到页面。</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 访问该Controller任何处理方法前调用，将返回值放入Model</span></div><div class="line"><span class="comment">// 提取的公用方法，也可以去掉，但是要在处理器方法中处理</span></div><div class="line"><span class="comment">// itemsCustom表示最终将方法返回值放在request中的key</span></div><div class="line"><span class="meta">@ModelAttribute(<span class="meta-string">"itemsCustom"</span>)</span></div><div class="line"><span class="keyword">public</span> ItemsCustom getItemsCustom() &#123;</div><div class="line">	<span class="comment">// new一个</span></div><div class="line">	ItemsCustom itemsCustom = new ItemsCustom();</div><div class="line">	<span class="comment">// ...</span></div><div class="line">	<span class="keyword">return</span> itemsCustom;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@RequestMapping(<span class="meta-string">"/editItemSubmit"</span>)</span></div><div class="line"><span class="comment">// 根据请求参数填充覆盖itemsCustom对象</span></div><div class="line"><span class="keyword">public</span> String editItemSubmit(<span class="meta">@ModelAttribute(<span class="meta-string">"itemsCustom"</span>)</span> ItemsCustom itemsCustom) &#123;</div><div class="line">	<span class="comment">// 不用在每个Controller方法通过Model将数据传到页面</span></div><div class="line">	<span class="keyword">return</span> <span class="string">"editItem"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>  <code>@ModleAttribute()</code>也是将数据填入到request域中，然后通过EL表达式取出，同<code>model.addAttribute()</code>和<code>modelAndView.addObject()</code>。</p>
+<p>  <code>@ModleAttribute()</code>也是将数据填入到<code>request</code>域中，然后通过EL表达式取出，同<code>model.addAttribute()</code>和<code>modelAndView.addObject()</code>。</p>
 </li>
 </ul>
 <p>数据类型转换发生异常后，返回到表单页面，让用户重写。</p>
 <ul>
-<li><p>正常情况下，发生TypeMismatchException，系统自动跳转到 400 页面。</p>
+<li><p>正常情况下，发生<code>TypeMismatchException</code>，系统自动跳转到 400 页面。</p>
 </li>
 <li><p>要在发生类型转换异常后，跳转到指定页面，需要捕获异常，然后通过异常处理器跳转到指定页面。</p>
 </li>
-<li><p>若仅仅是跳转，SimpleMappingExceptionResolver 就可以，当返回到表单页面后，还将数据回显，让用户更正，需要自定义异常处理器。</p>
+<li><p>若仅仅是跳转，<code>SimpleMappingExceptionResolver</code>就可以，当返回到表单页面后，还将数据回显，让用户更正，需要自定义异常处理器。</p>
 </li>
 </ul>
 <p>数据回显原理：在异常处理器中，通过<code>request.getParameter()</code>获取用户输入的表单原始数据，放到<code>ModelAndView</code>的<code>Model</code>中，然后从要转向的页面中通过 EL 表达式取出。</p>
