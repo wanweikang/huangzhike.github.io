@@ -99,43 +99,44 @@
 				</div>	
 				
 				<div class="article-content">
-				<p>JavaWeb中，URL地址最好以”/“开头，也就是绝对路径<br>如果”/“是给服务器用的，则代表当前的web应用<br>如果”/“是给浏览器用的，则代表webapps目录(当前服务器根目录,如<code>http://localhost:4000/</code>)。</p>
+				<p><strong>12-31重新整理</strong></p>
 <ul>
-<li><code>/</code>代表当前web工程</li>
+<li>URI：标识某个资源</li>
+<li>URL：标识互联网上某个资源</li>
 </ul>
+<p>相对路径必须结合参照路径，有两种：以斜杠<code>/</code>开头的相对路径，不以斜杠<code>/</code>开头的相对路径。</p>
+<ul>
+<li><p>以斜杠<code>/</code>开头的相对路径分为：前台路径与后台路径。</p>
+<ul>
+<li><p>前台路径：浏览器解析执行的代码的路径，参照路径是服务器的根路径，如<code>http://localhost:4000/</code>。</p>
+<ul>
+<li>html、css、js中的路径：<code>&lt;img src=&quot;&quot;/&gt;</code>、<code>&lt;a href=&quot;&quot;&gt;&lt;/a&gt;</code>、<code>&lt;form action=&quot;&quot;&gt;&lt;/form&gt;</code>、<code>background:img(&quot;&quot;)</code>、<code>window.location.href=&quot;&quot;</code>等。</li>
+</ul>
+</li>
+<li><p>后台路径：服务器解析执行的代码的路径，参照路径是应用的根路径，如<code>http://localhost:4000/primary/</code>。</p>
+<ul>
+<li><p>Java代码、jsp动态部分（Java代码块）、xml文件中的路径（xml文件被Java代码解析）等。</p>
+</li>
+<li><p>特例：<code>response.sendRedirect(&quot;&quot;);</code>方法重定向时，是给浏览器用的，参照路径是服务器的根路径。</p>
+<ul>
+<li>若要使用重定向，要么写为无斜杠的相对路径：<code>response.sendRedirect(&quot;show.jsp&quot;);</code>，要么加上项目名称：<code>response.sendRedirect(request.getContextPath + &quot;/show.jsp&quot;);</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>不以斜杠<code>/</code>开头的相对路径：无论是前台还是后台路径，其参照路径都是当前资源的<strong>访问路径</strong>，而不是保存路径。</p>
+</li>
+</ul>
+<p><code>/</code>代表应用的根路径</p>
 <figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">this</span><span class="selector-class">.getServletContext</span>()<span class="selector-class">.getResourceAsStream</span>(<span class="string">"/form1.html"</span>);</div><div class="line"><span class="selector-tag">this</span><span class="selector-class">.getServletContext</span>()<span class="selector-class">.getRealPath</span>(<span class="string">"/download/1.JPG"</span>); <span class="comment">// 获取服务器上的资源</span></div><div class="line"><span class="comment">// 客户端请求web资源，服务器跳转到另一个web资源，forward给服务器</span></div><div class="line"><span class="selector-tag">request</span><span class="selector-class">.getRequestDispatcher</span>(<span class="string">"/form1.html"</span>);</div><div class="line"><span class="selector-tag">this</span><span class="selector-class">.getServletContext</span>()<span class="selector-class">.getRequestDispatcher</span>(<span class="string">"/index.jsp"</span>)<span class="selector-class">.forward</span>(request, response);</div></pre></td></tr></table></figure>
 <figure class="highlight erb"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">%</span></span></span><span class="ruby">@include file=<span class="string">"/jspfragments/head.jspf"</span> </span><span class="xml"><span class="tag">%&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">jsp:include</span> <span class="attr">page</span>=<span class="string">"/jspfragments/demo.jsp"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<ul>
-<li><code>/</code>代表webapps目录</li>
-</ul>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">response</span><span class="selector-class">.sendRedirect</span>(<span class="string">"/JavaWebMmp/index.jsp"</span>);</div><div class="line"><span class="comment">// 灵活写法</span></div><div class="line"><span class="selector-tag">response</span><span class="selector-class">.sendRedirect</span>(request.getContextPath()+<span class="string">"/index.jsp"</span>);</div><div class="line"><span class="comment">// 请求重定向，服务器发送URL给浏览器，浏览器拿到URL后，再请求服务器，"/"代表webapps目录</span></div></pre></td></tr></table></figure>
-<figure class="highlight erb"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">%-</span></span></span><span class="ruby">- 超链接跳转页面 -</span><span class="xml"><span class="tag"><span class="attr">-</span>%&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/JavaWebMmp/index.jsp"</span>&gt;</span>跳转到首页<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 避免路径中出现项目名称 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"$&#123;pageContext.request.contextPath&#125;/index.jsp"</span>&gt;</span>跳转到首页<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 客户端使用超链接跳转，"/"给浏览器用，"/"代表webapps目录 --&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">%-</span></span><span class="ruby">- form表单提交 -</span><span class="xml"><span class="tag"><span class="attr">-</span>%&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"$&#123;pageContext.request.contextPath&#125;/servlet/CheckServlet"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"提交"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 浏览器将form表单提交到服务器，"/"是给浏览器用，"/"代表webapps目录 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"/JavaWebMmp/servlet/CheckServlet"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"提交"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">%-</span></span><span class="ruby">- 绝对路径引用js脚本 -</span><span class="xml"><span class="tag"><span class="attr">-</span>%&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"$&#123;pageContext.request.contextPath&#125;/js/index.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">%-</span></span><span class="ruby">- $&#123;pageContext.request.contextPath&#125;与request.getContextPath()效果一样 -</span><span class="xml"><span class="tag"><span class="attr">-</span>%&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"&lt;%=</span></span><span class="ruby">request.getContextPath()</span><span class="xml"><span class="tag"><span class="string">%&gt;/js/login.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">%-</span></span><span class="ruby">- 绝对路径的方式引用css样式 -</span><span class="xml"><span class="tag"><span class="attr">-</span>%&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"$&#123;pageContext.request.contextPath&#125;/css/index.css"</span> <span class="attr">type</span>=<span class="string">"text/css"</span>/&gt;</span></div></pre></td></tr></table></figure>
-<ul>
-<li>Web 应用的绝对路径，带访问协议，如：<code>http://127.0.0.1:8080/primary/index.jsp</code></li>
-<li>相对路径必须结合参照路径。<ul>
-<li>相对路径的写法有两种：以斜杠开头的相对路径，不以斜杠开头的相对路径。</li>
-<li>相对路径是否以斜杠开头，且文件所处位置不同，默认的参照路径不同。<ul>
-<li>以斜杠开头的相对路径分为：前台路径与后台路径。<ul>
-<li>前台路径：由浏览器解析执行的代码中所包含的路径。<ul>
-<li>例如，html、css、js中的路径，html、jsp中的静态部分中的<code>&lt;img src=&quot;&quot;/&gt;</code>、<code>&lt;a href=&quot;&quot;&gt;&lt;/a&gt;</code>、<code>&lt;form action=&quot;&quot;&gt;&lt;/form&gt;</code>等；css中的<code>background:img(&quot;&quot;)</code>等；js中的<code>window.location.href=&quot;&quot;</code>等，都属于前台路径。</li>
-<li>前台路径的参照路径是Web服务器的根路径，即<code>http://127.0.0.1:8080/</code></li>
-</ul>
-</li>
-<li>后台路径：由服务器解析执行的代码及文件中所包含的路径。<ul>
-<li>例如，Java代码中的路径、jsp文件动态部分（Java代码块）中的路径、xml 文件中的路径（xml文件要被Java代码加载入内存，并解析）等。</li>
-<li>后台路径的参照路径是Web应用的根路径。如<code>http://127.0.0.1:8080/primary/</code></li>
-<li>后台路径特例：response 的 sendRedirect()方法重定向时，其参照路径不是 web 应用的根路径，而是 web 服务器的根路径。</li>
-<li>例如，执行 <code>response.sendRedirect(&quot;/show.jsp&quot;);</code>将会报 404 错误。因为其参照路径是Tomcat 的根，而非当前项目的根。所以若要使用重定向，要么写为无斜杠的相对路径：<code>response.sendRedirect(&quot;show.jsp&quot;);</code>要么写在路径上添加上项目名称：<code>response.sendRedirect(request.getContextPath + &quot;/show.jsp&quot;);</code></li>
-</ul>
-</li>
-</ul>
-</li>
-<li>不以斜杠开头的相对路径：无论是前台路径，还是后台路径，其参照路径都是当前资源的访问路径，而不是当前资源的保存路径。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<p><code>/</code>代表服务器的根路径</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 请求重定向，服务器发送URL给浏览器，浏览器拿到URL后，再请求服务器</span></div><div class="line"><span class="selector-tag">response</span><span class="selector-class">.sendRedirect</span>(<span class="string">"/JavaWeb/index.jsp"</span>);</div><div class="line"><span class="comment">// 灵活写法</span></div><div class="line"><span class="selector-tag">response</span><span class="selector-class">.sendRedirect</span>(request.getContextPath() + <span class="string">"/index.jsp"</span>);</div></pre></td></tr></table></figure>
+<figure class="highlight dust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="xml"><span class="comment">&lt;!-- 超链接跳转页面 --&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/JavaWeb/index.jsp"</span>&gt;</span>跳转到首页<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 避免路径中出现项目名称 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"$</span></span><span class="template-variable">&#123;pageContext.request.contextPath&#125;</span><span class="xml"><span class="tag"><span class="string">/index.jsp"</span>&gt;</span>跳转到首页<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></div><div class="line"><span class="comment">&lt;!-- 客户端使用超链接跳转，"/"给浏览器用，"/"代表服务器根目录 --&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- form表单提交 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"$</span></span><span class="template-variable">&#123;pageContext.request.contextPath&#125;</span><span class="xml"><span class="tag"><span class="string">/servlet/CheckServlet"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span></div><div class="line"><span class="comment">&lt;!-- 浏览器将form表单提交到服务器，"/"是给浏览器用，"/"代表服务器根目录 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"/JavaWeb/servlet/CheckServlet"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 绝对路径引用js脚本 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"$</span></span><span class="template-variable">&#123;pageContext.request.contextPath&#125;</span><span class="xml"><span class="tag"><span class="string">/js/index.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></div><div class="line"><span class="comment">&lt;!-- $</span><span class="template-variable">&#123;pageContext.request.contextPath&#125;</span><span class="xml"><span class="comment">与request.getContextPath()效果一样 --&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"&lt;%= request.getContextPath() %&gt;/js/login.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 绝对路径的方式引用css样式 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"$</span></span><span class="template-variable">&#123;pageContext.request.contextPath&#125;</span><span class="xml"><span class="tag"><span class="string">/css/index.css"</span> <span class="attr">type</span>=<span class="string">"text/css"</span>/&gt;</span></span></div></pre></td></tr></table></figure>
+<p>如果<code>/</code>是给服务器用的，代表应用，如：<code>http://localhost:4000/primary/</code>。</p>
+<p>如果<code>/</code>是给浏览器用的，代表服务器根目录，如<code>http://localhost:4000/</code>。</p>
 
 				</div>
 				<!-- about -->

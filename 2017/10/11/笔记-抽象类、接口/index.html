@@ -99,50 +99,49 @@
 				</div>	
 				
 				<div class="article-content">
-				<ul>
-<li>如果类中有 abstract 方法， 类也必须用 abstract 声明。 </li>
-<li>abstract 类可以不含 abstract 方法。</li>
-<li>abstract 类可以含 abstract 方法和非 abstract 方法。</li>
-<li>子类必须重写父类的 abstract 方法，或者自身声明为 abstract 类。</li>
-<li>使用 static 、 private 和 final 声明的方法不能是抽象方法，因为这三种方法在子类中不能覆盖。</li>
-<li>final 类不能有 abstract 方法，一个类不能同时被 abstract 和 final 修饰。</li>
-</ul>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SuperClass</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">abstract</span> void m(); <span class="comment">// 抽象方法，省略方法主体的花括号</span></div><div class="line"></div><div class="line">	public <span class="type">SuperClass</span>() &#123;</div><div class="line">		<span class="comment">// 抽象类不可以实例化，但可以有构造方法，子类实例化会对父类实例化</span></div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SubClass</span> <span class="keyword">extends</span> <span class="title">SuperClass</span> </span>&#123;</div><div class="line">	void m() &#123;</div><div class="line">		<span class="comment">// 实现抽象方法</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+				<p><strong>12-31重新整理</strong></p>
 <ul>
-<li>Interface 和类相似，类描述对象的属性和方法，接口包含类要实现的方法。</li>
-<li>Interface 不能实例化对象，没有构造方法。</li>
-<li>Interface 不存在实现的方法。</li>
-<li>Interface 不是被类继承了，而是要被类实现。</li>
-<li>Interface 所有方法隐式指定为 public abstract。</li>
-<li>Interface 所有变量隐式指定为 public static final 常量，不能定义实例字段（字段是实现细节，接口是规格不是实现）。</li>
-<li>Interface 可以包含嵌套类型，隐式使用 public static 声明。</li>
-<li>Interface 支持多重继承。</li>
-<li>Interface 不能 new 实例化，但可以声明一个接口变量，该变量 refer to 一个实现该接口的类的对象。</li>
-<li>Interface 可以扩展 Interface，可以 extends 多个父接口：<code>interface D extends A, B, C {}</code></li>
-<li><p>实现多接口的时候要避免方法名的重复。</p>
-</li>
-<li><p>抽象类和接口的区别</p>
+<li>如果类中有<code>abstract</code>方法，类也必须用<code>abstract</code>声明。 </li>
+<li><code>abstract</code>类可以不含<code>abstract</code>方法。</li>
+<li><code>abstract</code>类可以含<code>abstract</code>方法和非<code>abstract</code>方法。</li>
+<li>子类必须重写父类的<code>abstract</code>方法，或者自身声明为<code>abstract</code>类。</li>
+<li><code>static</code>、<code>private</code>和<code>final</code>声明的方法不能是抽象方法，因为这三种方法在子类中不能覆盖。</li>
+<li><code>final</code>类不能有<code>abstract</code>方法，类不能同时被<code>abstract</code>和<code>final</code>修饰。</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SuperClass</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">abstract</span> void abstractMethod(); <span class="comment">// 抽象方法，省略方法主体的花括号</span></div><div class="line"></div><div class="line">	public <span class="type">SuperClass</span>() &#123;</div><div class="line">		<span class="comment">// 抽象类不可以实例化，但可以有构造方法，子类实例化会对父类实例化</span></div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SubClass</span> <span class="keyword">extends</span> <span class="title">SuperClass</span> </span>&#123;</div><div class="line">	void abstractMethod() &#123;</div><div class="line">		<span class="comment">// 实现抽象方法</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><code>Interface</code>不能实例化，没有构造方法。</li>
+<li><code>Interface</code>不存在实现的方法。</li>
+<li><code>Interface</code>所有方法隐式指定为<code>public abstract</code>。</li>
+<li><code>Interface</code>所有变量隐式指定为<code>public static final</code>常量，不能定义实例字段（字段是实现细节，接口是规格不是实现）。</li>
+<li><code>Interface</code>可以包含嵌套类型，隐式使用<code>public static</code>声明。</li>
+<li><code>Interface</code>支持多重继承。</li>
+<li><code>Interface</code>不能<code>new</code>实例化，但可以声明一个接口变量，该变量<code>refer to</code>一个实现该接口的类的对象。</li>
+<li><code>Interface</code>可以扩展<code>Interface</code>，可以<code>extends</code>多个父接口：<code>interface InterfaceC extends InterfaceA, InterfaceB {}</code>。</li>
+<li>实现多接口的时候要避免方法名的重复。</li>
+</ul>
+<p>抽象类和接口的区别</p>
 <ul>
 <li>抽象类中的方法可以有方法体，但是接口中的方法不能提供任何实现。</li>
-<li>抽象类中的成员变量可以是各种类型的，而接口中的成员变量只能是 public static final 类型的。</li>
-<li>接口中不能含有 static 代码块以及 static 方法，而抽象类是可以有 static 代码块和 static 方法。</li>
+<li>抽象类中的成员变量可以是各种类型的，而接口中的成员变量只能是<code>public static final</code>。</li>
+<li>接口中不能含有<code>static</code>代码块以及<code>static</code>方法，而抽象类是可以有<code>static</code>代码块和<code>static</code>方法。</li>
 <li>一个类只能继承一个抽象类，一个类却可以实现多个接口。</li>
-</ul>
-</li>
-<li><p>实现接口的类，必须实现接口内所有方法，否则必须声明为抽象类</p>
-</li>
+<li>实现接口的类，必须实现接口内所有方法，否则必须声明为抽象类</li>
 <li>类在实现接口的方法时，不能抛出强制性异常，只能在接口中，或者继承接口的抽象类中抛出该强制性异常</li>
 </ul>
 <p>一个门增加报警的功能。</p>
 <figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title">Door</span> &#123;</div><div class="line">	<span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">open</span>(<span class="params"></span>)</span>;</div><div class="line">	<span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">close</span>(<span class="params"></span>)</span>;</div><div class="line">	<span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">alarm</span>(<span class="params"></span>)</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 或</span></div><div class="line"><span class="keyword">interface</span> <span class="title">Door</span> &#123;</div><div class="line">	<span class="comment">// 没有static，接口中的方法不能为静态</span></div><div class="line">	<span class="comment">// 接口方法默认public</span></div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">open</span>(<span class="params"></span>)</span>;</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">close</span>(<span class="params"></span>)</span>;</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">alarm</span>(<span class="params"></span>)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这违反了面向对象设计中的 ISP (Interface Segregation Principle)原则，在 Door 的定义中把概念本身固有的行为方法和另外一个概念”报警器“的行为方法混在了一起。</p>
-<p>open()、close() 和 alarm() 属于两个不同的概念，依据 ISP 原则将它们分开定义在两个代表两个不同概念的类里。</p>
+<p>这违反了面向对象设计中的<code>ISP</code>(Interface Segregation Principle)原则，在<code>Door</code>的定义中把概念本身固有的行为方法和另外一个概念报警器的行为方法混在了一起。</p>
+<p><code>open()</code>、<code>close()</code>和<code>alarm()</code>属于两个不同的概念，将它们分开定义在两个代表两个不同概念的类里。</p>
 <ul>
 <li>两个都用抽象类（不行，不支持多继承）。</li>
 <li>两个都用接口。</li>
 <li>一个抽象类，一个接口。</li>
 </ul>
-<p>如果AlarmDoor 本质上 Door，但同时它也拥有报警的行为功能，第三种恰好符合。<br>AlarmDoor 本质是门，对于这个概念使用抽象类来定义，同时 AlarmDoor 具备报警功能，所以 alarm 可以使用接口来进行定义。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Door</span> </span>&#123;</div><div class="line">	<span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span></span>;</div><div class="line">	<span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Alarm</span> </span>&#123;</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">alarm</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AlarmDoor</span> <span class="keyword">extends</span> <span class="title">Door</span> <span class="keyword">implements</span> <span class="title">Alarm</span> </span>&#123;</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;&#125;;</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;&#125;;</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">alarm</span><span class="params">()</span> </span>&#123;&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果<code>AlarmDoor</code>本质上<code>Door</code>，这个概念使用抽象类来定义，但它也有报警的行为功能，使用接口来定义，第三种恰好符合。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title">Door</span> &#123;</div><div class="line">	<span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">open</span>(<span class="params"></span>)</span>;</div><div class="line">	<span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">close</span>(<span class="params"></span>)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">interface</span> <span class="title">Alarm</span> &#123;</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">alarm</span>(<span class="params"></span>)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AlarmDoor</span> <span class="keyword">extends</span> <span class="title">Door</span> <span class="title">implements</span> <span class="title">Alarm</span> </span>&#123;</div><div class="line">	void open() &#123;&#125;;</div><div class="line">	void close() &#123;&#125;;</div><div class="line">	void alarm() &#123;&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 如果只用一次，没必要定义一个子类，可以用匿名内部类</span></div><div class="line"><span class="keyword">interface</span> <span class="title">A</span> &#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">get</span>(<span class="params"></span>)</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">class</span> <span class="title">X</span> &#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fun1</span>(<span class="params"></span>) </span>&#123;</div><div class="line">		<span class="comment">// 直接实例化</span></div><div class="line">		<span class="keyword">this</span>.fun2(<span class="keyword">new</span> A() &#123;</div><div class="line">			<span class="function"><span class="keyword">public</span> String <span class="title">get</span>(<span class="params"></span>) </span>&#123;</div><div class="line">				<span class="keyword">return</span> <span class="string">"OK"</span>;</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fun2</span>(<span class="params">A a</span>) </span>&#123;</div><div class="line">		a.<span class="keyword">get</span>();</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">C</span> &#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(<span class="params">String[] args</span>) </span>&#123;</div><div class="line">		<span class="keyword">new</span> X().fun1();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 
 				</div>
