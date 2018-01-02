@@ -99,7 +99,7 @@
 				</div>	
 				
 				<div class="article-content">
-				<p><strong>12-27重新整理更新Spring笔记</strong></p>
+				<p><strong>1-1重新整理</strong></p>
 <p>注解式开发：处理器基于注解，无需在配置文件中逐个注册处理器，通过对类与方法的注解完成注册。</p>
 <ul>
 <li>注解替换的是配置文件中对于处理器的注册部分。</li>
@@ -122,7 +122,7 @@
 <li>请求参数</li>
 </ul>
 <hr>
-<p><code>@RequestMapping(value={&quot;/login.do&quot;,&quot;/user/login.do&quot;})</code>。</p>
+<p><code>@RequestMapping(value={&quot;/login.do&quot;, &quot;/user/login.do&quot;})</code>。</p>
 <p><code>@RequestMapping(value=&quot;/users/{userId}&quot;)</code>：{xxx}占位符，匹配”/users/123456”或”/users/abcd”。</p>
 <p><code>@RequestMapping(value=&quot;/users/**&quot;)</code>:匹配”/users/abc/abc”。</p>
 <p><code>@RequestMapping(value=&quot;/model?&quot;)</code>:匹配”/model1”或”/modela”，不匹配”/model”或”/modelaa”。</p>
@@ -132,10 +132,10 @@
 <p><code>@RequestMapping(value=&quot;/login/{userId:\\d+}.do&quot;)</code>:{变量名:正则表达式}，匹配”/login/123.do”，不匹配”/login/abc.do”。</p>
 <hr>
 <p>@RequestMapping 中 params 属性中定义了请求中必须携带的参数的要求。</p>
-<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;name&quot;,&quot;age&quot;})</code>：请求中必须携带参数name与age。</p>
-<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;!name&quot;,&quot;age&quot;})</code>：请求中必须携带参数age，不能携带name。</p>
-<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;name=mdzz&quot;,&quot;ag=23&quot;})</code>：请求中必须携带参数name，值为mdzz；必须携带age，值为23。</p>
-<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params=&quot;name!=mdzz&quot;)</code>：请求中必须携带参数name，值不能为mdzz。</p>
+<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;name&quot;, &quot;age&quot;})</code>：请求中必须携带参数name与age。</p>
+<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;!name&quot;, &quot;age&quot;})</code>：请求中必须携带参数age，不能携带name。</p>
+<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params={&quot;name=mdzz&quot;, &quot;ag = 23&quot;})</code>：请求中必须携带参数name，值为mdzz；必须携带age，值为23。</p>
+<p><code>@RequestMapping(value=&quot;/xxx.do&quot;, params=&quot;name != mdzz&quot;)</code>：请求中必须携带参数name，值不能为mdzz。</p>
 <hr>
 <p><code>RequestMethod.GET</code>与<code>RequestMethod.POST</code></p>
 <ul>
@@ -187,23 +187,23 @@
 </li>
 <li><p>返回<code>String</code></p>
 <ul>
-<li>字符串可以指定逻辑视图名，通过视图解析器解析将其转换为物理视图地址。</li>
+<li><code>return &quot;editItem&quot;;</code>：逻辑视图名，视图解析器转换为物理视图地址。</li>
 <li>也可以直接返回物理视图名，此时不需要在视图解析器中配置前辍与后辍。</li>
 </ul>
 </li>
 <li><p>返回<code>void</code></p>
 <ul>
 <li>方法参数中放入<code>HttpServletRequest</code>或<code>HttpSession</code>，可以直接将数据放入到<code>request</code>、<code>session</code>域中，也可通过<code>request.getServletContext()</code>获取<code>ServletContext</code>，将数据放入到<code>application</code>域中，然后完成请求转发与重定向。<ul>
-<li>请求转发：<code>request.getRequestDispatcher(&quot;目标页面&quot;).forward(request, response);</code>。</li>
-<li>重定向：<code>response.sendRedirect(&quot;目标页面&quot;);</code>。</li>
+<li>请求转发：<code>request.getRequestDispatcher(&quot;/WEB-INF/jsp/editItem.jsp&quot;).forward(request, response);</code>。</li>
+<li>重定向：<code>response.sendRedirect(&quot;指定页面的完整路径&quot;);</code>。</li>
 </ul>
 </li>
-<li>AJAX 响应：处理器对请求处理后，无需跳转，返回<code>void</code>。</li>
+<li>AJAX响应：处理器对请求处理后，无需跳转，返回<code>void</code>。</li>
 </ul>
 </li>
 <li><p>返回<code>Object</code></p>
 <ul>
-<li>返回的<code>Object</code>对象不是作为逻辑视图出现，而是直接在页面显示的数据出现，需要使用<code>@ResponseBody</code>注解，将转换后的<code>JSON</code>数据放入到响应体中。</li>
+<li>返回的<code>Object</code>对象不是逻辑视图，而是在页面显示的数据，用<code>@ResponseBody</code>注解，将转换后的<code>JSON</code>数据放入到响应体中。</li>
 </ul>
 </li>
 </ul>
@@ -225,7 +225,7 @@
 </ul>
 </li>
 </ul>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Login</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="comment">// 转发</span></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/login.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String login(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		request.setAttribute(<span class="string">"message"</span>, <span class="string">"hello"</span>);</div><div class="line">		<span class="keyword">return</span> <span class="string">"forward:/index.do"</span>; <span class="comment">// forward在跳转后可以取到message值</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/index.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String index(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"welcome"</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 重定向</span></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/logout.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String logout(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		request.setAttribute(<span class="string">"message"</span>, <span class="string">"hello"</span>);</div><div class="line">		<span class="keyword">return</span> <span class="string">"redirect:/register.do"</span>; <span class="comment">// redirect在跳转后无法取到message值</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/register.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String register(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"register"</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Login</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="comment">// 转发</span></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/login.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String login(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		request.setAttribute(<span class="string">"message"</span>, <span class="string">"hello"</span>);</div><div class="line">		<span class="comment">// 关于这里的斜杠，应该是代表根目录，如果同处根目录下，就可以不用斜杠？</span></div><div class="line">		<span class="keyword">return</span> <span class="string">"forward:/index.do"</span>; <span class="comment">// forward在跳转后可以取到message值</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/index.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String index(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"welcome"</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// 重定向</span></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/logout.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String logout(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		request.setAttribute(<span class="string">"message"</span>, <span class="string">"hello"</span>);</div><div class="line">		<span class="keyword">return</span> <span class="string">"redirect:/register.do"</span>; <span class="comment">// redirect在跳转后无法取到message值</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@RequestMapping(<span class="meta-string">"/register.do"</span>)</span></div><div class="line">	<span class="keyword">public</span> String register(HttpServletRequest request, HttpServletResponse response) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="string">"register"</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ul>
 <li><p>返回<code>ModelAndView</code>时的请求转发</p>
 <ul>
@@ -344,7 +344,7 @@
 		<footer>
 			
 <p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
-<p>&copy; 2017 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<p>&copy; 2018 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
 		</footer>
