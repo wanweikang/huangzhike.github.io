@@ -99,7 +99,7 @@
 				</div>	
 				
 				<div class="article-content">
-				<p><strong>12-27重新整理更新Spring笔记</strong></p>
+				<p><strong>1-3更新</strong></p>
 <p>RESTful架构对URL进行规范</p>
 <ul>
 <li>一般的URL：<code>http://.../xxx.action?id=001&amp;type=aaa</code></li>
@@ -114,7 +114,11 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/responseJSON"</span>)</div><div class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="function">ItemsCustom <span class="title">responseJSON</span><span class="params">(ItemsCustom itemsCustom)</span> </span>&#123;</div><div class="line">	<span class="comment">// @ResponseBody将Java对象itemsCustom转成JSON输出</span></div><div class="line">	<span class="keyword">return</span> itemsCustom;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>另一个栗子：</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// &#123;id&#125;表示占位符，对应@PathVariable标记的形参，如果形参和占位符的变量一样，不用指定</span></div><div class="line"><span class="meta">@RequestMapping(<span class="meta-string">"/itemsView/&#123;id&#125;"</span>)</span></div><div class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> ItemsCustom itemsView(<span class="meta">@PathVariable(<span class="meta-string">"id"</span>)</span> Integer id) &#123;</div><div class="line">	ItemsCustom itemsCustom = itemsService.findItemsById(id);</div><div class="line">	<span class="keyword">return</span> itemsCustom;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>http://localhost:8080/SpringMVC/itemsView/1</code>返回一串JSON数据。 </p>
+<p><code>http://localhost:8080/SpringMVC/itemsView/1</code>返回一串JSON数据。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@RestController</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BookController</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="meta">@Resource</span></div><div class="line">	<span class="keyword">private</span> BookService bookService;</div><div class="line"></div><div class="line">	<span class="meta">@GetMapping(<span class="meta-string">"/books"</span>)</span></div><div class="line">	<span class="keyword">public</span> List&lt;Book&gt; books()&#123;</div><div class="line">		<span class="keyword">return</span> bookService.findAll();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>@RestController</code>相当于<code>@ResponseBody</code>＋<code>@Controller</code>。</p>
+<p><code>@RestController</code>注解Controller中的方法无法返回.jsp页面，视图解析器<code>InternalResourceViewResolver</code>不起作用，返回的内容就是<code>Return</code>的内容。</p>
+<p>例如：本来到success.jsp，则显示success。</p>
 
 				</div>
 				<!-- about -->
