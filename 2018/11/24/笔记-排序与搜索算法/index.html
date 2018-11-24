@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<title>[笔记]-排序与搜索算法 | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="用手记笔记，用心记笔记，用脑记笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-排序与搜索算法"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+		<script>var timeStart = new Date();</script>
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>首页
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>存档
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-排序与搜索算法</h2>
+				
+				<div>
+					<span class="post-time">2018-11-24 12:15</span>
+				</div>	
+				
+				<div class="article-content">
+				<p><strong>笔记来源：《学习JavaScript数据结构与算法》 By <a href="https://github.com/loiane" target="_blank" rel="external">Loiane Groner</a></strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">export</span> function <span class="title">swap</span><span class="params">(<span class="built_in">array</span>, a, b)</span> </span>&#123;</div><div class="line">    <span class="comment">// const temp = array[a];</span></div><div class="line">    <span class="comment">// array[a] = array[b];</span></div><div class="line">    <span class="comment">// array[b] = temp; </span></div><div class="line">    <span class="comment">// ES2015 swap - Firefox only, for other browser, uncomment code above and coment line below</span></div><div class="line">    [<span class="built_in">array</span>[a], <span class="built_in">array</span>[b]] = [<span class="built_in">array</span>[b], <span class="built_in">array</span>[a]];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> &#123; swap &#125; <span class="keyword">from</span> <span class="string">'../../util'</span>;</div></pre></td></tr></table></figure>
+<p>冒泡排序：比较任何两个相邻的项，如果第一个比第二个大，则交换它们。元素项向上移动像气泡一样。</p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">export <span class="function"><span class="keyword">function</span> <span class="title">bubbleSort</span><span class="params">(array)</span> </span>&#123;</div><div class="line">    <span class="keyword">const</span> &#123;</div><div class="line">        length</div><div class="line">    &#125; = <span class="keyword">array</span>;</div><div class="line">    <span class="comment">// 外循环从数组的第一位迭代至最后一位，数组中每项都经过一轮</span></div><div class="line">    <span class="comment">// 第一轮确保最大（小）的被排序，第二轮确保第二大（小）的被排序，以此类推</span></div><div class="line">    <span class="comment">// 每一轮排序，该次比较的最后一个位置上，正确的数已确定</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</div><div class="line">        <span class="comment">// 内循环从0迭代至length - 2，比较当前项和下一项</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; length - <span class="number">1</span>; j++) &#123;</div><div class="line">            <span class="keyword">array</span>[j] &gt; <span class="keyword">array</span>[j + <span class="number">1</span>] &amp;&amp; swap(<span class="keyword">array</span>, j, j + <span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">array</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="/imgs/bubbleSort.PNG" width="500"></p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">export <span class="function"><span class="keyword">function</span> <span class="title">modifiedBubbleSort</span><span class="params">(array)</span> </span>&#123;</div><div class="line">    <span class="keyword">const</span> &#123;</div><div class="line">        length</div><div class="line">    &#125; = <span class="keyword">array</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</div><div class="line">        <span class="comment">// 从内循环减去外循环中已跑过的轮数</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; length - <span class="number">1</span> - i; j++) &#123;</div><div class="line">            <span class="keyword">array</span>[j] &gt; <span class="keyword">array</span>[j + <span class="number">1</span>] &amp;&amp; swap(<span class="keyword">array</span>, j, j + <span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">array</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>选择排序：原址比较排序，找到数据结构中的最小值并将其放置在第一位，接着找到第二小的值并将其放在第二位，以此类推。</p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">export <span class="keyword">const</span> selectionSort = (<span class="keyword">array</span>) =&gt; &#123;</div><div class="line">    <span class="keyword">const</span> &#123;length&#125; = <span class="keyword">array</span>;</div><div class="line">    <span class="keyword">let</span> indexMin;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; length - <span class="number">1</span>; i++) &#123;</div><div class="line">        <span class="comment">// 假设本迭代轮次的第一个值为数组最小值</span></div><div class="line">        indexMin = i;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = i; j &lt; length; j++) &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">array</span>[indexMin] &gt; <span class="keyword">array</span>[j]) &#123;</div><div class="line">                indexMin = j;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 得出数组第n小的值</span></div><div class="line">        <span class="comment">// 如果该最小值和原最小值不同，则交换其值</span></div><div class="line">        i !== indexMin &amp;&amp; swap(<span class="keyword">array</span>, i, indexMin);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">array</span>;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><img src="/imgs/selectionSort.PNG" width="500"></p>
+<p>插入排序：假定第一项已经排序了，接着它和第二项进行比较，第二项是应该待在原位还是插到第一项之前呢？这样，头两项就已正确排序，接着和第三项比较（它是该插入到第一、第二还是第三的位置呢？），以此类推。<br><figure class="highlight zephir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">export <span class="keyword">const</span> insertionSort = (<span class="keyword">array</span>) =&gt; &#123;</div><div class="line">    <span class="keyword">const</span> &#123;length&#125; = <span class="keyword">array</span>;</div><div class="line">    <span class="keyword">let</span> temp;</div><div class="line">    <span class="comment">// 从第二个位置（ 1 ）而不是 0 开始（默认第一项已排序了）</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; length; i++) &#123;</div><div class="line">        <span class="keyword">let</span> j = i;</div><div class="line">        temp = <span class="keyword">array</span>[i]; <span class="comment">// 中间变量</span></div><div class="line">        <span class="comment">// 找到正确的位置来插入项目</span></div><div class="line">        <span class="comment">// 只要变量 j 比 0 大（没有负值的索引）并且前一个比temp大</span></div><div class="line">        <span class="keyword">while</span> (j &gt; <span class="number">0</span> &amp;&amp; <span class="keyword">array</span>[j - <span class="number">1</span>] &gt; temp) &#123;</div><div class="line">            <span class="comment">// 把这个值后移覆盖</span></div><div class="line">            <span class="keyword">array</span>[j] = <span class="keyword">array</span>[j - <span class="number">1</span>];</div><div class="line">            j--;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">array</span>[j] = temp;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">array</span>;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p><img src="/imgs/insertionSort.PNG" width="500"></p>
+<p>归并排序：分治算法，将原始数组切分成小数组，直到每个小数组只有一个元素，接着将小数组归并成较大的数组，归并过程完成排序，直到最后只有一个排序完毕的大数组。由于是分治法，归并排序也是递归的。</p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">merge</span><span class="params">(left, right)</span> </span>&#123;</div><div class="line">    <span class="keyword">let</span> l = <span class="number">0</span>;</div><div class="line">    <span class="keyword">let</span> r = <span class="number">0</span>;</div><div class="line">    <span class="keyword">const</span> result = []; <span class="comment">// 归并创建的新数组</span></div><div class="line"></div><div class="line">    <span class="keyword">while</span> (l &lt; left.length &amp;&amp; r &lt; right.length) &#123;</div><div class="line">        <span class="comment">// 如果 left 数组的项比 right 数组的项小，将该项从 left 数组添加至数组，并递增</span></div><div class="line">        <span class="comment">// 否则，从 right 数组添加项并递增</span></div><div class="line">        result.push(left[l] &lt; right[r] ? left[l++] : right[r++]);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 将 left 或 right 数组所有剩余的项添加到归并数组中</span></div><div class="line">    <span class="keyword">return</span> result.concat(l &lt; left.length ? left.slice(l) : right.slice(r));</div><div class="line">&#125;</div><div class="line"></div><div class="line">export <span class="function"><span class="keyword">function</span> <span class="title">mergeSort</span><span class="params">(array)</span> </span>&#123;</div><div class="line">    <span class="comment">// 如果数组长度比 1 大，将其分成小数组</span></div><div class="line">    <span class="keyword">if</span> (<span class="keyword">array</span>.length &gt; <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">const</span> &#123;length&#125; = <span class="keyword">array</span>;</div><div class="line">        <span class="comment">// 找到数组的中间位</span></div><div class="line">        <span class="keyword">const</span> middle = Math.floor(length / <span class="number">2</span>);</div><div class="line">        <span class="comment">// 将数组分成两个小数组</span></div><div class="line">        <span class="keyword">const</span> left = mergeSort(<span class="keyword">array</span>.slice(<span class="number">0</span>, middle));</div><div class="line">        <span class="keyword">const</span> right = mergeSort(<span class="keyword">array</span>.slice(middle, length));</div><div class="line">        <span class="comment">// 合并和排序小数组来产生大数组</span></div><div class="line">        <span class="keyword">array</span> = merge(left, right);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">array</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="/imgs/mergeSort.PNG" width="300"></p>
+<p>快速排序：使用分治的方法，将原始数组分为较小的数组（但没有像归并排序那样将它们分割开）。</p>
+<ul>
+<li><p>首先，从数组中选择中间一项作为主元。</p>
+</li>
+<li><p>创建两个指针，左边一个指向数组第一个项，右边一个指向数组最后一个项。</p>
+<ul>
+<li><p>移动左指针直到找到一个比主元大的元素，接着，移动右指针直到找到一个比主元小的元素，然后交换它们，重复这个过程，直到左指针超过了右指针。</p>
+</li>
+<li><p>这个过程将使得比主元小的值都排在主元之前，而比主元大的值都排在主元之后。</p>
+</li>
+</ul>
+</li>
+<li><p>接着，对划分后的小数组（较主元小的值组成的子数组，以及较主元大的值组成的子数组）重复之前的两个步骤，直至数组已完全排序。</p>
+</li>
+</ul>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">partition</span><span class="params">(array, left, right)</span> </span>&#123;</div><div class="line">    <span class="comment">// 选择主元，其实随便选一个就行</span></div><div class="line">    <span class="keyword">const</span> pivot = <span class="keyword">array</span>[Math.floor((right + left) / <span class="number">2</span>)];</div><div class="line">    <span class="keyword">let</span> i = left;</div><div class="line">    <span class="keyword">let</span> j = right;</div><div class="line">    <span class="comment">// 只要 left 和 right 指针没有相互交错，就执行划分操作</span></div><div class="line">    <span class="keyword">while</span> (i &lt;= j) &#123;</div><div class="line">        <span class="comment">// 移动 left 指针直到找到一个元素比主元大</span></div><div class="line">        <span class="keyword">while</span> (<span class="keyword">array</span>[i] &lt; pivot) &#123;</div><div class="line">            i++;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 移动 right 指针直到我们找到一个元素比主元小</span></div><div class="line">        <span class="keyword">while</span> (<span class="keyword">array</span>[j] &gt; pivot) &#123;</div><div class="line">            j--;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 当左指针指向的元素比主元大且右指针指向的元素比主元小，并且左指针&lt;=右指针</span></div><div class="line">        <span class="keyword">if</span> (i &lt;= j) &#123;</div><div class="line">            <span class="comment">// 左项比右项大，交换它们</span></div><div class="line">            swap(<span class="keyword">array</span>, i, j);</div><div class="line">            <span class="comment">// 移动两个指针，并重复此过程</span></div><div class="line">            i++;</div><div class="line">            j--;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 划分操作结束，返回左指针的索引</span></div><div class="line">    <span class="keyword">return</span> i;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">quick</span><span class="params">(array, left, right)</span> </span>&#123;</div><div class="line">    <span class="keyword">let</span> index;</div><div class="line">    <span class="comment">// 如果数组的长度比1大（只有一个元素的数组必然是已排序了的）</span></div><div class="line">    <span class="comment">// 对给定子数组执行 partition 操作（第一次调用是针对整个数组）以得到 index</span></div><div class="line">    <span class="keyword">if</span> (<span class="keyword">array</span>.length &gt; <span class="number">1</span>) &#123;</div><div class="line">        index = partition(<span class="keyword">array</span>, left, right);</div><div class="line">        <span class="comment">// 如果子数组存在较小值，重复</span></div><div class="line">        left &lt; index - <span class="number">1</span> &amp;&amp; quick(<span class="keyword">array</span>, left, index - <span class="number">1</span>);</div><div class="line">        <span class="comment">// 如果子数组存在较大值，重复</span></div><div class="line">        index &lt; right &amp;&amp; quick(<span class="keyword">array</span>, index, right);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">array</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">export <span class="function"><span class="keyword">function</span> <span class="title">quickSort</span><span class="params">(array)</span> </span>&#123;</div><div class="line">    <span class="comment">// 传递待排序数组，索引0及其最末的位置（因为要排整个数组，而不是子数组）</span></div><div class="line">    <span class="keyword">return</span> quick(<span class="keyword">array</span>, <span class="number">0</span>, <span class="keyword">array</span>.length - <span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>堆排序：把数组当作二叉树来排序。</p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">heapify</span><span class="params">(array, index, heapSize)</span> </span>&#123;</div><div class="line">    <span class="keyword">let</span> largest = index;</div><div class="line">    <span class="keyword">const</span> left = (<span class="number">2</span> * index) + <span class="number">1</span>;</div><div class="line">    <span class="keyword">const</span> right = (<span class="number">2</span> * index) + <span class="number">2</span>;</div><div class="line">    <span class="keyword">if</span> (left &lt; heapSize &amp;&amp; <span class="keyword">array</span>[left] &gt; <span class="keyword">array</span>[index]) &#123;</div><div class="line">        largest = left;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (right &lt; heapSize &amp;&amp; <span class="keyword">array</span>[right] &gt; <span class="keyword">array</span>[largest]) &#123;</div><div class="line">        largest = right;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (largest !== index) &#123;</div><div class="line">        swap(<span class="keyword">array</span>, index, largest);</div><div class="line">        heapify(<span class="keyword">array</span>, largest, heapSize);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">buildMaxHeap</span><span class="params">(array)</span> </span>&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = Math.floor(<span class="keyword">array</span>.length / <span class="number">2</span>); i &gt;= <span class="number">0</span>; i -= <span class="number">1</span>) &#123;</div><div class="line">        heapify(<span class="keyword">array</span>, i, <span class="keyword">array</span>.length);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">array</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">export <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">heapSort</span><span class="params">(array)</span> </span>&#123;</div><div class="line">    <span class="keyword">let</span> heapSize = <span class="keyword">array</span>.length;</div><div class="line">    <span class="comment">// 构造一个满足 array[parent(i)] ≥ array[i] 的堆结构</span></div><div class="line">    buildMaxHeap(<span class="keyword">array</span>);</div><div class="line">    <span class="keyword">while</span> (heapSize &gt; <span class="number">1</span>) &#123;</div><div class="line">        <span class="comment">// 交换堆里第一个元素（数组中较大的值）和最后一个元素的位置</span></div><div class="line">        <span class="comment">// 最大的值就会出现在它已排序的位置</span></div><div class="line">        swap(<span class="keyword">array</span>, <span class="number">0</span>, --heapSize);</div><div class="line">        <span class="comment">// 再次将数组转换成堆，找到当前堆的根节点（较小的值），重新放到树的底部</span></div><div class="line">        heapify(<span class="keyword">array</span>, <span class="number">0</span>, heapSize);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">array</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>大顶堆：每个节点的值都大于或等于其子节点的值，用于升序排列。</p>
+<p>小顶堆：每个节点的值都小于或等于其子节点的值，用于降序排列。</p>
+<p><code>[3, 5, 1, 6, 4, 7, 2]</code>创建堆：</p>
+<p><img src="/imgs/heapify.PNG" width="400"></p>
+<p><img src="/imgs/heapSort.PNG" width="400"></p>
+<ul>
+<li><p>索引0是树的根节点；</p>
+</li>
+<li><p>除根节点外，任意节点N的父节点是N/2；</p>
+</li>
+<li><p>节点L的左子节点是2*L；</p>
+</li>
+<li><p>节点R的右子节点是2*R+1。</p>
+</li>
+</ul>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">export <span class="keyword">function</span> <span class="title">defaultEquals</span>(a, b) &#123;</div><div class="line">  <span class="keyword">return</span> <span class="type">a</span> === b;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>顺序搜索：将每一个数据结构中的元素和要找的元素做比较。</p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">export <span class="function"><span class="keyword">function</span> <span class="title">sequentialSearch</span><span class="params">(array, value, equalsFn = defaultEquals)</span> </span>&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="keyword">array</span>.length; i++) &#123;</div><div class="line">        <span class="keyword">if</span> (equalsFn(value, <span class="keyword">array</span>[i])) &#123;</div><div class="line">            <span class="keyword">return</span> i;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>二分搜索：要求被搜索的数据结构已排序。</p>
+<ul>
+<li><p>选择数组的中间值。</p>
+</li>
+<li><p>如果选中值是待搜索值，完毕（值找到了）。</p>
+</li>
+<li><p>如果待搜索值比选中值要小，则返回第一步并在选中值左边的子数组中寻找。</p>
+</li>
+<li><p>如果待搜索值比选中值要大，则返回第一步并在选种值右边的子数组中寻找。</p>
+</li>
+</ul>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">export <span class="keyword">function</span> binarySearch(<span class="built_in">array</span>, value) &#123;</div><div class="line">    <span class="keyword">const</span> sortedArray = quickSort(<span class="built_in">array</span>);</div><div class="line">    <span class="keyword">let</span> low = <span class="number">0</span>;</div><div class="line">    <span class="keyword">let</span> high = sortedArray.length - <span class="number">1</span>;</div><div class="line">    <span class="keyword">while</span> (low &lt;= high) &#123;</div><div class="line">        <span class="keyword">const</span> <span class="built_in">mid</span> = Math.floor((low + high) / <span class="number">2</span>);</div><div class="line">        <span class="keyword">const</span> element = sortedArray[<span class="built_in">mid</span>];</div><div class="line">        <span class="keyword">if</span> (element &lt; value) &#123;</div><div class="line">            low = <span class="built_in">mid</span> + <span class="number">1</span>;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (element &gt; value) &#123;</div><div class="line">            high = <span class="built_in">mid</span> - <span class="number">1</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            return <span class="built_in">mid</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return <span class="number">-1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="/imgs/binarySearch.PNG" width="500"></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function">function <span class="title">binarySearchRecursive</span><span class="params">(<span class="built_in">array</span>, value, low, high)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (low &lt;= high) &#123;</div><div class="line">        <span class="keyword">const</span> mid = Math.<span class="built_in">floor</span>((low + high) / <span class="number">2</span>);</div><div class="line">        <span class="keyword">const</span> element = <span class="built_in">array</span>[mid];</div><div class="line">        <span class="keyword">if</span> (element &lt; value) &#123;</div><div class="line">            <span class="keyword">return</span> binarySearchRecursive(<span class="built_in">array</span>, value, mid + <span class="number">1</span>, high);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (element &gt; value) &#123;</div><div class="line">            <span class="keyword">return</span> binarySearchRecursive(<span class="built_in">array</span>, value, low, mid - <span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> mid;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">export</span> function <span class="title">binarySearch</span><span class="params">(<span class="built_in">array</span>, value)</span> </span>&#123;</div><div class="line">    <span class="keyword">const</span> sortedArray = quickSort(<span class="built_in">array</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> binarySearchRecursive(<span class="built_in">array</span>, value, <span class="number">0</span>, sortedArray.length - <span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果没有停止函数递归调用的边界条件，递归并不会无限地执行下去，浏览器会抛出栈溢出错误（stack overflow error）。</p>
+<p>ECMAScript 6 有尾调用优化（tail call optimization）。</p>
+<p>如果函数内最后一个操作是调用函数，会通过“跳转指令”（jump） 而不是“子程序调用”（subroutine call）来控制。</p>
+<p>在ES6 中，代码可以一直执行下去。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			
+<p>Powered by <a href="https://hexo.io">Hexo</a> with <a href="https://github.com/wayou/hexo-theme-material">Material</a> theme modified by <b> Huangzhike </b></p>
+<p>&copy; 2018 <a href="https://huangzhike.github.io"><b> Huangzhike </b></a></p>
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
