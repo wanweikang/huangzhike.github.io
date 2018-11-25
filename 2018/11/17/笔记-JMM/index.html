@@ -283,11 +283,55 @@
 </li>
 </ul>
 <hr>
-<p><code>final</code>类型的域是不能修改的，在JMM中，final 域能确保初始化过程的安全性，在共享这些对象时无须同步。</p>
+<p><code>final</code>域是不能修改的，在JMM中，<code>final</code>域能确保初始化过程的安全性，在共享这些对象时无须同步。</p>
 <p><code>final</code>修饰的字段在构造器中一旦被初始化完成，并且构造器没有把<code>this</code>的引用传递出去（<code>this</code>引用逃逸是很危险的，其他线程有可能通过这个引用访问到初始化未完成的对象），在其他线程中就能看到<code>final</code>字段的值。</p>
+<ul>
+<li><p>在构造函数内对一个<code>final</code>域的写入，与随后把这个被构造对象的引用赋值给一个引用变量，这两个操作之间不能重排序。</p>
+</li>
+<li><p>初次读一个包含<code>final</code>域的对象的引用，与随后初次读这个<code>final</code>域，这两个操作之间不能重排序。</p>
+</li>
+</ul>
+<p><code>final</code>域是基础数据类型<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">FinalExample</span> &#123;</div><div class="line">    <span class="keyword">static</span> FinalExample obj;</div><div class="line">    <span class="keyword">int</span> i; <span class="comment">// 普通变量 </span></div><div class="line">    final <span class="keyword">int</span> j; <span class="comment">// final 变量 </span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">FinalExample</span>(<span class="params"></span>) </span>&#123; <span class="comment">// 构造函数 </span></div><div class="line">        i = <span class="number">1</span>; <span class="comment">// 写普通域 </span></div><div class="line">        j = <span class="number">2</span>; <span class="comment">// 写 final 域 </span></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writer</span>(<span class="params"></span>) </span>&#123; <span class="comment">// 写线程 A 执行 </span></div><div class="line">        obj = <span class="keyword">new</span> FinalExample();</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reader</span>(<span class="params"></span>) </span>&#123; <span class="comment">// 读线程 B 执行 </span></div><div class="line">        FinalExample <span class="keyword">object</span> = obj; <span class="comment">// 读对象引用 </span></div><div class="line">        <span class="keyword">int</span> a = <span class="keyword">object</span>.i; <span class="comment">// 读普通域 </span></div><div class="line">        <span class="keyword">int</span> b = <span class="keyword">object</span>.j; <span class="comment">// 读 final 域 </span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>假设一个线程 A 执行<code>writer()</code>方法，随后另一个线程 B 执行<code>reader()</code>方法，假设线程 B 读对象引用与读对象的成员域之间没有重排序。</p>
+<p>writer ()：<code>finalExample = new FinalExample ()</code>：</p>
+<ul>
+<li><p>构造一个 FinalExample 类型的对象；</p>
+</li>
+<li><p>把这个对象的引用赋值给引用变量 obj。</p>
+</li>
+</ul>
+<p>写普通域的操作被编译器重排序到了构造函数之外，读线程 B 错误的读取了普通变量 i 初始化之前的值。</p>
+<p>写<code>final</code>域的操作，被写<code>final</code>域的重排序规则“限定”在了构造函数之内，读线程 B 正确的读取了<code>final</code>变量初始化之后的值。</p>
+<p>写<code>final</code>域的重排序规则可以确保：在对象引用为任意线程可见之前，对象的<code>final</code>域已经被正确初始化过了，而普通域不具有这个保障。</p>
+<p>reader()：</p>
+<ul>
+<li><p>初次读引用变量 obj;</p>
+</li>
+<li><p>初次读引用变量 obj 指向对象的普通域 j。</p>
+</li>
+<li><p>初次读引用变量 obj 指向对象的 final 域 i。</p>
+</li>
+</ul>
+<p>假设写线程 A 没有发生任何重排序。</p>
+<p>读对象的普通域的操作被处理器重排序到读对象引用之前。</p>
+<p>读普通域时，该域还没有被写线程 A 写入，这是一个错误的读取操作。</p>
+<p>读<code>final</code>域的重排序规则会把读对象<code>final</code>域的操作“限定”在读对象引用之后，此时该<code>final</code>域已经被 A 线程初始化过了，这是一个正确的读取操作。</p>
+<p>读<code>final</code>域的重排序规则可以确保：在读一个对象的<code>final</code>域之前，一定会先读包含这个<code>final</code>域的对象的引用。</p>
+<p><code>final</code>域是引用类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinalReferenceExample</span> </span>&#123;</div><div class="line">    <span class="keyword">static</span> FinalReferenceExample obj;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span>[] intArray; <span class="comment">// final 是引用类型 </span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FinalReferenceExample</span><span class="params">()</span> </span>&#123; <span class="comment">// 构造函数 </span></div><div class="line">        intArray = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">1</span>]; <span class="comment">// 1</span></div><div class="line">        intArray[<span class="number">0</span>] = <span class="number">1</span>; <span class="comment">// 2</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writerOne</span><span class="params">()</span> </span>&#123; <span class="comment">// 写线程 A 执行 </span></div><div class="line">        obj = <span class="keyword">new</span> FinalReferenceExample(); <span class="comment">// 3</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writerTwo</span><span class="params">()</span> </span>&#123; <span class="comment">// 写线程 B 执行 </span></div><div class="line">        obj.intArray[<span class="number">0</span>] = <span class="number">2</span>; <span class="comment">// 4</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123; <span class="comment">// 读线程 C 执行 </span></div><div class="line">        <span class="keyword">if</span> (obj != <span class="keyword">null</span>) &#123; <span class="comment">// 5</span></div><div class="line">            <span class="keyword">int</span> temp1 = obj.intArray[<span class="number">0</span>]; <span class="comment">// 6</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在构造函数内对一个<code>final</code>引用的对象的成员域的写入，与随后在构造函数外把这个被构造对象的引用赋值给一个引用变量，这两个操作之间不能重排序。</p>
+<p>首先线程 A 执行<code>writerOne()</code>方法，执行完后线程 B 执行<code>writerTwo()</code>方法，执行完后线程 C 执行 <code>reader()</code>方法。</p>
+<p>1 是对<code>final</code>域的写入，2 是对这个<code>final</code>域引用的对象的成员域的写入，3 是把被构造的对象的引用赋值给某个引用变量。</p>
+<p>1 不能和 3 重排序，2 和 3 也不能重排序。</p>
+<p>JMM 可以确保读线程 C 至少能看到写线程 A 在构造函数中对<code>final</code>引用对象的成员域的写入，即 C 至少能看到数组下标 0 的值为 1。</p>
+<p>而写线程 B 对数组元素的写入，读线程 C 可能看的到，也可能看不到。</p>
+<p>JMM 不保证线程 B 的写入对读线程 C 可见，因为写线程 B 和读线程 C 之间存在数据竞争，此时的执行结果不可预知。</p>
+<p>如果想要确保读线程 C 看到写线程 B 对数组元素的写入，写线程 B 和读线程 C 之间需要使用同步来确保内存可见性。</p>
+<p>写<code>final</code>域的重排序规则可以确保：在引用变量为任意线程可见之前，该引用变量指向的对象的<code>final</code>域已经在构造函数中被正确初始化过了。</p>
+<p>前提：对象引用不能在构造函数中“逸出”。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinalReferenceEscapeExample</span> </span>&#123;</div><div class="line">    <span class="keyword">static</span> FinalReferenceEscapeExample obj;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> i;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FinalReferenceEscapeExample</span><span class="params">()</span> </span>&#123;</div><div class="line">        i = <span class="number">1</span>; <span class="comment">// 1 写 final 域 </span></div><div class="line">        obj = <span class="keyword">this</span>; <span class="comment">// 2 this 引用在此“逸出”</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writer</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">new</span> FinalReferenceEscapeExample();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (obj != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">int</span> temp = obj.i;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <hr>
 <p>先行发生原则</p>
-<p>如果说操作A先行发生于操作B，就是说在发生操作B之前，操作A产生的影响能被操作B观察到，“影响”包括修改了内存中共享变量的值、发送了消息、调用了方法等。</p>
+<p>操作A先行发生于操作B，就是说在发生操作B之前，操作A产生的影响能被操作B观察到，“影响”包括修改了内存中共享变量的值、发送了消息、调用了方法等。</p>
 <figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> <span class="keyword">value</span> = <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="function">pubilc <span class="keyword">void</span> <span class="title">setValue</span>(<span class="params"><span class="keyword">int</span> <span class="keyword">value</span></span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.<span class="keyword">value</span> = <span class="keyword">value</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getValue</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">value</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>假设存在线程A和B，线程A先（时间上的先后）调用了“setValue”，然后线程B调用了同一个对象的“getValue”，线程B收到的返回值是不确定的。</p>
 <p>要么把getter/setter方法都定义为<code>synchronized</code>方法，要么把value定义为<code>volatile</code>变量，setter方法对value的修改不依赖value的原值。</p>
@@ -355,19 +399,15 @@
 <p>要保证线程安全，并不是一定就要进行同步，同步只是保证共享数据争用时的正确性，如果一个方法本来就不涉及共享数据，就无须任何同步。</p>
 <p>线程本地存储（Thread Local Storage）：</p>
 <ul>
-<li><p>如果一段代码中所需要的数据必须与其他代码共享，并且这些共享数据的代码能保证在同一个线程中执行，就可以把共享数据的可见范围限制在同一个线程之内。</p>
-</li>
-<li><p>大部分使用消费队列的架构模式（如“生产者-消费者”模式）都会将产品的消费过程尽量在一个线程中消费完，如“一个请求对应一个服务器线程”（Thread-per-Request）的处理方式。</p>
-</li>
 <li><p>如果一个变量要被某个线程独享，可以通过<code>java.lang.ThreadLocal</code>类来实现线程本地存储的功能。</p>
 </li>
-<li><p>每个线程都会维护一个<code>ThreadLocalMap</code>对象，当在某个线程中访问时，会取出这个线程自己的Map并且用当前ThreadLocal对象做索引（<code>threadLocalHashCode</code>）来取出相对应的Value值，从而达到不同线程不同值的效果。</p>
+<li><p>每个<code>Thread</code>线程对象都有一个<code>ThreadLocalMap</code>对象，当在某个线程中访问时，会取出这个线程自己的<code>ThreadLocalMap</code>并且用当前<code>ThreadLocal</code>对象做索引（<code>threadLocalHashCode</code>）来取出相对应的Value值，从而达到不同线程不同值的效果。</p>
 </li>
-<li><p><code>ThreadLocalMap</code>里面存储的<code>Entry</code>对象本质上是一个<code>WeakReference&lt;ThreadLocal&gt;</code> ，对<code>ThreadLocal</code>对象的弱引用，该<code>ThreadLocal</code>随时可能会被回收，导致<code>ThreadLocalMap</code>里面对应的Value的Key是<code>null</code>（需要把这样的Entry给清除掉，避免内存泄漏)。</p>
+<li><p><code>ThreadLocalMap</code>里的<code>Entry</code>对象是一个<code>WeakReference&lt;ThreadLocal&gt;</code> ，对<code>ThreadLocal</code>对象的弱引用，如果<code>ThreadLocal</code>对象没有外部强引用指向它，该<code>ThreadLocal</code>随时可能会被回收，导致Value的Key是<code>null</code>（需要把这样的<code>Entry</code>给remove掉，避免内存泄漏)，而程序中也无法访问这些key为null的<code>Entry</code>，如果当前线程不结束的话（尤其是线程池线程复用），这个key为null的<code>Entry</code>的value就会一直存在从GCRoots过来的强引用链，即在threadLocal设为<code>null</code>和线程结束前这段时间内<code>Entry</code>不会被回收，造成了内存泄漏。</p>
 </li>
 <li><p>因为线程的声明周期是长于<code>ThreadLocal</code>对象的，当此对象不再需要的时候如果线程中还持有它的引用也会产生内存泄漏的问题，所以应该是用弱引用来进行key的保存。</p>
 </li>
-<li><p><code>ThreadLocal</code>实例通常作为静态的私有的(<code>private static</code>)字段出现在一个类中，这个类用来关联一个线程。</p>
+<li><p>建议将<code>ThreadLocal</code>变量定义为<code>private static</code>，这样<code>ThreadLocal</code>对象的生命周期就长（一直存在<code>ThreadLocal</code>对象的强引用，所以它不会被回收），从而能保证任何时候都能根据<code>ThreadLocal</code>的弱引用访问到<code>Entry</code>的value值，在用完后调用<code>remove</code>方法删除它。</p>
 </li>
 </ul>
 <hr>
