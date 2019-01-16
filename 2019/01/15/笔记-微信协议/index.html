@@ -1,0 +1,354 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+				<script>var timeStart = new Date();</script>
+		
+		<title>[笔记]-微信协议 | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="用手记笔记，用心记笔记，用脑记笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-微信协议"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/favicon.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+		    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//favicon.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="我的主页">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-微信协议</h2>
+				
+				<div>
+					<span class="post-time">2019-01-15 20:51:17</span>
+				</div>	
+				
+				<div class="article-content">
+				<p>公司领导最近搞了一个微信管家的东西，简单的说，就是调用微信网页版的接口，用于营销的业务（听说涉及群发，封号可能性比较高），总之，学习了，网上也有挺多开源的项目，有几个Java实现，比如：<a href="https://github.com/kanjielu/jeeves" target="_blank" rel="external">jeeves</a>、<a href="https://github.com/yaphone/itchat4j" target="_blank" rel="external">itchat4j</a>，看了一下，都挺好的。</p>
+<ul>
+<li><p>iPad：应该有破解协议，目前市面上微信管家基本用这个；</p>
+</li>
+<li><p>PC：hook，大概就是注入劫持吧，不太了解；</p>
+</li>
+<li><p>Android：hook，同上；</p>
+</li>
+<li><p>Web API：新账号不能登录，限制有点多。</p>
+</li>
+</ul>
+<hr>
+<h4 id="请叫我拾人牙慧哥"><a href="#请叫我拾人牙慧哥" class="headerlink" title="请叫我拾人牙慧哥"></a>请叫我拾人牙慧哥</h4><hr>
+<p>微信Web版的流程（<a href="http://www.blogjava.net/yongboy/archive/2015/11/05/410636.html" target="_blank" rel="external">参考这篇文章</a>，<a href="https://www.cnblogs.com/lulu/p/4199544.html" target="_blank" rel="external">还有这篇</a>）：</p>
+<ul>
+<li>获取UUID</li>
+</ul>
+<p>用二维码登录，服务器先分配一个唯一的会话ID，标识当前的一次登录：</p>
+<p>GET</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">https:<span class="comment">//login.weixin.qq.com/jslogin?</span></div><div class="line">appid=wx782c26e4c19acffb</div><div class="line">&amp;redirect_uri=https:<span class="comment">//wx.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage</span></div><div class="line">&amp;<span class="function"><span class="keyword">fun</span>=new</span></div><div class="line">&amp;lang=zh_CN</div><div class="line">&amp;_=<span class="number">1377482012272</span> <span class="comment">// 1377482012272 是当前距离林威治标准时间的毫秒</span></div></pre></td></tr></table></figure>
+<p>RESPONSE：<br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">window</span>.QRLogin.<span class="built_in">code</span> = <span class="number">200</span>; </div><div class="line"><span class="built_in">window</span>.QRLogin.uuid = <span class="string">"DeA6idundY9VKn"</span>;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>通过UUID获得二维码</li>
+</ul>
+<p>GET<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https:<span class="regexp">//</span>login.weixin.qq.com<span class="regexp">/qrcode/</span>DeA6idundY9VKn?t=webwx</div></pre></td></tr></table></figure></p>
+<p>RESPONSE：</p>
+<p>二维码</p>
+<ul>
+<li>GET长轮询，手机端是否已经扫描二维码并确认在Web端登录</li>
+</ul>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">https:</span><span class="comment">//login.weixin.qq.com/cgi-bin/mmwebwx-bin/login?</span></div><div class="line">uuid=DeA6idundY9VKn</div><div class="line"><span class="variable">&amp;tip</span>=<span class="number">1</span></div><div class="line"><span class="variable">&amp;_</span>=<span class="number">1377482045264</span></div></pre></td></tr></table></figure>
+<p>RESPONSE：<br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">window</span>.<span class="built_in">code</span>=<span class="number">201</span>; <span class="comment">// 已经扫描，未确认</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">window</span>.redirect_uri=URL地址 <span class="comment">// 已确认</span></div></pre></td></tr></table></figure>
+<ul>
+<li>GET访问登录地址，获得uin和sid</li>
+</ul>
+<p>访问上一步获得的URL地址，在服务器返回的Cookies中获得到wxuin和wxsid，在后续的通信中都要使用到，Cookies中也要包括。</p>
+<ul>
+<li>初始化微信信息</li>
+</ul>
+<p>POST<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https:<span class="regexp">//</span>wx.qq.com<span class="regexp">/cgi-bin/mm</span>webwx-bin<span class="regexp">/webwxinit?r=1377482058764</span></div></pre></td></tr></table></figure></p>
+<p>RequestBody：<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="string">"BaseRequest"</span>: &#123;</div><div class="line">    <span class="string">"Uin"</span>: <span class="string">"2545437902"</span>, <span class="comment">// uid</span></div><div class="line">    <span class="string">"Sid"</span>: <span class="string">"QfLp+Z+FePzvOFoG"</span>, <span class="comment">// sid</span></div><div class="line">    <span class="string">"Skey"</span>: <span class="string">""</span>,</div><div class="line">    <span class="string">"DeviceID"</span>: <span class="string">"e1615250492"</span> <span class="comment">// 本地生成的随机字符串</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>RESPONSE：<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="string">"BaseResponse"</span>: &#123;</div><div class="line">     // 请求状态码</div><div class="line">  &#125;,</div><div class="line">  <span class="string">"SyncKey"</span>: &#123;&#125;, // 用户与服务器同步的信息</div><div class="line">  <span class="string">"ContactList"</span>: [] // 联系人，不全，只包括了类似通讯录助手之类的</div><div class="line">  <span class="string">"User"</span>: &#123;&#125; // 当前登录用户自己的信息</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>获得完整的好友列表</li>
+</ul>
+<p>POST<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https:<span class="regexp">//</span>wx.qq.com<span class="regexp">/cgi-bin/mm</span>webwx-bin<span class="regexp">/webwxgetcontact?r=1377482079876</span></div></pre></td></tr></table></figure></p>
+<p>RequestBody：<br><figure class="highlight dust"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="xml"></span><span class="template-variable">&#123;&#125;</span><span class="xml"> // 空JSON：</span><span class="template-variable">&#123;&#125;</span><span class="xml">，服务器对身份的判定是通过Cookies</span></div></pre></td></tr></table></figure></p>
+<p>RESPONSE：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"MemberList"</span>: [] // 所有的好友信息</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ul>
+<li><p>保持与服务器的信息同步</p>
+<ul>
+<li><p>服务端序列号生成器生成SyncKey，一旦有新消息产生，将会产生最新的SyncKey。</p>
+</li>
+<li><p>服务端Notify，客户端获取。</p>
+</li>
+<li><p>客户端携带最新的SyncKey，发起请求。</p>
+</li>
+<li><p>服务器端生成最新的SyncKey连同最新数据发送给客户端。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>GET长轮询，检测是否存在需要同步的消息（服务器pending不返回），timeout大概是27s。<br><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">https:</span><span class="comment">//webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck?</span></div><div class="line">callback=jQuery18309326978388708085_1377482079946 <span class="comment">// 回调</span></div><div class="line"><span class="variable">&amp;r</span>=<span class="number">1377482079876</span> <span class="comment">// 时间</span></div><div class="line"><span class="variable">&amp;sid</span>=QfLp+Z+FePzvOFoG <span class="comment">// sid</span></div><div class="line"><span class="variable">&amp;uin</span>=<span class="number">2545437902</span> <span class="comment">// uin</span></div><div class="line"><span class="variable">&amp;deviceid</span>=e1615250492 <span class="comment">// </span></div><div class="line"><span class="variable">&amp;synckey</span>=<span class="number">1</span>_124125|<span class="number">2</span>_452346345|<span class="number">3</span>_65476547|<span class="number">1000</span>_5643635 <span class="comment">// 上步步骤获得的同步键值，键和值用_隔开，不同的键值对用|隔开，|需要URL编码成%7C</span></div><div class="line"><span class="variable">&amp;_</span>=<span class="number">1377482079876</span> <span class="comment">// 时间</span></div></pre></td></tr></table></figure></p>
+<p>RESPONSE：<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">window</span>.synccheck=&#123;</div><div class="line">  <span class="string">"retcode"</span>: <span class="string">"0"</span>,</div><div class="line">  <span class="string">"selector"</span>: <span class="string">"0"</span> <span class="comment">// 如果大于0，表示有新的消息需要同步，访问另一个接口获得新的消息</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>获得消息</li>
+</ul>
+<p>POST<br><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">https:</span><span class="comment">//wx.qq.com/cgi-bin/mmwebwx-bin/webwxsync?</span></div><div class="line">sid=QfLp+Z+FePzvOFoG</div><div class="line"><span class="variable">&amp;r</span>=<span class="number">1377482079876</span></div></pre></td></tr></table></figure></p>
+<p>RequestBody：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"BaseRequest"</span>: &#123;</div><div class="line">    <span class="attr">"Uin"</span>: <span class="number">2545437902</span>,</div><div class="line">    <span class="attr">"Sid"</span>: <span class="string">"QfLp+Z+FePzvOFoG"</span></div><div class="line">  &#125;,</div><div class="line">  <span class="attr">"SyncKey"</span>: &#123;</div><div class="line">    <span class="attr">"Count"</span>: <span class="number">4</span>,</div><div class="line">    <span class="attr">"List"</span>: [</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"Key"</span>: <span class="number">1</span>,</div><div class="line">        <span class="attr">"Val"</span>: <span class="number">620310295</span></div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"Key"</span>: <span class="number">2</span>,</div><div class="line">        <span class="attr">"Val"</span>: <span class="number">620310303</span></div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"Key"</span>: <span class="number">3</span>,</div><div class="line">        <span class="attr">"Val"</span>: <span class="number">620310285</span></div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"Key"</span>: <span class="number">1000</span>,</div><div class="line">        <span class="attr">"Val"</span>: <span class="number">1377479086</span></div><div class="line">      &#125;</div><div class="line">    ]</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">"rr"</span>: <span class="number">1377482079876</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>RESPONSE：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"AddMsgList"</span>: [] // 所有新消息</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>浏览端收取到消息之后，Web微信没有向服务器端确认已收到了。</p>
+<ul>
+<li>发送消息</li>
+</ul>
+<p>POST<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https:<span class="regexp">//</span>wx.qq.com<span class="regexp">/cgi-bin/mm</span>webwx-bin<span class="regexp">/webwxsendmsg?sid=QfLp+Z+FePzvOFoG&amp;r=1377482079876</span></div></pre></td></tr></table></figure></p>
+<p>RequestBody：<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="string">"BaseRequest"</span>:&#123;</div><div class="line">        <span class="string">"DeviceID"</span> : <span class="string">"e441551176"</span>,</div><div class="line">        <span class="string">"Sid"</span> : <span class="string">"S8wNi91Zry3024eg"</span>,</div><div class="line">        <span class="string">"Skey"</span> : <span class="string">"F820928BBA5D8ECA23448F076D2E8A915E1349E9FB4F4332"</span>,</div><div class="line">        <span class="string">"Uin"</span> : <span class="string">"2545437902"</span></div><div class="line">    &#125;,</div><div class="line">    <span class="string">"Msg"</span> : &#123;</div><div class="line">        <span class="string">"ClientMsgId"</span> : <span class="number">1377504862158</span>, <span class="comment">// 本地生成</span></div><div class="line">        <span class="string">"Content"</span> : <span class="string">"hello"</span>,</div><div class="line">        <span class="string">"FromUserName"</span> : <span class="string">"wxid_2rrz8g8ezuox22"</span>,</div><div class="line">        <span class="string">"LocalID"</span> : <span class="number">1377504862158</span>, <span class="comment">// 本地生成</span></div><div class="line">        <span class="string">"ToUserName"</span> : <span class="string">"wxid_j4nu420ojhsr21"</span>,</div><div class="line">        <span class="string">"Type"</span> : <span class="number">1</span> <span class="comment">// 文本</span></div><div class="line">    &#125;,</div><div class="line">    <span class="string">"rr"</span> = <span class="number">1377504864463</span> <span class="comment">// 当前的时间</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>RESPONSE：<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="string">"BaseResponse"</span>: &#123;</div><div class="line">    <span class="string">"Ret"</span>: <span class="number">0</span>, // 发送成功</div><div class="line">    <span class="string">"ErrMsg"</span>: <span class="string">""</span></div><div class="line">  &#125;,</div><div class="line">  <span class="string">"MsgID"</span>: <span class="number">1020944348</span>,</div><div class="line">  <span class="string">"LocalID"</span>: <span class="string">"1393988414380"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>再次申请最新SyncKey</p>
+<p>POST<br><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">https:</span><span class="comment">//webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/webwxsync?</span></div><div class="line">sid=lQ95vHR52DiaLVqo</div><div class="line"><span class="variable">&amp;r</span>=<span class="number">1393988414756</span></div></pre></td></tr></table></figure></p>
+<p>RequestBody：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"BaseRequest"</span>: &#123;</div><div class="line">    <span class="attr">"Uin"</span>: <span class="number">937355</span>,</div><div class="line">    <span class="attr">"Sid"</span>: <span class="string">"lQ95vHR52DiaLVqo"</span></div><div class="line">  &#125;,</div><div class="line">  <span class="attr">"SyncKey"</span>: &#123;</div><div class="line">    <span class="attr">"Count"</span>: <span class="number">6</span>,</div><div class="line">    <span class="attr">"List"</span>: [</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"Key"</span>: <span class="number">1</span>,</div><div class="line">        <span class="attr">"Val"</span>: <span class="number">620944310</span></div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"Key"</span>: <span class="number">2</span>,</div><div class="line">        <span class="attr">"Val"</span>: <span class="number">620944346</span></div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"Key"</span>: <span class="number">3</span>,</div><div class="line">        <span class="attr">"Val"</span>: <span class="number">620944344</span></div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"Key"</span>: <span class="number">11</span>,</div><div class="line">        <span class="attr">"Val"</span>: <span class="number">620942796</span></div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"Key"</span>: <span class="number">201</span>,</div><div class="line">        <span class="attr">"Val"</span>: <span class="number">1393988357</span></div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"Key"</span>: <span class="number">1000</span>,</div><div class="line">        <span class="attr">"Val"</span>: <span class="number">1393930108</span></div><div class="line">      &#125;</div><div class="line">    ]</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">"rr"</span>: <span class="number">1393988414756</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>RESPONSE：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"BaseResponse"</span>: &#123;</div><div class="line">    <span class="attr">"SKey"</span>: <span class="string">"8F8C6A03489E85E9FDF727ACB95C93C2CDCE9FB9532FC15B"</span>  </div><div class="line">  &#125;,</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>终止GET长轮询，使用最新SyncKey再次发起一个新的GET长轮询</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">https://webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck?</div><div class="line">callback=jQuery18302458100896520821813<span class="number">93988305564</span></div><div class="line">&amp;r=<span class="number">1393988415015</span></div><div class="line">&amp;sid=lQ95vHR52DiaLVqo</div><div class="line">&amp;uin=<span class="number">937355</span></div><div class="line">&amp;deviceid=e937<span class="number">227863752975</span></div><div class="line">&amp;synckey=<span class="number">1620944310</span>%<span class="number">7</span>C<span class="number">2620944348</span>%<span class="number">7</span>C<span class="number">3620944344</span>%<span class="number">7</span>C<span class="number">11620942796</span>%<span class="number">7</span>C20<span class="number">11393988357</span>%<span class="number">7</span>C<span class="number">10001393930108</span></div><div class="line">&amp;=<span class="number">1393988415016</span></div></pre></td></tr></table></figure>
+<hr>
+<p>Android微信</p>
+<p>旧版本：</p>
+<ul>
+<li><p>DNS查询：返回一组IP地址，最后一个IP作为TCP长连接的连接地址。</p>
+</li>
+<li><p>初始消息传输：个人资料、离线未阅读消息部分等通过HTTP POST短连接获取。</p>
+</li>
+<li><p>新消息获取：</p>
+<ul>
+<li><p>基于版本号（SynKey）的状态消息同步机制，增量、有序。</p>
+</li>
+<li><p>长连接通知/短连接获取、确认。</p>
+</li>
+<li><p>TCP长连接收到服务器通知，有新消息需要获取，发起HTTP POST请求获取新状态消息，带上当前SyncKey。</p>
+</li>
+<li><p>获取到新的消息，再次发起HTTP POST请求，告诉服务器已确认收到，只有被确认收到，此消息才算是被正确消费掉，同时获取最新SyncKey。</p>
+</li>
+<li><p>多个不同设备同一账号同时使用微信，同一个状态消息会会被同时分发到多个设备上。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>发送消息：</p>
+<ul>
+<li><p>TCP长连接通道，发送消息到服务器，然后接受确认信息等，一次交互。因为不对自身状态数据产生影响，应该不交换SyncKey。</p>
+</li>
+<li><p>低速网络下消息发送中的提示，属于消息重发。</p>
+</li>
+<li><p>网络不好有时出现发送失败的红色感叹号，已发到服务器但未收到确认的消息，再次重发，服务器作重复消息处理，反馈确认。</p>
+</li>
+<li><p>发布的消息对应一个ID（单方向唯一即可，服务器端判断重复接收），消息重传，只有收到确认信息才显示发送成功。</p>
+</li>
+<li><p>客户端/服务器端都会存储消息ID处理记录，避免被重复消费，客户端获取最新消息，但未确认，服务器端不认为该消息被消费掉。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>上传图片：</p>
+<ul>
+<li>分块POST传输，各自上传成功之后，服务器合并，返回缩略图，显示在聊天窗口内。</li>
+</ul>
+</li>
+<li><p>上传音频：</p>
+<ul>
+<li>分块TCP传输，服务端响应通知确认收到。</li>
+</ul>
+</li>
+<li><p>微信协议最小成本为16字节，大部分时间若干个消息包合一起，批量传输。</p>
+</li>
+</ul>
+<p>新版本：</p>
+<p>不用Sync协议，依次尝试使用80、8080、443 端口连接服务器，消息发送、接收都使用长连接。</p>
+<p>协议格式：</p>
+<ul>
+<li>Packet Len(4byte，包含4字节本身)</li>
+<li>Head Len(2byte，包含2字节本身)</li>
+<li>Protocol Version(2byte)  </li>
+<li>Operation（4byte）</li>
+<li>SeqId（4byte）</li>
+<li>…（4byte）</li>
+<li>Body(Packet Len - Head Len)  </li>
+</ul>
+<p>使用protobuf序列化。</p>
+<p>协议交互方式：</p>
+<ul>
+<li><p>客户端请求（一应一答，通过seqid匹配）：</p>
+<ul>
+<li>seqid = 1，依次递增，服务器回复相同的seqid 作为应答。</li>
+</ul>
+</li>
+<li><p>服务器推送通知（单向）：</p>
+<ul>
+<li>seqid = 0，Operation = 7a,  客户端不需要应答。</li>
+</ul>
+</li>
+</ul>
+<p>主要业务：</p>
+<ul>
+<li><p>心跳包：</p>
+<ul>
+<li>发起客户端请求，Operation = 0c，长度为16字节，最小的包。</li>
+</ul>
+</li>
+<li><p>发消息：</p>
+<ul>
+<li>发起客户端请求，Operation = ed。</li>
+<li>单点在线时发完消息后，应答携带SyncKey，不再同步。</li>
+<li>多点在线时，通过通知同步SyncKey。</li>
+</ul>
+</li>
+<li><p>收消息：</p>
+<ul>
+<li>服务器推送消息，Operation = 7a,  Body 中携带消息内容。</li>
+<li>发起客户端单向请求，即消息的应答Ack。</li>
+</ul>
+</li>
+<li><p>加密：</p>
+<ul>
+<li>未分析，猜用hash(密码/OTP + 长连接第一个请求获取RandomCode) 做RC4 的密钥。</li>
+</ul>
+</li>
+</ul>
+<p>Microsoft Exchange Active Sync协议。</p>
+<p>一次会话：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="string">Client:</span> synckey=<span class="number">0</span> <span class="comment">// 第一次key为0</span></div><div class="line"><span class="string">Server:</span> newsynckey=<span class="number">1235434</span> <span class="comment">// 第一次返回新key</span></div><div class="line"><span class="string">Client:</span> synckey=<span class="number">1235434</span> <span class="comment">// 使用新key查询</span></div><div class="line"><span class="string">Server:</span> newsynckey=<span class="number">1647645</span>,data=***** <span class="comment">// 第一次查询，得到新key和数据</span></div><div class="line"><span class="string">Client:</span> synckey=<span class="number">1647645</span></div><div class="line"><span class="string">Server:</span> newsynckey=<span class="number">5637535</span>,data=<span class="literal">null</span> <span class="comment">// 第二次查询，无新消息</span></div><div class="line"><span class="string">Client:</span> synckey=<span class="number">5637535</span></div><div class="line"><span class="string">Server:</span> newsynckey=<span class="number">8654542</span>,data=**** <span class="comment">// 第三次查询，增量同步</span></div></pre></td></tr></table></figure></p>
+<p>相邻请求时间间隔固定，客户端每次使用旧key向服务端标记自己的状态，服务端每次将新key和增量数据一起返回。</p>
+<p>key是递增的，但不要求连续，请求的某个参数决定服务器是否立即返回。</p>
+<p>Sync的问题：</p>
+<ul>
+<li><p>维护成本：SyncKey在ActiveSync中为字符串，客户端不需要解析，但服务端实现要用数字自增，需要强一致性，且不能回退。</p>
+</li>
+<li><p>消息的订阅模式：采用类似Zookeeper的one time trigger还是每条消息都推送一条通知，能够避免并发通知时，获取消息时重复问题，但增加了交互成本，和客户端实现复杂性。</p>
+</li>
+<li><p>自己发的消息，SyncKey怎么获取：消息发完在给自己同步一遍(自己设备发的可以不带消息体）。</p>
+</li>
+<li><p>消息推送延时：Notify - Ack - get - Message, 第四个应用包才能返回消息，在移动网络下成本很高。
+　　　　
+　　　　</p>
+</li>
+</ul>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
