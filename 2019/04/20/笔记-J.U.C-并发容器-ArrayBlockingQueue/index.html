@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+				<script>var timeStart = new Date();</script>
+		
+		<title>[笔记]-J.U.C-并发容器-ArrayBlockingQueue | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="没有鸡汤，只有笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-J.U.C-并发容器-ArrayBlockingQueue"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-J.U.C-并发容器-ArrayBlockingQueue</h2>
+				
+				<div>
+					<span class="post-time">2019-04-20 20:51:17</span>
+				</div>	
+				
+				<div class="article-content">
+				<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"> * 数组，有界，大小固定，阻塞，队列，FIFO，不接受null元素</div><div class="line"> * 可重入锁ReentrantLock控制队列的访问，两个Condition实现生产者-消费者模型</div><div class="line"> * */</div><div class="line">public <span class="class"><span class="keyword">class</span> <span class="title">ArrayBlockingQueue&lt;E&gt;</span> <span class="keyword">extends</span> <span class="title">AbstractQueue&lt;E&gt;</span> </span>&#123;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// 元素</span></div><div class="line">    <span class="keyword">final</span> <span class="type">Object</span>[] items;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// take, poll, peek or remove的下一个索引（等待插入的数组下标位置）</span></div><div class="line">    int takeIndex;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// put, offer, or add的下一个索引</span></div><div class="line">    int putIndex;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// 队列中元素个数</span></div><div class="line">    int count;</div><div class="line"></div><div class="line">    <span class="comment">// 可重入锁，独占锁，出队入队同一个锁</span></div><div class="line">    <span class="keyword">final</span> <span class="type">ReentrantLock</span> lock;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// 队列不为空的条件</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">Condition</span> notEmpty;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// 队列未满的条件</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">Condition</span> notFull;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 默认非公平锁</span></div><div class="line"><span class="comment">// 数组大小不可改变</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayBlockingQueue</span>(<span class="params"><span class="keyword">int</span> capacity</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>(capacity, <span class="literal">false</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayBlockingQueue</span>(<span class="params"><span class="keyword">int</span> capacity, boolean fair</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (capacity &lt;= <span class="number">0</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</div><div class="line">    <span class="keyword">this</span>.items = <span class="keyword">new</span> Object[capacity];</div><div class="line">    <span class="keyword">lock</span> = <span class="keyword">new</span> ReentrantLock(fair);</div><div class="line">    notEmpty = <span class="keyword">lock</span>.newCondition();</div><div class="line">    notFull = <span class="keyword">lock</span>.newCondition();</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 构造函数，带有初始内容的队列</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayBlockingQueue</span>(<span class="params"><span class="keyword">int</span> capacity, boolean fair, Collection&lt;? extends E&gt; c</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>(capacity, fair);</div><div class="line">    final ReentrantLock <span class="keyword">lock</span> = <span class="keyword">this</span>.<span class="keyword">lock</span>;</div><div class="line">    <span class="keyword">lock</span>.<span class="keyword">lock</span>(); <span class="comment">// Lock only for visibility, not mutual exclusion</span></div><div class="line">    <span class="comment">// 这个锁不是为了互斥，而是保证可见性</span></div><div class="line">    <span class="comment">// 线程T1使用集合C实例化对象，然后T2对实例化的对象做入队操作</span></div><div class="line">    <span class="comment">// 如果不加锁（加锁会保证其可见性，写回主存），T1的集合C可能只存在T1线程维护的缓存中，并没有写回主存</span></div><div class="line">    <span class="comment">// T2中维护的缓存以及主存中并没有集合C，造成数据不一致</span></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">for</span> (E e : c) &#123;</div><div class="line">                checkNotNull(e);</div><div class="line">                items[i++] = e; <span class="comment">// 添加进队列</span></div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (ArrayIndexOutOfBoundsException ex) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</div><div class="line">        &#125;</div><div class="line">        count = i;</div><div class="line">        <span class="comment">// putIndex达到数组大小 ，从0开始</span></div><div class="line">        putIndex = (i == capacity) ? <span class="number">0</span> : i;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="keyword">lock</span>.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 队列未满时返回true，满时返回false，非阻塞</span></div><div class="line"><span class="function"><span class="keyword">public</span> boolean <span class="title">offer</span>(<span class="params">E e</span>) </span>&#123;</div><div class="line">    checkNotNull(e);</div><div class="line">    final ReentrantLock <span class="keyword">lock</span> = <span class="keyword">this</span>.<span class="keyword">lock</span>;</div><div class="line">    <span class="keyword">lock</span>.<span class="keyword">lock</span>();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// 队列满时，不阻塞等待，直接返回false</span></div><div class="line">        <span class="keyword">if</span> (count == items.length) <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">        <span class="keyword">else</span> &#123;</div><div class="line">            enqueue(e); <span class="comment">// 队列未满，直接插入</span></div><div class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="keyword">lock</span>.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 元素入队，加锁</span></div><div class="line"><span class="comment">// 没有内存不可见问题，释放锁后修改的共享变量值会刷新主内存</span></div><div class="line"><span class="built_in">private</span> void enqueue(E x) &#123;</div><div class="line">    final Object[] <span class="built_in">items</span> = this.<span class="built_in">items</span>;</div><div class="line">    <span class="comment">// 将新元素插入队列中</span></div><div class="line">    <span class="built_in">items</span>[putIndex] = x;</div><div class="line">    <span class="comment">// 数组下标向后移动，如果队列满则将putIndex置为0</span></div><div class="line">    <span class="keyword">if</span> (++putIndex == <span class="built_in">items</span>.length) putIndex = <span class="number">0</span>;</div><div class="line">    <span class="comment">// 元素个数+1</span></div><div class="line">    <span class="built_in">count</span>++;</div><div class="line">    <span class="comment">// 元素加入成功，队列不为空，唤醒非空等待队列中的线程</span></div><div class="line">    notEmpty.signal();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 非阻塞 队列为空，返回null</span></div><div class="line"><span class="function"><span class="keyword">public</span> E <span class="title">poll</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    final ReentrantLock <span class="keyword">lock</span> = <span class="keyword">this</span>.<span class="keyword">lock</span>;</div><div class="line">    <span class="keyword">lock</span>.<span class="keyword">lock</span>();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">return</span> (count == <span class="number">0</span>) ? <span class="literal">null</span> : dequeue();</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="keyword">lock</span>.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 元素出队，加锁</span></div><div class="line"><span class="keyword">private</span> E dequeue() &#123;</div><div class="line">    <span class="keyword">final</span> Object[] items = <span class="keyword">this</span>.items;</div><div class="line">    <span class="meta">@SuppressWarnings(<span class="meta-string">"unchecked"</span>)</span></div><div class="line">    E x = (E) items[takeIndex]; <span class="comment">// 取出队首元素</span></div><div class="line">    items[takeIndex] = <span class="literal">null</span>; <span class="comment">// 置为null，GC</span></div><div class="line">    <span class="keyword">if</span> (++takeIndex == items.length) takeIndex = <span class="number">0</span>;</div><div class="line">    count--; <span class="comment">// 元素个数-1</span></div><div class="line">    <span class="keyword">if</span> (itrs != <span class="literal">null</span>) itrs.elementDequeued();</div><div class="line">    notFull.signal(); <span class="comment">// 元素取出成功，队列不满，唤醒非满等待队列线程</span></div><div class="line">    <span class="keyword">return</span> x;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"> * 直接返回count变量</div><div class="line"> * ConcurrentLinkedQueue的size则会遍历队列，故ArrayBlockingQueue方法效率高</div><div class="line"> * ConcurrentLinkedQueue的size方法没有加锁，可能不准确</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    final ReentrantLock <span class="keyword">lock</span> = <span class="keyword">this</span>.<span class="keyword">lock</span>;</div><div class="line">    <span class="keyword">lock</span>.<span class="keyword">lock</span>();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">return</span> count;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="keyword">lock</span>.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

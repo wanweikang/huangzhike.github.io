@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+				<script>var timeStart = new Date();</script>
+		
+		<title>[笔记]-J.U.C-AbstractQueuedSynchronizer | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="没有鸡汤，只有笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-J.U.C-AbstractQueuedSynchronizer"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-J.U.C-AbstractQueuedSynchronizer</h2>
+				
+				<div>
+					<span class="post-time">2019-04-20 20:51:17</span>
+				</div>	
+				
+				<div class="article-content">
+				<p>结合Lock和Condition的使用看比较好。</p>
+<p>内部类，链表节点。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// AQS队列的节点，双向链表</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">class</span> Node &#123;</div><div class="line">    <span class="comment">// 共享模式</span></div><div class="line">    <span class="keyword">static</span> <span class="keyword">final</span> Node SHARED = <span class="keyword">new</span> Node();</div><div class="line">    <span class="comment">// 独占模式</span></div><div class="line">    <span class="keyword">static</span> <span class="keyword">final</span> Node EXCLUSIVE = <span class="keyword">null</span>;</div><div class="line">    <span class="comment">// 因为超时或中断，线程已被取消，等待被踢出队列</span></div><div class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CANCELLED = <span class="number">1</span>;</div><div class="line">    <span class="comment">// 当前节点的的后继节点将要或已被阻塞，在当前节点释放的时要unpark后继节点</span></div><div class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SIGNAL = -<span class="number">1</span>;</div><div class="line">    <span class="comment">// 线程在Condition队列等待唤醒</span></div><div class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CONDITION = -<span class="number">2</span>;</div><div class="line">    <span class="comment">// releaseShared需要被传播给后续节点，后续的acquireShared可以执行</span></div><div class="line">    <span class="comment">// 共享模式头Node，锁的下一次获取可以无条件传播</span></div><div class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PROPAGATE = -<span class="number">3</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 节点的状态 CANCELLED, SIGNAL, CONDITION, PROPAGATE, 0(节点在队列中等待获取锁)</span></div><div class="line">    <span class="keyword">volatile</span> <span class="keyword">int</span> waitStatus;</div><div class="line"></div><div class="line">    <span class="comment">// AQS队列前驱节点</span></div><div class="line">    <span class="keyword">volatile</span> Node prev;</div><div class="line"></div><div class="line">    <span class="comment">// AQS队列后继节点</span></div><div class="line">    <span class="keyword">volatile</span> Node <span class="keyword">next</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 节点对应的线程</span></div><div class="line">    <span class="keyword">volatile</span> Thread thread;</div><div class="line"></div><div class="line">    <span class="comment">// Condition队列中的后继节点，并区别独占锁还是共享锁</span></div><div class="line">    Node nextWaiter;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractQueuedSynchronizer</span> &#123;</span></div><div class="line"></div><div class="line">    <span class="comment">// AQS队列的队首 头结点不存储Thread，仅保存next结点的引用</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Node head;</div><div class="line"></div><div class="line">    <span class="comment">// AQS队列的队尾</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Node tail;</div><div class="line"></div><div class="line">    <span class="comment">// 锁的状态</span></div><div class="line">    <span class="comment">// 对于独占锁，state=0表示锁是可获取状态(锁没有被任何线程锁持有)</span></div><div class="line">    <span class="comment">// 由于锁可重入，state的值可以&gt;1</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> state;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>获取。</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 获取独占锁，如果获取不到，加入等待队列等待被唤醒，如果被中断则中止</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="function"><span class="keyword">void</span> <span class="title">acquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</div><div class="line">    <span class="comment">// 首先通过tryAcquire()尝试获取锁，获取成功直接返回</span></div><div class="line">    <span class="comment">// 失败，addWaiter()将当前线程加入到AQS队列末尾</span></div><div class="line">    <span class="comment">// 然后调用acquireQueued()，在AQS队列中等待获取锁，在此过程中，线程阻塞，直到获取锁了才返回</span></div><div class="line">    <span class="comment">// 如果在等待过程中被中断过，则selfInterrupt()自己产生一个中断（之前的被清除了）</span></div><div class="line">    <span class="keyword">if</span> (!tryAcquire(arg) &amp;&amp; acquireQueued(addWaiter(Node.EXCLUSIVE), arg)) selfInterrupt();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">// 将当前线程添加到AQS队尾，等待获取锁</div><div class="line">private <span class="keyword">Node</span> <span class="title">addWaiter</span>(<span class="keyword">Node</span> <span class="title">mode</span>) &#123;</div><div class="line">    // 将线程构造成节点</div><div class="line">    <span class="keyword">Node</span> <span class="title">node</span> = new <span class="keyword">Node</span><span class="title">(Thread</span>.currentThread(), mode);</div><div class="line">    <span class="keyword">Node</span> <span class="title">pred</span> = tail;</div><div class="line">    // 队列不为空，尝试直接挂到AQS同步队列队尾</div><div class="line">    if (pred != null) &#123;</div><div class="line">        <span class="keyword">node</span>.<span class="title">prev</span> = pred;</div><div class="line">        if (compareAndSetTail(pred, <span class="keyword">node</span><span class="title">)) &#123;</span></div><div class="line">            pred.next = <span class="keyword">node</span><span class="title">;</span></div><div class="line">            return <span class="keyword">node</span><span class="title">;</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    // 如果此时有多个线程都把自己挂到队尾，CAS就会失败，enq循环至成功</div><div class="line">    enq(<span class="keyword">node</span><span class="title">);</span></div><div class="line">    return <span class="keyword">node</span><span class="title">;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">// 死循环，直到成功加到同步队列尾部才退出，返回前继节点（原tail）</div><div class="line">private <span class="keyword">Node</span> <span class="title">enq</span>(final <span class="keyword">Node</span> <span class="title">node</span>) &#123;</div><div class="line">    // 自旋</div><div class="line">    for (; ; ) &#123;</div><div class="line">        <span class="keyword">Node</span> <span class="title">t</span> = tail;</div><div class="line">        // tail为null，说明还没初始化，创建一个空节点，CAS设为head，成功就将tail也指向它</div><div class="line">        if (t == null) &#123; // Must initialize</div><div class="line">            if (compareAndSetHead(new <span class="keyword">Node</span><span class="title">())) tail</span> = head;</div><div class="line">        &#125;</div><div class="line">        // 否则，将当前线程节点作为tail节点加入到AQS中去</div><div class="line">        else &#123;</div><div class="line">            <span class="keyword">node</span>.<span class="title">prev</span> = t;</div><div class="line">            if (compareAndSetTail(t, <span class="keyword">node</span><span class="title">)) &#123;</span></div><div class="line">                // CAS成功后将双向链表连起来</div><div class="line">                t.next = <span class="keyword">node</span><span class="title">;</span></div><div class="line">                return t;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">/*</div><div class="line"> * 关于虚拟的head节点，作用是防止重复释放锁</div><div class="line"> * 当第一个进入队列的节点没有前驱节点的时候，就会创建一个虚拟的，再把自己挂到末尾</div><div class="line"> * 每个节点在休眠前，都要将前驱节点的 ws 设置成 SIGNAL，表示，当节点释放锁的时候，需要唤醒下一个节点，否则自己永远无法被唤醒</div><div class="line"> * 但是第一个节点，没有前置节点，那就创建一个空节点，保持一致</div><div class="line"> * */</div></pre></td></tr></table></figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 从队列中获取锁，并返回当前线程在等待过程中有没有中断过</span></div><div class="line"><span class="comment">// 如果获取到了锁，返回，否则，公平阻塞等待，直到唤醒并重新获取锁了才返回</span></div><div class="line"><span class="keyword">final</span> <span class="function"><span class="keyword">boolean</span> <span class="title">acquireQueued</span><span class="params">(<span class="keyword">final</span> Node node, <span class="keyword">int</span> arg)</span> </span>&#123;</div><div class="line">    <span class="keyword">boolean</span> failed = <span class="keyword">true</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// interrupted表示在AQS队列的调度中，线程阻塞时，有没有被中断过</span></div><div class="line">        <span class="keyword">boolean</span> interrupted = <span class="keyword">false</span>;</div><div class="line">        <span class="comment">// 自旋</span></div><div class="line">        <span class="keyword">for</span> (; ; ) &#123;</div><div class="line">            <span class="comment">// 如果当前节点因为其它节点调用unpark()而被唤醒，那么唤醒它的应该是它的前驱节点</span></div><div class="line">            <span class="keyword">final</span> Node p = node.predecessor();</div><div class="line"></div><div class="line">            <span class="comment">// 公平</span></div><div class="line">            <span class="comment">// 如果节点的前驱是head（空节点），就可以尝试获取锁tryAcquire()</span></div><div class="line">            <span class="keyword">if</span> (p == head &amp;&amp; tryAcquire(arg)) &#123;</div><div class="line">                <span class="comment">// 如果获取到，则将自己设置为头节点</span></div><div class="line">                setHead(node);</div><div class="line">                <span class="comment">// 原head指向自己的next设成null</span></div><div class="line">                p.next = <span class="keyword">null</span>; <span class="comment">// help GC</span></div><div class="line">                failed = <span class="keyword">false</span>;</div><div class="line">                <span class="comment">// 返回false，没有中断</span></div><div class="line">                <span class="keyword">return</span> interrupted;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">// 如果当前节点是因为中断而唤醒，那就不公平了</span></div><div class="line">            <span class="comment">// 唤醒不表示线程能立刻运行，而是表示线程处于就绪状态，可以运行而已</span></div><div class="line"></div><div class="line">            <span class="comment">// 如果可以安全阻塞（设置好前继SIGNAL了），就尝试阻塞自己等待，然后返回线程的中断状态并复位中断状态</span></div><div class="line"></div><div class="line">            <span class="comment">// 如果当前线程是非中断状态，parkAndCheckInterrupt被阻塞，直到被唤醒，返回中断状态并复位，再次循环</span></div><div class="line">            <span class="comment">// 如果当前线程是中断状态，park不起作用，会立即返回，parkAndCheckInterrupt返回true，并恢复中断状态</span></div><div class="line">            <span class="comment">// 再次循环进来时，由于之前已经复位该线程的中断状态，再次调用park方法时会阻塞</span></div><div class="line">            <span class="keyword">if</span> (shouldParkAfterFailedAcquire(p, node) &amp;&amp; parkAndCheckInterrupt()) interrupted = <span class="keyword">true</span>;</div><div class="line">            <span class="comment">// 这里判断中断是为了不让循环一直执行，让当前线程进入阻塞</span></div><div class="line">            <span class="comment">// 否则前一个线程在获取锁之后执行了耗时操作，那就要一直循环下去，造成CPU使用率飙升</span></div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="keyword">if</span> (failed) cancelAcquire(node);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">// 返回当前线程是否应该阻塞</div><div class="line">// 挂起自己之前，需要将前驱节点的ws设成SIGNAL，让前驱释放锁的时候唤醒自己</div><div class="line">private static boolean shouldParkAfterFailedAcquire(<span class="keyword">Node</span> <span class="title">pred</span>, <span class="keyword">Node</span> <span class="title">node</span>) &#123;</div><div class="line">    int ws = pred.waitStatus;</div><div class="line">    // 如果前驱节点已经是SIGNAL，当前线程可以安全被阻塞，返回<span class="literal">true</span></div><div class="line">    if (ws == <span class="keyword">Node</span>.<span class="title">SIGNAL</span>) return <span class="literal">true</span>;</div><div class="line">    // 如果前驱节点非有效（CANCELLED），跳过并重试</div><div class="line">    if (ws &gt; <span class="number">0</span>) &#123;</div><div class="line">        do &#123;</div><div class="line">            // 将pred.prev赋值给<span class="keyword">node</span>.<span class="title">prev</span></div><div class="line">            <span class="keyword">node</span>.<span class="title">prev</span> = pred = pred.prev; // 前驱节点已取消，不会再获取同步状态，把前驱节点移除</div><div class="line">        &#125; while (pred.waitStatus &gt; <span class="number">0</span>);</div><div class="line">        // 将pred.prev的 next 赋值为当前节点</div><div class="line">        pred.next = <span class="keyword">node</span><span class="title">;</span></div><div class="line">    &#125; else &#123;</div><div class="line">        // 如果前驱节点 <span class="number">0</span> || CONDITION || PROPAGATE，则设置前驱节点为SIGNAL</div><div class="line">        compareAndSetWaitStatus(pred, ws, <span class="keyword">Node</span>.<span class="title">SIGNAL</span>);</div><div class="line">    &#125;</div><div class="line">    // <span class="literal">false</span> 重来</div><div class="line">    return <span class="literal">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 阻塞当前线程，并返回线程被唤醒之后的中断状态</span></div><div class="line"><span class="comment">// 线程被阻塞后唤醒一般有两种情况：</span></div><div class="line"><span class="comment">// 1：unpark。前驱节点用完锁之后，通过unpark()唤醒当前线程</span></div><div class="line"><span class="comment">// 2：中断。其它线程通过interrupt()中断当前线程</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="function"><span class="keyword">boolean</span> <span class="title">parkAndCheckInterrupt</span><span class="params">()</span> </span>&#123;</div><div class="line">    LockSupport.park(<span class="keyword">this</span>); <span class="comment">// 可响应中断，但是不会抛出异常</span></div><div class="line">    <span class="function"><span class="keyword">return</span> Thread.<span class="title">interrupted</span><span class="params">()</span></span>; <span class="comment">// 这里会复位</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>释放。</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 释放锁，并唤醒阻塞在锁上的线程</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="function"><span class="keyword">boolean</span> <span class="title">release</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</div><div class="line">    <span class="comment">// 如果释放锁成功，返回true</span></div><div class="line">    <span class="keyword">if</span> (tryRelease(arg)) &#123;</div><div class="line"></div><div class="line">        Node h = head;</div><div class="line">        <span class="comment">// 释放成功后，唤醒head的后继节点</span></div><div class="line">        <span class="comment">// head必须不等于0，0说明已经释放过了，不能重复释放</span></div><div class="line">        <span class="keyword">if</span> (h != <span class="keyword">null</span> &amp;&amp; h.waitStatus != <span class="number">0</span>) unparkSuccessor(h);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 释放失败</span></div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">//</span> 一旦头节点的后继节点被唤醒，后继节点就会尝试去获取锁</div><div class="line"><span class="regexp">//</span> 在acquireQueued中node就是有效的后继节点，p就是唤醒它的头结点</div><div class="line"><span class="regexp">//</span> 如果成功就会将头结点设置为自身，并且将头结点的前驱节点置空，这样前驱节点就可以被GC</div><div class="line">private void unparkSuccessor(Node node) &#123;</div><div class="line">    <span class="regexp">//</span> 此时节点是head，代表要释放锁的节点</div><div class="line">    int ws = node.waitStatus;</div><div class="line">    <span class="regexp">//</span> ws != CANCELLED</div><div class="line">    <span class="regexp">//</span> CAS将head.ws置为<span class="number">0</span>，清除信号，表示已释放，不能重复释放</div><div class="line">    <span class="keyword">if</span> (ws &lt; <span class="number">0</span>) compareAndSetWaitStatus(node, ws, <span class="number">0</span>);</div><div class="line"></div><div class="line">    <span class="regexp">//</span> 从头结点的下一个节点开始寻找后继节点</div><div class="line">    Node s = node.<span class="keyword">next</span>;</div><div class="line">    <span class="regexp">//</span> 当且仅当后继节点的waitStatus&lt;=<span class="number">0</span>才是有效后继节点</div><div class="line">    <span class="regexp">//</span> 否则将waitStatus&gt;<span class="number">0</span>（CANCELLED）节点从队列中剔除</div><div class="line">    <span class="regexp">//</span> 通常这个节点是head.<span class="keyword">next</span>，但如果head.<span class="keyword">next</span>==null || head.<span class="keyword">next</span>被取消了，就会从尾部开始找</div><div class="line">    <span class="keyword">if</span> (s == null || s.waitStatus &gt; <span class="number">0</span>) &#123;</div><div class="line">        s = null;</div><div class="line">        <span class="regexp">//</span> 从尾部开始，向前寻找未被取消的节点，直到head</div><div class="line">        <span class="keyword">for</span> (Node t = tail; t != null &amp;&amp; t != node; t = t.prev)</div><div class="line">            <span class="keyword">if</span> (t.waitStatus &lt;= <span class="number">0</span>) s = t;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="regexp">//</span> 如果找到一个有效的后继节点，就唤醒此节点</div><div class="line">    <span class="keyword">if</span> (s != null) LockSupport.unpark(s.thread);</div><div class="line"></div><div class="line">    <span class="regexp">//</span> 关于从尾部查找的逻辑：</div><div class="line">    <span class="regexp">//</span> lock()的线程可能会被中断，这时已经进入CHL队列的节点就会被CANCELLED，也就是会移出队列</div><div class="line">    <span class="regexp">//</span> 移出队列 cancelAcquire 就是让前驱有效节点的<span class="keyword">next</span>指向被移出节点node的<span class="keyword">next</span></div><div class="line">    <span class="regexp">//</span> cas(cancelled_node.pre.<span class="keyword">next</span>, cancelled_node, cancelled_node.<span class="keyword">next</span>);</div><div class="line">    <span class="regexp">//</span> 并且将cancelled_node.<span class="keyword">next</span>指向cancelled_node，也就是cancelled_node没有后继节点了，但是不修改前驱节点</div><div class="line">    <span class="regexp">//</span> 如果从后往前遍历到被删出节点node时，根据cancelled_node.pre可以继续往前，直到head为止</div><div class="line">    <span class="regexp">//</span> 如果要想从head往后遍历，逻辑就是：cas(cancelled_node.<span class="keyword">next</span>.pre, cancelled_node, cancelled_node.pre);</div><div class="line">    <span class="regexp">//</span> 差别在于，由于存在傀儡节点（head），cancelled_node.pre总是存在的，更容易处理</div><div class="line"></div><div class="line">    <span class="regexp">//</span> 唤醒后的逻辑：拿锁，设置自己为head，断开前驱head和自己的连接</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
