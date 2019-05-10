@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+				<script>var timeStart = new Date();</script>
+		
+		<title>[笔记]-NIO-Selector | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="没有鸡汤，只有笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-NIO-Selector"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-NIO-Selector</h2>
+				
+				<div>
+					<span class="post-time">2019-05-09 14:20:17</span>
+				</div>	
+				
+				<div class="article-content">
+				<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Selector</span> <span class="keyword">implements</span> <span class="title">Closeable</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">Selector</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Selector <span class="title">open</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        <span class="keyword">return</span> SelectorProvider.provider().openSelector();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isOpen</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> SelectorProvider <span class="title">provider</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Set&lt;SelectionKey&gt; <span class="title">keys</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Set&lt;SelectionKey&gt; <span class="title">selectedKeys</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">// 立即返回不阻塞</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">selectNow</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 直到指定时间或者就绪</span></div><div class="line">    <span class="comment">// 返回的int值表示有多少通道已经就绪</span></div><div class="line">    <span class="comment">// 即，自上次调用select()方法后有多少通道变成就绪状态</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">long</span> timeout)</span> <span class="keyword">throws</span> IOException</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 阻塞到至少有一个通道在注册的事件上就绪了</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">select</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// 某个线程调用select()方法后阻塞了，其它线程调用wakeup()使阻塞在select()方法上的线程马上返回</span></div><div class="line">    <span class="comment">// 如果有其它线程调用了wakeup()方法，但当前没有线程阻塞在select()方法上，下个调用select()方法的线程会立即wakeup</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Selector <span class="title">wakeup</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">// 关闭该Selector，且使注册到该Selector上的所有SelectionKey实例无效</span></div><div class="line">    <span class="comment">// 通道本身并不会关闭</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight pony"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div></pre></td><td class="code"><pre><div class="line">final int <span class="type">BUF_SIZE</span> = <span class="number">1024</span>;</div><div class="line">final int <span class="type">TIMEOUT</span> = <span class="number">3000</span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 打开ServerSocketChannel</span></div><div class="line"><span class="type">ServerSocketChannel</span> serverSocketChannel = <span class="type">ServerSocketChannel</span>.open();</div><div class="line"></div><div class="line"><span class="comment">// 打开Selector</span></div><div class="line"><span class="type">Selector</span> selector = <span class="type">Selector</span>.open();</div><div class="line"></div><div class="line"><span class="comment">// 配置为非阻塞模式</span></div><div class="line">serverSocketChannel.configureBlocking(<span class="literal">false</span>);</div><div class="line"><span class="comment">// ServerSocketChannel监听8080端口</span></div><div class="line">serverSocketChannel.socket().bind(<span class="function"><span class="keyword">new</span> <span class="title">InetSocketAddress</span>(<span class="number">8080</span>));</span></div><div class="line"></div><div class="line"><span class="comment">// 只有非阻塞的Channel才能注册到Selector，FileChannel不能用选择器，因为是阻塞的</span></div><div class="line"></div><div class="line"><span class="comment">// 将ServerSocketChannel注册到Selector中，指定关注OP_ACCEPT事件</span></div><div class="line"><span class="comment">// 通常先注册OP_ACCEPT事件，然后在OP_ACCEPT时，再将这个Channel的OP_READ事件注册到Selector中</span></div><div class="line"><span class="title">SelectionKey</span> <span class="title">key</span> = <span class="title">serverSocketChannel</span>.<span class="title">register</span>(selector, <span class="type">SelectionKey</span>.<span class="type">OP_ACCEPT</span>);</div><div class="line"></div><div class="line"><span class="comment">// 一个Channel仅可以被注册到一个Selector一次，重复注册，相当于更新SelectionKey的interestSet</span></div><div class="line"><span class="comment">// 在注册的时候加一个附件</span></div><div class="line"><span class="title">key</span> = <span class="title">serverSocketChannel</span>.<span class="title">register</span>(selector, <span class="type">SelectionKey</span>.<span class="type">OP_ACCEPT</span>, new <span class="type">Object</span>());</div><div class="line"></div><div class="line"></div><div class="line"><span class="title">while</span> (true) &#123;</div><div class="line">    <span class="comment">// select方法阻塞地等待Channel就绪，返回值表示有多少个Channel就绪</span></div><div class="line">    <span class="title">if</span> (selector.select(<span class="type">TIMEOUT</span>) == 0) &#123;</div><div class="line">        <span class="title">System</span>.<span class="title">out</span>.<span class="title">print</span>("...");</div><div class="line">        <span class="title">continue</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// 有通道就绪了，然后可以访问已关注选择键集合中的就绪通道</span></div><div class="line">    <span class="title">Set</span>&lt;<span class="title">SelectionKey</span>&gt; <span class="title">selectedKeys</span> = <span class="title">selector</span>.<span class="title">selectedKeys</span>();</div><div class="line"></div><div class="line">    <span class="title">Iterator</span>&lt;<span class="title">SelectionKey</span>&gt; <span class="title">keyIterator</span> = <span class="title">selectedKeys</span>.<span class="title">iterator</span>();</div><div class="line"></div><div class="line">    <span class="title">while</span> (keyIterator.hasNext()) &#123;</div><div class="line">        <span class="comment">// 每次迭代将SelectionKey删除，表示已处理</span></div><div class="line">        <span class="title">keyIterator</span>.<span class="title">remove</span>();</div><div class="line"></div><div class="line">        <span class="title">SelectionKey</span> <span class="title">selectionKey</span> = <span class="title">keyIterator</span>.<span class="title">next</span>();</div><div class="line"></div><div class="line">        <span class="comment">// 获取对应的Channel，需要转型</span></div><div class="line">        <span class="title">Channel</span> <span class="title">channel</span> = <span class="title">selectionKey</span>.<span class="title">channel</span>();</div><div class="line">        <span class="comment">// 获取对应的Selector</span></div><div class="line">        <span class="title">Selector</span> _<span class="title">selector</span> = <span class="title">selectionKey</span>.<span class="title">selector</span>();</div><div class="line"></div><div class="line">        <span class="comment">// 加一个附件</span></div><div class="line">        <span class="title">selectionKey</span>.<span class="title">attach</span>(new <span class="type">Object</span>());</div><div class="line">        <span class="comment">// 获取附件</span></div><div class="line">        <span class="title">Object</span> <span class="title">attachedObj</span> = <span class="title">selectionKey</span>.<span class="title">attachment</span>();</div><div class="line"></div><div class="line"></div><div class="line">        <span class="comment">// 获取关注事件集</span></div><div class="line">        <span class="title">int</span> <span class="title">interestSet</span> = <span class="title">selectionKey</span>.<span class="title">interestOps</span>();</div><div class="line"></div><div class="line">        <span class="title">int</span> <span class="title">isInterestedInAccept</span> = <span class="title">interestSet</span> &amp; <span class="title">SelectionKey</span>.<span class="title">OP_ACCEPT</span>;</div><div class="line">        <span class="title">int</span> <span class="title">isInterestedInConnect</span> = <span class="title">interestSet</span> &amp; <span class="title">SelectionKey</span>.<span class="title">OP_CONNECT</span>;</div><div class="line">        <span class="title">int</span> <span class="title">isInterestedInRead</span> = <span class="title">interestSet</span> &amp; <span class="title">SelectionKey</span>.<span class="title">OP_READ</span>;</div><div class="line">        <span class="title">int</span> <span class="title">isInterestedInWrite</span> = <span class="title">interestSet</span> &amp; <span class="title">SelectionKey</span>.<span class="title">OP_WRITE</span>;</div><div class="line"></div><div class="line"></div><div class="line">        <span class="comment">// 也可以通过这个来判断就绪事件</span></div><div class="line">        <span class="title">int</span> <span class="title">readySet</span> = <span class="title">selectionKey</span>.<span class="title">readyOps</span>();</div><div class="line"></div><div class="line"></div><div class="line">        <span class="title">if</span> (selectionKey.isAcceptable()) &#123;</div><div class="line">            <span class="comment">// 创建SocketChannel有两种：</span></div><div class="line">            <span class="comment">// 打开SocketChannel并连接到主机</span></div><div class="line">            <span class="comment">// 一个新连接到达ServerSocketChannel时，会创建一个SocketChannel</span></div><div class="line">            <span class="title">SocketChannel</span> <span class="title">clientChannel</span> = ((<span class="type">ServerSocketChannel</span>) <span class="title">selectionKey</span>.<span class="title">channel</span>()).<span class="title">accept</span>();</div><div class="line">            <span class="title">clientChannel</span>.<span class="title">configureBlocking</span>(false);</div><div class="line">            <span class="comment">// 如果没有设置OP_READ，即interestSet仍是OP_CONNECT的话，select方法会直接返回</span></div><div class="line">            <span class="title">clientChannel</span>.<span class="title">register</span>(selectionKey.selector(), <span class="title">SelectionKey</span>.<span class="title">OP_READ</span>, <span class="title">ByteBuffer</span>.<span class="title">allocate</span>(<span class="type">BUF_SIZE</span>));</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="title">if</span> (selectionKey.isReadable()) &#123;</div><div class="line">            <span class="title">SocketChannel</span> <span class="title">clientChannel</span> = (<span class="type">SocketChannel</span>) <span class="title">selectionKey</span>.<span class="title">channel</span>();</div><div class="line">            <span class="title">ByteBuffer</span> <span class="title">buf</span> = (<span class="type">ByteBuffer</span>) <span class="title">selectionKey</span>.<span class="title">attachment</span>();</div><div class="line">            <span class="comment">// 返回的int值表示从通道读了多少字节进缓冲里</span></div><div class="line">            <span class="comment">// 如果返回-1，表示已经读到了流的末尾（连接关闭了）</span></div><div class="line">            <span class="title">long</span> <span class="title">bytesRead</span> = <span class="title">clientChannel</span>.<span class="title">read</span>(buf);</div><div class="line">            <span class="title">if</span> (bytesRead == <span class="number">-1</span>) &#123;</div><div class="line">                <span class="title">clientChannel</span>.<span class="title">close</span>();</div><div class="line">            &#125; <span class="title">else</span> <span class="title">if</span> (bytesRead &gt; <span class="number">0</span>) &#123;</div><div class="line"></div><div class="line">                <span class="comment">// 或运算组合多个事件 更新</span></div><div class="line">                <span class="title">selectionKey</span>.<span class="title">interestOps</span>(<span class="type">SelectionKey</span>.<span class="type">OP_READ</span> | <span class="type">SelectionKey</span>.<span class="type">OP_WRITE</span>);</div><div class="line">                <span class="title">System</span>.<span class="title">out</span>.<span class="title">println</span>("<span class="type">Get</span> data length: " + bytesRead);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="title">if</span> (selectionKey.isValid() &amp;&amp; <span class="title">selectionKey</span>.<span class="title">isWritable</span>()) &#123;</div><div class="line">            <span class="title">ByteBuffer</span> <span class="title">buf</span> = (<span class="type">ByteBuffer</span>) <span class="title">key</span>.<span class="title">attachment</span>();</div><div class="line">            <span class="comment">// 切换到读模式</span></div><div class="line">            <span class="title">buf</span>.<span class="title">flip</span>();</div><div class="line">            <span class="title">SocketChannel</span> <span class="title">clientChannel</span> = (<span class="type">SocketChannel</span>) <span class="title">selectionKey</span>.<span class="title">channel</span>();</div><div class="line">            <span class="comment">// 从缓冲写入通道</span></div><div class="line"></div><div class="line">            <span class="title">while</span> (buf.hasRemaining()) &#123;</div><div class="line">                <span class="title">clientChannel</span>.<span class="title">write</span>(buf);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">// 如果没有剩余</span></div><div class="line">            <span class="title">selectionKey</span>.<span class="title">interestOps</span>(<span class="type">SelectionKey</span>.<span class="type">OP_READ</span>);</div><div class="line"></div><div class="line">            <span class="title">buf</span>.<span class="title">compact</span>();</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">        <span class="comment">// SelectionKey.OP_ACCEPT</span></div><div class="line">        <span class="comment">// 连接建立完成</span></div><div class="line">        <span class="title">if</span> (selectionKey.isAcceptable()) &#123;</div><div class="line">            <span class="comment">// a connection was accepted by a ServerSocketChannel.</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// SelectionKey.OP_CONNECT</span></div><div class="line">        <span class="comment">// TCP三次握手完成</span></div><div class="line">        <span class="title">else</span> <span class="title">if</span> (selectionKey.isConnectable()) &#123;</div><div class="line">            <span class="comment">// a connection was established with a remote server.</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// SelectionKey.OP_READ</span></div><div class="line">        <span class="comment">// TCP接收缓冲区可读</span></div><div class="line">        <span class="title">else</span> <span class="title">if</span> (selectionKey.isReadable()) &#123;</div><div class="line">            <span class="comment">// a channel is ready for reading</span></div><div class="line">        &#125;</div><div class="line">        <span class="comment">// SelectionKey.OP_WRITE</span></div><div class="line">        <span class="comment">// TCP发送缓冲区可写</span></div><div class="line">        <span class="title">else</span> <span class="title">if</span> (selectionKey.isWritable()) &#123;</div><div class="line">            <span class="comment">// a channel is ready for writing</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="title">serverSocketChannel</span>.<span class="title">close</span>();</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
