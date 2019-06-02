@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+				<script>var timeStart = new Date();</script>
+		
+		<title>[笔记]-Netty-DefaultChannelPipeline | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="没有鸡汤，只有笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-Netty-DefaultChannelPipeline"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Netty-DefaultChannelPipeline</h2>
+				
+				<div>
+					<span class="post-time">2019-05-30 19:56:17</span>
+				</div>	
+				
+				<div class="article-content">
+				<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultChannelPipeline</span> <span class="keyword">implements</span> <span class="title">ChannelPipeline</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 双向链表头</div><div class="line">     */</div><div class="line">    <span class="keyword">final</span> AbstractChannelHandlerContext head;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 双向链表尾</div><div class="line">     */</div><div class="line">    <span class="keyword">final</span> AbstractChannelHandlerContext tail;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 对应Channel</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Channel channel;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * ChannelHandler添加任务队列链表头</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> PendingHandlerCallback pendingHandlerCallbackHead;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> DefaultChannelPipeline(Channel channel) &#123;</div><div class="line">        <span class="keyword">this</span>.channel = ObjectUtil.checkNotNull(channel, <span class="string">"channel"</span>);</div><div class="line">        succeededFuture = <span class="keyword">new</span> SucceededChannelFuture(channel, <span class="literal">null</span>);</div><div class="line">        voidPromise = <span class="keyword">new</span> VoidChannelPromise(channel, <span class="literal">true</span>);</div><div class="line"></div><div class="line">        tail = <span class="keyword">new</span> TailContext(<span class="keyword">this</span>);</div><div class="line">        head = <span class="keyword">new</span> HeadContext(<span class="keyword">this</span>);</div><div class="line"></div><div class="line">        head.next = tail;</div><div class="line">        tail.prev = head;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">TailContext</span> <span class="keyword">extends</span> <span class="title">AbstractChannelHandlerContext</span> <span class="title">implements</span> <span class="title">ChannelInboundHandler</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="type">TailContext</span>(<span class="type">DefaultChannelPipeline</span> pipeline) &#123;</div><div class="line">        <span class="comment">// executor null</span></div><div class="line">        <span class="keyword">super</span>(pipeline, <span class="literal">null</span>, <span class="type">TAIL_NAME</span>, <span class="type">TailContext</span>.<span class="keyword">class</span>);</div><div class="line">        <span class="comment">// 完成状态</span></div><div class="line">        setAddComplete();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">HeadContext</span> <span class="keyword">extends</span> <span class="title">AbstractChannelHandlerContext</span> <span class="title">implements</span> <span class="title">ChannelOutboundHandler</span>, <span class="title">ChannelInboundHandler</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">Unsafe</span> unsafe;</div><div class="line"></div><div class="line">    <span class="type">HeadContext</span>(<span class="type">DefaultChannelPipeline</span> pipeline) &#123;</div><div class="line">        <span class="keyword">super</span>(pipeline, <span class="literal">null</span>, <span class="type">HEAD_NAME</span>, <span class="type">HeadContext</span>.<span class="keyword">class</span>);</div><div class="line">        unsafe = pipeline.channel().unsafe();</div><div class="line">        setAddComplete();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="function">ChannelPipeline <span class="title">addLast</span><span class="params">(ChannelHandler... handlers)</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">return</span> <span class="title">addLast</span><span class="params">(<span class="keyword">null</span>, handlers)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="function">ChannelPipeline <span class="title">addLast</span><span class="params">(String name, ChannelHandler <span class="keyword">handler</span>)</span> </span>&#123;</div><div class="line">    <span class="comment">// 线程池为null则使用Channel注册到的EventLoop</span></div><div class="line">    <span class="comment">// 避免在ChannelHandler中使用阻塞操作，可以指定一个EventExecutorGroup</span></div><div class="line">    <span class="function"><span class="keyword">return</span> <span class="title">addLast</span><span class="params">(<span class="keyword">null</span>, name, <span class="keyword">handler</span>)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line"><span class="keyword">public</span> final ChannelPipeline addLast(EventExecutorGroup group, <span class="keyword">String</span> name, ChannelHandler handler) &#123;</div><div class="line">    final AbstractChannelHandlerContext <span class="keyword">new</span><span class="type">Ctx</span>;</div><div class="line">    synchronized (<span class="built_in">this</span>) &#123;</div><div class="line">        <span class="comment">// 检查Handler是否重复添加</span></div><div class="line">        checkMultiplicity(handler);</div><div class="line">        <span class="comment">// 新建一个Context</span></div><div class="line">        <span class="keyword">new</span><span class="type">Ctx</span> = <span class="keyword">new</span><span class="type">Context</span>(group, filterName(name, handler), handler);</div><div class="line">        <span class="comment">// 双向链表插入操作</span></div><div class="line">        addLast0(<span class="keyword">new</span><span class="type">Ctx</span>);</div><div class="line">        <span class="comment">// 比如添加ChannelInitializer时</span></div><div class="line">        <span class="keyword">if</span> (!registered) &#123;</div><div class="line">            <span class="comment">// Pipeline还没有完成注册，现在不能执行Handler，设置Handler状态为ADD_PENDING</span></div><div class="line">            <span class="keyword">new</span><span class="type">Ctx</span>.setAddPending();</div><div class="line">            <span class="comment">// 新增一个任务用于注册后触发handlerAdded事件</span></div><div class="line">            callHandlerCallbackLater(<span class="keyword">new</span><span class="type">Ctx</span>, <span class="literal">true</span>);</div><div class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        EventExecutor executor = <span class="keyword">new</span><span class="type">Ctx</span>.executor();</div><div class="line">        <span class="keyword">if</span> (!executor.inEventLoop()) &#123;</div><div class="line">            <span class="comment">// 当前线程不是EventLoop线程</span></div><div class="line">            callHandlerAddedInEventLoop(<span class="keyword">new</span><span class="type">Ctx</span>, executor);</div><div class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 比如ChannelInitializer添加的用户Handler</span></div><div class="line">    <span class="comment">// 当前线程为EventLoop线程且已注册则直接触发HandlerAdd事件</span></div><div class="line">    callHandlerAdded0(<span class="keyword">new</span><span class="type">Ctx</span>);</div><div class="line">    <span class="keyword">return</span> <span class="built_in">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> AbstractChannelHandlerContext <span class="keyword">new</span><span class="type">Context</span>(EventExecutorGroup group, <span class="keyword">String</span> name, ChannelHandler handler) &#123;</div><div class="line">    <span class="comment">// 返回一个默认Context，传入EventExecutor用于执行Handler中事件处理代码，group为null返回null</span></div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">DefaultChannelHandlerContext</span>(<span class="built_in">this</span>, childExecutor(group), name, handler);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> EventExecutor childExecutor(EventExecutorGroup <span class="keyword">group</span>) &#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">group</span> == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">Boolean</span> pinEventExecutor = channel.config().getOption(ChannelOption.SINGLE_EVENTEXECUTOR_PER_GROUP);</div><div class="line">    <span class="keyword">if</span> (pinEventExecutor != <span class="keyword">null</span> &amp;&amp; !pinEventExecutor) &#123;</div><div class="line">        <span class="comment">// Channel参数配置非同一个线程处理，不建议</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">group</span>.<span class="keyword">next</span>();</div><div class="line">    &#125;</div><div class="line">    Map&lt;EventExecutorGroup, EventExecutor&gt; childExecutors = <span class="keyword">this</span>.childExecutors;</div><div class="line">    <span class="keyword">if</span> (childExecutors == <span class="keyword">null</span>) &#123;</div><div class="line"></div><div class="line">        childExecutors = <span class="keyword">this</span>.childExecutors = <span class="keyword">new</span> IdentityHashMap&lt;EventExecutorGroup, EventExecutor&gt;(<span class="number">4</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 保证Pipeline中的事件为同一个EventExecutor处理</span></div><div class="line">    EventExecutor childExecutor = childExecutors.get(<span class="keyword">group</span>);</div><div class="line">    <span class="keyword">if</span> (childExecutor == <span class="keyword">null</span>) &#123;</div><div class="line">        childExecutor = <span class="keyword">group</span>.<span class="keyword">next</span>();</div><div class="line">        childExecutors.put(<span class="keyword">group</span>, childExecutor);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> childExecutor;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * added为true表示HandlerAdd任务，false表示HandlerRemove任务</div><div class="line"> */</div><div class="line"><span class="keyword">private</span> <span class="keyword">void</span> callHandlerCallbackLater(AbstractChannelHandlerContext ctx, <span class="keyword">boolean</span> added) &#123;</div><div class="line">    <span class="comment">// 必须非注册</span></div><div class="line">    assert !registered;</div><div class="line"></div><div class="line">    PendingHandlerCallback <span class="keyword">task</span> = added ? <span class="keyword">new</span> PendingHandlerAddedTask(ctx) : <span class="keyword">new</span> PendingHandlerRemovedTask(ctx);</div><div class="line">    PendingHandlerCallback pending = pendingHandlerCallbackHead;</div><div class="line">    <span class="keyword">if</span> (pending == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">// 链表头部</span></div><div class="line">        pendingHandlerCallbackHead = <span class="keyword">task</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 插入到链表尾部</span></div><div class="line">        <span class="keyword">while</span> (pending.<span class="keyword">next</span> != <span class="keyword">null</span>) &#123;</div><div class="line">            pending = pending.<span class="keyword">next</span>;</div><div class="line">        &#125;</div><div class="line">        pending.<span class="keyword">next</span> = <span class="keyword">task</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">PendingHandlerAddedTask</span> <span class="keyword">extends</span> <span class="title">PendingHandlerCallback</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="type">PendingHandlerAddedTask</span>(<span class="type">AbstractChannelHandlerContext</span> ctx) &#123;</div><div class="line">        <span class="keyword">super</span>(ctx);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    public void run() &#123;</div><div class="line">        callHandlerAdded0(ctx);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    void execute() &#123;</div><div class="line">        <span class="type">EventExecutor</span> executor = ctx.executor();</div><div class="line">        <span class="keyword">if</span> (executor.inEventLoop()) &#123;</div><div class="line">            <span class="comment">// 当前线程为EventLoop线程，调用HandlerAdd事件</span></div><div class="line">            callHandlerAdded0(ctx);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="comment">// 否则提交EventLoop执行</span></div><div class="line">                executor.execute(<span class="keyword">this</span>);</div><div class="line">            &#125; <span class="keyword">catch</span> (<span class="type">RejectedExecutionException</span> e) &#123;</div><div class="line">                <span class="keyword">if</span> (logger.isWarnEnabled()) &#123;</div><div class="line">                    logger.warn(<span class="string">"Can't invoke handlerAdded() as the EventExecutor &#123;&#125; rejected it, removing handler &#123;&#125;."</span>, executor, ctx.name(), e);</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// 异常时，将已添加的Handler删除</span></div><div class="line">                remove0(ctx);</div><div class="line">                ctx.setRemoved();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 加入回调</div><div class="line"> */</div><div class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">void</span> <span class="title">callHandlerAdded0</span><span class="params">(<span class="keyword">final</span> AbstractChannelHandlerContext ctx)</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// 调用事件处理</span></div><div class="line">        ctx.callHandlerAdded();</div><div class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">        <span class="comment">// 异常时删除Context</span></div><div class="line">        <span class="keyword">boolean</span> removed = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">// 实际双向链表删除操作</span></div><div class="line">            remove0(ctx);</div><div class="line">            <span class="comment">// 调用事件处理</span></div><div class="line">            ctx.callHandlerRemoved();</div><div class="line">            removed = <span class="keyword">true</span>;</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable t2) &#123;</div><div class="line">            <span class="keyword">if</span> (logger.isWarnEnabled()) &#123;</div><div class="line">                logger.warn(<span class="string">"Failed to remove a handler: "</span> + ctx.name(), t2);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (removed) &#123;</div><div class="line">            fireExceptionCaught(<span class="keyword">new</span> ChannelPipelineException(ctx.<span class="keyword">handler</span>().getClass().getName() + <span class="string">".handlerAdded() has thrown an exception; removed."</span>, t));</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            fireExceptionCaught(<span class="keyword">new</span> ChannelPipelineException(ctx.<span class="keyword">handler</span>().getClass().getName() + <span class="string">".handlerAdded() has thrown an exception; also failed to remove."</span>, t));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>Outbound事件是请求事件<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.bind</span>(SocketAddress, ChannelPromise) <span class="comment">// 绑定到本地地址</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.connect</span>(SocketAddress, SocketAddress, ChannelPromise) <span class="comment">// 连接一个远端机器</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.write</span>(Object, ChannelPromise) <span class="comment">// 写数据，添加到Netty出站缓冲区</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.flush</span>() <span class="comment">// 执行底层写</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.read</span>() <span class="comment">// 读数据，设置关心OP_READ事件，当数据到来时触发ChannelRead入站事件</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.disconnect</span>(ChannelPromise) <span class="comment">// 断开连接，NIO Server和Client不支持，实际调用close</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.close</span>(ChannelPromise) <span class="comment">// 关闭Channel</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.deregister</span>(ChannelPromise) <span class="comment">// 从EventLoop注销Channel</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如连接事件：</p>
+<ul>
+<li>Bootstrap#connect</li>
+<li>AbstractChannel#connect</li>
+<li>DefaultChannelPipeline#connect</li>
+<li>TailContext#connect(AbstractChannelHandlerContext#connect) </li>
+<li>NextOutboundHandlerContext#connect</li>
+<li>HeadContext#connect</li>
+<li>Unsafe#connect</li>
+</ul>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ChannelHandlerContext.<span class="built_in">close</span>() <span class="comment">// 传播到下一个Handler</span></div><div class="line">Channel.<span class="built_in">close</span>() <span class="comment">// == ChannelPipeline.close()</span></div><div class="line">ChannelPipeline.<span class="built_in">close</span>() <span class="comment">// 事件沿整个ChannelPipeline传播，in/outboud的传播起点不同</span></div></pre></td></tr></table></figure>
+<p>Inbound事件是通知事件</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.fireChannelRegistered</span>() <span class="comment">// Channel注册到EventLoop</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.fireChannelActive</span>() <span class="comment">// Channel激活</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.fireChannelRead</span>(Object) <span class="comment">// Channel读取到数据</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.fireChannelReadComplete</span>() <span class="comment">// Channel读取数据完毕</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.fireExceptionCaught</span>(Throwable) <span class="comment">// 捕获到异常</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.fireUserEventTriggered</span>(Object) <span class="comment">// 用户自定义事件</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.fireChannelWritabilityChanged</span>() <span class="comment">// Channnel可写性改变，由写高低水位控制</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.fireChannelInactive</span>() <span class="comment">// Channel不再激活</span></div><div class="line"><span class="selector-tag">ChannelHandlerContext</span><span class="selector-class">.fireChannelUnregistered</span>() <span class="comment">// Channel从EventLoop中注销</span></div></pre></td></tr></table></figure>
+<p>Unsafe#connect，Socket连接后，调用pipeline().fireChannelActive()将通道激活的消息传播出去。</p>
+<ul>
+<li>Pipeline#fireChannelActive</li>
+<li>HeadContext#fireChannelActive</li>
+<li>NextInboundHandlerContext.fireChannelActive</li>
+<li>HeadContext.fireChannelActive</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> ChannelPipeline fireChannelRegistered() &#123;</div><div class="line">    <span class="comment">// 将head传入，从head开始</span></div><div class="line">    AbstractChannelHandlerContext.invokeChannelRegistered(head);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="function">ChannelFuture <span class="title">connect</span><span class="params">(SocketAddress remoteAddress, SocketAddress localAddress)</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">return</span> tail.<span class="title">connect</span><span class="params">(remoteAddress, localAddress)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

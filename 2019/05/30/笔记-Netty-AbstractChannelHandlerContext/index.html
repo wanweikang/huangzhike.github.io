@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+				<script>var timeStart = new Date();</script>
+		
+		<title>[笔记]-Netty-AbstractChannelHandlerContext | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="没有鸡汤，只有笔记">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-Netty-AbstractChannelHandlerContext"/>
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Netty-AbstractChannelHandlerContext</h2>
+				
+				<div>
+					<span class="post-time">2019-05-30 19:56:17</span>
+				</div>	
+				
+				<div class="article-content">
+				<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> AbstractChannelHandlerContext <span class="keyword">implements</span> ChannelHandlerContext, ResourceLeakHint &#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Handler的handlerAdded方法将要被调用但还未调用</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ADD_PENDING = <span class="number">1</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Handler的handlerAdded方法被调用</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ADD_COMPLETE = <span class="number">2</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Handler的handlerRemoved方法被调用</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> REMOVE_COMPLETE = <span class="number">3</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Handler的初始状态</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INIT = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 事件执行线程</div><div class="line">     */</div><div class="line">    <span class="keyword">final</span> EventExecutor executor;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> DefaultChannelPipeline pipeline;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 双向链表</div><div class="line">     */</div><div class="line">    <span class="keyword">volatile</span> AbstractChannelHandlerContext <span class="keyword">next</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">volatile</span> AbstractChannelHandlerContext prev;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 状态</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> handlerState = INIT;</div><div class="line"></div><div class="line">    AbstractChannelHandlerContext(DefaultChannelPipeline pipeline, EventExecutor executor, String name, <span class="keyword">Class</span>&lt;?<span class="keyword">extends</span> ChannelHandler&gt; handlerClass) &#123;</div><div class="line">        <span class="keyword">this</span>.name = ObjectUtil.checkNotNull(name, <span class="string">"name"</span>);</div><div class="line">        <span class="keyword">this</span>.pipeline = pipeline;</div><div class="line">        <span class="keyword">this</span>.executor = executor;</div><div class="line">        <span class="comment">// 判断是inbound outbound</span></div><div class="line">        <span class="keyword">this</span>.executionMask = mask(handlerClass);</div><div class="line">        <span class="comment">// 顺序</span></div><div class="line">        ordered = (executor == <span class="keyword">null</span>) || executor <span class="keyword">instanceof</span> OrderedEventExecutor;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>INBOUND</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="keyword">public</span> ChannelHandlerContext fireChannel_INBOUND_EVENT() &#123;</div><div class="line">     <span class="comment">// 查找入站处理器 执行处理</span></div><div class="line">    invokeChannel_INBOUND_EVENT(findContextInbound(MASK_CHANNEL_INBOUND_EVENT));</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> AbstractChannelHandlerContext <span class="title">findContextInbound</span><span class="params">(<span class="keyword">int</span> mask)</span> </span>&#123;</div><div class="line">    AbstractChannelHandlerContext ctx = <span class="keyword">this</span>;</div><div class="line">    <span class="keyword">do</span> &#123;</div><div class="line">        <span class="comment">// 入站事件向后查找，找到最近的入站处理器</span></div><div class="line">        ctx = ctx.next;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 忽略@Skip</span></div><div class="line">    <span class="keyword">while</span> ((ctx.executionMask &amp; mask) == <span class="number">0</span>);</div><div class="line">    <span class="keyword">return</span> ctx;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> invokeChannel_INBOUND_EVENT(<span class="keyword">final</span> AbstractChannelHandlerContext <span class="keyword">next</span>) &#123;</div><div class="line">    <span class="comment">// 为空则返回Channel注册的EventLoop</span></div><div class="line">    EventExecutor executor = <span class="keyword">next</span>.executor();</div><div class="line">     <span class="comment">// 使用当前IO线程执行用户自定义处理</span></div><div class="line">    <span class="keyword">if</span> (executor.inEventLoop()) &#123;</div><div class="line">        <span class="keyword">next</span>.invokeChannel_INBOUND_EVENT();</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 使用自定义的线程执行</span></div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        executor.execute(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">            @Override</div><div class="line">            <span class="keyword">public</span> <span class="keyword">void</span> run() &#123;</div><div class="line">                <span class="keyword">next</span>.invokeChannel_INBOUND_EVENT();</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">void</span> <span class="title">invokeChannel_INBOUND_EVENT</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// Handler可以执行</span></div><div class="line">    <span class="keyword">if</span> (invokeHandler()) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">// 执行</span></div><div class="line">            ((ChannelInboundHandler) <span class="keyword">handler</span>()).channel_INBOUND_EVENTD(<span class="keyword">this</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">            notifyHandlerException(t);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 跳过，找到最近的执行</span></div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        fireChannel_INBOUND_EVENT();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 是否可以执行Handler</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> boolean <span class="title">invokeHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// 存储为本地变量，减少volatile读</span></div><div class="line">    <span class="keyword">int</span> handlerState = <span class="keyword">this</span>.handlerState;</div><div class="line">    <span class="comment">// 当Handler还没有调用handlerAdded时，只有Handler的执行线程是非顺序才能执行，否则必须等待调用handlerAdded方法</span></div><div class="line">    <span class="keyword">return</span> handlerState == ADD_COMPLETE || (!ordered &amp;&amp; handlerState == ADD_PENDING);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>OUTBOUND</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="keyword">public</span> <span class="function">ChannelFuture <span class="title">OUTBOUND_EVENT</span><span class="params">(<span class="keyword">final</span> ChannelPromise promise)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (isNotValidPromise(promise, <span class="keyword">false</span>)) &#123;</div><div class="line">        <span class="keyword">return</span> promise;</div><div class="line">    &#125;</div><div class="line">   <span class="comment">// 从tail开始，向前寻找第一个outbound为true的AbstractChannelHandlerContext，一直执行它的connect，直到head</span></div><div class="line">    <span class="keyword">final</span> AbstractChannelHandlerContext next = findContextOutbound(MASK_OUTBOUND_EVENT);</div><div class="line">    EventExecutor executor = next.executor();</div><div class="line">    <span class="keyword">if</span> (executor.inEventLoop()) &#123;</div><div class="line">        next.invoke_OUTBOUND_EVENT(promise);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        safeExecute(executor, <span class="keyword">new</span> Runnable() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                next.invoke_OUTBOUND_EVENT(promise);</div><div class="line">            &#125;</div><div class="line">        &#125;, promise, <span class="keyword">null</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> promise;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> AbstractChannelHandlerContext <span class="title">findContextOutbound</span><span class="params">(<span class="keyword">int</span> mask)</span> </span>&#123;</div><div class="line">    AbstractChannelHandlerContext ctx = <span class="keyword">this</span>;</div><div class="line">    <span class="keyword">do</span> &#123;</div><div class="line">        ctx = ctx.prev;</div><div class="line">    &#125; <span class="keyword">while</span> ((ctx.executionMask &amp; mask) == <span class="number">0</span>);</div><div class="line">    <span class="keyword">return</span> ctx;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">void</span> <span class="title">invoke_OUTBOUND_EVENT</span><span class="params">(ChannelPromise promise)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (invokeHandler()) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            ((ChannelOutboundHandler) <span class="keyword">handler</span>()).OUTBOUND_EVENT(<span class="keyword">this</span>, promise);</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">            notifyOutboundHandlerException(t, promise);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        OUTBOUND_EVENT(promise);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<script src="/js/highlight.js"></script> 
+	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
