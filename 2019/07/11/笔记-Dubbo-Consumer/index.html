@@ -1,0 +1,370 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-Dubbo-Consumer | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-Dubbo-Consumer">
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Dubbo-Consumer</h2>
+				
+				<div>
+					<div class="post-time">2019-07-11</div>
+				</div>
+				
+				<div class="article-content">
+				<p>引用服务</p>
+<ul>
+<li><p>本地引用：略</p>
+</li>
+<li><p>远程引用：</p>
+<ul>
+<li><p>处理URL:</p>
+<ul>
+<li><p>指定了URL：若URL格式为<code>registry://</code>，说明指定注册中心，为URL生成<code>refer</code>参数，添加到URL列表，否则是直连，处理URL并加到URL列表。</p>
+</li>
+<li><p>未指定URL：说明使用注册中心，加载RegistryURL列表（URL格式类似<code>registry://registry-host:registry-port/org.apache.dubbo.registry.RegistryService?registry=zookeeper</code>），并为RegistryURL生成<code>refer</code>参数，添加到URL列表。</p>
+</li>
+</ul>
+</li>
+<li><p>生成Invoker：</p>
+<ul>
+<li><p>如果URL列表只有一个URL，说明是单个注册中心或服务提供者，根据协议头调用Protocol$Adaptive#refer生成Invoker，以<code>registry://</code>为例，调用的是RegistryProtocol#refer。</p>
+</li>
+<li><p>如果有多个URL，说明是多个注册中心或多个服务提供者，或者两者混合：</p>
+<ul>
+<li><p>遍历调用Protocol$Adaptive#refer生成Invoker，并添加到Invoker列表。</p>
+<ul>
+<li><p>取URL的registry参数值，并将其设置为协议头：如<code>registry://127.0.0.1:2181/org.apache.dubbo.registry.RegistryService?refer=xxx&amp;registry=zookeeper</code>改为<code>zookeeper://127.0.0.1:2181/org.apache.dubbo.registry.RegistryService?refer=xxx</code>。</p>
+</li>
+<li><p>通过URL获取获取注册中心实例，这里是ZookeeperRegistry。</p>
+</li>
+<li><p>创建RegistryDirectory注册目录实例。</p>
+</li>
+<li><p>生成服务消费者URL，格式为<code>consumer://consumer-host/service-interface-full-class-name:version?</code>。</p>
+</li>
+<li><p>注册服务消费者。</p>
+</li>
+<li><p>根据服务消费者URL为RegistryDirectory实例生成RouterChain。</p>
+</li>
+<li><p>RegistryDirectory订阅providers、configurators、routers等节点数据。</p>
+</li>
+<li><p>通过Cluster$Adaptive#join包装RegistryDirectory，返回单个AbstractClusterInvoker（一个Registry可能有多个Provider，所以合并为一个）。</p>
+</li>
+</ul>
+</li>
+<li><p>将Invoker列表通过构造函数传入StaticDirectory实例。</p>
+</li>
+<li><p>通过Cluster$Adaptive#join包装StaticDirectory，将多个服务提供者包装成单个AbstractClusterInvoker返回。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>生成Proxy：</p>
+<ul>
+<li>ProxyFactory$Adaptive#getProxy为Invoker生成代理。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>拦截服务</p>
+<ul>
+<li><p>ProtocolFilterWrapper -&gt; ProtocolListenerWrapper -&gt; RegistryProtocol -&gt; …</p>
+<ul>
+<li><p>静态变量REF_PROTOCOL在类初始化时，获取Protocol扩展点，通过Wrapper类的构造函数自动包裹入Wrapper类。</p>
+</li>
+<li><p>ProtocolFilterWrapper：将Filter组装成InvokerChain，在链的最后调用真正的Invoker。</p>
+</li>
+<li><p>ProtocolListenerWrapper：InvokerListener和ExporterListener，在暴露和引用前后回调。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>MockClusterWrapper -&gt; Cluster</p>
+<ul>
+<li><p>静态变量CLUSTER在类初始化时，获取CLUSTER扩展点，通过Wrapper类的构造函数自动包裹入Wrapper类。</p>
+</li>
+<li><p>MockClusterWrapper：Mock逻辑相关。 </p>
+</li>
+</ul>
+</li>
+</ul>
+<p>ReferenceConfig#createProxy</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(&#123;<span class="string">"unchecked"</span>, <span class="string">"rawtypes"</span>, <span class="string">"deprecation"</span>&#125;)</span><br><span class="line"><span class="function"><span class="keyword">private</span> T <span class="title">createProxy</span><span class="params">(Map&lt;String, String&gt; map)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 本地引用</span></span><br><span class="line">    <span class="keyword">if</span> (shouldJvmRefer(map)) &#123;</span><br><span class="line">        <span class="comment">// 生成本地引用URL，协议为injvm</span></span><br><span class="line">        URL url = <span class="keyword">new</span> URL(LOCAL_PROTOCOL, LOCALHOST_VALUE, <span class="number">0</span>, interfaceClass.getName()).addParameters(map);</span><br><span class="line">        <span class="comment">// 调用refer方法构建InjvmInvoker实例</span></span><br><span class="line">        invoker = REF_PROTOCOL.refer(interfaceClass, url);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 远程引用</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// url不为空，表明用户可能想指定点对点调用</span></span><br><span class="line">        <span class="keyword">if</span> (url != <span class="keyword">null</span> &amp;&amp; url.length() &gt; <span class="number">0</span>) &#123; </span><br><span class="line">                <span class="keyword">for</span> (String u : us) &#123;</span><br><span class="line">                    URL url = URL.valueOf(u);</span><br><span class="line">                    <span class="keyword">if</span> (StringUtils.isEmpty(url.getPath())) &#123;</span><br><span class="line">                        <span class="comment">// 设置接口全限定名为url路径</span></span><br><span class="line">                        url = url.setPath(interfaceName);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">// 若url协议为registry，表明用户想使用指定的注册中心</span></span><br><span class="line">                    <span class="keyword">if</span> (REGISTRY_PROTOCOL.equals(url.getProtocol())) &#123;</span><br><span class="line">                        <span class="comment">// 将map转换为查询字符串，并作为refer参数的值添加到url中</span></span><br><span class="line">                        urls.add(url.addParameterAndEncoded(REFER_KEY, StringUtils.toQueryString(map)));</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 注册中心</span></span><br><span class="line">        <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="keyword">if</span> (!LOCAL_PROTOCOL.equalsIgnoreCase(getProtocol())) &#123;</span><br><span class="line">                <span class="comment">// 加载注册中心url</span></span><br><span class="line">                List&lt;URL&gt; us = loadRegistries(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (CollectionUtils.isNotEmpty(us)) &#123;</span><br><span class="line">                    <span class="keyword">for</span> (URL u : us) &#123;</span><br><span class="line">                        <span class="comment">// 添加refer参数到url中，并将url添加到urls中</span></span><br><span class="line">                        urls.add(u.addParameterAndEncoded(REFER_KEY, StringUtils.toQueryString(map)));</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 单个注册中心或服务提供者(服务直连)</span></span><br><span class="line">        <span class="keyword">if</span> (urls.size() == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">// 根据url协议头，调用RegistryProtocol的refer构建Invoker实例</span></span><br><span class="line">            invoker = REF_PROTOCOL.refer(interfaceClass, urls.get(<span class="number">0</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 多个注册中心或多个服务提供者，或者两者混合</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            List&lt;Invoker&lt;?&gt;&gt; invokers = <span class="keyword">new</span> ArrayList&lt;Invoker&lt;?&gt;&gt;();</span><br><span class="line">            URL registryURL = <span class="keyword">null</span>;</span><br><span class="line">            <span class="comment">// 获取所有的Invoker</span></span><br><span class="line">            <span class="keyword">for</span> (URL url : urls) &#123;</span><br><span class="line">                <span class="comment">// 构建Invoker</span></span><br><span class="line">                invokers.add(REF_PROTOCOL.refer(interfaceClass, url));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (registryURL != <span class="keyword">null</span>) &#123; </span><br><span class="line">                <span class="comment">// 如果注册中心链接不为空，则将使用RegistryAwareCluster</span></span><br><span class="line">                URL u = registryURL.addParameter(CLUSTER_KEY, RegistryAwareCluster.NAME);</span><br><span class="line">                <span class="comment">// 创建StaticDirectory实例，并由Cluster对多个Invoker进行合并</span></span><br><span class="line">                invoker = CLUSTER.join(<span class="keyword">new</span> StaticDirectory(u, invokers));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 没有注册中心，是直接引用</span></span><br><span class="line">            <span class="keyword">else</span> &#123; <span class="comment">// not a registry url, must be direct invoke.</span></span><br><span class="line">                invoker = CLUSTER.join(<span class="keyword">new</span> StaticDirectory(invokers));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 生成代理类</span></span><br><span class="line">    <span class="keyword">return</span> (T) PROXY_FACTORY.getProxy(invoker);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>JavassistProxyFactory#getProxy</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getProxy</span><span class="params">(Invoker&lt;T&gt; invoker, Class&lt;?&gt;[] interfaces)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 生成抽象类Proxy子类，并调用Proxy子类的newInstance方法创建Proxy实例</span></span><br><span class="line">    <span class="keyword">return</span> (T) Proxy.getProxy(interfaces).newInstance(<span class="keyword">new</span> InvokerInvocationHandler(invoker));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以DemoService为例，生成的代理类为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Proxy0</span> <span class="keyword">extends</span> <span class="title">Proxy</span> <span class="keyword">implements</span> <span class="title">DC</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">newInstance</span><span class="params">(InvocationHandler var1)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> proxy0(var1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Proxy0</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">proxy0</span> <span class="keyword">implements</span> <span class="title">DC</span>, <span class="title">EchoService</span>, <span class="title">DemoService</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Method[] methods;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> InvocationHandler handler;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">sayHello</span><span class="params">(String var1)</span> </span>&#123;</span><br><span class="line">        Object[] var2 = <span class="keyword">new</span> Object[]&#123;var1&#125;;</span><br><span class="line">        Object var3 = <span class="keyword">this</span>.handler.invoke(<span class="keyword">this</span>, methods[<span class="number">0</span>], var2);</span><br><span class="line">        <span class="keyword">return</span> (String) var3;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Object $echo(Object var1) &#123;</span><br><span class="line">        Object[] var2 = <span class="keyword">new</span> Object[]&#123;var1&#125;;</span><br><span class="line">        Object var3 = <span class="keyword">this</span>.handler.invoke(<span class="keyword">this</span>, methods[<span class="number">1</span>], var2);</span><br><span class="line">        <span class="keyword">return</span> (Object) var3;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">proxy0</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">proxy0</span><span class="params">(InvocationHandler var1)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.handler = var1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>订阅回调</p>
+<p>收到注册中心的服务提供者通知后，将提供者URL转为Invoker。</p>
+<ul>
+<li><p>URL格式类似：<code>dubbo://service-host:service-port/service-interface-full-class-name?version=xxx?interface=&amp;methods=</code>。</p>
+</li>
+<li><p>通过URL的<code>dubbo://</code>协议头，识别扩展点，调用DubboProtocol#refer，返回Provider引用。</p>
+</li>
+</ul>
+<p>RegistryDirectory#toInvokers</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Map&lt;String, Invoker&lt;T&gt;&gt; toInvokers(List&lt;URL&gt; urls) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取服务消费端配置的协议</span></span><br><span class="line">    String queryProtocols = <span class="keyword">this</span>.queryMap.get(PROTOCOL_KEY);</span><br><span class="line">    <span class="keyword">for</span> (URL providerUrl : urls) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取与url对应的Invoker</span></span><br><span class="line">        Invoker&lt;T&gt; invoker = localUrlInvokerMap == <span class="keyword">null</span> ? <span class="keyword">null</span> : localUrlInvokerMap.get(key);</span><br><span class="line">        <span class="comment">// 缓存未命中</span></span><br><span class="line">        <span class="keyword">if</span> (invoker == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (enabled) &#123;</span><br><span class="line">                    <span class="comment">// 调用refer获取Invoker</span></span><br><span class="line">                    invoker = <span class="keyword">new</span> InvokerDelegate&lt;&gt;(protocol.refer(serviceType, url), url, providerUrl);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; </span><br><span class="line">            <span class="keyword">if</span> (invoker != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 缓存Invoker实例</span></span><br><span class="line">                newUrlInvokerMap.put(key, invoker);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 缓存命中</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 将invoker存储到newUrlInvokerMap中</span></span><br><span class="line">            newUrlInvokerMap.put(key, invoker);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    keys.clear();</span><br><span class="line">    <span class="keyword">return</span> newUrlInvokerMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ProtocolFilterWrapper#refer<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">Invoker&lt;T&gt; <span class="title">refer</span><span class="params">(Class&lt;T&gt; type, URL url)</span> <span class="keyword">throws</span> RpcException </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// registry直接调用</span></span><br><span class="line">    <span class="keyword">if</span> (REGISTRY_PROTOCOL.equals(url.getProtocol())) &#123;</span><br><span class="line">        <span class="keyword">return</span> protocol.refer(type, url);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 包裹过滤链</span></span><br><span class="line">    <span class="keyword">return</span> buildInvokerChain(protocol.refer(type, url), REFERENCE_FILTER_KEY, CommonConstants.CONSUMER);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ProtocolListenerWrapper#refer</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">Invoker&lt;T&gt; <span class="title">refer</span><span class="params">(Class&lt;T&gt; type, URL url)</span> <span class="keyword">throws</span> RpcException </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// registry直接调用</span></span><br><span class="line">    <span class="keyword">if</span> (REGISTRY_PROTOCOL.equals(url.getProtocol())) &#123;</span><br><span class="line">        <span class="keyword">return</span> protocol.refer(type, url);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ListenerInvokerWrapper&lt;T&gt;(protocol.refer(type, url), Collections.unmodifiableList(ExtensionLoader.getExtensionLoader(InvokerListener.class).getActivateExtension(url, INVOKER_LISTENER_KEY)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>DubboProtocol#refer</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">Invoker&lt;T&gt; <span class="title">refer</span><span class="params">(Class&lt;T&gt; serviceType, URL url)</span> <span class="keyword">throws</span> RpcException </span>&#123;</span><br><span class="line">    optimizeSerialization(url);</span><br><span class="line">    <span class="comment">// 创建DubboInvoker</span></span><br><span class="line">    DubboInvoker&lt;T&gt; invoker = <span class="keyword">new</span> DubboInvoker&lt;T&gt;(serviceType, url, getClients(url), invokers);</span><br><span class="line">    invokers.add(invoker);</span><br><span class="line">    <span class="keyword">return</span> invoker;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>连接服务</p>
+<p>DubboProtocol#initClient</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> ExchangeClient <span class="title">initClient</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// client=netty</span></span><br><span class="line">    String str = url.getParameter(RemotingConstants.CLIENT_KEY, url.getParameter(RemotingConstants.SERVER_KEY, RemotingConstants.DEFAULT_REMOTING_CLIENT));</span><br><span class="line">    <span class="comment">// codec=dubbo</span></span><br><span class="line">    url = url.addParameter(RemotingConstants.CODEC_KEY, DubboCodec.NAME);</span><br><span class="line">    <span class="comment">// heartbeat=</span></span><br><span class="line">    url = url.addParameterIfAbsent(RemotingConstants.HEARTBEAT_KEY, String.valueOf(RemotingConstants.DEFAULT_HEARTBEAT));</span><br><span class="line"></span><br><span class="line">    ExchangeClient client;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// lazy配置</span></span><br><span class="line">        <span class="keyword">if</span> (url.getParameter(LAZY_CONNECT_KEY, <span class="keyword">false</span>)) &#123;</span><br><span class="line">            <span class="comment">// 懒加载ExchangeClient</span></span><br><span class="line">            client = <span class="keyword">new</span> LazyConnectExchangeClient(url, requestHandler);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 普通ExchangeClient</span></span><br><span class="line">            client = Exchangers.connect(url, requestHandler);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> client;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Exchangers#getExchanger</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Exchanger <span class="title">getExchanger</span><span class="params">(String type)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ExtensionLoader.getExtensionLoader(Exchanger.class).getExtension(type);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>HeaderExchanger#connect</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ExchangeClient <span class="title">connect</span><span class="params">(URL url, ExchangeHandler handler)</span> <span class="keyword">throws</span> RemotingException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> HeaderExchangeClient(Transporters.connect(url, <span class="keyword">new</span> DecodeHandler(<span class="keyword">new</span> HeaderExchangeHandler(handler))), <span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Transporters#getTransporter</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Transporter <span class="title">getTransporter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ExtensionLoader.getExtensionLoader(Transporter.class).getAdaptiveExtension();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>NettyTransporter#connect</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Client <span class="title">connect</span><span class="params">(URL url, ChannelHandler listener)</span> <span class="keyword">throws</span> RemotingException </span>&#123;</span><br><span class="line">    <span class="comment">// 创建NettyClient对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> NettyClient(url, listener);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ChannelHandlers#wrapInternal</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> ChannelHandler <span class="title">wrapInternal</span><span class="params">(ChannelHandler handler, URL url)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 默认AllDispatcher</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MultiMessageHandler(<span class="keyword">new</span> HeartbeatHandler(ExtensionLoader.getExtensionLoader(Dispatcher.class).getAdaptiveExtension().dispatch(handler, url)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>线程转发处理器</p>
+<p>AllDispatcher#dispatch</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AllDispatcher</span> <span class="keyword">implements</span> <span class="title">Dispatcher</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String NAME = <span class="string">"all"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ChannelHandler <span class="title">dispatch</span><span class="params">(ChannelHandler handler, URL url)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> AllChannelHandler(handler, url);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>WrappedChannelHandler</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">WrappedChannelHandler</span><span class="params">(ChannelHandler handler, URL url)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.handler = handler;</span><br><span class="line">    <span class="keyword">this</span>.url = url;</span><br><span class="line">    <span class="comment">// 默认fixed</span></span><br><span class="line">    executor = (ExecutorService) ExtensionLoader.getExtensionLoader(ThreadPool.class).getAdaptiveExtension().getExecutor(url);</span><br><span class="line">    String componentKey = RemotingConstants.EXECUTOR_SERVICE_COMPONENT_KEY;</span><br><span class="line"></span><br><span class="line">    DataStore dataStore = ExtensionLoader.getExtensionLoader(DataStore.class).getDefaultExtension();</span><br><span class="line">    <span class="comment">// 方便取出</span></span><br><span class="line">    dataStore.put(componentKey, Integer.toString(url.getPort()), executor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AbstractClient</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">AbstractClient</span><span class="params">(URL url, ChannelHandler handler)</span> <span class="keyword">throws</span> RemotingException </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(url, handler);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        doOpen();</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        connect();</span><br><span class="line">    &#125;</span><br><span class="line">    executor = (ExecutorService) ExtensionLoader.getExtensionLoader(DataStore.class).getDefaultExtension().get(CONSUMER_SIDE, Integer.toString(url.getPort()));</span><br><span class="line">    ExtensionLoader.getExtensionLoader(DataStore.class).getDefaultExtension().remove(CONSUMER_SIDE, Integer.toString(url.getPort()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AbstractEndpoint</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">AbstractEndpoint</span><span class="params">(URL url, ChannelHandler handler)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(url, handler);</span><br><span class="line">    <span class="comment">// ChannelCodec</span></span><br><span class="line">    <span class="keyword">this</span>.codec = getChannelCodec(url);</span><br><span class="line">    <span class="keyword">this</span>.timeout = url.getPositiveParameter(TIMEOUT_KEY, DEFAULT_TIMEOUT);</span><br><span class="line">    <span class="keyword">this</span>.connectTimeout = url.getPositiveParameter(RemotingConstants.CONNECT_TIMEOUT_KEY, RemotingConstants.DEFAULT_CONNECT_TIMEOUT);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AbstractEndpoint#getChannelCodec</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">static</span> Codec2 <span class="title">getChannelCodec</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line">    String codecName = url.getParameter(RemotingConstants.CODEC_KEY, <span class="string">"telnet"</span>);</span><br><span class="line">    <span class="keyword">if</span> (ExtensionLoader.getExtensionLoader(Codec2.class).hasExtension(codecName)) &#123;</span><br><span class="line">        <span class="comment">// 默认使用DubboCountCodec</span></span><br><span class="line">        <span class="keyword">return</span> ExtensionLoader.getExtensionLoader(Codec2.class).getExtension(codecName);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 如果不是Codec2的实现，查找Codec的实现，然后用CodecAdapter适配器类来转换成Codec2</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> CodecAdapter(ExtensionLoader.getExtensionLoader(Codec.class).getExtension(codecName));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用服务</p>
+<p>如果是多个注册中心的话，其实是包了两层Cluster的，第一层是静态的StaticDirectory，第二层是动态的RegistryDirectory。</p>
+<p>AbstractClusterInvoker#invoke</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Result <span class="title">invoke</span><span class="params">(<span class="keyword">final</span> Invocation invocation)</span> <span class="keyword">throws</span> RpcException </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 列举Invoker</span></span><br><span class="line">    List&lt;Invoker&lt;T&gt;&gt; invokers = list(invocation);</span><br><span class="line">    <span class="comment">// 加载LoadBalance</span></span><br><span class="line">    LoadBalance loadbalance = initLoadBalance(invokers, invocation);</span><br><span class="line">    <span class="comment">// 调用doInvoke</span></span><br><span class="line">    <span class="keyword">return</span> doInvoke(invocation, invokers, loadbalance);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>RegistryDirectory#doList</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> List&lt;Invoker&lt;T&gt;&gt; doList(Invocation invocation) &#123;</span><br><span class="line"></span><br><span class="line">    List&lt;Invoker&lt;T&gt;&gt; invokers = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        invokers = routerChain.route(getConsumerUrl(), invocation);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> invokers == <span class="keyword">null</span> ? Collections.emptyList() : invokers;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>FailoverClusterInvoker#doInvoke</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 循环调用，失败重试</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (i &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 重试前重新列举Invoker，好处是，如果某个服务挂了，通过调用list可得到最新可用的Invoker列表</span></span><br><span class="line">        copyInvokers = list(invocation);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 通过负载均衡选择Invoker</span></span><br><span class="line">    Invoker&lt;T&gt; invoker = select(loadbalance, invocation, copyInvokers, invoked);</span><br><span class="line">    <span class="comment">// 添加到invoker到invoked列表中</span></span><br><span class="line">    invoked.add(invoker);</span><br><span class="line">    <span class="comment">// 设置invoked到RPC上下文中</span></span><br><span class="line">    RpcContext.getContext().setInvokers((List) invoked);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 调用目标Invoker的invoke方法</span></span><br><span class="line">        Result result = invoker.invoke(invocation);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        providers.add(invoker.getUrl().getAddress());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AbstractClusterInvoker#doSelect</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Invoker&lt;T&gt; <span class="title">doSelect</span><span class="params">(LoadBalance loadbalance, Invocation invocation, List&lt;Invoker&lt;T&gt;&gt; invokers, List&lt;Invoker&lt;T&gt;&gt; selected)</span> <span class="keyword">throws</span> RpcException </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过负载均衡组件选择Invoker</span></span><br><span class="line">    Invoker&lt;T&gt; invoker = loadbalance.select(invokers, getUrl(), invocation);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> invoker;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Filter#invoke</p>
+<p>过滤链调用：略</p>
+<p>DubboInvoker#doInvoke</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Result <span class="title">doInvoke</span><span class="params">(<span class="keyword">final</span> Invocation invocation)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 1 异步无返回值</span></span><br><span class="line">        <span class="keyword">if</span> (isOneway) &#123;</span><br><span class="line">            <span class="keyword">boolean</span> isSent = getUrl().getMethodParameter(methodName, RemotingConstants.SENT_KEY, <span class="keyword">false</span>);</span><br><span class="line">            <span class="comment">// 发送请求</span></span><br><span class="line">            currentClient.send(inv, isSent);</span><br><span class="line">            <span class="comment">// 设置上下文中的future字段为null</span></span><br><span class="line">            RpcContext.getContext().setFuture(<span class="keyword">null</span>);</span><br><span class="line">            <span class="comment">// 返回一个空的RpcResult</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> RpcResult();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 2 异步有返回值</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (isAsync) &#123;</span><br><span class="line">            <span class="comment">// 发送请求，并得到一个ResponseFuture实例</span></span><br><span class="line">            ResponseFuture future = currentClient.request(inv, timeout);</span><br><span class="line">            <span class="comment">// 设置future到上下文中</span></span><br><span class="line">            FutureAdapter&lt;Object&gt; futureAdapter = <span class="keyword">new</span> FutureAdapter&lt;&gt;(future);</span><br><span class="line">            RpcContext.getContext().setFuture(futureAdapter);</span><br><span class="line">            Result result;</span><br><span class="line">            <span class="keyword">if</span> (isAsyncFuture) &#123;</span><br><span class="line">                result = <span class="keyword">new</span> AsyncRpcResult(futureAdapter, futureAdapter.getResultFuture(), <span class="keyword">false</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                result = <span class="keyword">new</span> SimpleAsyncRpcResult(futureAdapter, futureAdapter.getResultFuture(), <span class="keyword">false</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 暂时返回一个空结果</span></span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 3 同步调用</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            RpcContext.getContext().setFuture(<span class="keyword">null</span>);</span><br><span class="line">            <span class="comment">// 发送请求，得到一个ResponseFuture实例，并调用该实例的get方法进行等待，异步转同步</span></span><br><span class="line">            <span class="keyword">return</span> (Result) currentClient.request(inv, timeout).get();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>发送请求</p>
+<p>HeaderExchangeClient#request</p>
+<p>HeaderExchangeChannel#request</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ResponseFuture <span class="title">request</span><span class="params">(Object request, <span class="keyword">int</span> timeout)</span> <span class="keyword">throws</span> RemotingException </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建Request对象</span></span><br><span class="line">    Request req = <span class="keyword">new</span> Request();</span><br><span class="line">    req.setVersion(Version.getProtocolVersion());</span><br><span class="line">    <span class="comment">// 设置双向通信标志为true</span></span><br><span class="line">    req.setTwoWay(<span class="keyword">true</span>);</span><br><span class="line">    <span class="comment">// 这里的request变量类型为RpcInvocation</span></span><br><span class="line">    req.setData(request);</span><br><span class="line">    <span class="comment">// 创建DefaultFuture对象</span></span><br><span class="line">    DefaultFuture future = DefaultFuture.newFuture(channel, req, timeout);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 调用NettyClient的send方法发送请求</span></span><br><span class="line">        channel.send(req);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RemotingException e) &#123;</span><br><span class="line">        future.cancel();</span><br><span class="line">        <span class="keyword">throw</span> e;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回DefaultFuture对象</span></span><br><span class="line">    <span class="keyword">return</span> future;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AbstractPeer#send</p>
+<p>AbstractClient#send</p>
+<p>NettyChannel#send</p>
+<p>Channel#send</p>
+<p>编码请求</p>
+<p>DubboCountCodec#encode</p>
+<p>DubboCodec#encode</p>
+<p>ExchangeCodec#encode</p>
+<p>ExchangeCodec#encodeRequest</p>
+<p>收到响应</p>
+<p>解码响应</p>
+<p>DubboCountCodec#decode</p>
+<p>DubboCodec#decode</p>
+<p>DubboCodec#decodeBody</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">decodeBody</span><span class="params">(Channel channel, InputStream is, <span class="keyword">byte</span>[] header)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// 获取消息头中的第三个字节，并通过逻辑与运算得到序列化器编号</span></span><br><span class="line">    <span class="keyword">byte</span> flag = header[<span class="number">2</span>], proto = (<span class="keyword">byte</span>) (flag &amp; SERIALIZATION_MASK);</span><br><span class="line">    <span class="comment">// 获取调用编号</span></span><br><span class="line">    <span class="keyword">long</span> id = Bytes.bytes2long(header, <span class="number">4</span>);</span><br><span class="line">    <span class="comment">// 通过逻辑与运算得到调用类型，0 - Response，1 - Request</span></span><br><span class="line">    <span class="keyword">if</span> ((flag &amp; FLAG_REQUEST) == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 对响应结果进行解码，得到Response对象</span></span><br><span class="line">        <span class="comment">// 创建Response对象</span></span><br><span class="line">        Response res = <span class="keyword">new</span> Response(id);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 创建Request对象</span></span><br><span class="line">        Request req = <span class="keyword">new</span> Request(id);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">return</span> req;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>处理响应</p>
+<p>NettyClientHandler#channelRead</p>
+<p>AbstractPeer#received</p>
+<p>MultiMessageHandler#received</p>
+<p>HeartbeatHandler#received</p>
+<p>AllChannelHandler#received</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">received</span><span class="params">(Channel channel, Object message)</span> <span class="keyword">throws</span> RemotingException </span>&#123;</span><br><span class="line">    ExecutorService executor = getExecutorService();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 将消息封装到Runnable对象中，并放入线程池执行</span></span><br><span class="line">        executor.execute(<span class="keyword">new</span> ChannelEventRunnable(channel, handler, ChannelState.RECEIVED, message));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ChannelEventRunnable#run</p>
+<p>DecodeHandler#received</p>
+<p>DecodeHandler#decode</p>
+<p>HeaderExchangeHandler</p>
+<p>HeaderExchangeHandler#received</p>
+<p>HeaderExchangeHandler#handleResponse</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">handleResponse</span><span class="params">(Channel channel, Response response)</span> <span class="keyword">throws</span> RemotingException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (response != <span class="keyword">null</span> &amp;&amp; !response.isHeartbeat()) &#123;</span><br><span class="line">        DefaultFuture.received(channel, response);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总结：</p>
+<ul>
+<li><p>代理</p>
+<ul>
+<li><p>JavassistProxyFactory#getProxy </p>
+</li>
+<li><p>InvocationHandler#invoke</p>
+</li>
+</ul>
+</li>
+<li><p>集群</p>
+<ul>
+<li><p>AbstractClusterInvoker#invoke</p>
+</li>
+<li><p>RegistryProtocol#refer</p>
+</li>
+<li><p>Cluster#join：创建集群Invoker</p>
+</li>
+<li><p>Directory#list：获取请求路径对应的Invoker列表（用于容错）</p>
+</li>
+<li><p>LoadBalance#select：负载均衡算法</p>
+</li>
+</ul>
+</li>
+<li><p>过滤监听</p>
+</li>
+<li><p>协议调用</p>
+<ul>
+<li><p>AbstractInvoker#invoke</p>
+</li>
+<li><p>DubboProtocol#refer</p>
+</li>
+<li><p>DubboInvoker</p>
+</li>
+</ul>
+</li>
+<li><p>信息交换</p>
+<ul>
+<li><p>ExchangeClient#request</p>
+</li>
+<li><p>ResponseFuture#get：请求响应（Request、Response、ResponseFuture）</p>
+</li>
+</ul>
+</li>
+<li><p>网络传输</p>
+<ul>
+<li>Transporter</li>
+</ul>
+</li>
+</ul>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

@@ -1,22 +1,23 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
+	<head><meta name="generator" content="Hexo 3.9.0">
 		<meta charset="utf-8">
-				<script>var timeStart = new Date();</script>
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
 		
 		<title>[笔记]-Mybatis-缓存&amp;分页 | 一个放笔记的地方而已</title>
 		
 		<meta name="author" content="Huangzhike">
 		
 		
-		<meta name="description" content="没有鸡汤，只有笔记">
+		<meta name="description" content="K.I.S.S">
 		
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		
-		<meta property="og:title" content="[笔记]-Mybatis-缓存&amp;分页"/>
+		<meta property="og:title" content="[笔记]-Mybatis-缓存&amp;分页">
 		
-		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		<meta property="og:site_name" content="一个放笔记的地方而已">
 		
 		
 		<!-- favicon -->
@@ -49,7 +50,7 @@
 		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
 		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
 	</head>
-
+</html>
 <body>
 	<nav class="navbar navbar-default">
 	<div class="container">
@@ -100,8 +101,8 @@
 				<h2>[笔记]-Mybatis-缓存&amp;分页</h2>
 				
 				<div>
-					<span class="post-time">2017-12-04 00:23:17</span>
-				</div>	
+					<div class="post-time">2017-12-04</div>
+				</div>
 				
 				<div class="article-content">
 				<p><strong>12-29重新整理更新Mybatis笔记</strong></p>
@@ -115,8 +116,8 @@
 <li><p>增删改，无论是否提交，均会清空一级、二级查询缓存。</p>
 </li>
 </ul>
-<p>开启二级缓存<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- mybatis-config.xml --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">settings</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">"cacheEnabled"</span> <span class="attr">value</span>=<span class="string">"true"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">settings</span>/&gt;</span></div></pre></td></tr></table></figure></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">"mmp.xxx.UserMapper"</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 此mapper开启二级缓存 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">cache</span>/&gt;</span></div><div class="line"><span class="comment">&lt;!-- 回收策略为先进先出，自动刷新时间60s，最多缓存512个引用对象，只读 --&gt;</span></div><div class="line"><span class="comment">&lt;!-- &lt;cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"/&gt; --&gt;</span></div></pre></td></tr></table></figure>
+<p>开启二级缓存<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- mybatis-config.xml --&gt;</span><br><span class="line">&lt;settings&gt;</span><br><span class="line">	&lt;setting name=&quot;cacheEnabled&quot; value=&quot;true&quot;&gt;</span><br><span class="line">&lt;settings/&gt;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;mapper namespace=&quot;mmp.xxx.UserMapper&quot;&gt;</span><br><span class="line">&lt;!-- 此mapper开启二级缓存 --&gt;</span><br><span class="line">&lt;cache/&gt;</span><br><span class="line">&lt;!-- 回收策略为先进先出，自动刷新时间60s，最多缓存512个引用对象，只读 --&gt;</span><br><span class="line">&lt;!-- &lt;cache eviction=&quot;FIFO&quot; flushInterval=&quot;60000&quot; size=&quot;512&quot; readOnly=&quot;true&quot;/&gt; --&gt;</span><br></pre></td></tr></table></figure>
 <ul>
 <li><p><code>select</code>语句将会被缓存。</p>
 </li>
@@ -125,8 +126,8 @@
 <li><p><code>commit</code>语句会清空缓存。</p>
 </li>
 </ul>
-<p>全局关闭二级缓存。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">settings</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">"cacheEnabled"</span> <span class="attr">value</span>=<span class="string">"false"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">settings</span>/&gt;</span></div></pre></td></tr></table></figure></p>
-<p>局部关闭二级缓存：针对某个<code>&lt;select/&gt;</code>查询，不使用二级缓存。<br><figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;<span class="keyword">select</span> useCache=<span class="string">"false"</span>&gt;&lt;<span class="keyword">select</span>/&gt;</div></pre></td></tr></table></figure></p>
+<p>全局关闭二级缓存。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;settings&gt;</span><br><span class="line">	&lt;setting name=&quot;cacheEnabled&quot; value=&quot;false&quot;&gt;</span><br><span class="line">&lt;settings/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>局部关闭二级缓存：针对某个<code>&lt;select/&gt;</code>查询，不使用二级缓存。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;select useCache=&quot;false&quot;&gt;&lt;select/&gt;</span><br></pre></td></tr></table></figure></p>
 <p>毛用：若要使某个增、删或改操作不清空二级缓存，在其<code>&lt;insert/&gt;</code>或<code>&lt;delete/&gt;</code>或<code>&lt;update/&gt;</code>中添加属性 <code>flushCache=&quot;false&quot;</code>。</p>
 <p>二级缓存使用原则</p>
 <ul>
@@ -148,9 +149,9 @@
 <li>内置</li>
 <li>三方框架，如ehcache，实体类无需实现序列化接口。</li>
 </ul>
-<p>classpath:ehcache.xml<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">ehcache</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></div><div class="line">	<span class="attr">xsi:noNamespaceSchemaLocation</span>=<span class="string">"../config/ehcache.xsd"</span>&gt;</div><div class="line">	<span class="tag">&lt;<span class="name">diskStore</span> <span class="attr">path</span>=<span class="string">""</span>/&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">defaultCache</span> </span></div><div class="line">		<span class="attr">maxElementsInMemory</span>=<span class="string">"1000"</span> </div><div class="line">		<span class="attr">maxElementsOnDisk</span>=<span class="string">"10000000"</span></div><div class="line">		<span class="attr">eternal</span>=<span class="string">"false"</span> </div><div class="line">		<span class="attr">overflowToDisk</span>=<span class="string">"false"</span> </div><div class="line">		<span class="attr">timeToIdleSeconds</span>=<span class="string">"120"</span></div><div class="line">		<span class="attr">timeToLiveSeconds</span>=<span class="string">"120"</span> </div><div class="line">		<span class="attr">diskExpiryThreadIntervalSeconds</span>=<span class="string">"120"</span></div><div class="line">		<span class="attr">memoryStoreEvictionPolicy</span>=<span class="string">"LRU"</span>&gt;</div><div class="line">	<span class="tag">&lt;/<span class="name">defaultCache</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">ehcache</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>classpath:ehcache.xml<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ehcache</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">xsi:noNamespaceSchemaLocation</span>=<span class="string">"../config/ehcache.xsd"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">diskStore</span> <span class="attr">path</span>=<span class="string">""</span>/&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">defaultCache</span> </span></span><br><span class="line"><span class="tag">		<span class="attr">maxElementsInMemory</span>=<span class="string">"1000"</span> </span></span><br><span class="line"><span class="tag">		<span class="attr">maxElementsOnDisk</span>=<span class="string">"10000000"</span></span></span><br><span class="line"><span class="tag">		<span class="attr">eternal</span>=<span class="string">"false"</span> </span></span><br><span class="line"><span class="tag">		<span class="attr">overflowToDisk</span>=<span class="string">"false"</span> </span></span><br><span class="line"><span class="tag">		<span class="attr">timeToIdleSeconds</span>=<span class="string">"120"</span></span></span><br><span class="line"><span class="tag">		<span class="attr">timeToLiveSeconds</span>=<span class="string">"120"</span> </span></span><br><span class="line"><span class="tag">		<span class="attr">diskExpiryThreadIntervalSeconds</span>=<span class="string">"120"</span></span></span><br><span class="line"><span class="tag">		<span class="attr">memoryStoreEvictionPolicy</span>=<span class="string">"LRU"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">defaultCache</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ehcache</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>然后在XxxMapper.xml中添加ehcache的配置</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 开启本mapper的namespace下的二级缓存，type：cache接口的实现类的类型 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">cache</span> <span class="attr">type</span>=<span class="string">"org.mybatis.caches.ehcache.EhcacheCache"</span>/&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 开启本mapper的namespace下的二级缓存，type：cache接口的实现类的类型 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">cache</span> <span class="attr">type</span>=<span class="string">"org.mybatis.caches.ehcache.EhcacheCache"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
 <p>分页(pagination)</p>
 <ul>
 <li><p>逻辑分页：查询得到表中的1000条数据，然后分页显示。</p>
@@ -160,11 +161,11 @@
 <li><p>对于物理分页，Mysql利用<code>limit</code>、<code>offset</code>、<code>pagesize</code>实现，Oracle通过<code>rownum</code>来实现。</p>
 </li>
 </ul>
-<p>Mysql实现Mybatis物理分页，最简单方式：<br><figure class="highlight dust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="xml"><span class="comment">&lt;!-- parameterType是传入的参数类，或者map，包含了offset pagesize --&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"listCategory"</span> <span class="attr">parameterType</span>=<span class="string">"Your_params"</span> <span class="attr">resultMap</span>=<span class="string">"Category"</span>&gt;</span></div><div class="line">	select * from category_</div><div class="line">	<span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"offset != null and pagesize != null"</span>&gt;</span></div><div class="line">		limit #<span class="template-variable">&#123;offset&#125;</span><span class="xml">, #</span><span class="template-variable">&#123;pagesize&#125;</span><span class="xml"></span></div><div class="line">	<span class="tag">&lt;/<span class="name">if</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>Mysql实现Mybatis物理分页，最简单方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- parameterType是传入的参数类，或者map，包含了offset pagesize --&gt;</span><br><span class="line">&lt;select id=&quot;listCategory&quot; parameterType=&quot;Your_params&quot; resultMap=&quot;Category&quot;&gt;</span><br><span class="line">	select * from category_</span><br><span class="line">	&lt;if test=&quot;offset != null and pagesize != null&quot;&gt;</span><br><span class="line">		limit #&#123;offset&#125;, #&#123;pagesize&#125;</span><br><span class="line">	&lt;/if&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure></p>
 <p>更通用的方式是插件</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- PageHelper 分页插件 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">plugins</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">plugin</span> <span class="attr">interceptor</span>=<span class="string">"com.github.pagehelper.PageInterceptor"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- PageHelper 分页插件 --&gt;</span><br><span class="line">&lt;plugins&gt;</span><br><span class="line">	&lt;plugin interceptor=&quot;com.github.pagehelper.PageInterceptor&quot;/&gt;</span><br><span class="line">&lt;/plugins&gt;</span><br></pre></td></tr></table></figure>
 <p>注释掉<code>limit</code>，因为分页相关工作，由PageHelper做。</p>
-<p>查询<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">PageHelper.offsetPage(0, 5); <span class="comment">// 查出第一页的数据，每页5条</span></div><div class="line"></div><div class="line"><span class="keyword">List</span>&lt;Category&gt; <span class="keyword">cs</span> = session.selectList(<span class="string">"listCategory"</span>);</div><div class="line"></div><div class="line"><span class="keyword">for</span> (Category c : <span class="keyword">cs</span>) &#123;</div><div class="line">	System.<span class="keyword">out</span>.println(c.getName());</div><div class="line">&#125;</div><div class="line"><span class="comment">// 获取分页信息，包括总数以及其他的</span></div><div class="line">PageInfo pageInfo = new PageInfo&lt;&gt;(<span class="keyword">cs</span>);</div><div class="line">System.<span class="keyword">out</span>.println(<span class="string">"总数： "</span> + pageInfo.getTotal());</div><div class="line">System.<span class="keyword">out</span>.println(pageInfo);</div></pre></td></tr></table></figure></p>
+<p>查询<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PageHelper.offsetPage(0, 5); // 查出第一页的数据，每页5条</span><br><span class="line"></span><br><span class="line">List&lt;Category&gt; cs = session.selectList(&quot;listCategory&quot;);</span><br><span class="line"></span><br><span class="line">for (Category c : cs) &#123;</span><br><span class="line">	System.out.println(c.getName());</span><br><span class="line">&#125;</span><br><span class="line">// 获取分页信息，包括总数以及其他的</span><br><span class="line">PageInfo pageInfo = new PageInfo&lt;&gt;(cs);</span><br><span class="line">System.out.println(&quot;总数： &quot; + pageInfo.getTotal());</span><br><span class="line">System.out.println(pageInfo);</span><br></pre></td></tr></table></figure></p>
 
 				</div>
 				<!-- about -->
@@ -191,8 +192,8 @@
 	</div>
 	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
 	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-	<script src="/js/highlight.js"></script> 
-	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
 	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
 	<!-- material design -->
 	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->

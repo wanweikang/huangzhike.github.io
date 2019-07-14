@@ -1,22 +1,23 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
+	<head><meta name="generator" content="Hexo 3.9.0">
 		<meta charset="utf-8">
-				<script>var timeStart = new Date();</script>
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
 		
 		<title>[笔记]-PJAX | 一个放笔记的地方而已</title>
 		
 		<meta name="author" content="Huangzhike">
 		
 		
-		<meta name="description" content="没有鸡汤，只有笔记">
+		<meta name="description" content="K.I.S.S">
 		
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		
-		<meta property="og:title" content="[笔记]-PJAX"/>
+		<meta property="og:title" content="[笔记]-PJAX">
 		
-		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		<meta property="og:site_name" content="一个放笔记的地方而已">
 		
 		
 		<!-- favicon -->
@@ -49,7 +50,7 @@
 		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
 		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
 	</head>
-
+</html>
 <body>
 	<nav class="navbar navbar-default">
 	<div class="container">
@@ -100,11 +101,11 @@
 				<h2>[笔记]-PJAX</h2>
 				
 				<div>
-					<span class="post-time">2016-12-04 20:15:34</span>
-				</div>	
+					<div class="post-time">2016-12-04</div>
+				</div>
 				
 				<div class="article-content">
-				<p>来源于网络，整理于12月29日<br>参考：<a href="http://ce.sysu.edu.cn/hope/Item/165875.aspx" target="_blank" rel="external">http://ce.sysu.edu.cn/hope/Item/165875.aspx</a></p>
+				<p>来源于网络，整理于12月29日<br>参考：<a href="http://ce.sysu.edu.cn/hope/Item/165875.aspx" target="_blank" rel="noopener">http://ce.sysu.edu.cn/hope/Item/165875.aspx</a></p>
 <ul>
 <li>前端路由有2种实现方式，一种是url hash + hashChange 事件，另一种histroy API + popstate 事件。</li>
 <li>Github、百度、微博等，不使用普通的a标签跳转，大多使用Ajax请求替代了a标签的默认跳转，然后用HTML5的新API修改了Url，在F12的Network面板里可以发现。</li>
@@ -171,7 +172,7 @@
 <li>或者给爬虫看的是一套，对用户做的是另一套。</li>
 </ul>
 <ul>
-<li>下面代码来自厚朴工作室<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"ajax-anchor"</span> <span class="attr">data-href</span>=<span class="string">"abc"</span> <span class="attr">href</span>=<span class="string">"/abc"</span>&gt;</span>#abc<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"ajax-anchor"</span> <span class="attr">data-href</span>=<span class="string">"def"</span> <span class="attr">href</span>=<span class="string">"/def"</span>&gt;</span>#def<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"contariner"</span>&gt;</span>数据<span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></div><div class="line">	<span class="keyword">var</span> ajaxAnchors = <span class="built_in">document</span>.querySelectorAll(<span class="string">'.ajax-anchor'</span>);</div><div class="line">	<span class="keyword">var</span> contariner = <span class="built_in">document</span>.querySelector(<span class="string">'#contariner'</span>);</div><div class="line"></div><div class="line">	<span class="built_in">window</span>.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">		<span class="keyword">if</span> ([...ajaxAnchors].indexOf(e.target) &gt; <span class="number">-1</span>) &#123;</div><div class="line">			e.preventDefault();</div><div class="line">			location.hash = e.target.dataset[<span class="string">'href'</span>];</div><div class="line">		&#125;</div><div class="line">	&#125;, <span class="literal">false</span>);</div><div class="line"></div><div class="line">	<span class="keyword">var</span> callback = <span class="function"><span class="keyword">function</span>(<span class="params">responseText, status, xhr</span>) </span>&#123;</div><div class="line">		contariner.innerHTML = responseText;</div><div class="line">	&#125;;</div><div class="line">	<span class="built_in">window</span>.addEventListener(<span class="string">'hashchange'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">		<span class="keyword">var</span> api = <span class="string">'https://api.yangfch3.com?q='</span> + location.hash.substr(<span class="number">1</span>);</div><div class="line">		<span class="keyword">new</span> Ajax(api, callback);</div><div class="line">	&#125;, <span class="literal">false</span>);</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure></li>
+<li>下面代码来自厚朴工作室<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;a class=&quot;ajax-anchor&quot; data-href=&quot;abc&quot; href=&quot;/abc&quot;&gt;#abc&lt;/a&gt;</span><br><span class="line">&lt;a class=&quot;ajax-anchor&quot; data-href=&quot;def&quot; href=&quot;/def&quot;&gt;#def&lt;/a&gt;</span><br><span class="line">&lt;div id=&quot;contariner&quot;&gt;数据&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">	var ajaxAnchors = document.querySelectorAll(&apos;.ajax-anchor&apos;);</span><br><span class="line">	var contariner = document.querySelector(&apos;#contariner&apos;);</span><br><span class="line"></span><br><span class="line">	window.addEventListener(&apos;click&apos;, function(e) &#123;</span><br><span class="line">		if ([...ajaxAnchors].indexOf(e.target) &gt; -1) &#123;</span><br><span class="line">			e.preventDefault();</span><br><span class="line">			location.hash = e.target.dataset[&apos;href&apos;];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;, false);</span><br><span class="line"></span><br><span class="line">	var callback = function(responseText, status, xhr) &#123;</span><br><span class="line">		contariner.innerHTML = responseText;</span><br><span class="line">	&#125;;</span><br><span class="line">	window.addEventListener(&apos;hashchange&apos;, function(e) &#123;</span><br><span class="line">		var api = &apos;https://api.yangfch3.com?q=&apos; + location.hash.substr(1);</span><br><span class="line">		new Ajax(api, callback);</span><br><span class="line">	&#125;, false);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></li>
 </ul>
 
 				</div>
@@ -199,8 +200,8 @@
 	</div>
 	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
 	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-	<script src="/js/highlight.js"></script> 
-	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
 	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
 	<!-- material design -->
 	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->

@@ -1,22 +1,23 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
+	<head><meta name="generator" content="Hexo 3.9.0">
 		<meta charset="utf-8">
-				<script>var timeStart = new Date();</script>
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
 		
 		<title>[笔记]-MVVM&amp;模板引擎 | 一个放笔记的地方而已</title>
 		
 		<meta name="author" content="Huangzhike">
 		
 		
-		<meta name="description" content="没有鸡汤，只有笔记">
+		<meta name="description" content="K.I.S.S">
 		
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		
-		<meta property="og:title" content="[笔记]-MVVM&amp;模板引擎"/>
+		<meta property="og:title" content="[笔记]-MVVM&amp;模板引擎">
 		
-		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		<meta property="og:site_name" content="一个放笔记的地方而已">
 		
 		
 		<!-- favicon -->
@@ -49,7 +50,7 @@
 		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
 		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
 	</head>
-
+</html>
 <body>
 	<nav class="navbar navbar-default">
 	<div class="container">
@@ -100,11 +101,11 @@
 				<h2>[笔记]-MVVM&amp;模板引擎</h2>
 				
 				<div>
-					<span class="post-time">2016-11-25 21:08:17</span>
-				</div>	
+					<div class="post-time">2016-11-25</div>
+				</div>
 				
 				<div class="article-content">
-				<p><strong>2016-12-02更新</strong><br><strong>参考</strong>：<br><a href="http://www.dongwm.com/archives/浅谈MVC、MTV和MVVM/" target="_blank" rel="external">http://www.dongwm.com/archives/浅谈MVC、MTV和MVVM/</a><br><a href="http://www.liaoxuefeng.com" target="_blank" rel="external">http://www.liaoxuefeng.com</a><br><a href="https://github.com/ruanyf/jstraining" target="_blank" rel="external">https://github.com/ruanyf/jstraining</a> </p>
+				<p><strong>2016-12-02更新</strong><br><strong>参考</strong>：<br><a href="http://www.dongwm.com/archives/浅谈MVC、MTV和MVVM/" target="_blank" rel="noopener">http://www.dongwm.com/archives/浅谈MVC、MTV和MVVM/</a><br><a href="http://www.liaoxuefeng.com" target="_blank" rel="noopener">http://www.liaoxuefeng.com</a><br><a href="https://github.com/ruanyf/jstraining" target="_blank" rel="noopener">https://github.com/ruanyf/jstraining</a> </p>
 <p>JavaScript在浏览器中操作HTML，经历了若干阶段：</p>
 <ul>
 <li>直接用JavaScript操作DOM节点，使用浏览器提供的原生API；</li>
@@ -138,7 +139,7 @@
 <li><p>MVVM框架和jQuery操作DOM区别？</p>
 <ul>
 <li><p>如果使用MVVM框架来实现同样的功能，首先并不关心DOM的结构，而是关心数据如何存储。最简单的数据存储方式是使用JavaScript对象：</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">var person</span> = &#123;</div><div class="line">	name: <span class="string">'Bart'</span>,</div><div class="line">	age: 12</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var person = &#123;</span><br><span class="line">	name: &apos;Bart&apos;,</span><br><span class="line">	age: 12</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>把变量person看作Model，把HTML某些DOM节点看作View，假定它们之间被绑定了。</p>
 </li>
@@ -169,13 +170,13 @@
 <li>第二个参数是传递给模板的数据，用于模板翻译。<br>index.ejs 内容如下：<code>&lt;h1&gt;&lt;%= title %&gt;&lt;/h1&gt;</code>；<br><code>&lt;%= title %&gt;</code>用于模板变量显示，在模板翻译时会被替换成 Express，因为 res.render 传递了 <code>{ title: &#39;Express&#39; }</code>。<br>ejs 只有以下3种标签</li>
 <li><code>&lt;% code %&gt;</code> ：JavaScript 代码。</li>
 <li><code>&lt;%= code %&gt;</code> ：显示替换过 HTML 特殊字符的内容。</li>
-<li><code>&lt;%- code %&gt;</code> ：显示原始 HTML 内容。<br>看到的不止这两行，原因是 Express 还自动套用了 layout.ejs：<figure class="highlight erb"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE html&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;<span class="name">%=</span></span><span class="ruby"> title </span><span class="xml"><span class="tag">%&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></div><div class="line">		<span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">'stylesheet'</span> <span class="attr">href</span>=<span class="string">'/stylesheets/style.css'</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">%-</span></span><span class="ruby"> body </span><span class="xml"><span class="tag">%&gt;</span></span></div><div class="line">	<span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<li><code>&lt;%- code %&gt;</code> ：显示原始 HTML 内容。<br>看到的不止这两行，原因是 Express 还自动套用了 layout.ejs：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">	&lt;head&gt;</span><br><span class="line">		&lt;title&gt;&lt;%= title %&gt;&lt;/title&gt;</span><br><span class="line">		&lt;link rel=&apos;stylesheet&apos; href=&apos;/stylesheets/style.css&apos; /&gt;</span><br><span class="line">	&lt;/head&gt;</span><br><span class="line">	&lt;body&gt;</span><br><span class="line">		&lt;%- body %&gt;</span><br><span class="line">	&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>layout.ejs 是一个页面布局模板，它描述了整个页面的框架结构，默认情况下每个单独的页面都继承自这个框架，替换掉 &lt;%- body %&gt; 部分。<br>一般为了保持整个网站的一致风格，HTML 页面的 <head> 部分以及页眉页脚中的大量内容是重复的，因此可以把它们放在 layout.ejs 中。<br>当然，这个功能并不是强制的，如果想关闭它，可以在 app.js 的中 app.configure 中添加以下内容，这样页面布局功能就被关闭了：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">app.<span class="keyword">set</span>(<span class="string">'view options'</span>, &#123;</div><div class="line">	layout: <span class="literal">false</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure></head></p>
-<p>一个网站可能需要不止一种页面布局，可以在页面模板翻译时指定页面布局，即设置 layout 属性：<br><figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">function</span>(req, res) &#123;</div><div class="line">	<span class="selector-tag">res</span><span class="selector-class">.render</span>(<span class="string">'userlist'</span>, &#123;</div><div class="line">		<span class="attribute">title</span>: <span class="string">'用户列表后台管理系统'</span>,</div><div class="line">		<span class="attribute">layout</span>: <span class="string">'admin'</span></div><div class="line">	&#125;);</div><div class="line">&#125;;</div><div class="line"><span class="comment">// 在翻译 userlist 页面模板时套用 admin.ejs 作为页面布局</span></div></pre></td></tr></table></figure></p>
-<p>Express 的视图系统还支持片段视图 （partials），它是一个页面的片段，通常是重复的内容，用于迭代显示。<br>通过它你可以将相对独立的页面块分割出去，而且可以避免显式地使用 for 循环。<br><figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// app.js </span></div><div class="line"><span class="selector-tag">app</span><span class="selector-class">.get</span>(<span class="string">'/list'</span>, function(req, res) &#123;</div><div class="line">	<span class="selector-tag">res</span><span class="selector-class">.render</span>(<span class="string">'list'</span>, &#123;</div><div class="line">		<span class="attribute">title</span>: <span class="string">'List'</span>,</div><div class="line">		<span class="attribute">items</span>: [<span class="number">1991</span>, <span class="string">'byvoid'</span>, <span class="string">'express'</span>, <span class="string">'Node.js'</span>]</div><div class="line">	&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
-<p>在 views 目录下新建 list.ejs：<code>&lt;ul&gt;&lt;%- partial(&#39;listitem&#39;, items) %&gt;&lt;/ul&gt;</code><br>同时新建 listitem.ejs：<code>&lt;li&gt;&lt;%= listitem %&gt;&lt;/li&gt;</code><br>访问 <code>http://localhost:3000/list</code>，可以在源代码中看到以下内容：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">title</span>&gt;</span>List<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">'stylesheet'</span> <span class="attr">href</span>=<span class="string">'/stylesheets/style.css'</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">ul</span>&gt;</span><span class="tag">&lt;<span class="name">li</span>&gt;</span>1991<span class="tag">&lt;/<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">li</span>&gt;</span>byvoid<span class="tag">&lt;/<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">li</span>&gt;</span>express<span class="tag">&lt;/<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">li</span>&gt;</span>Node.js<span class="tag">&lt;/<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>layout.ejs 是一个页面布局模板，它描述了整个页面的框架结构，默认情况下每个单独的页面都继承自这个框架，替换掉 &lt;%- body %&gt; 部分。<br>一般为了保持整个网站的一致风格，HTML 页面的 <head><meta name="generator" content="Hexo 3.9.0"> 部分以及页眉页脚中的大量内容是重复的，因此可以把它们放在 layout.ejs 中。<br>当然，这个功能并不是强制的，如果想关闭它，可以在 app.js 的中 app.configure 中添加以下内容，这样页面布局功能就被关闭了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">app.set(&apos;view options&apos;, &#123;</span><br><span class="line">	layout: false</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></head></p>
+<p>一个网站可能需要不止一种页面布局，可以在页面模板翻译时指定页面布局，即设置 layout 属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function(req, res) &#123;</span><br><span class="line">	res.render(&apos;userlist&apos;, &#123;</span><br><span class="line">		title: &apos;用户列表后台管理系统&apos;,</span><br><span class="line">		layout: &apos;admin&apos;</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;;</span><br><span class="line">// 在翻译 userlist 页面模板时套用 admin.ejs 作为页面布局</span><br></pre></td></tr></table></figure></p>
+<p>Express 的视图系统还支持片段视图 （partials），它是一个页面的片段，通常是重复的内容，用于迭代显示。<br>通过它你可以将相对独立的页面块分割出去，而且可以避免显式地使用 for 循环。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// app.js </span><br><span class="line">app.get(&apos;/list&apos;, function(req, res) &#123;</span><br><span class="line">	res.render(&apos;list&apos;, &#123;</span><br><span class="line">		title: &apos;List&apos;,</span><br><span class="line">		items: [1991, &apos;byvoid&apos;, &apos;express&apos;, &apos;Node.js&apos;]</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>在 views 目录下新建 list.ejs：<code>&lt;ul&gt;&lt;%- partial(&#39;listitem&#39;, items) %&gt;&lt;/ul&gt;</code><br>同时新建 listitem.ejs：<code>&lt;li&gt;&lt;%= listitem %&gt;&lt;/li&gt;</code><br>访问 <code>http://localhost:3000/list</code>，可以在源代码中看到以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">	&lt;html&gt;</span><br><span class="line">	&lt;head&gt;</span><br><span class="line">		&lt;title&gt;List&lt;/title&gt;</span><br><span class="line">		&lt;link rel=&apos;stylesheet&apos; href=&apos;/stylesheets/style.css&apos; /&gt;</span><br><span class="line">	&lt;/head&gt;</span><br><span class="line">	&lt;body&gt;</span><br><span class="line">		&lt;ul&gt;&lt;li&gt;1991&lt;/li&gt;&lt;li&gt;byvoid&lt;/li&gt;&lt;li&gt;express&lt;/li&gt;&lt;li&gt;Node.js&lt;/li&gt;&lt;/ul&gt;</span><br><span class="line">	&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
 <p>partial 是一个可以在视图中使用函数，它接受两个参数：</p>
 <ul>
 <li>第一个是片段视图的名称；</li>
@@ -190,7 +191,7 @@
 <li>静态视图助手可以是任何类型的对象，包括接受任意参数的函数，但访问到的对象必须是与用户请求无关的；</li>
 <li>动态视图助手只能是一个函数，这个函数不能接受参数，但可以访问 req 和 res 对象。</li>
 <li>静态视图助手可以通过 app.helpers() 函数注册，它接受一个对象，对象的每个属性名称为视图助手的名称，属性值对应视图助手的值。</li>
-<li>动态视图助手则通过 app.dynamicHelpers()注册，方法与静态视图助手相同，但每个属性的值必须为一个函数，该函数提供 req 和 res ：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> util = <span class="built_in">require</span>(<span class="string">'util'</span>);</div><div class="line">app.helpers(&#123;</div><div class="line">	<span class="attr">inspect</span>: <span class="function"><span class="keyword">function</span>(<span class="params">obj</span>) </span>&#123;</div><div class="line">		<span class="keyword">return</span> util.inspect(obj, <span class="literal">true</span>);</div><div class="line">	&#125;</div><div class="line">&#125;);</div><div class="line">app.dynamicHelpers(&#123;</div><div class="line">	<span class="attr">headers</span>: <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</div><div class="line">		<span class="keyword">return</span> req.headers;</div><div class="line">	&#125;</div><div class="line">&#125;);</div><div class="line">app.get(<span class="string">'/helper'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</div><div class="line">	res.render(<span class="string">'helper'</span>, &#123;</div><div class="line">		<span class="attr">title</span>: <span class="string">'Helpers'</span></div><div class="line">	&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<li>动态视图助手则通过 app.dynamicHelpers()注册，方法与静态视图助手相同，但每个属性的值必须为一个函数，该函数提供 req 和 res ：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">var util = require(&apos;util&apos;);</span><br><span class="line">app.helpers(&#123;</span><br><span class="line">	inspect: function(obj) &#123;</span><br><span class="line">		return util.inspect(obj, true);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line">app.dynamicHelpers(&#123;</span><br><span class="line">	headers: function(req, res) &#123;</span><br><span class="line">		return req.headers;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line">app.get(&apos;/helper&apos;, function(req, res) &#123;</span><br><span class="line">	res.render(&apos;helper&apos;, &#123;</span><br><span class="line">		title: &apos;Helpers&apos;</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <p>对应的视图helper、ejs的内容如下：<code>&lt;%=inspect(headers)%&gt;</code></p>
@@ -220,8 +221,8 @@
 	</div>
 	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
 	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-	<script src="/js/highlight.js"></script> 
-	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
 	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
 	<!-- material design -->
 	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->

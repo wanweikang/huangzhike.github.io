@@ -1,22 +1,23 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
+	<head><meta name="generator" content="Hexo 3.9.0">
 		<meta charset="utf-8">
-				<script>var timeStart = new Date();</script>
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
 		
 		<title>[笔记]-HTTP | 一个放笔记的地方而已</title>
 		
 		<meta name="author" content="Huangzhike">
 		
 		
-		<meta name="description" content="没有鸡汤，只有笔记">
+		<meta name="description" content="K.I.S.S">
 		
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		
-		<meta property="og:title" content="[笔记]-HTTP"/>
+		<meta property="og:title" content="[笔记]-HTTP">
 		
-		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		<meta property="og:site_name" content="一个放笔记的地方而已">
 		
 		
 		<!-- favicon -->
@@ -49,7 +50,7 @@
 		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
 		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
 	</head>
-
+</html>
 <body>
 	<nav class="navbar navbar-default">
 	<div class="container">
@@ -100,8 +101,8 @@
 				<h2>[笔记]-HTTP</h2>
 				
 				<div>
-					<span class="post-time">2016-12-12 16:49:37</span>
-				</div>	
+					<div class="post-time">2016-12-12</div>
+				</div>
 				
 				<div class="article-content">
 				<ul>
@@ -110,15 +111,15 @@
 <li><p>HTTP请求和响应都遵循相同的格式，HTTP包含Header和Body两部分，Body可选</p>
 </li>
 <li><p>客户端请求：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">GET <span class="regexp">/hello.txt HTTP/</span><span class="number">1.1</span></div><div class="line">User-Agent: curl<span class="regexp">/7.16.3 libcurl/</span><span class="number">7.16</span>.<span class="number">3</span> OpenSSL<span class="regexp">/0.9.7l zlib/</span><span class="number">1.2</span>.<span class="number">3</span></div><div class="line">Host: www.example.com</div><div class="line"><span class="regexp">//</span> GET表示请求方式，<span class="regexp">/表示URL路径，URL总是以/</span>开头，<span class="regexp">/表示首页，HTTP/</span><span class="number">1.1</span>表示HTTP协议版本是<span class="number">1.1</span></div><div class="line"><span class="regexp">//</span> Host表示请求域名。服务器通过Host区分浏览器请求网站</div></pre></td></tr></table></figure>
-  <figure class="highlight http"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">POST</span> <span class="string">/path</span> HTTP/1.1</div><div class="line"><span class="attribute">Header1</span>: Value1</div><div class="line"><span class="attribute">Header2</span>: Value2</div><div class="line"><span class="attribute">Header3</span>: Value3</div><div class="line"></div><div class="line"><span class="gams"><span class="function"><span class="title">body</span></span> data goes here...</span></div><div class="line"><span class="comment">// 当遇到连续两个\r\n时，Header结束，后面是Body</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GET /hello.txt HTTP/1.1</span><br><span class="line">User-Agent: curl/7.16.3 libcurl/7.16.3 OpenSSL/0.9.7l zlib/1.2.3</span><br><span class="line">Host: www.example.com</span><br><span class="line">// GET表示请求方式，/表示URL路径，URL总是以/开头，/表示首页，HTTP/1.1表示HTTP协议版本是1.1</span><br><span class="line">// Host表示请求域名。服务器通过Host区分浏览器请求网站</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">POST /path HTTP/1.1</span><br><span class="line">Header1: Value1</span><br><span class="line">Header2: Value2</span><br><span class="line">Header3: Value3</span><br><span class="line"></span><br><span class="line">body data goes here...</span><br><span class="line">// 当遇到连续两个\r\n时，Header结束，后面是Body</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>GET方法，主要是请求某个资源，是最常用到的方法，获取列表数据分页等等。但GET方法数据存放在头部，有大小的限制，详见各浏览器对URL的限制。</p>
 </li>
 <li><p>POST方法，主要是向服务端发送数据，如用户登陆，修改用户资料等。不能因为修改信息少而去改变为get方法，这是违背定义的。</p>
 </li>
 <li><p>GET 方法：查询字符串（名称/值对）在 GET 请求的 URL 中发送：</p>
-<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/test/demo<span class="number">_f</span>orm.asp？name<span class="number">1</span>=<span class="keyword">value</span><span class="number">1</span>&amp;name<span class="number">2</span>=<span class="keyword">value</span><span class="number">2</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/test/demo_form.asp？name1=value1&amp;name2=value2</span><br></pre></td></tr></table></figure>
 <ul>
 <li>GET 请求可被缓存</li>
 <li>GET 请求保留在浏览器历史记录中</li>
@@ -131,7 +132,7 @@
 </ul>
 <ul>
 <li><p>POST 方法：查询字符串（名称/值对）在 POST 请求的 HTTP 消息主体中发送：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">POST /test/demo_form<span class="selector-class">.asp</span> HTTP/<span class="number">1.1</span></div><div class="line">Host: w3schools<span class="selector-class">.com</span></div><div class="line">name1=value1&amp;name2=value2</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">POST /test/demo_form.asp HTTP/1.1</span><br><span class="line">Host: w3schools.com</span><br><span class="line">name1=value1&amp;name2=value2</span><br></pre></td></tr></table></figure>
 <ul>
 <li>POST 请求不会被缓存</li>
 <li>POST 请求不会保留在浏览器历史记录中</li>
@@ -140,7 +141,7 @@
 </ul>
 </li>
 <li><p>服务端响应：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">HTTP/<span class="number">1.1</span> <span class="number">200</span> OK</div><div class="line"><span class="string">Date:</span> Mon, <span class="number">27</span> Jul <span class="number">2009</span> <span class="number">12</span>:<span class="number">28</span>:<span class="number">53</span> GMT</div><div class="line"><span class="string">Server:</span> Apache</div><div class="line">Last-<span class="string">Modified:</span> Wed, <span class="number">22</span> Jul <span class="number">2009</span> <span class="number">19</span>:<span class="number">15</span>:<span class="number">56</span> GMT</div><div class="line"><span class="string">ETag:</span> <span class="string">"34aa387-d-1568eb00"</span></div><div class="line">Accept-<span class="string">Ranges:</span> bytes</div><div class="line">Content-<span class="string">Length:</span> <span class="number">51</span></div><div class="line"><span class="string">Vary:</span> Accept-Encoding</div><div class="line">Content-<span class="string">Type:</span> text/plain</div><div class="line"><span class="comment">// HTTP响应如果包含body，也是通过\r\n\r\n来分隔的</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Date: Mon, 27 Jul 2009 12:28:53 GMT</span><br><span class="line">Server: Apache</span><br><span class="line">Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT</span><br><span class="line">ETag: &quot;34aa387-d-1568eb00&quot;</span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line">Content-Length: 51</span><br><span class="line">Vary: Accept-Encoding</span><br><span class="line">Content-Type: text/plain</span><br><span class="line">// HTTP响应如果包含body，也是通过\r\n\r\n来分隔的</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>HTTP响应头信息</p>
 <ul>
@@ -318,8 +319,8 @@
 	</div>
 	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
 	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-	<script src="/js/highlight.js"></script> 
-	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
 	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
 	<!-- material design -->
 	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->

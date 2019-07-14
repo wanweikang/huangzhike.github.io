@@ -1,22 +1,23 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
+	<head><meta name="generator" content="Hexo 3.9.0">
 		<meta charset="utf-8">
-				<script>var timeStart = new Date();</script>
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
 		
 		<title>[笔记]-handleEvent | 一个放笔记的地方而已</title>
 		
 		<meta name="author" content="Huangzhike">
 		
 		
-		<meta name="description" content="没有鸡汤，只有笔记">
+		<meta name="description" content="K.I.S.S">
 		
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		
-		<meta property="og:title" content="[笔记]-handleEvent"/>
+		<meta property="og:title" content="[笔记]-handleEvent">
 		
-		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		<meta property="og:site_name" content="一个放笔记的地方而已">
 		
 		
 		<!-- favicon -->
@@ -49,7 +50,7 @@
 		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
 		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
 	</head>
-
+</html>
 <body>
 	<nav class="navbar navbar-default">
 	<div class="container">
@@ -100,14 +101,14 @@
 				<h2>[笔记]-handleEvent</h2>
 				
 				<div>
-					<span class="post-time">2016-12-15 15:15:37</span>
-				</div>	
+					<div class="post-time">2016-12-15</div>
+				</div>
 				
 				<div class="article-content">
-				<p>参考：<a href="http://www.tuicool.com/articles/uIfeM3V" target="_blank" rel="external">http://www.tuicool.com/articles/uIfeM3V</a><br>最近在看一段代码的时候，有些懵逼：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">F</span>(<span class="params"></span>) </span>&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line">F.prototype.handleEvent = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line">F.prototype.do = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line"></div><div class="line">	<span class="built_in">document</span>.addEventListener(<span class="string">'click'</span>, <span class="keyword">this</span>, <span class="literal">false</span>);</div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>这里<code>document.addEventListener(&#39;click&#39;, this, false)</code>中的<code>this</code>不是一个对象吗，怎么成了事件处理的一个函数了？一查资料，发现：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">	<span class="attr">name</span>: <span class="string">'foo'</span>,</div><div class="line">	<span class="attr">handleEvent</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">		</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'click'</span>, obj, <span class="literal">false</span>);</div></pre></td></tr></table></figure></p>
-<p>在事件后，调用的是handleEvent方法，<code>this</code>指向obj对象，而普通函数中的<code>this</code>指向事件源：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="keyword">this</span> == <span class="built_in">document</span>); </div><div class="line">&#125;, <span class="literal">false</span>);</div><div class="line"><span class="comment">// true</span></div></pre></td></tr></table></figure></p>
-<p>还可以动态切换绑定事件的处理函数，不需要remove之前的事件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">	<span class="attr">name</span>: <span class="string">'foo'</span>,</div><div class="line">	<span class="attr">handleEvent</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">		</div><div class="line">	&#125;</div><div class="line">&#125;;</div><div class="line"> </div><div class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'click'</span>, obj, <span class="literal">false</span>);</div><div class="line"> </div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">changeHandler</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	obj.handleEvent = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line"></div><div class="line">	&#125;;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="comment">// 5秒后动态改变事件处理函数</span></div><div class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	changeHandler();</div><div class="line">&#125;, <span class="number">5000</span>);</div></pre></td></tr></table></figure></p>
+				<p>参考：<a href="http://www.tuicool.com/articles/uIfeM3V" target="_blank" rel="noopener">http://www.tuicool.com/articles/uIfeM3V</a><br>最近在看一段代码的时候，有些懵逼：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function F() &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">F.prototype.handleEvent = function(e) &#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">F.prototype.do = function() &#123;</span><br><span class="line"></span><br><span class="line">	document.addEventListener(&apos;click&apos;, this, false);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这里<code>document.addEventListener(&#39;click&#39;, this, false)</code>中的<code>this</code>不是一个对象吗，怎么成了事件处理的一个函数了？一查资料，发现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var obj = &#123;</span><br><span class="line">	name: &apos;foo&apos;,</span><br><span class="line">	handleEvent: function() &#123;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line">document.addEventListener(&apos;click&apos;, obj, false);</span><br></pre></td></tr></table></figure></p>
+<p>在事件后，调用的是handleEvent方法，<code>this</code>指向obj对象，而普通函数中的<code>this</code>指向事件源：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">document.addEventListener(&apos;click&apos;, function() &#123;</span><br><span class="line">	console.log(this == document); </span><br><span class="line">&#125;, false);</span><br><span class="line">// true</span><br></pre></td></tr></table></figure></p>
+<p>还可以动态切换绑定事件的处理函数，不需要remove之前的事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">var obj = &#123;</span><br><span class="line">	name: &apos;foo&apos;,</span><br><span class="line">	handleEvent: function() &#123;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">document.addEventListener(&apos;click&apos;, obj, false);</span><br><span class="line"> </span><br><span class="line">function changeHandler() &#123;</span><br><span class="line">	obj.handleEvent = function() &#123;</span><br><span class="line"></span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">// 5秒后动态改变事件处理函数</span><br><span class="line">setTimeout(function() &#123;</span><br><span class="line">	changeHandler();</span><br><span class="line">&#125;, 5000);</span><br></pre></td></tr></table></figure></p>
 
 				</div>
 				<!-- about -->
@@ -134,8 +135,8 @@
 	</div>
 	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
 	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-	<script src="/js/highlight.js"></script> 
-	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
 	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
 	<!-- material design -->
 	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->

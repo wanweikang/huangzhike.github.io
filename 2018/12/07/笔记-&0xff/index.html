@@ -1,22 +1,23 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
+	<head><meta name="generator" content="Hexo 3.9.0">
 		<meta charset="utf-8">
-				<script>var timeStart = new Date();</script>
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
 		
 		<title>[笔记]-&amp;0xff | 一个放笔记的地方而已</title>
 		
 		<meta name="author" content="Huangzhike">
 		
 		
-		<meta name="description" content="没有鸡汤，只有笔记">
+		<meta name="description" content="K.I.S.S">
 		
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		
-		<meta property="og:title" content="[笔记]-&amp;0xff"/>
+		<meta property="og:title" content="[笔记]-&amp;0xff">
 		
-		<meta property="og:site_name" content="一个放笔记的地方而已"/>
+		<meta property="og:site_name" content="一个放笔记的地方而已">
 		
 		
 		<!-- favicon -->
@@ -49,7 +50,7 @@
 		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
 		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
 	</head>
-
+</html>
 <body>
 	<nav class="navbar navbar-default">
 	<div class="container">
@@ -100,11 +101,11 @@
 				<h2>[笔记]-&amp;0xff</h2>
 				
 				<div>
-					<span class="post-time">2018-12-07 20:28:17</span>
-				</div>	
+					<div class="post-time">2018-12-07</div>
+				</div>
 				
 				<div class="article-content">
-				<p>由<code>byte &amp; 0xff</code>引申出来，参考这篇文章：<a href="https://www.cnblogs.com/zhangziqiu/archive/2011/03/30/ComputerCode.html" target="_blank" rel="external">https://www.cnblogs.com/zhangziqiu/archive/2011/03/30/ComputerCode.html</a></p>
+				<p>由<code>byte &amp; 0xff</code>引申出来，参考这篇文章：<a href="https://www.cnblogs.com/zhangziqiu/archive/2011/03/30/ComputerCode.html" target="_blank" rel="noopener">https://www.cnblogs.com/zhangziqiu/archive/2011/03/30/ComputerCode.html</a></p>
 <hr>
 <ul>
 <li><p>机器数：数在计算机中的二进制表示形式, 带符号，最高位存放符号, 正数为 <code>0</code> , 负数为 <code>1</code> 。</p>
@@ -187,7 +188,7 @@
 <hr>
 <p>计算机内的存储都是利用二进制的补码进行存储的，位运算都是用补码进行。</p>
 <p>Java 没有 unsigned 类型。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">byte</span> a = <span class="number">-127</span>;</div><div class="line"><span class="keyword">int</span> b = a &amp; <span class="number">0xff</span>; <span class="comment">// 129</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">byte a = -127;</span><br><span class="line">int b = a &amp; 0xff; // 129</span><br></pre></td></tr></table></figure>
 <p>byte -&gt; int :将byte的内存空间高位补 <code>1</code> （按符号位补位）扩充到 <code>32</code> 位，虽然将补码转为原码后十进制表示的值不变，但是二进制是改变了的。</p>
 <p><code>-111 1111</code> -&gt;<br><code>1111 1111</code> -&gt;<br><code>1000 0000</code> -&gt;<br><code>1000 0001</code> -&gt;<br><code>1111 1111 1111 1111 1111 1111 1000 0001</code></p>
 <p><code>0xff</code> -&gt;<br><code>1111 1111</code> -&gt;<br><code>...</code> -&gt;<br><code>0x 0000 0000 0000 0000 0000 0000 1111 1111</code> -&gt;<br><code>0x 0000 0000 0000 0000 0000 0000 1111 1111</code> -&gt;<br><code>0x 0000 0000 0000 0000 0000 0000 1111 1111</code></p>
@@ -205,13 +206,13 @@
 <p>如果想不被截断，把 <code>0xff</code> 扩展为二个字节即<code>0xffff</code>，以此类推，<code>0xffffff</code>, <code>0xffffffff</code>。</p>
 <hr>
 <p><code>4</code> 字节 ，<code>32</code> 位，按照大端方式排列：</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 最高位 -&gt; 最低位</span></div><div class="line"></div><div class="line"><span class="number">1111</span> <span class="number">1111</span> <span class="number">1010</span> <span class="number">1010</span> <span class="number">1100</span> <span class="number">0011</span> <span class="number">1010</span> <span class="number">1010</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 最高位 -&gt; 最低位</span><br><span class="line"></span><br><span class="line">1111 1111 1010 1010 1100 0011 1010 1010</span><br></pre></td></tr></table></figure>
 <p>最高位 <code>8</code> 字节要移到最低位，那么这个 <code>8</code> 个字节 <code>&gt;&gt; (3 * 8)</code>，然后 <code>&amp; 0xff</code>，取出，后续得 <code>&gt;&gt; (2 * 8) &amp; 0xff</code>， <code>&gt;&gt; (1 * 8) &amp; 0xff</code>均可取出。</p>
 <p><code>int a</code> 转换成字节，一般情况下，<code>int</code> <code>4</code> 字节，需要 <code>4</code> 个 <code>byte</code> 来保存，又因为 Java 是大端排序，那么 <code>byte[0]</code>为最高位，所以需要 <code>&gt;&gt; 24</code>，这么一个个的把 a 的 <code>4</code> 个字节取出存入 <code>byte</code> 数组中，这里 <code>0xff</code> 不仅截断，而且还将有符号转换成了无符号。</p>
 <p>将字节转换回去不是截断而是融合 ，需要将 <code>&amp;</code> 改为 <code>|</code>，还得把每个字节移到所在实际位置，比如 <code>byte[0]</code> 是最高位，因此还得将其移到 <code>4</code> 个字节的头部即需要 <code>&lt;&lt; 24</code> ，以此类推。</p>
 <p>一个 <code>int32</code> 型就出现了。</p>
 <p>但是 Java 在位移操作之前不能少了有符号转无符号操作。</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">int a = <span class="number">1234567890</span>;</div><div class="line"></div><div class="line">byte[] b1 = new byte[<span class="number">4</span>];</div><div class="line"></div><div class="line">b1[<span class="number">0</span>] = (byte) ((a &gt;&gt; <span class="number">24</span>) &amp; <span class="number">0xff</span>);</div><div class="line">b1[<span class="number">1</span>] = (byte) ((a &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xff</span>);</div><div class="line">b1[<span class="number">2</span>] = (byte) ((a &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xff</span>);</div><div class="line">b1[<span class="number">3</span>] = (byte) (a &amp; <span class="number">0xff</span>);</div><div class="line"></div><div class="line">int b2 = ((b1[<span class="number">0</span>] &amp; <span class="number">0xff</span>) &lt;&lt; <span class="number">24</span>) | ((b1[<span class="number">1</span>] &amp; <span class="number">0xff</span>) &lt;&lt; <span class="number">16</span>) | ((b1[<span class="number">2</span>] &amp; <span class="number">0xff</span>) &lt;&lt; <span class="number">8</span>) | (b1[<span class="number">3</span>] &amp; <span class="number">0xff</span>);</div><div class="line">            </div><div class="line">int b3 = ((b1[<span class="number">0</span>]) &lt;&lt; <span class="number">24</span>) | ((b1[<span class="number">1</span>]) &lt;&lt; <span class="number">16</span>) | ((b1[<span class="number">2</span>]) &lt;&lt; <span class="number">8</span>) | (b1[<span class="number">3</span>]);</div><div class="line">        </div><div class="line">System.out.println(b2); <span class="comment">// 正确结果</span></div><div class="line">System.out.println(b3); <span class="comment">// 错误结果，没有将有符号转无符号</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">int a = 1234567890;</span><br><span class="line"></span><br><span class="line">byte[] b1 = new byte[4];</span><br><span class="line"></span><br><span class="line">b1[0] = (byte) ((a &gt;&gt; 24) &amp; 0xff);</span><br><span class="line">b1[1] = (byte) ((a &gt;&gt; 16) &amp; 0xff);</span><br><span class="line">b1[2] = (byte) ((a &gt;&gt; 8) &amp; 0xff);</span><br><span class="line">b1[3] = (byte) (a &amp; 0xff);</span><br><span class="line"></span><br><span class="line">int b2 = ((b1[0] &amp; 0xff) &lt;&lt; 24) | ((b1[1] &amp; 0xff) &lt;&lt; 16) | ((b1[2] &amp; 0xff) &lt;&lt; 8) | (b1[3] &amp; 0xff);</span><br><span class="line">            </span><br><span class="line">int b3 = ((b1[0]) &lt;&lt; 24) | ((b1[1]) &lt;&lt; 16) | ((b1[2]) &lt;&lt; 8) | (b1[3]);</span><br><span class="line">        </span><br><span class="line">System.out.println(b2); // 正确结果</span><br><span class="line">System.out.println(b3); // 错误结果，没有将有符号转无符号</span><br></pre></td></tr></table></figure>
 
 				</div>
 				<!-- about -->
@@ -238,8 +239,8 @@
 	</div>
 	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
 	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-	<script src="/js/highlight.js"></script> 
-	<script>hljs.initHighlightingOnLoad();var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
 	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
 	<!-- material design -->
 	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
