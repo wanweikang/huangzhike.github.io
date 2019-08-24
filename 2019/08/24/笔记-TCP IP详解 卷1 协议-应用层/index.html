@@ -1,0 +1,245 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-TCP/IP详解 卷1：协议-应用层 | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-TCP/IP详解 卷1：协议-应用层">
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-TCP/IP详解 卷1：协议-应用层</h2>
+				
+				<div>
+					<div class="post-time">2019-08-24</div>
+				</div>
+				
+				<div class="article-content">
+				<p>来源：</p>
+<ul>
+<li><p>TCP/IP详解 卷1：协议（第一版、第二版）</p>
+</li>
+<li><p>计算机网络（第七版）</p>
+</li>
+</ul>
+<p>去年看了第一版的TCP部分，这次和第二版对比着翻了一遍，改动还是挺大的。</p>
+<p>由于信息量太大，我也是看了个皮毛，黑客和网络工程师应该会比较关心这个，要想真正学习网络协议，我觉得得看看卷二的实现（打扰了⊙︿⊙）。</p>
+<p>初学者建议装一个Wireshark抓包配合看，挺傻瓜的。</p>
+<p>这本书的翻译有些地方实在不及格，有条件的建议和英文版一起参照看。</p>
+<p>刚开始看网络这部分的时候，看得我是真心累，没有可以请教的人，还得熬夜看（不然耽误进度），比高三累多了，从不因为学习熬夜，熬夜都是在看小说（幸福的高中）。。。</p>
+<p>什么时候才能从容不迫、自由地学习，并且还有各种摸鱼的余裕呢？</p>
+<p>P.S.：看完之后我突然想补补计算机基础了，操作系统，C/C++，编译原理，书我都准备好了，不过都是明年的事了。</p>
+<p>别问，问就是我爱学习，学习使我快乐（其实我真的只想做条死咸鱼的，奈何家穷人丑，不得不努力）。</p>
+<p>野鸡再次觉得自己的大学过得实在是。。。o(︶︿︶)o 唉。。。</p>
+<hr>
+<p>TCP/IP协议族</p>
+<ul>
+<li><p>应用层：处理特定的应用程序细节，如Telnet（远程登录），FTP（文件传输协议），SMTP（简单邮件传送协议）。</p>
+</li>
+<li><p>运输层：为两台主机上的应用程序提供端到端的通信，如TCP（传输控制协议），UDP（用户数据报协议）。</p>
+</li>
+<li><p>网络层：处理分组的选路，提供点到点的服务，如IP（网际协议），ICMP（Internet互联网控制报文协议），IGMP（Internet组管理协议）。</p>
+</li>
+<li><p>链路层：通常包括设备驱动和对应的网络接口卡，处理与传输媒介的物理细节（以太网协议，Loopback协议等）。</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li>应用层：</li>
+</ul>
+<p>DNS系统是一个树，最上方有一个无名树根，下一层是arpa，com，edu，gov，int，mil，us，cn，等等，其中arpa是域名反解析树的顶端。</p>
+<p>一个独立管理的DNS子树叫做Zone，最常见的区域就是二级域名，比如说.com.cn。</p>
+<p>DNS使用一棵子树来维护IP到域名的映射。</p>
+<p>这个子树的根节点是in-addr.arpa，一个IP如192.168.1.2的DNS地址就是2.1.168.192.in-addr.arpa（IP倒置）。</p>
+<p>DNS服务器支持TCP和UDP两种协议的查询，端口都是53。</p>
+<p>大多数查询都是UDP 查询，必须处理超时和重传，一般需要TCP查询的有两种情况：</p>
+<ul>
+<li><p>当查询数据过大时，需要用TCP的分片进行传输。</p>
+</li>
+<li><p>当主(Master)服务器和辅(Slave)服务器之间通信，辅服务器要拿到主服务器的Zone信息的时候。</p>
+</li>
+</ul>
+<p>DNS系统是个分布式的数据库，当一个数据库发现自己并没有某查询所需要的数据的时候，将查询转发出去，转发目的地通常是根服务器，根服务器从上至下层层转发查询，直到找到目标为止。</p>
+<p>DNS使用高速缓存，把查询过的数据缓存在某处，以便下次查询使用。</p>
+<p>名字解析器的配置文件以及DNS的优化措施：指向域名的指针（减少报文的长度）、查询结果的高速缓存、in-addr.arpa域（查找IP地址对应的域名）以及返回的附加资源记录（避免主机重发同一查询请求）。</p>
+<p>DNS协议：略</p>
+<p>正向查询是通过域名得到IP，反向查询是通过IP得到域名，又叫指针(PTR)查询。</p>
+<p>递归查询：如果主机所询问的本地DNS服务器（Local DNS）不知道被查询域名的IP地址，那么本地DNS服务器就以DNS客户的身份，向其他根DNS服务器（Root DNS）继续发出查询请求报文，而不是让该主机进行下一步查询。</p>
+<p>迭代查询：当根DNS服务器收到本地DNS服务器发出的迭代查询请求报文时，要么回复查询的IP地址，要么回复本地DNS服务器：下一步应当向哪个DNS服务器进行查询。然后让本地DNS服务器进行后续的查询，而不是替本地DNS服务器进行后续的查询。</p>
+<p>可见，客户端到本地DNS服务器，与上级DNS服务器之间属于递归查询；DNS服务器与根DNS服务器之间属于迭代查询。</p>
+<p>参考了这篇<a href="http://www.52im.net/thread-2121-1-1.html" target="_blank" rel="noopener">文章</a>。非常推荐这个网站，国内少有的“有干货”的即时通讯交流社区。</p>
+<p>域名解析流程</p>
+<ul>
+<li><p>搜索浏览器的DNS缓存。</p>
+</li>
+<li><p>搜索操作系统的DNS缓存。</p>
+</li>
+<li><p>尝试读取hosts文件。</p>
+</li>
+<li><p>向本地DNS服务器发起域名解析请求。</p>
+<ul>
+<li><p>如果查询的域名由服务器负责，则返回解析结果给客户机，完成域名解析。</p>
+</li>
+<li><p>如果查询的域名不由服务器负责，但该服务器已缓存了此域名的映射关系，通过缓存完成域名解析；</p>
+</li>
+<li><p>如果服务器的区域文件与缓存都失效，则根据设置（是否递归）查询。</p>
+<ul>
+<li><p>迭代模式，本地DNS服务器把请求发至13台根DNS服务器。</p>
+</li>
+<li><p>递归模式，本地DNS把请求转发至上级DNS服务器，由上级服务器解析，上级服务器如果不能解析，或找根DNS或把转请求转至上上级，以此循环；</p>
+</li>
+<li><p>根DNS服务器收到请求后，判断域名由谁管理，并返回负责该顶级域名的DNS服务器IP；</p>
+</li>
+<li><p>本地DNS服务器收到后，联系负责该域的DNS服务器；</p>
+</li>
+</ul>
+</li>
+<li><p>最后返回解析的域名的IP地址给本地DNS服务器，缓存并返回解析结果；</p>
+</li>
+</ul>
+</li>
+<li><p>本机缓存解析结果；</p>
+</li>
+<li><p>本机将结果返回给浏览器；</p>
+</li>
+<li><p>浏览器通过返回的IP地址发起请求。</p>
+</li>
+</ul>
+<p><img src="/imgs/DNS_tree.png" alt="DNS树"></p>
+<p>host 8.8.8.8</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">8.8.8.8.in-addr.arpa domain name pointer dns.google.</span><br></pre></td></tr></table></figure>
+<p>host 114.114.114.114</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">114.114.114.114.in-addr.arpa domain name pointer public1.114dns.com.</span><br></pre></td></tr></table></figure>
+<p>host www.baidu.com</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br><span class="line">www.a.shifen.com has address 180.101.49.12</span><br><span class="line">www.a.shifen.com has address 180.101.49.11</span><br></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

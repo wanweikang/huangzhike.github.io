@@ -1,0 +1,362 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-TCP/IP详解 卷1：协议-网络层-IP | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-TCP/IP详解 卷1：协议-网络层-IP">
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-TCP/IP详解 卷1：协议-网络层-IP</h2>
+				
+				<div>
+					<div class="post-time">2019-08-24</div>
+				</div>
+				
+				<div class="article-content">
+				<p>不可靠：不保证IP数据报能成功地到达目的地。发生错误时，如某个路由器用完了缓冲区，则丢弃该数据报，然后发送ICMP消息报给源端。</p>
+<p>无连接：不维护数据报的状态信息，每个数据报的处理是独立的，发送顺序与接收顺序可以不一致。</p>
+<hr>
+<p><img src="/imgs/IP_header.png" alt="IP头"></p>
+<ul>
+<li><p>IPv4头：</p>
+<ul>
+<li><p>版本：4表示IPv4，6表示IPv6。</p>
+</li>
+<li><p>头长度：4位，单位为32位字，即4字节，一般为5，20字节，最大为2^4-1=15，即60字节。</p>
+</li>
+<li><p>服务类型</p>
+</li>
+<li><p>总长度：16位，单位为字节，最大长度为2^16-1字节，考虑到MTU，IP会分片（分片后也是指每个分片的总长度）。一些数据链路（如以太网）需要填充一些数据以达到最小长度，如果没有总长度字段，IP层就不知道有多少是IP数据报的内容。</p>
+</li>
+<li><p>标识：IP的序号，用来识别同一组的分片。</p>
+</li>
+<li><p>标志：</p>
+<ul>
+<li><p>Bit 0：保留，0</p>
+</li>
+<li><p>Bit 1： 分片，0 = May Fragment，1 = Don’t Fragment</p>
+</li>
+<li><p>Bit 2：更多分片，0 = Last Fragment，1 = More Fragments</p>
+</li>
+</ul>
+</li>
+<li><p>片偏移：较长的分组分片后，某分片在原分组的相对位置（字节）。片偏移以8字节为单位。如某IP数据报总长3820字节，数据部分长3800字节，分3片，每片数据部分长度1400字节，第1片偏移0/8=0，第2片1400/8=175，第3片2800/8=350。 IPv4中的分片可发生在任何中间路由器上，分片自身也可被分片。尽量避免IP层的分片，对于UDP，包含源和目的端日号的UDP头部只在第一个分片里，如果任何一个分片丢失了，整个数据报就丢失了。对于TCP，它会自动在TCP层分片，如果一个TCP报文段的一个分片丢失了，TCP会重传整个报文段，不能只重发一个分片。</p>
+</li>
+<li><p>TTL：生存期，设置一个数据报可经过的路由器数量的上限，一般发送方初始化为64，每台路由器转发数据报时减一，为零时丢弃，并发送一个ICMP报文通知发送方。    避免路由环路而导致数据报在网络中永远循环。</p>
+</li>
+<li><p>协议：1表示为ICMP，2表示为IGMP，6表示为TCP，17表示为UDP。</p>
+</li>
+<li><p>头校验和：仅计算头部，不检查有效载荷的正确性，如果接收方计算检验和错误，丢弃数据，但不产生差错报文，由上层维护重传。由于路由器经常只修改TTL字段（减1），因此当路由器转发一份报文时可以增加它的检验和，而不需要重新计算IP整个头。</p>
+</li>
+<li><p>源IP地址</p>
+</li>
+<li><p>目的IP地址</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>计算机硬件有两种储存数据的方式：大端字节序（big endian）和小端字节序（little endian）。</p>
+<p>数值0x2211使用两个字节储存：高位字节是0x22，低位字节是0x11。</p>
+<p>大端字节序：高位字节在前，低位字节在后，这是人类读写数值的方法。</p>
+<p>小端字节序：低位字节在前，高位字节在后，即以0x1122形式储存。</p>
+<p>计算机电路先处理低位字节，效率比较高，因为计算都是从低位开始的，所以计算机的内部处理都是小端字节序。</p>
+<p>但是人类习惯读写大端字节序，所以除了计算机内部，几乎都是大端字节序，比如网络传输和文件储存。</p>
+<hr>
+<p>三类IP地址：单播地址（目的为单个主机）、广播地址（目的端为给定网络上的所有主机）以及多播地址（目的端为同一组内的所有主机）。</p>
+<p>广播和多播仅应用于UDP。</p>
+<p>TCP是面向连接的协议，意味着分别运行于两主机（由IP地址确定）内的两进程（由端口号确定）间存在一条连接。</p>
+<h4 id="单播：对特定的主机发送数据包。"><a href="#单播：对特定的主机发送数据包。" class="headerlink" title="单播：对特定的主机发送数据包。"></a>单播：对特定的主机发送数据包。</h4><p>如给某一个主机发送IP数据包，链路层的数据头里是具体的目的地址，对以太网来说，就是网卡的MAC地址。</p>
+<h4 id="广播：对某个网络（网络-子网-所有子网）上的所有主机发送数据包。"><a href="#广播：对某个网络（网络-子网-所有子网）上的所有主机发送数据包。" class="headerlink" title="广播：对某个网络（网络/子网/所有子网）上的所有主机发送数据包。"></a>广播：对某个网络（网络/子网/所有子网）上的所有主机发送数据包。</h4><p>如果是网络，如A类IP的广播就是NetId.255.255.255，如果是子网，则是NetId.NetId.SubNetId.255，如果是所有的子网（B类）则是NetId.NetId.255.255。</p>
+<p>广播用的MAC地址为FF-FF-FF-FF-FF-FF，网络内所有的主机都会收到这个广播，网卡只要把MAC地址为FF-FF-FF-FF-FF-FF的数据交给内核就可以了。</p>
+<p>一般ARP或路由协议RIP应该是广播的。</p>
+<p>四种广播地址</p>
+<ul>
+<li>受限地址：255.255.255.255</li>
+</ul>
+<p>用于主机配置过程中IP数据包的目的地址，此时，主机可能还不知道它所在网络的网络掩码或它的IP地址。</p>
+<p>任何情况下，路由器都不转发目的地址为受限的广播地址的数据报，这样的数据报仅出现在本地网络中。</p>
+<ul>
+<li>指向网络：主机号为全1的地址</li>
+</ul>
+<p>A类网络广播地址为NetId.255.255.255，其中NetId为A类网络的网络号。</p>
+<p>一个路由器必须转发指向网络的广播，也有不转发的选项。</p>
+<ul>
+<li>指向子网：主机号为全1且有特定子网号的地址</li>
+</ul>
+<p>需要子网的掩码。</p>
+<p>如果路由器收到发往128.1.2.255的数据报，当B类网络128.1的子网掩码为255.255.255.0时，该地址就是指向子网的广播地址。</p>
+<p>但如果该子网的掩码为255.255.254.0，该地址就不是指向子网的广播地址。</p>
+<ul>
+<li>指向所有子网：子网号及主机号全为1</li>
+</ul>
+<p>需要子网的掩码。</p>
+<p>如果目的子网掩码为255.255.255.0，那么IP地址128.1.255.255是一个指向所有子网的广播地址。</p>
+<p>如果网络没有划分子网，这就是一个指向网络的广播。</p>
+<h4 id="多播：给一组特定的主机（多播组）发送数据包。"><a href="#多播：给一组特定的主机（多播组）发送数据包。" class="headerlink" title="多播：给一组特定的主机（多播组）发送数据包。"></a>多播：给一组特定的主机（多播组）发送数据包。</h4><p>多播的MAC地址是最高字节的低位为1，如01-00-00-00-00-00。</p>
+<p>多播组的地址是D类IP：224.0.0.0-239.255.255.255。</p>
+<p>一个以太网卡绑定了一个多播IP地址后，还要绑定一个多播的MAC地址。</p>
+<p>多播的IP和多播MAC地址有一个算法，这个对应不是一一对应的，主机还是要对多播数据进行过滤。</p>
+<p>当主机运行了一个处理某一个多播IP的进程的时候，进程会给网卡绑定一个虚拟的多播MAC地址，一个多播IP。</p>
+<p>广播的问题在于它增加了对广播数据不感兴趣主机的负荷。</p>
+<p>一个UDP广播应用，如果网内有50个主机，但仅有20个相关，每次广播时，其余30个主机不得不处理广播数据报，一直到UDP层，才会被丢弃（主机没有使用目的端口）。</p>
+<p>使用多播，主机可加入一个或多个多播组，网卡将过滤非主机所在多播组的数据。</p>
+<hr>
+<p><img src="/imgs/IP_ADDRESS.png" alt="IP地址分类"></p>
+<hr>
+<p>内部网络IP地址：</p>
+<ul>
+<li><p>10.0.0.0 - 10.255.255.255</p>
+</li>
+<li><p>172.16.0.0 - 172.31.255.255</p>
+</li>
+<li><p>192.168.0.0 - 192.168.255.255</p>
+</li>
+</ul>
+<p>分别处于A，B，C类的地址段，不向特定的用户分配，保留为私有地址，专为不与公网（Internet）相连的网络而预留。</p>
+<p>仅能在内部使用，不能作为全球路由地址。</p>
+<p>使用网络地址转换（Network Address Translation，NAT），启用了IPv4私有地址空间的私有网络仍然可以连接到公网（Internet）。</p>
+<p>NAT允许在互联网的不同地方重复使用相同的IP地址集。</p>
+<p>常见的情况是，唯一与Internet连接的站点仅被分配了几个IP地址（甚至一个IP），但是内部有多台主机需要同时上网。</p>
+<p>当所有进出的流量通过NAT时，该设备将内部系统的地址空间和全球互联网地址空间分割开，因此所有的内部系统可以使用本地分配的私有IP地址访问互联网。</p>
+<p>NAT重写每个数据包的寻址信息，重写往外传输的数据包的源IP地址，重写往内传输的数据包的目的IP地址。</p>
+<p>网络访问只能先由内侧发起，公网无法主动访问私网主机。</p>
+<p>在互联网上的主机看来，数据包来自于具备全局路由IP的NAT路由器，而不是内部的私有地址的主机。</p>
+<p>使用NAT时，同时使用在应用层的有效载荷内记录IP地址信息的协议会有问题。</p>
+<p>端口数量是有限的，通过NAT端口复用上网，每建立一个连接需要占用一个端口。</p>
+<p>对于TCP/UDP流量，根据端口号识别会话，理论上一个公网IPv4，可以支持2^16个会话。</p>
+<p>对于ICMP流量，根据IP标识识别会话，理论上一个公网IPv4，可以支持2^16个会话。</p>
+<hr>
+<h4 id="子网寻址"><a href="#子网寻址" class="headerlink" title="子网寻址"></a>子网寻址</h4><p>IP地址的定义是网络号和主机号，但现在主机都要求子网编址，把主机号分成子网号和主机号。</p>
+<p>因为A类和B类地址为主机号分配了太多的空间，可分别容纳的主机数为2^24-2和2^16-2（全0或全1的是无效主机号）。</p>
+<p>掩码由路由器和主机使用，确定IP地址的网络/子网部分的结束和主机部分的开始。</p>
+<p>子网掩码是32bit的二进制序列，形式为连续的1和连续的0，如：255.255.255.0（11111111.11111111.11111111.00000000），值为1的bit给网络号和子网号，为0的bit给主机号。</p>
+<p>如一个B类地址：210.30.109.134，因为210.30是网络号，后面的109.134就是子网号和主机号。</p>
+<p>与子网掩码与运算后获得子网号109，主机号就是134。</p>
+<p>通过IP地址和子网掩码，可以确定IP数据报的目的是：</p>
+<ul>
+<li><p>本子网上的主机（网络号相同，子网号相同）。</p>
+</li>
+<li><p>本网络中其他子网中的主机（网络号相同，子网号不同）。</p>
+</li>
+<li><p>其他网络上的主机（网络号不同）。</p>
+</li>
+</ul>
+<p>主机号全为1时表示该网络广播地址，全为0时表示该网络的网络号，这是两个特殊地址。</p>
+<p>子网掩码的表示方法：</p>
+<ul>
+<li>通过与IP地址格式相同的点分十进制表示：如，255.255.255.128</li>
+</ul>
+<ul>
+<li>在IP地址后加“/”及1-32的数字，其中1-32的数字表示子网掩码中网络标识位的长度：192.168.1.1/24，子网掩码11111111.11111111.11111111.00000000 -&gt; 255.255.255.0</li>
+</ul>
+<h4 id="可变长度子网掩码（VLSM）"><a href="#可变长度子网掩码（VLSM）" class="headerlink" title="可变长度子网掩码（VLSM）"></a>可变长度子网掩码（VLSM）</h4><p>传统的子网划分，每个子网所包括的主机数相等，可变长度子网掩码，可以更充分利用地址空间。</p>
+<p>VLSM可用于分割一个网络号，使每个子网支持不同数量的主机。</p>
+<p>每个路由器和主机除了IP地址，还需要配置子网掩码。</p>
+<h4 id="无类域间路由（Classless-Inter-Domain-Routing，CIDR）"><a href="#无类域间路由（Classless-Inter-Domain-Routing，CIDR）" class="headerlink" title="无类域间路由（Classless Inter-Domain Routing，CIDR）"></a>无类域间路由（Classless Inter-Domain Routing，CIDR）</h4><p>对于A、B类地址，很少有这么大规模的主机，而C类地址所容纳的主机数又太少。</p>
+<p>CIDR消除了传统的A，B，C地址和划分子网的概念，使IP地址又回到无分类的两级编码（网络-主机）。</p>
+<p>CIDR把网络前缀相同的连续IP地址组成一个CIDR地址块，即路由聚合（构成超网）。</p>
+<p>一个CIDR地址块中有很多地址，在路由表中就利用CIDR地址块来查找目的网络。</p>
+<p>已知IP地址128.14.35.7/20是某CIDR地址块中的一个地址，则：</p>
+<p>128.14.35.7/20 = 10000000000011100010/001100000111</p>
+<p>最小地址：128.14.32.0 = 10000000000011100010/000000000000</p>
+<p>最大地址：128.14.47.255 = 10000000000011100010/111111111111</p>
+<p>这个地址块一共有2^12个地址。</p>
+<hr>
+<p>子网分配这一块其实我也没完全弄懂，略过。</p>
+<hr>
+<h3 id="路由选路"><a href="#路由选路" class="headerlink" title="路由选路"></a>路由选路</h3><p>交换机处理链路层，根据MAC地址寻址，路由器处理网络层，根据IP地址寻址。</p>
+<p>路由器连接两个网络，有两个或以上的IP地址，每个接口都有不同网络号的IP地址。</p>
+<p>IP层有个路由表，收到数据报并发送时，都要搜索一次路由表。</p>
+<p>netstat -rn<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface</span><br><span class="line">0.0.0.0         192.168.0.1     0.0.0.0         UG        0 0          0 eth0</span><br><span class="line">169.254.0.0     0.0.0.0         255.255.0.0     U         0 0          0 eth0</span><br><span class="line">169.254.169.254 192.168.0.254   255.255.255.255 UGH       0 0          0 eth0</span><br><span class="line">192.168.0.0     0.0.0.0         255.255.255.0   U         0 0          0 eth0</span><br></pre></td></tr></table></figure></p>
+<p>路由表项：</p>
+<ul>
+<li><p>Destination，目的地址：可以是主机或网络地址，由标志H指定。</p>
+<ul>
+<li><p>主机地址的主机号非0，指定特定的主机。</p>
+</li>
+<li><p>网络地址的主机号为0，指定网络中的所有主机（如以太网，令牌环网）。</p>
+</li>
+<li><p>0.0.0.0匹配任意（Fallback的默认路由）。</p>
+</li>
+</ul>
+</li>
+<li><p>Gateway，下一跳路由器接口的地址。</p>
+<ul>
+<li>0.0.0.0表示无网关，即与本机同一子网，不需要经过网关。</li>
+</ul>
+</li>
+<li><p>Genmask，子网掩码：用来与IP数据包中的IP目的地址。</p>
+</li>
+<li><p>Flags，标志。</p>
+<ul>
+<li><p>U（route is up）：该路由可用。</p>
+</li>
+<li><p>G（use gateway）：下一跳是个路由器Gateway。</p>
+<ul>
+<li><p>有标志G，说明是间接交付。</p>
+</li>
+<li><p>没标志G，说明是直接交付。</p>
+</li>
+</ul>
+</li>
+<li><p>H（target is a host）：该路由连到一个主机Host。</p>
+<ul>
+<li><p>有标志H，说明Destination是主机地址，要匹配网络号和主机号。</p>
+</li>
+<li><p>没标志H，说明Destination是网络地址，要匹配网络号（网络号和子网号）。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Iface，网络接口。</p>
+</li>
+</ul>
+<p><img src="/imgs/IP_router.png" alt="路由转发"></p>
+<h4 id="主机："><a href="#主机：" class="headerlink" title="主机："></a>主机：</h4><p>IP先检查目的IP地址是否为本机的IP地址或IP广播地址，如果是，交由IP头指定的协议模块处理，否则，如果被设置为路由器，就转发数据报，否则丢弃数据报。</p>
+<h4 id="路由器："><a href="#路由器：" class="headerlink" title="路由器："></a>路由器：</h4><p>从IP头获取目的主机的IP地址为D，通过子网掩码得出目的网络地址为N。</p>
+<p>匹配路由表上的目的地址，如果匹配此路由器直接相连的网络地址，则直接交付给目的主机，不需要再经过其他的路由器。</p>
+<p>匹配路由表上的目的地址为D的特定主机路由（对特定的目的主机指定路由），如果匹配，则交付给路由表中指定的下一跳路由器。</p>
+<p>匹配路由表上的目的地址，如果匹配网络地址N，则交付给路由表中指定的下一跳路由器。</p>
+<p>如果有默认路由，则交付给路由表中指定的下一跳路由器。</p>
+<p>都没有就丢弃这个包，并返回不可到达报文。</p>
+<hr>
+<p>0.0.0.0</p>
+<p>代表本机的所有IPv4地址，本机IP通常指能同时被一个局域网内的主机和本机访问的IP地址（可能不止一个）。</p>
+<p>127.0.0.1不是本机IP，本机IP是与具体的网络接口绑定的。</p>
+<p>监听0.0.0.0的端口，就是监听本机中所有IP的端口，通过任何一个IP地址都可以访问到。</p>
+<p>在路由器配置中0.0.0.0/0表示默认路由，作用是帮助路由器发送路由表中无法查询的包。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

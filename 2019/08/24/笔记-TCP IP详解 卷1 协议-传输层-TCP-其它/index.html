@@ -1,0 +1,313 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-TCP/IP详解 卷1：协议-传输层-TCP-其它 | 一个放笔记的地方而已</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-TCP/IP详解 卷1：协议-传输层-TCP-其它">
+		
+		<meta property="og:site_name" content="一个放笔记的地方而已">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">一个放笔记的地方而已</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-TCP/IP详解 卷1：协议-传输层-TCP-其它</h2>
+				
+				<div>
+					<div class="post-time">2019-08-24</div>
+				</div>
+				
+				<div class="article-content">
+				<p>合并了去年的笔记。</p>
+<hr>
+<h4 id="延迟确认（Delayed-Acknowledgment）"><a href="#延迟确认（Delayed-Acknowledgment）" class="headerlink" title="延迟确认（Delayed Acknowledgment）"></a>延迟确认（Delayed Acknowledgment）</h4><p>不对每个数据包都返回ACK，而是利用TCP的累积ACK，如果暂时没有内容回复给发送方，则延迟一段时间再确认，假如在这个时间范围内刚好有数据需要传输，则和ACK一起回复。</p>
+<p>延时不是任意的，否则对端会误认为数据丢失而出现不必要的重传。</p>
+<p>延迟确认时间一般初始化为40ms，随后根据连接的重传超时时间（RTO）、上次收到数据包与本次接收数据包的时间间隔等参数进行调整。</p>
+<p>由于TCP协议不对ACK进行ACK，RFC建议最多等待两个包的积累确认，这样能够及时通知对端。</p>
+<p>Linux实现中，有延迟ACK和快速ACK，并根据当前的包的收发情况来在这两种ACK中切换。</p>
+<p>延迟ACK能减少发送的分段从而节省了带宽，而快速ACK能及时通知发送方丢包，避免滑动窗口停等，提升吞吐率。</p>
+<hr>
+<h4 id="Nagle算法"><a href="#Nagle算法" class="headerlink" title="Nagle算法"></a>Nagle算法</h4><p>当TCP连接中有已发送但未确认的数据，小的报文段（长度小于SMSS）就不能被发送，直到所有数据都收到ACK（Stop and Wait）。</p>
+<p>并且收到ACK后，TCP收集这些小数据，将其整合到一个报文段中发送。</p>
+<p>它实现了自时钟（Self CIocking）控制：ACK返回越快，数据传输也越快。</p>
+<p>在相对高延迟的广域网中，需要减少微型报文的数目，该算法使单位时间内发送的报文段数目更少，即RTT控制着发包速率。</p>
+<hr>
+<h4 id="TCP重传机制"><a href="#TCP重传机制" class="headerlink" title="TCP重传机制"></a>TCP重传机制</h4><h4 id="超时重传："><a href="#超时重传：" class="headerlink" title="超时重传："></a>超时重传：</h4><p>TCP发送一个窗口的数据，设置一个重传计时器，如果有一个确认没有及时接收到，这个报文段就会被重传。</p>
+<p>根据往返时延（Round Trip Time，RTT）设置重传超时（Retransmission Timeout，RTO）。</p>
+<p>往返时延表示从发送端发送数据开始，到发送端收到来自接收端的确认，总共经历的时延。</p>
+<h4 id="快速重传："><a href="#快速重传：" class="headerlink" title="快速重传："></a>快速重传：</h4><p>通常发生在没有延时的情况下。</p>
+<p>接收方收到一个失序的报文段后就立刻回复重复确认，而不等待有发送数据时才捎带确认。</p>
+<p>假设发送方发出了1，2，3，4，5个报文，1先到了，于是ACK回复2，然后没有收到2，而是收到了3，接收方不能直接确认3，因为3是失序报文。</p>
+<p>接收方可以什么都不做，等待超时重传，但是按照快速重传算法，在收到3、4等报文段的时候，不断重复的向发送方发送ACK=2。</p>
+<p>发送方连续收到三个重复的ACK，不必等重传计时器到期，直接重传未被确认的报文段。</p>
+<p>三个重复的ACK：两个重复ACK，可能是乱序，三个以上时可能是丢包。</p>
+<h4 id="选择确认（Selective-Acknowledgment，SACK）"><a href="#选择确认（Selective-Acknowledgment，SACK）" class="headerlink" title="选择确认（Selective Acknowledgment，SACK）"></a>选择确认（Selective Acknowledgment，SACK）</h4><p>SACK是TCP的扩展选项，在SYN包开启，需要两边都支持。</p>
+<p>SACK在快速重传的基础上，增加了接收到的包的信息，通知发送方，哪部分已接收了（如1000-1499，2000-2499），于是发送方就知道具体该重传哪份数据，而不是全部重传。</p>
+<p>另外，需要注意接收方Reneging的问题，即，部分情况下，接收方可能把已经报给发送端SACK里的数据抛弃。</p>
+<p>如果后续的ACK没有增长，还是要把SACK的东西重传，另外，接收端永远不能把SACK的包标记为已确认。</p>
+<p>SACK会消耗发送方的资源，因为需要遍历重传已经发出的数据。</p>
+<h4 id="Duplicate-SACK（D-SACK）"><a href="#Duplicate-SACK（D-SACK）" class="headerlink" title="Duplicate SACK（D-SACK）"></a>Duplicate SACK（D-SACK）</h4><p>在SACK的基础上，通知发送方有哪些数据被重复接收了。</p>
+<p>D-SACK使用了SACK的第一个段做标志：</p>
+<p>如果SACK的第一个段的范围被ACK覆盖，那么就是D-SACK</p>
+<p>如果SACK的第一个段的范围被SACK的第二个段覆盖，那么就是D-SACK</p>
+<p>用第一块SACK数据描述重复接收的不连续数据，其他SACK数据描述其他正常接收到的不连续数据。</p>
+<p>优点：</p>
+<ul>
+<li><p>发送端可以判断出，是发送的包丢了，还是接收端回复的ACK丢了（发送方重传了一个包，发现并没有D-SACK那个包，那么就是发送的数据包丢了；否则就是接收端的ACK丢了，或者是发送的包延迟到达了）；</p>
+</li>
+<li><p>发送端可以判断设置的RTO是不是过小，导致过早重传（收到过多的D-SACK）；</p>
+</li>
+<li><p>发送端可以判断发送的包是不是被复制了（没有重传该数据包，但是收到该数据包的D-SACK）；</p>
+</li>
+<li><p>发送端可以判断是否出现Reordering（先发后到）。</p>
+</li>
+</ul>
+<h5 id="ACK丢包"><a href="#ACK丢包" class="headerlink" title="ACK丢包"></a>ACK丢包</h5><p>丢了两个ACK，于是发送端重传了第一个数据包（3000-3499），接收端重复收到，于是回了一个SACK=3000-3500。</p>
+<p>因为ACK到了4000意味着收到了4000之前的所有数据，所以这个SACK就是D-SACK。</p>
+<p>发送端则知道发送了重复的数据，并且，数据包没有丢，丢的是ACK包。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Transmitted Segment         Received Segment        ACK Sent (Including SACK Blocks)</span><br><span class="line"></span><br><span class="line">3000-3499           3000-3499           3500 (ACK dropped)</span><br><span class="line">3500-3999           3500-3999           4000 (ACK dropped)</span><br><span class="line">3000-3499           3000-3499           4000, SACK=3000-3500</span><br></pre></td></tr></table></figure></p>
+<h5 id="网络延误"><a href="#网络延误" class="headerlink" title="网络延误"></a>网络延误</h5><p>网络包（1000-1499）被网络给延误了，导致发送方没有收到ACK，而后面到达的三个包触发了快速重传，重传时，被延误的包又到了。</p>
+<p>所以，回了一个SACK=1000-1500，因为ACK已到了3000，所以，这个SACK是D-SACK，标识收到了重复的包。</p>
+<p>发送端则知道之前重传不是因为发送的包或回应的ACK包丢了，而是因为网络延时了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Transmitted Segment         Received Segment        ACK Sent(Including SACK Blocks)</span><br><span class="line"></span><br><span class="line">500-999         500-999         1000</span><br><span class="line">1000-1499           (delayed)</span><br><span class="line">1500-1999           1500-1999           1000, SACK=1500-2000</span><br><span class="line">2000-2499           2000-2499           1000, SACK=1500-2500</span><br><span class="line">2500-2999           2500-2999           1000, SACK=1500-3000</span><br><span class="line">1000-1499           1000-1499           3000</span><br><span class="line">                        1000-1499           3000, SACK=1000-1500</span><br></pre></td></tr></table></figure>
+<hr>
+<p>对每个连接，TCP管理四个不同的定时器。</p>
+<ul>
+<li><p>重传定时器：期望收到另一端的确认。</p>
+</li>
+<li><p>坚持定时器（Persistent Timer）：使窗口大小信息保持不断流动，即使另一端关闭了其接收窗口。</p>
+</li>
+<li><p>保活（Keep Alive）定时器：检测一个空闲连接的另一端何时崩溃或重启。</p>
+</li>
+<li><p>2MSL定时器：测量一个连接处于TIME_WAIT状态的时间。</p>
+</li>
+</ul>
+<h4 id="坚持定时器"><a href="#坚持定时器" class="headerlink" title="坚持定时器"></a>坚持定时器</h4><p>TCP不为ACK回复ACK，这可能导致死锁，在ACK包丢失时，发送方等待ACK，而接收方等待新的数据。</p>
+<p>为了避免这种情况，发送方使用坚持定时器周期性向接收方查询（Window Probe），检查窗口是否增大，再通过返回的ACK弥补可能丢失的ACK。</p>
+<h4 id="保活定时器"><a href="#保活定时器" class="headerlink" title="保活定时器"></a>保活定时器</h4><p>建立连接后什么也不干的超时，Linux kernel中对应TCP_KEEPALIVE_TIME是两小时，TCP_KEEPALIVE_PROBES指定超时后最多发送9次，如果都没有响应，说明对端已经关闭，并终止连接。</p>
+<p>保活默认关闭，可以被设置在连接的一端、两端，任何一端都可以请求打开这一功能。</p>
+<p>当计时器被激发，连接一端将发送一个保活探测报文（空报文段，或只包含一个字节），另一端接收后响应ACK。</p>
+<p>保活探测报文的序列号等于对端发送的ACK报文的最大序列号减1，因为这一序列号的数据段已被接收，所以不会对到达的报文段造成影响。</p>
+<p>探测及其响应报文都不包含有效数据，当它们丢失时也不会重传。</p>
+<p>保活探测数参数需要被提前设置，否则没有响应。</p>
+<p>结果可能有四种：对端正常；对端崩溃；对端崩溃并重启；无法连接到对端。</p>
+<hr>
+<p>交互数据类型：如Telnet，SSH协议，大多数情况下只是小流量的数据交换，降低网络负担的方法，延迟确认及Nagle算法。</p>
+<p>数据成块类型：如FTP协议，要求尽量提升数据的吞吐量。</p>
+<hr>
+<p>流量控制（Flow Control）：</p>
+<ul>
+<li><p>基于速率：发送方指定发送的速率，适合流应用程序，可被用于广播和组播发现。</p>
+</li>
+<li><p>基于窗口：窗口大小不固定，窗口更新和ACK由同一个分组携带，意味着发送方往往会在它的窗口滑动到右边的同时调整它的大小。</p>
+</li>
+</ul>
+<hr>
+<p>拥塞：比如路由器因无法处理高速率到达的流量而丢弃数据信息。</p>
+<p><img src="/imgs/TCP_window.png" alt="TCP_window"></p>
+<p>发送方的流量控制依赖于拥塞窗口（Congestion Window，cwnd），接收方的流量控制依赖于对端的接收窗口（rwnd）。</p>
+<p>接收窗口由对端处理能力决定，拥塞窗口由网络环境决定。</p>
+<p>考虑拥塞控制和流量控制，真正的发送窗口W = min(rwnd, cwnd)。</p>
+<p>TCP连接的两端都维护一个发送窗口和接收窗口，以字节，而不是包为单位维护窗口结构。</p>
+<p>在窗口大小字段相对ACK号有一个字节的偏移量，发送端计算其可用窗口，即可以立即发送的数据量。</p>
+<p>每个TCP报文段都包含ACK号和窗口通告信息，发送端可以据此调节窗口。</p>
+<p>窗口左边界不能左移，因为它代表已确认的ACK号，具有累积性，不能返回。</p>
+<p>当收到的的ACK号增大而窗口大小保持不变（通常如此）时，窗口向右滑动，如果窗口右边界右移（Open），则可发送数据量增大。</p>
+<p>当收到的的ACK号增大而窗口大小却减小（Close），当左右边界相等时，称为零窗口（Zero Window），此时发送端不能再发送新数据。</p>
+<p>这种情况下，TCP发送端开始探测（Probe）对方窗口，伺机增大窗口。</p>
+<p>窗口收缩（Shrink），即窗口右边界左移，RFC不支持这一做法，但TCP必须能处理这一问题，糊涂窗口综合征中，一端试图将右边界左移使窗口收缩，但没有成功。</p>
+<p>糊涂窗口综合征（Silly Window Syndrome）：当通告窗口较小时，发送端会立即发送数据填满该窗口，出现大量高耗费的小数据包。</p>
+<p>对发送端来说，若通告窗口较小则避免发送小数据包（Nagle’s Algorithm）；对接收端来说，可以暂时关闭窗口。</p>
+<p>接收窗口记录了已接收并确认的数据，及它能接收的最大序列号。</p>
+<p>该窗口保证其接收数据的正确性，避免存储重复的已接收和确认的数据，及避免存储不应接收的数据（超过右窗口边界）。</p>
+<p>若接收到的数据序列号在窗口内，则可以存储，否则丢弃，该窗口也包含一个左边界和右边界，但窗口内的字节没有区分。</p>
+<p>到达序列号小于左窗口边界，认为是重复数据而丢弃，超过右边界的则超出处理范围，也被丢弃。</p>
+<p>由于TCP的累积ACK，只有当到达数据序列号等于左边界时，数据才不会被丢弃，窗口才能向前滑动。</p>
+<p>对选择确认来说，使用SACK选项，窗口内的其他报文段也可以被接收确认，但只有在接收到等于左边界的序列号数据时，窗口才能前移。</p>
+<hr>
+<h4 id="拥塞控制（Congestion-Control）："><a href="#拥塞控制（Congestion-Control）：" class="headerlink" title="拥塞控制（Congestion Control）："></a>拥塞控制（Congestion Control）：</h4><p>拥塞控制主要有四个算法（Reno算法）：慢启动（Slow Start）、拥塞避免（Congestion Avoidance）、快速重传（Fast Retransmit）和快速恢复（Fast Recovery）。</p>
+<hr>
+<h4 id="慢启动阈值（Slow-Start-Threshold，ssthresh）"><a href="#慢启动阈值（Slow-Start-Threshold，ssthresh）" class="headerlink" title="慢启动阈值（Slow Start Threshold，ssthresh）"></a>慢启动阈值（Slow Start Threshold，ssthresh）</h4><p>慢启动阈值是决定采用慢启动还是拥塞避免的界线。</p>
+<p>一般慢启动阈值为65535字节，慢启动阈值不是固定的。</p>
+<p>cwnd &lt; ssthresh，执行慢启动；</p>
+<p>cwnd &gt; ssthresh，执行拥塞避免;</p>
+<p>拥塞避免阶段的窗口随时间线性增长，而慢启动阶段呈指数增长。</p>
+<p>一个可能的变化：慢启动 - cwnd到达ssthresh - 拥塞避免 - RTO - 慢启动 - 快速重传 - 拥塞避免</p>
+<hr>
+<h4 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h4><p>当TCP连接建立或检测到重传超时（RTO）导致的丢包时，需要执行慢启动，进入稳定状态，发送端长时间处于空闲状态也可能调用慢启动算法。</p>
+<p>SYN交换后，开始慢启动，假设初始的窗口（Initial Window）cwnd = 10 * SMSS（Sender’s MSS，发送方的最大段大小）。</p>
+<p>假设这个RTT内，窗口的数据没有丢包且每个包都有相应的ACK并且没有乱序，说明可再发送一个新的窗口（cwnd = cwnd * 2）。</p>
+<p>也可以理解为，每收到一个ACK，cwnd = cwnd + SMSS。</p>
+<p>所以cwnd会随着RTT呈指数增长（如果网络条件好，ACK返回得很快，RTT也很短），最后到达网络限制，RTT增加，这时cwnd将将大幅度减小至原来的一半。</p>
+<p>例子：在下载的时候，速度都是慢慢上升的。</p>
+<hr>
+<p>重传分两种：</p>
+<ul>
+<li><p>RTO超时</p>
+<ul>
+<li><p>设置ssthresh = cwnd / 2（公平性，给其它连接让出带宽）</p>
+</li>
+<li><p>重置cwnd，重新进入慢启动</p>
+</li>
+</ul>
+</li>
+<li><p>快速重传</p>
+</li>
+</ul>
+<p>在RTO超时前，收到三个Duplicate ACK，说明有中间的分段丢失，然而后面的分段到达了，引起冗余ACK，一般是轻度拥塞，此时拥塞窗口缩小的幅度不能太大，进入快速恢复。</p>
+<hr>
+<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><p>每收到一个新的ACK，cwnd = cwnd + SMSS * SMSS / cwnd，即，每经过一个RTT的时长，cwnd增加1个SMSS。</p>
+<p>RFC建议，拥塞避免环节，无论一个RTT可以收到多少个ACK，每次确认都只新增1个SMSS，呈线性关系增长。</p>
+<hr>
+<h4 id="快速恢复"><a href="#快速恢复" class="headerlink" title="快速恢复"></a>快速恢复</h4><p>当发送方连续接收到三个重复ACK时，将cwnd减半，同时设置sshthresh为cwnd的大小，但是不执行慢启动算法，直接进入拥塞避免。</p>
+<ul>
+<li><p>cwnd = cwnd / 2</p>
+</li>
+<li><p>sshthresh = cwnd</p>
+</li>
+</ul>
+<p>也有部分快速恢复的实现是这样的：既然已经收到了三个重复ACK，说明有三个分段已经到达了接收端，也即是已经离开了网络，那么可以再发三个分段了。</p>
+<ul>
+<li><p>更新sshthresh</p>
+</li>
+<li><p>cwnd = sshthresh  + 3 * SMSS</p>
+</li>
+<li><p>每收到一个重复ACK，cwnd暂时增加一个SMSS</p>
+</li>
+<li><p>收到了新的ACK，则TCP已完成恢复，那么消除cwnd的临时膨胀，cwnd = sshthresh。</p>
+</li>
+</ul>
+<p>改进：New Reno算法。</p>
+<p>上面的算法问题是，三个重复的ACK不代表只丢了一个数据包，也可能是丢了很多包，但这个算法只重传一个，而剩下的只能等到RTO。</p>
+<p>超时会导致ssthresh减半，并且退出快速启动，多个超时会导致TCP传输速率严重下降。</p>
+<p>在没有SACK或D-SACK的情况下，New Reno算法改进了快速重传算法。</p>
+<p>发送端收到三个重复ACK后，重传指定的包，如果该包的ACK通告已经收到全部已发出的包的话，那就是只丢失一个包，如果没有，那么就是有多个包丢失了。</p>
+<p>如果判断有多个包丢失，那么发送端重传窗口内未被ACK的第一个包，直到滑动窗口内发出去的包全被ACK了，才退出快速恢复。</p>
+<p>通过SACK进行拥塞控制的算法是转发确认（Forvard Acknowledgment，FACK），略。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
