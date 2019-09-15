@@ -112,29 +112,35 @@
 </ul>
 <p><strong>其它：</strong></p>
 <ul>
-<li>Tomcat与Java Web开发技术详解(第2版)</li>
-<li>Java Web开发实战经典</li>
+<li><p>Tomcat与Java Web开发技术详解(第2版)</p>
+</li>
+<li><p>Java Web开发实战经典</p>
+</li>
 </ul>
 <hr>
 <p><strong>Tomcat虚拟目录</strong></p>
-<p>方式一：server.xml（不建议使用，每次修改后，必须重启才能重新加载server.xml）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 将JavaProject这个应用映射到JavaWebApp虚拟目录上 --&gt;</span><br><span class="line">&lt;Host name=&quot;localhost&quot; appBase=&quot;webapps&quot; unpackWARs=&quot;true&quot; autoDeploy=&quot;true&quot;&gt;</span><br><span class="line">&lt;!-- Context：表示上下文，代表一个JavaWeb应用 --&gt;</span><br><span class="line">&lt;!-- path：虚似目录，必须以&quot;/&quot;开头 --&gt;</span><br><span class="line">&lt;Context path=&quot;/JavaWebApp&quot; docBase=&quot;D:/JavaProject&quot;/&gt;</span><br><span class="line">&lt;/Host&gt;</span><br></pre></td></tr></table></figure></p>
+<p>方式一：server.xml（不建议使用，每次修改后，必须重启才能重新加载server.xml）</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 将JavaProject这个应用映射到JavaWebApp虚拟目录上 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Host</span> <span class="attr">name</span>=<span class="string">"localhost"</span> <span class="attr">appBase</span>=<span class="string">"webapps"</span> <span class="attr">unpackWARs</span>=<span class="string">"true"</span> <span class="attr">autoDeploy</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- Context：表示上下文，代表一个JavaWeb应用 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- path：虚拟目录，必须以"/"开头 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Context</span> <span class="attr">path</span>=<span class="string">"/JavaWebApp"</span> <span class="attr">docBase</span>=<span class="string">"D:/JavaProject"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Host</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>方式二：自动映射</p>
 <ul>
-<li>把JavaProject这个应用复制到tomcat服务器webapps目录，自动映射同名的虚拟目录”/JavaProject”。</li>
+<li>把JavaProject这个应用复制到Tomcat服务器webapps目录，自动映射同名的虚拟目录”/JavaProject”。</li>
 </ul>
 <p>方式三</p>
 <ul>
-<li>在tomcat服务器的<code>\conf\Catalina\localhost</code>目录下添加xml文件，虚拟目录的名称就是这个xml文件的名称。</li>
-<li>不用重启Tomcat。</li>
-<li><code>$CATALINA_BASE</code>：tomcat服务器根目录，[enginename]：Tomcat服务器引擎名称，Catalina。</li>
+<li><p>在tomcat服务器的<code>\conf\Catalina\localhost</code>目录下添加xml文件，虚拟目录的名称就是这个xml文件的名称。</p>
+</li>
+<li><p>不用重启Tomcat。</p>
+</li>
+<li><p><code>$CATALINA_BASE</code>：Tomcat服务器根目录，[enginename]：Tomcat服务器引擎名称，Catalina。</p>
+</li>
 </ul>
-<p>在abc.xml文件中添加Context元素映射JavaWeb应用abc：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 不用指明path属性来设置虚拟目录的名称 --&gt;</span><br><span class="line">&lt;Context docBase=&quot;D:/JavaProject&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
-<p><strong>Tomcat虚似主机</strong></p>
-<p>配置虚似主机就是配置一个网站，需要修改<code>conf/server.xml</code>，使用<code>Host</code>元素配置，Tomcat服务器自带名为localhost的虚拟主机，将Web应用放到webapps文件夹下</p>
-<p><code>http://localhost:端口号/WebAppName</code>方式访问的就是name是<code>localhost</code>的虚拟主机(Host)，这台虚拟主机管理webapps文件夹下的所有web应用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;Host name=&quot;www.mmp.cn&quot; appBase=&quot;D:/JavaWebApps&quot;&gt;&lt;/Host&gt;</span><br><span class="line">&lt;Host name=&quot;mmp&quot; appBase=&quot;MyJavaWebApps&quot;&gt;&lt;/Host&gt;</span><br></pre></td></tr></table></figure></p>
-<p>配置的主机(网站)要想通过域名被访问，必须在DNS服务器或windows系统中注册域名，编辑hosts文件，将新添加的网站的域名和IP地址绑定。</p>
-<p>浏览器根据主机名<code>www.mmp.cn</code>去Hosts文件中查找对应IP地址，没找到，就去DNS服务器上找，找到后，使用IP地址连接到Web服务器。</p>
-<p>浏览器连接到web服务器后，使用http协议向服务器发送请求，浏览器向Web服务器以Stream(流)的形式传输数据，说明要访问的Web资源。</p>
+<p>在abc.xml文件中添加Context元素映射JavaWeb应用abc：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 不用指明path属性来设置虚拟目录的名称 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Context</span> <span class="attr">docBase</span>=<span class="string">"D:/JavaProject"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>Tomcat虚拟主机</strong></p>
+<p>配置虚拟主机就是配置一个网站，需要修改<code>conf/server.xml</code>，使用<code>Host</code>元素配置，Tomcat服务器自带名为localhost的虚拟主机，将Web应用放到webapps文件夹下</p>
+<p><code>http://localhost:端口号/WebAppName</code>方式访问的就是name是<code>localhost</code>的虚拟主机(Host)，这台虚拟主机管理webapps文件夹下的所有web应用。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Host</span> <span class="attr">name</span>=<span class="string">"www.xxx.cn"</span> <span class="attr">appBase</span>=<span class="string">"D:/JavaWebApps"</span>&gt;</span><span class="tag">&lt;/<span class="name">Host</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Host</span> <span class="attr">name</span>=<span class="string">"xxx"</span> <span class="attr">appBase</span>=<span class="string">"MyJavaWebApps"</span>&gt;</span><span class="tag">&lt;/<span class="name">Host</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>配置的主机(网站)要想通过域名被访问，必须在DNS服务器或Windows系统中注册域名，编辑hosts文件，将新添加的网站的域名和IP地址绑定。</p>
 
 				</div>
 				<!-- about -->
