@@ -106,19 +106,87 @@
 				
 				<div class="article-content">
 				<p>不了解分布式事务的，可以先看看<a href="https://www.jianshu.com/p/cc5c10221aa1" target="_blank" rel="noopener">这篇文章</a>和<a href="https://www.cnblogs.com/wudimanong/p/10340948.html" target="_blank" rel="noopener">这篇文章</a>。</p>
+<p>还有<a href="https://www.cnblogs.com/jajian/p/10014145.html" target="_blank" rel="noopener">这篇</a>。</p>
 <p><del>懒得打字</del>，算了，还是简单总结一下吧。</p>
-<p>分布式事务</p>
-<p>以两阶段提交协议（Two-phase Commit，2PC）为例：</p>
+<hr>
+<p>复习一下，事务的ACID特性：</p>
 <ul>
-<li><p>客户端向中心协调节点（Coordinator）发起一个事务请求；</p>
+<li><p>Atomicity（原子性）：事务是不可分割的单元，对于一个事务，所有的操作要么全部成功，要么全部失败。</p>
 </li>
-<li><p>协调节点向N个参与者节点（Partcipant）发送事务预处理请求（Prepare）；</p>
+<li><p>Consistency（一致性）：事务前后，数据必须保持一致，如A向B转账，A和B的总金额就是个一致性状态。</p>
 </li>
-<li><p>参与者节点收到预处理请求后，如果可以处理，则执行本地事务，但不提交，而给协调节点回复确认；</p>
+<li><p>Isolation（隔离性）：多个并发事务之间相互隔离，操作不能互相干扰。常用的方式是加锁。</p>
 </li>
-<li><p>协调节点收到所有的参与者节点的确认后，再向参与者节点发送提交请求，参与者节点再提交本地事务。</p>
+<li><p>Durablity（持久性）：事务提交后，更改是永久的。</p>
 </li>
 </ul>
+<p>事务并发的脏读、幻读问题、事务隔离级别：待复习。</p>
+<hr>
+<p>两阶段提交协议（Two Phase Commit，2PC）：</p>
+<ul>
+<li><p>Client向Coordinator（中心协调节点）发起一个事务请求；</p>
+</li>
+<li><p>Coordinator向N个Partcipant（参与者节点）发送PrepareRequest（事务预处理请求）；</p>
+</li>
+<li><p>Partcipant收到PrepareRequest后，如果可以处理，则执行本地事务，但不提交，而给Coordinator回复YES，如果不能处理，回复NO；</p>
+</li>
+<li><p>Coordinator收到所有的Partcipant的YES后，再向Partcipant发送提交请求，Partcipant再提交本地事务；</p>
+</li>
+<li><p>否则，Coordinator向所有的Partcipant发起回滚，Partcipant执行回滚后返回确认。</p>
+</li>
+</ul>
+<p>问题：</p>
+<ul>
+<li><p>Coordinator发送PrepareRequest后，如果宕机，Partcipant事务会一直挂起直到超时；</p>
+</li>
+<li><p>Partcipant直到收到提交请求后，才会释放，这个过程是阻塞的；</p>
+</li>
+<li><p>如果因为网络原因，只有部分Partcipant收到了提交请求，就会导致不一致的问题。</p>
+</li>
+</ul>
+<hr>
+<p>三阶段提交协议（Three Phase Commit，3PC）：</p>
+<ul>
+<li><p>CanCommit：Client向Coordinator发起一个事务请求，Coordinator向N个Partcipant发送CanCommit询问，是否可以完成事务，比如尝试获取数据库锁，可以则回复YES，否则NO；</p>
+</li>
+<li><p>PreCommit：</p>
+<ul>
+<li><p>如果所有的Partcipant都返回YES，Coordinator则向所有Partcipant发送PreCommit请求，Partcipant收到后执行事务，但不提交，并记录Undo和Redo信息到日志，向Coordinator回复YES，同时等待指令；</p>
+</li>
+<li><p>如果有Partcipant回复NO，或Coordinator等待Partcipant回复超时，则向所有Partcipant发送Abort请求，中断事务；</p>
+</li>
+</ul>
+</li>
+<li><p>DoCommit：</p>
+<ul>
+<li><p>如果所有的Partcipant都返回YES，Coordinator则向所有Partcipant发送DoCommit请求，Partcipant收到后提交事务，向Coordinator回复YES，Coordinator收到所有的Partcipant的YES后完成事务；</p>
+</li>
+<li><p>如果有Partcipant回复NO，或Coordinator等待Partcipant回复超时，则向所有Partcipant发送Abort请求，中断事务，Partcipant收到后根据Undo信息执行回滚，向Coordinator回复YES。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>在DoCommit阶段，假如因为网络原因或者Coordinator宕机，Partcipant没有收到DoCommit或Abort请求，都会在等待超时之后，继续进行事务提交，所以可能会出现不一致的情况。</p>
+<hr>
+<p>补偿事务（Try Confirm Cancel，TCC）：</p>
+<p>对每个事务分支操作都要注册一个对应的确认和补偿（撤销）操作（Try Confirm Cancel）。</p>
+<ul>
+<li><p>Try：主要是对业务系统做检测及资源预留；</p>
+</li>
+<li><p>Confirm：确认执行业务操作，要求Try成功Confirm一定要能成功；</p>
+</li>
+<li><p>Cancel：取消执行业务操作。</p>
+</li>
+</ul>
+<p>以扣钱为例，在接入TCC前，对A账户的扣钱，只需一条更新账户余额的SQL。</p>
+<p>在接入TCC之后，需要将原来一步完成的扣钱操作，拆成两阶段，实现成三个方法，并且保证一阶段Try成功的话二阶段Confirm一定能成功。</p>
+<p>Try就是检查账户余额是否充足，锁定转账资金（加个锁或打个标记），此时账号A余额虽然还是100，但是其中30元已经被冻结了，不能被其他事务使用。</p>
+<p>Confirm执行真正的扣钱操作，使用Try阶段锁定的资金，执行扣款，则账号A余额变成70元。</p>
+<p>如果二阶段是回滚的话，需要在Cancel方法内释放一阶段Try冻结的30元，使账号A回到初始状态，100元全部可用。</p>
+<p>在分布式环境下，就是Coordinator依次调用所有Partcipant的Try方法，所有都正常的话，再依次调用Partcipant的Confirm方法，否则调用Cancel方法。</p>
+<p>假设某个Partcipant意外宕机然后重启，可以从持久化日志中恢复运行的阶段和状态。</p>
+<p>假设某个Partcipant的Cancel或Confirm方法调用失败，则Coordinator不断重试，直到成功。</p>
+<hr>
 <p>RocketMQ的事务消息</p>
 <ul>
 <li><p>Producer执行本地事务之前，向Broker发送PREPARED消息，并且消息发送成功（确认），声明事务开始，但此消息不会给Consumer消费；</p>
@@ -132,7 +200,9 @@
 <li><p>对于Producer执行事务超时，或者发送事务状态消息失败或丢失等情况，Broker定时向Producer回查事务状态，并更新消息状态。</p>
 </li>
 </ul>
-<p>最终一致，而不是强一致。</p>
+<p>因为MQ是异步的，所以这里是最终一致，而不是强一致。</p>
+<p>Put simply，事务消息的用处就是Producer执行本地事务成功提交后，Consumer再从Broker拉取消息，然后继续执行本地事务，回复消费确认。</p>
+<p>那如果Consumer执行本地事务失败后，如何回滚Producer的事务呢？官方的意见是，自己手动解决，框架不提供此功能。</p>
 <p>本地事务状态</p>
 <ul>
 <li><p>COMMIT：成功</p>

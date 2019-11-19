@@ -150,6 +150,30 @@
 <p>并发消费下，Consumer拉取到消息后回被放入ProcessQueue，有多个线程同时处理队列中的消息，同时消息消费失败时会跳过该消息，并将消息发回Broker，下次继续消费。</p>
 <p>另外，顺序消费需要注意消息堆积的问题。</p>
 <p>顺序消息也不是绝对的，两条顺序消息MsgA和MsgB，MsgA发到BrokerA的QueueA，之后BrokerA关闭，MsgB发到BrokerB的QueueB，这样就不能保证顺序消费了。</p>
+<hr>
+<p>补充一下Pull，Push之类的模式的区别：</p>
+<p>Push</p>
+<ul>
+<li><p>优点：实时；</p>
+</li>
+<li><p>缺点：Push的速率可能会超过Consumer的消费速率；Broker需要维护Consumer的状态，特别是Consumer数量比较多的情况；</p>
+</li>
+</ul>
+<p>Pull</p>
+<ul>
+<li><p>优点：Consumer可自由调节消费速度；状态由Consumer维护，每次Pull请求都会携带偏移；方便批量消费消息；</p>
+</li>
+<li><p>缺点：可能不及时，不断轮询消耗比较大；</p>
+</li>
+</ul>
+<p>Long Polling</p>
+<ul>
+<li><p>优点：基本上结合了Push和Pull的优点</p>
+</li>
+<li><p>缺点：假如Broker一直有消息，实际上长轮询就等于无间隔的Pull，一直重复请求-响应，网络交互开销较大</p>
+</li>
+</ul>
+<p>长轮询的超时：Consumer和Broker之间网络交互需要时间，本地时钟速率也不同（虽然可以忽略），假如一个Pull请求的超时时间是5秒，在Broker端阻塞了5秒才返回，那么Consumer在收到Broker响应前就会判定超时。</p>
 
 				</div>
 				<!-- about -->
