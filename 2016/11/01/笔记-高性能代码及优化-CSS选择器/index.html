@@ -105,34 +105,25 @@
 				</div>
 				
 				<div class="article-content">
-				<p><strong>2016-11-22重新整理更新</strong></p>
+				<p><strong>2016-11-22重新整理</strong></p>
 <ul>
 <li>CSS 选择器对性能的影响源于匹配。CSS 选择器从右到左匹配；</li>
-<li>子选择器<code>#header &gt; a</code>。浏览器遍历所有 a 元素并确定其父元素 id 是否为header ；</li>
-<li>如果改为后代选择器<code>#header a</code>则开销更多，遍历所有 a 元素后向其上级遍历直到根节点；</li>
-<li><p>最右边选择符称为关键选择器。</p>
-<ul>
-<li><p>避免通用选择器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.content * &#123;color: red;&#125;</span><br><span class="line">// 匹配所有元素后分别向上逐级匹配 class 为 content 的元素直到根节点</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>避免 tag 或 class 选择器限制 id 选择器 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">button#backButton &#123;…&#125;</span><br><span class="line"></span><br><span class="line">/* Recommended */</span><br><span class="line">#newMenuIcon &#123;…&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>避免 tag 限制 class 选择器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">treecell.indented &#123;…&#125;</span><br><span class="line"></span><br><span class="line">/* Recommended */</span><br><span class="line">.treecell-indented &#123;…&#125;</span><br><span class="line"></span><br><span class="line">/* Much to recommended */</span><br><span class="line">.hierarchy-deep &#123;…&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>避免多层选择器，用 class 选择器替换，减少查找</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">treeitem[mailfolder=&quot;true&quot;] &gt; treerow &gt; treecell &#123;…&#125;</span><br><span class="line"></span><br><span class="line">.treecell-mailfolder &#123;…&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>避免子选择器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">treehead treerow treecell &#123;…&#125;</span><br><span class="line"></span><br><span class="line">/* Recommended */</span><br><span class="line">treehead &gt; treerow &gt; treecell &#123;…&#125;</span><br><span class="line"></span><br><span class="line">/* Much to recommended */</span><br><span class="line">.treecell-header &#123;…&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用继承</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/* Not recommended */</span><br><span class="line">#bookmarkMenuItem &gt; .menu-left &#123; list-style-image: url(blah) &#125;</span><br><span class="line"></span><br><span class="line">/* Recommended */</span><br><span class="line">#bookmarkMenuItem &#123; list-style-image: url(blah) &#125;</span><br></pre></td></tr></table></figure></li>
+<li>子选择器<code>#header &gt; a</code>。浏览器遍历所有a元素并确定其父元素id是否为header ；</li>
+<li>如果改为后代选择器<code>#header a</code>则开销更多，遍历所有a元素后向其上级遍历直到根节点；</li>
+<li>最右边选择符称为关键选择器。</li>
 </ul>
-</li>
-</ul>
-
+<p>避免通用选择器</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.content</span> * &#123;<span class="attribute">color</span>: red;&#125;</span><br><span class="line">// 匹配所有元素后分别向上逐级匹配 class 为 content 的元素直到根节点</span><br></pre></td></tr></table></figure>
+<p>避免tag或class选择器限制id选择器</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">button#backButton &#123;…&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Recommended */</span></span><br><span class="line">#newMenuIcon &#123;…&#125;</span><br></pre></td></tr></table></figure>
+<p>避免tag限制class选择器</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">treecell.indented &#123;…&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Recommended */</span></span><br><span class="line">.treecell-indented &#123;…&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Much to recommended */</span></span><br><span class="line">.hierarchy-deep &#123;…&#125;</span><br></pre></td></tr></table></figure>
+<p>避免多层选择器，用class选择器替换，减少查找</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">treeitem[mailfolder="true"] &gt; treerow &gt; treecell &#123;…&#125;</span><br><span class="line"></span><br><span class="line">.treecell-mailfolder &#123;…&#125;</span><br></pre></td></tr></table></figure>
+<p>避免子选择器</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">treehead treerow treecell &#123;…&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Recommended */</span></span><br><span class="line">treehead &gt; treerow &gt; treecell &#123;…&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Much to recommended */</span></span><br><span class="line">.treecell-header &#123;…&#125;</span><br></pre></td></tr></table></figure>
+<p>使用继承</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Not recommended */</span></span><br><span class="line"><span class="selector-id">#bookmarkMenuItem</span> &gt; <span class="selector-class">.menu-left</span> &#123; <span class="attribute">list-style-image</span>: <span class="built_in">url</span>(blah) &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Recommended */</span></span><br><span class="line"><span class="selector-id">#bookmarkMenuItem</span> &#123; <span class="attribute">list-style-image</span>: <span class="built_in">url</span>(blah) &#125;</span><br></pre></td></tr></table></figure>
 				</div>
 				<!-- about -->
 				

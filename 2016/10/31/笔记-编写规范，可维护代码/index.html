@@ -105,75 +105,68 @@
 				</div>
 				
 				<div class="article-content">
-				<p><strong>2016-11-21重新整理更新</strong></p>
+				<p><strong>整理自<a href="https://www.byvoid.com/" target="_blank" rel="noopener">BYVoid的博客</a>还是他的某本书？</strong></p>
+<hr>
+<p>缩进</p>
 <ul>
-<li><p>缩进</p>
-<ul>
-<li>早期语言规范，大多数选用Tab作为缩进标记，如Delphi、Microsoft C++等。</li>
+<li>早期语言规范，大多数选用Tab作为缩进标记，如Delphi、C++等。</li>
 <li>近年来，空格缩进由于风格不变性，逐渐成为主流，如Python、Ruby甚至C#。</li>
-<li>两空格为Node.js缩进，不同于常见的四空格缩进， Node.js易写出深层的函数嵌套。</li>
-<li>我就喜欢Tab。</li>
+<li>两空格为Node.js缩进，不同于常见的四空格缩进，Node.js易写出深层的函数嵌套。</li>
+<li>我就喜欢Tab（2019-11-27：不，你不喜欢）。</li>
 </ul>
-</li>
-<li><p>引号</p>
+<p>引号</p>
 <ul>
-<li><p>JavaScript最外层统一单引号。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var y = &apos;foo&apos;,</span><br><span class="line">	z = &apos;&lt;div id=&quot;test&quot;&gt;&lt;/div&gt;&apos;;</span><br></pre></td></tr></table></figure>
-</li>
+<li>JavaScript最外层统一单引号。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> y = <span class="string">'foo'</span>,</span><br><span class="line">    z = <span class="string">'&lt;div id="test"&gt;&lt;/div&gt;'</span>;</span><br></pre></td></tr></table></figure>
+<ul>
 <li><p>HTML内id、class等属性的定义，使用双引号。</p>
 </li>
-<li>CSS内url() 、属性选择符、属性值等使用双引号。</li>
-</ul>
+<li><p>CSS内url()、属性选择符、属性值等使用双引号。</p>
 </li>
-<li><p>注释</p>
+</ul>
+<p>注释</p>
 <ul>
-<li><p>HTML注释</p>
-<ul>
-<li><p>模块注释</p>
+<li>HTML模块注释</li>
+</ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 文章列表列表模块 --&gt;</span><br><span class="line">&lt;div class=&quot;article-list&quot;&gt;&lt;/div&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>区块注释</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--</span><br><span class="line">@name: Drop Down Menu</span><br><span class="line">@description: Style of top bar drop down menu.</span><br><span class="line">@author: Ashu(Aaaaaashu@gmail.com)</span><br><span class="line">--&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-<li><p>JavaScript注释</p>
 <ul>
+<li>区块注释</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">@name: Drop Down Menu</span></span><br><span class="line"><span class="comment">@description: Style of top bar drop down menu.</span></span><br><span class="line"><span class="comment">@author: Ashu(Aaaaaashu@gmail.com)</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>JavaScript注释<ul>
 <li>单行注释：必须独占一行。<code>//</code>后跟一个空格，缩进与下行被注释代码一致。</li>
 <li>多行注释：避免用<code>/*...*/</code>多行注释。使用多个单行注释。</li>
 <li>函数/方法注释：<ul>
 <li>必须包含函数说明，有参数和返回值时必须使用注释标识；</li>
 <li>参数和返回值注释必须包含类型信息和说明；</li>
-<li>函数是内部函数，外部不可访问时，可以使用<code>@inner</code>标识；<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* 函数描述</span><br><span class="line">*</span><br><span class="line">* @param &#123;string&#125; p1 参数1的说明</span><br><span class="line">* @param &#123;string&#125; p2 参数2的说明，比较长</span><br><span class="line">* 那就换行了</span><br><span class="line">* @param &#123;number=&#125; p3 参数3的说明（可选）</span><br><span class="line">* @return &#123;Object&#125; 返回值描述</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
-</li>
+<li>函数是内部函数，外部不可访问时，可以使用<code>@inner</code>标识；</li>
 </ul>
 </li>
 </ul>
 </li>
-<li><p>CSS注释</p>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 函数描述</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* @param &#123;string&#125; p1 参数1的说明</span></span><br><span class="line"><span class="comment">* @param &#123;string&#125; p2 参数2的说明，比较长</span></span><br><span class="line"><span class="comment">* 那就换行了</span></span><br><span class="line"><span class="comment">* @param &#123;number=&#125; p3 参数3的说明（可选）</span></span><br><span class="line"><span class="comment">* @return &#123;Object&#125; 返回值描述</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
 <ul>
-<li><p>注释统一用<code>/* */</code>，（scss中也不要用<code>//</code>）；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/* Modal header */</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line">* Modal header</span><br><span class="line">*/</span><br><span class="line">.modal-header &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>//</code>可位于代码行的末尾，与代码间隔一个空格。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.modal-header &#123;</span><br><span class="line">	/* 50px */</span><br><span class="line">	width: 50px;</span><br><span class="line">	color: red; /* color red */</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
+<li>CSS注释<ul>
+<li>注释统一用<code>/* */</code>，（scss中也不要用<code>//</code>）；</li>
 </ul>
 </li>
 </ul>
-</li>
-<li><p>空格</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Modal header */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* Modal header</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="selector-class">.modal-header</span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.modal-header</span> &#123;</span><br><span class="line">    <span class="comment">/* 50px */</span></span><br><span class="line">    <span class="attribute">width</span>: <span class="number">50px</span>;</span><br><span class="line">    <span class="attribute">color</span>: red; <span class="comment">/* color red */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>空格</p>
 <ul>
-<li><p>JavaScript</p>
-<ul>
+<li>JavaScript<ul>
 <li>one space before <code>{</code>；</li>
 <li>one space between function parameters；</li>
-<li>no space before <code>(</code>；<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">var a = &#123;</span><br><span class="line">	b: 1</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var a = [1, 2];</span><br><span class="line"></span><br><span class="line">var a = (1 + 2) * 3;</span><br><span class="line"></span><br><span class="line">z = x ? 1 : 2;</span><br><span class="line"></span><br><span class="line">for (i = 0; i &lt; 6; i++) &#123;</span><br><span class="line">	x++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var doSomething = function(a, b, c) &#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">doSth(item);</span><br><span class="line"></span><br><span class="line">// 下面写法都不规范：</span><br><span class="line">foo (bar) // 函数调用时，函数名与左括号之间没有空格</span><br><span class="line">return(a+b);</span><br><span class="line">if(a === 0) &#123;...&#125;</span><br><span class="line">function foo (b) &#123;...&#125; // 函数定义时，函数名与左括号间没有空格</span><br><span class="line">function(x) &#123;...&#125; // function是关键字，不是函数名，与左括号间应该有空格</span><br><span class="line">// 其他情况，前面位置的语法元素与左括号间，都有一个空格</span><br></pre></td></tr></table></figure>
-</li>
+<li>no space before <code>(</code>；</li>
 </ul>
 </li>
-<li><p>CSS</p>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">    b: <span class="number">1</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = [<span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = (<span class="number">1</span> + <span class="number">2</span>) * <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">z = x ? <span class="number">1</span> : <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">6</span>; i++) &#123;</span><br><span class="line">    x++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> doSomething = <span class="function"><span class="keyword">function</span>(<span class="params">a, b, c</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">doSth(item);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面写法都不规范：</span></span><br><span class="line">foo (bar) <span class="comment">// 函数调用时，函数名与左括号之间没有空格</span></span><br><span class="line"><span class="keyword">return</span>(a+b);</span><br><span class="line"><span class="keyword">if</span>(a === <span class="number">0</span>) &#123;...&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span> (<span class="params">b</span>) </span>&#123;...&#125; <span class="comment">// 函数定义时，函数名与左括号间没有空格</span></span><br><span class="line"><span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;...&#125; <span class="comment">// function是关键字，不是函数名，与左括号间应该有空格</span></span><br><span class="line"><span class="comment">// 其他情况，前面位置的语法元素与左括号间，都有一个空格</span></span><br></pre></td></tr></table></figure>
 <ul>
+<li>CSS<ul>
 <li>以下不要空格：<ul>
 <li>属性名后；</li>
 <li>多个规则的分隔符<code>,</code>前；</li>
@@ -189,17 +182,17 @@
 <li>!important <code>!</code>前；</li>
 <li><code>@else</code>前后；</li>
 <li>属性值中的<code>,</code>后；</li>
-<li>注释<code>/</code>后和<code>/</code>前；<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.element &#123;</span><br><span class="line">	color: red !important;</span><br><span class="line">	background-color: rgba(0, 0, 0, .5);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.element,</span><br><span class="line">.dialog &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.element &gt; .dialog &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@if &#123;</span><br><span class="line">	...</span><br><span class="line">&#125; @else &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
+<li>注释<code>/</code>后和<code>/</code>前；</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-</li>
-<li><p>换行:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.element</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red <span class="meta">!important</span>;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="built_in">rgba</span>(0, 0, 0, .5);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.element</span>,</span><br><span class="line"><span class="selector-class">.dialog</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.element</span> &gt; <span class="selector-class">.dialog</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@<span class="keyword">if</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125; @<span class="keyword">else</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>换行</p>
 <ul>
-<li>JavaScript<ul>
+<li><p>JavaScript</p>
+<ul>
 <li>以下要空行：<ul>
 <li>变量声明后（当变量声明在代码块的最后一行时，则无需空行）；</li>
 <li>注释前（当注释在代码块的第一行时，则无需空行）；</li>
@@ -215,63 +208,54 @@
 </li>
 <li>以下要换行：<ul>
 <li>代码块<code>{</code>后和<code>}</code>前；</li>
-<li>变量赋值后；<br>CSS<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.element &#123;</span><br><span class="line">	color: red;</span><br><span class="line">	background-color: black;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.element,</span><br><span class="line">.dialog &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
+<li>变量赋值后；</li>
 </ul>
 </li>
 </ul>
 </li>
-</ul>
+<li><p>CSS</p>
 </li>
-<li><p>分号</p>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.element</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">    <span class="attribute">background-color</span>: black;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.element</span>,</span><br><span class="line"><span class="selector-class">.dialog</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>分号</p>
 <ul>
-<li><p>JavaScript：分号表示语句的结尾，一些结构不需要在语句的结尾添加分号，主要以下三种：</p>
-<ul>
-<li><p>for和while循环</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">for (var i = 0; i &lt; Things.length; i++) &#123;</span><br><span class="line"></span><br><span class="line">&#125; // 没分号</span><br><span class="line"></span><br><span class="line">while (true) &#123;</span><br><span class="line">	</span><br><span class="line">&#125; // 没分号</span><br><span class="line"></span><br><span class="line">// do...while循环有分号</span><br><span class="line">do &#123;</span><br><span class="line">	a--;</span><br><span class="line">&#125; while (a &gt; 0); // 分号不能省略</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>分支语句：if， switch， try</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">if (true) &#123;</span><br><span class="line">	</span><br><span class="line">&#125; // 没分号</span><br><span class="line"></span><br><span class="line">switch () &#123;</span><br><span class="line">	</span><br><span class="line">&#125; // 没分号</span><br><span class="line"></span><br><span class="line">try &#123;</span><br><span class="line">	</span><br><span class="line">&#125; catch &#123;</span><br><span class="line">	</span><br><span class="line">&#125; // 没分号</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>函数声明语句</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function f() &#123;</span><br><span class="line">	</span><br><span class="line">&#125; // 没分号</span><br><span class="line"></span><br><span class="line">var f = function f() &#123;</span><br><span class="line">	</span><br><span class="line">&#125;; // 函数表达式仍然要用分号</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>以上三种情况用了分号不会出错，解释引擎把这个分号解释为空语句。</p>
-</li>
+<li>JavaScript：分号表示语句的结尾，一些结构不需要在语句的结尾添加分号，主要以下三种：<ul>
+<li>for和while循环</li>
+<li>分支语句：if，switch，try</li>
+<li>函数声明语句</li>
 </ul>
 </li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; Things.length; i++) &#123;</span><br><span class="line"></span><br><span class="line">&#125; <span class="comment">// 没分号</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">    </span><br><span class="line">&#125; <span class="comment">// 没分号</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// do...while循环有分号</span></span><br><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    a--;</span><br><span class="line">&#125; <span class="keyword">while</span> (a &gt; <span class="number">0</span>); <span class="comment">// 分号不能省略</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">    </span><br><span class="line">&#125; <span class="comment">// 没分号</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">switch</span> () &#123;</span><br><span class="line">    </span><br><span class="line">&#125; <span class="comment">// 没分号</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    </span><br><span class="line">&#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">    </span><br><span class="line">&#125; <span class="comment">// 没分号</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125; <span class="comment">// 没分号</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> f = <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;; <span class="comment">// 函数表达式仍然要用分号</span></span><br></pre></td></tr></table></figure>
+<ul>
 <li>CSS<ul>
-<li>每个属性声明末都要加分号。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.element &#123;</span><br><span class="line">	width: 20px;</span><br><span class="line">	height: 20px;</span><br><span class="line">	background-color: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
+<li>每个属性声明末都要加分号。</li>
 </ul>
 </li>
 </ul>
-</li>
-<li><p>初始化</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.element</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">20px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">20px</span>;</span><br><span class="line">    <span class="attribute">background-color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>初始化</p>
 <ul>
-<li><p>初始值不长, 写在单行上：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var arr = [1, 2, 3];  // No space after [ or before ]</span><br><span class="line">var obj = &#123;a: 1, b: 2, c: 3&#125;;  // No space after &#123; or before &#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>占用多行时，缩进2个空格：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">var inset = &#123;</span><br><span class="line">	name: &apos;BYVoid&apos;,</span><br><span class="line">	website: &apos;http://www.byvoid.com/&apos;,</span><br><span class="line">	&apos;is good&apos;: true,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">this.rows_ = [</span><br><span class="line">	&apos;&quot;Slartibartfast&quot; &lt;fjordmaster@magrathea.com&gt;&apos;,</span><br><span class="line">	&apos;&quot;Zaphod Beeblebrox&quot; &lt;theprez@universe.gov&gt;&apos;,</span><br><span class="line">	&apos;&quot;Ford Prefect&quot; &lt;ford@theguide.com&gt;&apos;,</span><br><span class="line">	// 注意最后一个元素需要加上,</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">goog.dom.createDom(goog.dom.TagName.DIV, &#123;</span><br><span class="line">	id: &apos;foo&apos;,</span><br><span class="line">	className: &apos;some-css-class&apos;,</span><br><span class="line">	style: &apos;display:none&apos;</span><br><span class="line">&#125;, &apos;Hello, world!&apos;);</span><br></pre></td></tr></table></figure>
-</li>
+<li>初始值不长, 写在单行上：</li>
 </ul>
-</li>
-<li><p>命名</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];  <span class="comment">// No space after [ or before ]</span></span><br><span class="line"><span class="keyword">var</span> obj = &#123;<span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: <span class="number">2</span>, <span class="attr">c</span>: <span class="number">3</span>&#125;;  <span class="comment">// No space after &#123; or before &#125;</span></span><br></pre></td></tr></table></figure>
 <ul>
-<li><p>Javascript</p>
+<li>占用多行时，缩进2个空格：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> inset = &#123;</span><br><span class="line">    name: <span class="string">'BYVoid'</span>,</span><br><span class="line">    website: <span class="string">'http://www.byvoid.com/'</span>,</span><br><span class="line">    <span class="string">'is good'</span>: <span class="literal">true</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">this</span>.rows_ = [</span><br><span class="line">    <span class="string">'"Slartibartfast" &lt;fjordmaster@magrathea.com&gt;'</span>,</span><br><span class="line">    <span class="string">'"Zaphod Beeblebrox" &lt;theprez@universe.gov&gt;'</span>,</span><br><span class="line">    <span class="string">'"Ford Prefect" &lt;ford@theguide.com&gt;'</span>,</span><br><span class="line">    <span class="comment">// 注意最后一个元素需要加上,</span></span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">goog.dom.createDom(goog.dom.TagName.DIV, &#123;</span><br><span class="line">    id: <span class="string">'foo'</span>,</span><br><span class="line">    className: <span class="string">'some-css-class'</span>,</span><br><span class="line">    style: <span class="string">'display:none'</span></span><br><span class="line">&#125;, <span class="string">'Hello, world!'</span>);</span><br></pre></td></tr></table></figure>
+<p>命名</p>
 <ul>
-<li><p>变量命名：驼峰式命名（除了对象的属性，主要考虑到cgi返回数据）：<code>var thisIsMyName;</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&apos;ID&apos;</span><br><span class="line">&apos;URL&apos;</span><br><span class="line">&apos;Android&apos;</span><br><span class="line">&apos;iOS&apos;</span><br><span class="line">var goodID;</span><br><span class="line">var reportURL;</span><br><span class="line">var AndroidVersion;</span><br><span class="line">var iOSVersion;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>常量全大写，下划线连接：<code>var MAX_COUNT = 10;</code>；</p>
-</li>
+<li>Javascript<ul>
+<li>变量命名：驼峰式命名（除了对象的属性，主要考虑到cgi返回数据）：<code>var thisIsMyName;</code></li>
+<li>常量全大写，下划线连接：<code>var MAX_COUNT = 10;</code>；</li>
 <li>构造函数，大写第一个字母；</li>
 <li>jQuery对象必须以<code>$</code>开头命名：<code>var $body = $(&#39;body&#39;);</code>；</li>
 <li>项目命名：全部小写，下划线分隔：<code>my_project_name</code>；</li>
 <li>目录命名：有复数结构时，复数命名法：<code>scripts</code>，<code>styles</code>，<code>images</code>；</li>
 <li>JS文件命名：<code>account_model.js</code></li>
-<li>CSS, SCSS文件命名：<code>retina_sprites.sCSS</code></li>
+<li>CSS,SCSS文件命名：<code>retina_sprites.sCSS</code></li>
 <li>HTML文件命名：<code>error_report.HTML</code></li>
 <li>私有属性、变量和方法以下划线 _ 开头：<code>var _privateMethod = {};</code></li>
 <li>函数，函数的参数，用Camel命名法<code>function stringFormat(theBells) {}</code></li>
@@ -280,13 +264,14 @@
 <li>boolean类型的变量用 is 或 has 开头：<code>var isReady = false, hasMoreCommands = false;</code></li>
 </ul>
 </li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'ID'</span></span><br><span class="line"><span class="string">'URL'</span></span><br><span class="line"><span class="string">'Android'</span></span><br><span class="line"><span class="string">'iOS'</span></span><br><span class="line"><span class="keyword">var</span> goodID;</span><br><span class="line"><span class="keyword">var</span> reportURL;</span><br><span class="line"><span class="keyword">var</span> AndroidVersion;</span><br><span class="line"><span class="keyword">var</span> iOSVersion;</span><br></pre></td></tr></table></figure>
+<ul>
 <li><p>CSS</p>
 <ul>
 <li>class类名小写，中划线分隔：<code>.element-content</code>，以功能或内容命名，不以表现命名；</li>
 <li>唯一的id作为Javascript hook，驼峰式命名，避免无样式信息的class：<code>#myDialog</code>；</li>
 <li>scss的变量、函数、混合、placeholder用驼峰命名：<code>$colorBlack</code>，<code>@function pxToRem($px)</code>，<code>@mixin centerBlock</code>，<code>%myDialog</code>；</li>
-</ul>
-</li>
 </ul>
 </li>
 <li><p>组件命名（Naming components）：Components最少以两个单词命名，通过<code>-</code>分离：</p>
@@ -297,18 +282,21 @@
 </ul>
 </li>
 <li><p>元素命名（Naming elements）：Elements是Components的元素，Elements类名尽可能仅有一个单词：</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.search-form &#123;</span><br><span class="line">	&gt; .field &#123; /* ... */ &#125;</span><br><span class="line">	&gt; .action &#123; /* ... */ &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>多个单词（On multiple words）：两个或以上单词的Elements类名，不应用中划线和下划线，应直接连接：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.profile-box &#123;</span><br><span class="line">	&gt; .firstname &#123; /* ... */ &#125;</span><br><span class="line">	&gt; .lastname &#123; /* ... */ &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>避免标签选择器（Avoid tag selectors）：尽可能用classname，标签选择器性能上稍弱，并且表意不明。</p>
 </li>
 </ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.search-form</span> &#123;</span><br><span class="line">    &gt; .field &#123; /* ... */ &#125;</span><br><span class="line">    &gt; <span class="selector-class">.action</span> &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>多个单词（On multiple words）：两个或以上单词的Elements类名，不应用中划线和下划线，应直接连接：</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.profile-box</span> &#123;</span><br><span class="line">    &gt; .firstname &#123; /* ... */ &#125;</span><br><span class="line">    &gt; <span class="selector-class">.lastname</span> &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>避免标签选择器（Avoid tag selectors）：尽可能用classname，标签选择器性能上稍弱，并且表意不明。</p>
 </li>
 <li><p>变体命名（Naming variants）：Components和Elements的Variants的classname应带有前缀中划线<code>-</code>；</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.like-button &#123;</span><br><span class="line">	&amp;.-wide &#123; /* ... */ &#125;</span><br><span class="line">	&amp;.-short &#123; /* ... */ &#125;</span><br><span class="line">	&amp;.-disabled &#123; /* ... */ &#125;</span><br><span class="line">	// Element variants</span><br><span class="line">	&gt; .title &#123; /* ... */ &#125;</span><br><span class="line">	&gt; .title.-small &#123; /* ... */ &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.like-button</span> &#123;</span><br><span class="line">    &amp;.-wide &#123; /* ... */ &#125;</span><br><span class="line">    &amp;<span class="selector-class">.-short</span> &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">    &amp;<span class="selector-class">.-disabled</span> &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">    // Element variants</span><br><span class="line">    &gt; <span class="selector-class">.title</span> &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">    &gt; <span class="selector-class">.title</span><span class="selector-class">.-small</span> &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
 <li><p>Components应该可以复用，避免设置以下属性：</p>
 <ul>
 <li>Positioning (position, top, left, right, bottom)；</li>
@@ -332,7 +320,8 @@
 </li>
 </ul>
 </li>
-<li><p>总结（Summary）</p>
+</ul>
+<p>总结（Summary）</p>
 <ul>
 <li>Components，以两个单词命名（ .screenshot-image ）；</li>
 <li>Components的Elements，以一个单词命名（ .blog-post .title ）；</li>
@@ -340,24 +329,29 @@
 <li>Components，可以互相嵌套；</li>
 <li>使用继承更简单；</li>
 </ul>
-</li>
-<li><p>一律使用小写字母</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Recommended --&gt;</span><br><span class="line">&lt;img src=&quot;google.png&quot; alt=&quot;Google&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- Not recommended --&gt;</span><br><span class="line">&lt;A HREF=&quot;/&quot;&gt;Home&lt;/A&gt;</span><br><span class="line"></span><br><span class="line">/* Recommended */</span><br><span class="line">color: #e5e5e5;</span><br><span class="line"></span><br><span class="line">/* Not recommended */</span><br><span class="line">color: #E5E5E5;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>省略外链URL的http/https协议，使URL成为相对地址，避免Mixed Content，其它协议（ftp等）不省略：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;//www.google.com/js/gweb/analytics/autotrack.js&quot;&gt;&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">.example &#123;</span><br><span class="line">	background: url(&quot;//www.google.com/images/example&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用最少的标签并保持最小复杂度。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Not recommended --&gt;</span><br><span class="line">&lt;span class=&quot;avatar&quot;&gt;</span><br><span class="line">&lt;img src=&quot;...&quot;&gt;</span><br><span class="line">&lt;/span&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- Recommended --&gt;</span><br><span class="line">&lt;img class=&quot;avatar&quot; src=&quot;...&quot;&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>HTML属性应该按照特定的顺序出现。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;a id=&quot;...&quot; class=&quot;...&quot; data-modal=&quot;toggle&quot; href=&quot;###&quot;&gt;&lt;/a&gt;</span><br><span class="line">&lt;input class=&quot;form-control&quot; type=&quot;text&quot;&gt;</span><br><span class="line">&lt;img src=&quot;...&quot; alt=&quot;...&quot;&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>避免选择器嵌套过多；</p>
-</li>
-<li><p>避免选择器和Class、ID叠加使用；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/* Not recommended */</span><br><span class="line">.red &#123;&#125;</span><br><span class="line">.box_green &#123;&#125;</span><br><span class="line">.page .header .login #username input &#123;&#125;</span><br><span class="line">ul#example &#123;&#125;</span><br><span class="line"></span><br><span class="line">/* Recommended */</span><br><span class="line">#nav &#123;&#125;</span><br><span class="line">.box-video &#123;&#125;</span><br><span class="line">#username input &#123;&#125;</span><br><span class="line">#example &#123;&#125;</span><br></pre></td></tr></table></figure>
-</li>
+<hr>
+<ul>
+<li>一律使用小写字母</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Recommended --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"google.png"</span> <span class="attr">alt</span>=<span class="string">"Google"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Not recommended --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">A</span> <span class="attr">HREF</span>=<span class="string">"/"</span>&gt;</span>Home<span class="tag">&lt;/<span class="name">A</span>&gt;</span></span><br><span class="line"></span><br><span class="line">/* Recommended */</span><br><span class="line">color: #e5e5e5;</span><br><span class="line"></span><br><span class="line">/* Not recommended */</span><br><span class="line">color: #E5E5E5;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>省略外链URL的http/https协议，使URL成为相对地址，避免Mixed Content，其它协议（ftp等）不省略：</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"//www.google.com/js/gweb/analytics/autotrack.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">.example &#123;</span><br><span class="line">    background: url("//www.google.com/images/example");</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用最少的标签并保持最小复杂度。</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Not recommended --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"avatar"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"..."</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Recommended --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">"avatar"</span> <span class="attr">src</span>=<span class="string">"..."</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>HTML属性应该按照特定的顺序出现。</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">id</span>=<span class="string">"..."</span> <span class="attr">class</span>=<span class="string">"..."</span> <span class="attr">data-modal</span>=<span class="string">"toggle"</span> <span class="attr">href</span>=<span class="string">"###"</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">"form-control"</span> <span class="attr">type</span>=<span class="string">"text"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"..."</span> <span class="attr">alt</span>=<span class="string">"..."</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>避免选择器嵌套过多；</li>
+<li>避免选择器和Class、ID叠加使用；</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Not recommended */</span></span><br><span class="line"><span class="selector-class">.red</span> &#123;&#125;</span><br><span class="line"><span class="selector-class">.box_green</span> &#123;&#125;</span><br><span class="line"><span class="selector-class">.page</span> <span class="selector-class">.header</span> <span class="selector-class">.login</span> <span class="selector-id">#username</span> <span class="selector-tag">input</span> &#123;&#125;</span><br><span class="line"><span class="selector-tag">ul</span><span class="selector-id">#example</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Recommended */</span></span><br><span class="line"><span class="selector-id">#nav</span> &#123;&#125;</span><br><span class="line"><span class="selector-class">.box-video</span> &#123;&#125;</span><br><span class="line"><span class="selector-id">#username</span> <span class="selector-tag">input</span> &#123;&#125;</span><br><span class="line"><span class="selector-id">#example</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
 <li><p>语义嵌套约束：如a不允许嵌套div （容错处理）。</p>
 <ul>
 <li><code>&lt;li&gt;</code>用于<code>&lt;ul&gt;</code>或<code>&lt;ol&gt;</code>下；</li>
@@ -365,7 +359,7 @@
 <li><code>&lt;thead&gt;</code>,<code>&lt;tbody&gt;</code>,<code>&lt;tfoot&gt;</code>,<code>&lt;tr&gt;</code>,<code>&lt;td&gt;</code>用于<code>&lt;table&gt;</code>下；</li>
 </ul>
 </li>
-<li><p>严格嵌套约束：如a不允许嵌套（所有浏览器都不允许） 。</p>
+<li><p>严格嵌套约束：如a不允许嵌套（所有浏览器都不允许）。</p>
 <ul>
 <li>inline-Level元素，仅可包含文本或其它inline-Level元素;</li>
 <li><code>&lt;a&gt;</code>不可嵌套交互式元素<code>&lt;a&gt;</code>、<code>&lt;button&gt;</code>、<code>&lt;select&gt;</code>等;</li>
@@ -373,14 +367,16 @@
 </ul>
 </li>
 <li><p>HTML5 规范中 disabled 、 checked 、 selected 等属性不用设置值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;input type=&quot;text&quot; disabled&gt;</span><br><span class="line">&lt;input type=&quot;checkbox&quot; value=&quot;1&quot; checked&gt;</span><br><span class="line"></span><br><span class="line">&lt;select&gt;</span><br><span class="line">	&lt;option value=&quot;1&quot; selected&gt;1&lt;/option&gt;</span><br><span class="line">&lt;/select&gt;</span><br></pre></td></tr></table></figure>
 </li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">disabled</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">value</span>=<span class="string">"1"</span> <span class="attr">checked</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">"1"</span> <span class="attr">selected</span>&gt;</span>1<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
 <li><p>媒体查询放在相关规则附近，不要打包放在单一样式文件中或文档底部。如果分开了，将来会被遗忘。</p>
 </li>
 <li><p>其它：</p>
 <ul>
-<li>结构、样式、行为分离：文档和模板只包含 HTML ，样式放到样式表里，行为放到脚本里。</li>
-<li>统一缩进，不要使用 Tab 或者 Tab 、空格混搭。</li>
+<li>结构、样式、行为分离：文档和模板只包含HTML，样式放到样式表里，行为放到脚本里。</li>
+<li>统一缩进，不要使用Tab或者Tab、空格混搭。</li>
 <li>不允许空的规则；</li>
 <li>元素选择器用小写字母；</li>
 <li>去掉小数点前面的0；</li>
@@ -389,25 +385,25 @@
 <li>无前缀的标准属性应该写在有前缀的属性后面；</li>
 <li>不要在同个规则里出现重复的属性，如果重复的属性是连续的则没关系；</li>
 <li>不要在一个文件里出现两个相同的规则；</li>
-<li>用 border: 0; 代替 border: none; ；</li>
+<li>用<code>border: 0;</code>代替<code>border: none;</code>；</li>
 <li>选择器不要超过4层（在sCSS中如果超过4层应该考虑用嵌套的方式来写）；</li>
-<li>发布代码中不要有 @import ；</li>
+<li>发布代码中不要有<code>@import</code>；</li>
 <li>少用’*’选择器。</li>
-<li>链接的样式顺序：a:link -&gt; a:visited -&gt; a:hover -&gt; a:active（LoVeHAte）</li>
+<li>链接的样式顺序：<code>a:link -&gt; a:visited -&gt; a:hover -&gt; a:active（LoVeHAte）</code></li>
 </ul>
 </li>
 <li><p>声明块格式</p>
 <ul>
 <li>选择器分组时，保持独立的选择器占用一行；</li>
-<li>声明块的左括号 { 前添加一个空格；</li>
-<li>声明块的右括号 } 应单独成行；</li>
-<li>声明语句中的 : 后应添加一个空格；</li>
-<li>声明语句应以分号 ; 结尾；</li>
+<li>声明块的左括号<code>{</code>前添加一个空格；</li>
+<li>声明块的右括号<code>}</code>应单独成行；</li>
+<li>声明语句中的<code>:</code>后应添加一个空格；</li>
+<li>声明语句应以分号<code>;</code>结尾；</li>
 <li>一般以逗号分隔的属性值，每个逗号后应添加一个空格；</li>
-<li>rgb() 、 rgba() 、 hsl() 、 hsla() 或 rect() 括号内的值，逗号分隔，但逗号后不添加一个空格；</li>
-<li>对于属性值或颜色参数，省略小于 1 的小数前面的 0 （例如， .5 代替 0.5 ； -.5px 代替 -0.5px）；</li>
-<li>十六进制值应该全部小写和尽量简写，例如， #fff 代替 #ffffff ；</li>
-<li>避免为 0 值指定单位，例如，用 margin: 0; 代替 margin: 0px; ；</li>
+<li><code>rgb()</code>、<code>rgba()</code>、<code>hsl()</code>、<code>hsla()</code>或<code>rect()</code>括号内的值，逗号分隔，但逗号后不添加一个空格；</li>
+<li>对于属性值或颜色参数，省略小于1的小数前面的<code>0</code>（例如，<code>.5</code>代替<code>0.5</code>；<code>-.5px</code>代替<code>-0.5px</code>）；</li>
+<li>十六进制值应该全部小写和尽量简写，例如，<code>#fff</code>代替<code>#ffffff</code>；</li>
+<li>避免为0值指定单位，例如，用<code>margin: 0;</code>代替<code>margin: 0px;</code>；</li>
 </ul>
 </li>
 <li><p>声明顺序：相关属性应为一组</p>
@@ -415,11 +411,11 @@
 <li>Positioning：可从正常文档流中移除元素，还能覆盖盒模型（box model）相关样式，因此排首位；</li>
 <li>Box model：决定了组件的尺寸和位置；</li>
 <li>Typographic：其他属性只影响组件的内部或不影响前两组属性；</li>
-<li>Visual；<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">.declaration-order &#123;</span><br><span class="line">	/* Positioning */</span><br><span class="line">	position: absolute;</span><br><span class="line">	top: 0;</span><br><span class="line">	right: 0;</span><br><span class="line">	bottom: 0;</span><br><span class="line">	left: 0;</span><br><span class="line">	z-index: 100;</span><br><span class="line">	/* Box model */</span><br><span class="line">	display: block;</span><br><span class="line">	box-sizing: border-box;</span><br><span class="line">	width: 100px;</span><br><span class="line">	height: 100px;</span><br><span class="line">	padding: 10px;</span><br><span class="line">	border: 1px solid #e5e5e5;</span><br><span class="line">	border-radius: 3px;</span><br><span class="line">	margin: 10px;</span><br><span class="line">	float: right;</span><br><span class="line">	overflow: hidden;</span><br><span class="line">	/* Typographic */</span><br><span class="line">	font: normal 13px &quot;Helvetica Neue&quot;, sans-serif;</span><br><span class="line">	line-height: 1.5;</span><br><span class="line">	text-align: center;</span><br><span class="line">	/* Visual */</span><br><span class="line">	background-color: #f5f5f5;</span><br><span class="line">	color: #fff;</span><br><span class="line">	opacity: .8;</span><br><span class="line">	/* Other */</span><br><span class="line">	cursor: pointer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
+<li>Visual；</li>
 </ul>
 </li>
 </ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.declaration-order</span> &#123;</span><br><span class="line">    <span class="comment">/* Positioning */</span></span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">bottom</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">z-index</span>: <span class="number">100</span>;</span><br><span class="line">    <span class="comment">/* Box model */</span></span><br><span class="line">    <span class="attribute">display</span>: block;</span><br><span class="line">    <span class="attribute">box-sizing</span>: border-box;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">10px</span>;</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#e5e5e5</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">3px</span>;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">10px</span>;</span><br><span class="line">    <span class="attribute">float</span>: right;</span><br><span class="line">    <span class="attribute">overflow</span>: hidden;</span><br><span class="line">    <span class="comment">/* Typographic */</span></span><br><span class="line">    <span class="attribute">font</span>: normal <span class="number">13px</span> <span class="string">"Helvetica Neue"</span>, sans-serif;</span><br><span class="line">    <span class="attribute">line-height</span>: <span class="number">1.5</span>;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">    <span class="comment">/* Visual */</span></span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#f5f5f5</span>;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#fff</span>;</span><br><span class="line">    <span class="attribute">opacity</span>: .<span class="number">8</span>;</span><br><span class="line">    <span class="comment">/* Other */</span></span><br><span class="line">    <span class="attribute">cursor</span>: pointer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 				</div>
 				<!-- about -->

@@ -1,0 +1,180 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-代理 | 学而时习之</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-代理">
+		
+		<meta property="og:site_name" content="学而时习之">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">学而时习之</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-代理</h2>
+				
+				<div>
+					<div class="post-time">2017-11-27</div>
+				</div>
+				
+				<div class="article-content">
+				<p>静态代理：代理类在运行前就已定义好，其与目标类的关系在运行前就已确立。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IAccountService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">transfer</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountServiceImpl</span> <span class="keyword">implements</span> <span class="title">IAccountService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transfer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountServiceImplProxy</span> <span class="keyword">implements</span> <span class="title">IAccountService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> IAccountService target;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AccountServiceImplProxy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 业务接口对象作为构造器参数，接收目标对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AccountServiceImplProxy</span><span class="params">(IAccountService target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.target = target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transfer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// do sth 对目标类增强</span></span><br><span class="line">        target.transfer();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">IAccountService target = <span class="keyword">new</span> AccountServiceImpl();</span><br><span class="line">IAccountService service = <span class="keyword">new</span> AccountServiceImplProxy(target);</span><br><span class="line">service.transfer();</span><br></pre></td></tr></table></figure>
+<p>用一个代理类，让它也实现IAccountService接口，然后在内部声明一个AccountServiceImpl，调用transfer方法，在调用前后加上其他操作。</p>
+<p>这样是写死的，代理类跟被代理类都要实现同一接口。</p>
+<p>静态代理模式在编译的时候就已经确定代理类将要代理谁，而动态代理在运行的时候才知道自己要代理谁。</p>
+<p>动态代理就是利用反射和动态编译，原理跟动态注入一样。</p>
+<p>动态代理常用实现方式有两种：</p>
+<ul>
+<li>JDK动态代理<br>通过<code>java.lang.reflect.Proxy</code>类，使用其静态方法<code>newProxyInstance(ClassLoader loader, Class&lt;?&gt;[] interfaces, InvocationHandler handler)</code>，依据目标对象、业务接口及业务增强逻辑三者，自动生成动态代理对象。<ul>
+<li>loader：目标类的类加载器，通过目标对象的反射获取</li>
+<li>interfaces：目标类实现的接口数组，通过目标对象的反射获取</li>
+<li>handler：业务增强逻辑，需要再定义。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 实现了 InvocationHandler 接口的类用于加强目标类的主业务逻辑</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyExtension</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Object target;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyExtension</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyExtension</span><span class="params">(Object target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.target = target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">// 调用主业务逻辑时，自动调用 invoke()，由代理对象自动调用，三个参数不用程序员给出</span></span><br><span class="line">    <span class="comment">// proxy：生成的代理对象</span></span><br><span class="line">    <span class="comment">// method：目标方法</span></span><br><span class="line">    <span class="comment">// args：目标方法的参数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="comment">// 加强的代码逻辑定义在invoke()</span></span><br><span class="line">        <span class="comment">// 无论主业务方法有无参数，有无返回值，下面的写法ok</span></span><br><span class="line">        <span class="keyword">return</span> method.invoke(target, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义目标对象</span></span><br><span class="line">IAccountService target = <span class="keyword">new</span> AccountServiceImpl();</span><br><span class="line"><span class="comment">// 获取目标对象的类加载器</span></span><br><span class="line">ClassLoader loader = target.getClass().getClassLoader();</span><br><span class="line"><span class="comment">// 目标对象实现的所有接口</span></span><br><span class="line">Class&lt;?&gt;[] interfaces = target.getClass().getInterfaces();</span><br><span class="line"><span class="comment">// 増强业务逻辑</span></span><br><span class="line">InvocationHandler handler = <span class="keyword">new</span> MyExtension(target);</span><br><span class="line"><span class="comment">// 代理对象，并使用目标对象初始化它</span></span><br><span class="line">IAccountService service = (IAccountService) Proxy.newProxyInstance(loader, interfaces, handler);</span><br><span class="line"><span class="comment">// 对目标对象增加过的内容</span></span><br><span class="line">service.transfer();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>CGLIB动态代理（通过修改字节码）<br>JDK的Proxy要求目标类与代理类实现相同的接口，若目标类不存在接口，要用CGLIB来实现：生成目标类的子类，而子类是增强过的，子类对象就是代理对象，要求目标类必须能被继承。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 目标类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transfer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 代理工厂</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountServiceCglibProxyFactory</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 声明目标类的成员变量，并创建以目标类对象为参数的构造器，接收目标对象</span></span><br><span class="line">    <span class="comment">// 2. 定义代理的生成方法，用于创建代理对象，代理对象即目标类的子类</span></span><br><span class="line">    <span class="comment">// 3. 定义回调接口方法，对目标类的增强在这里完成</span></span><br><span class="line">    <span class="keyword">private</span> AccountService target;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AccountServiceCgliProxyFactory</span><span class="params">(AccountService target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.target = target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">AccountService <span class="title">createProxy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Enhancer enhancer = <span class="keyword">new</span> Enhancer();</span><br><span class="line">        enhancer.setSuperClass(AccountService.class);</span><br><span class="line">        <span class="comment">// MethodInterceptor 接口是Callback子接口</span></span><br><span class="line">        enhancer.setCallback(<span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">return</span> (AccountService) enhancer.create();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">// proxy：代理对象</span></span><br><span class="line">    <span class="comment">// method：代理对象的方法，即增强过的业务方法</span></span><br><span class="line">    <span class="comment">// args[]：方法参数</span></span><br><span class="line">    <span class="comment">// methodProxy：代理对象方法的代理对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object proxy, Method method, Object[] args, MethodProxy methodProxy)</span> </span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="comment">// 若为transfer方法，则进行増强</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">"transfer"</span>.equals(method.getName())) &#123;</span><br><span class="line">            System.out.println(<span class="string">"开始"</span>);</span><br><span class="line">            <span class="comment">// 调用目标类业务方法方式一：通过调用代理类即目标类的子类的父类方法执行</span></span><br><span class="line">            <span class="comment">// Object result = methodProxy.invokeSuper(proxy, args);</span></span><br><span class="line">            <span class="comment">// 调用目标类业务方法方式二：直接调用目标对象的业务方法执行。</span></span><br><span class="line">            Object result = method.invoke(target, args);</span><br><span class="line">            System.out.println(<span class="string">"结束"</span>);</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 其它方法不増强，则执行目标类的业务方式，即代理类的父类业务方法</span></span><br><span class="line">        <span class="comment">// return methodProxy.invokeSuper(proxy, args);</span></span><br><span class="line">        <span class="keyword">return</span> method.invoke(target, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">AccountService target = <span class="keyword">new</span> AccountService();</span><br><span class="line">AccountService service = <span class="keyword">new</span> AccountServiceCglibProxyFactory(target).createProxy();</span><br><span class="line">service.transfer();</span><br></pre></td></tr></table></figure>
+<p>动态代理：数据库连接，事务管理，单元测试的动态 Mock 对象，AOP 中的方法拦截功能等等都用到了动态代理。</p>
+<p>简单模拟</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> mmp.proxy;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invoke</span><span class="params">(Object o, Method m)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过Proxy动态生成具体的代理类</p>
+<p>动态组装一个代理类，生成<code>$Proxy1.java</code>，编译成<code>$Proxy1.class</code>，在运行时，根据被代理对象生成代理类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> mmp.proxy;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Proxy</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">newProxyInstance</span><span class="params">(Class infce, InvocationHandler h)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        String methodStr = <span class="string">""</span>;</span><br><span class="line">        String rt = <span class="string">"\r\n"</span>;</span><br><span class="line">        <span class="comment">// 利用反射得到infce的所有方法，并重新组装</span></span><br><span class="line">        Method[] methods = infce.getMethods();</span><br><span class="line">        <span class="keyword">for</span> (Method m : methods) &#123;</span><br><span class="line">            methodStr += <span class="string">" @Override"</span> + rt + <span class="string">" public "</span> + m.getReturnType() + <span class="string">" "</span> + m.getName() + <span class="string">"() &#123;"</span> + rt + <span class="string">" try &#123;"</span></span><br><span class="line">                    + rt + <span class="string">" Method md = "</span> + infce.getName() + <span class="string">".class.getMethod(\""</span> + m.getName() + <span class="string">"\");"</span> + rt</span><br><span class="line">                    + <span class="string">" h.invoke(this, md);"</span> + rt + <span class="string">" &#125; catch(Exception e) &#123;e.printStackTrace();&#125;"</span> + rt + <span class="string">" &#125;"</span> + rt;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 生成Java源文件</span></span><br><span class="line">        String srcCode = <span class="string">"package mmp.proxy;"</span> + rt + <span class="string">"import java.lang.reflect.Method;"</span> + rt</span><br><span class="line">                + <span class="string">"public class $Proxy1 implements "</span> + infce.getName() + <span class="string">"&#123;"</span> + rt</span><br><span class="line">                + <span class="string">" public $Proxy1(InvocationHandler h) &#123;"</span> + rt + <span class="string">" this.h = h;"</span> + rt + <span class="string">" &#125;"</span> + rt</span><br><span class="line">                + <span class="string">" mmp.proxy.InvocationHandler h;"</span> + rt + methodStr + rt + <span class="string">"&#125;"</span>;</span><br><span class="line"></span><br><span class="line">        String fileName = <span class="string">"d:/src/mmp/proxy/$Proxy1.java"</span>;</span><br><span class="line">        File f = <span class="keyword">new</span> File(fileName);</span><br><span class="line">        FileWriter fw = <span class="keyword">new</span> FileWriter(f);</span><br><span class="line">        fw.write(srcCode);</span><br><span class="line">        fw.flush();</span><br><span class="line">        fw.close();</span><br><span class="line">        <span class="comment">// 将Java文件编译成class文件</span></span><br><span class="line">        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();</span><br><span class="line">        StandardJavaFileManager fileMgr = compiler.getStandardFileManager(<span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">        Iterable units = fileMgr.getJavaFileObjects(fileName);</span><br><span class="line">        CompilationTask t = compiler.getTask(<span class="keyword">null</span>, fileMgr, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, units);</span><br><span class="line">        t.call();</span><br><span class="line">        fileMgr.close();</span><br><span class="line">        <span class="comment">// 加载到内存，并实例化</span></span><br><span class="line">        URL[] urls = <span class="keyword">new</span> URL[] &#123; <span class="keyword">new</span> URL(<span class="string">"file:/"</span> + <span class="string">"d:/src/"</span>) &#125;;</span><br><span class="line">        URLClassLoader ul = <span class="keyword">new</span> URLClassLoader(urls);</span><br><span class="line">        Class c = ul.loadClass(<span class="string">"mmp.proxy.$Proxy1"</span>);</span><br><span class="line">        Constructor ctr = c.getConstructor(InvocationHandler.class);</span><br><span class="line">        Object m = ctr.newInstance(h);</span><br><span class="line">        <span class="keyword">return</span> m;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

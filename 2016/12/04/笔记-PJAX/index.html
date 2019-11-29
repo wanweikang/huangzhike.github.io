@@ -105,11 +105,11 @@
 				</div>
 				
 				<div class="article-content">
-				<p>来源于网络，整理于12月29日<br>参考：<a href="http://ce.sysu.edu.cn/hope/Item/165875.aspx" target="_blank" rel="noopener">http://ce.sysu.edu.cn/hope/Item/165875.aspx</a></p>
-<ul>
-<li>前端路由有2种实现方式，一种是url hash + hashChange 事件，另一种histroy API + popstate 事件。</li>
-<li>Github、百度、微博等，不使用普通的a标签跳转，大多使用Ajax请求替代了a标签的默认跳转，然后用HTML5的新API修改了Url，在F12的Network面板里可以发现。</li>
-<li><p>这项技术称为Pjax，PushState + Ajax，还有Hash + Ajax等方法。</p>
+				<p>整理自：<a href="http://ce.sysu.edu.cn/hope/Item/165875.aspx" target="_blank" rel="noopener">http://ce.sysu.edu.cn/hope/Item/165875.aspx</a></p>
+<hr>
+<p>前端路由有2种实现方式，一种是url hash + hashChange 事件，另一种histroy API + popstate 事件。</p>
+<p>Github、百度、微博等，不使用普通的a标签跳转，大多使用Ajax请求替代了a标签的默认跳转，然后用HTML5的新API修改了Url，在F12的Network面板里可以发现。</p>
+<p>这项技术称为Pjax，PushState + Ajax，还有Hash + Ajax等方法。</p>
 <ul>
 <li>可以在页面切换间平滑过渡，增加Loading动画；</li>
 <li>可以在各个页面间传递数据，不依赖URL；</li>
@@ -119,17 +119,15 @@
 <li>减少了请求体积，节省流量，加快页面响应速度；</li>
 <li>平滑降级到低版本浏览器上，对SEO也不会有影响。</li>
 </ul>
-</li>
-<li><p>Pjax的原理：</p>
+<p>Pjax的原理：</p>
 <ul>
 <li>拦截a标签的默认跳转动作；</li>
 <li>使用Ajax请求新页面；</li>
 <li>将返回的Html替换到页面中；</li>
 <li>使用HTML5的History API或者Url的Hash修改Url。</li>
 </ul>
-</li>
-<li><p>HTML5 HISTORY API：</p>
-</li>
+<p>HTML5 HISTORY API：</p>
+<ul>
 <li><p><code>history.pushState(state, title, url)</code></p>
 <ul>
 <li>pushState方法：将当前url添加到历史记录中，然后修改当前url为新url。只修改地址栏的Url显示，不发出任何请求，基于此特性实现Pjax；</li>
@@ -148,33 +146,24 @@
 <li>每当url变动时，popstate事件都会被触发。但调用pushState修改url，该事件不会触发，因此可把它用作浏览器的前进后退事件。该事件有一个参数，就是上面pushState方法的第一个参数state。</li>
 </ul>
 </li>
-<li><p>F12 Console，输入：<code>history.pushState({ a: 1, b: 2 }, null, &quot;http://www.daipig.com/abcdefg&quot;);</code></p>
-</li>
-<li>发现url变成输入的url了，但页面并没有刷新，也没有发出任何请求。再输入<code>history.state</code>，就可以看到刚刚传过来的第一个参数state了。</li>
-<li>这时点击后退，url会回到www.daipig.com，同样没有刷新。只不过后退的时候其实是触发了<code>window.onpopstate</code>事件。</li>
 </ul>
-<ul>
-<li><p>流程：</p>
+<p>F12 Console，输入：<code>history.pushState({ a: 1, b: 2 }, null, &quot;http://www.daipig.com/abcdefg&quot;);</code></p>
+<p>发现url变成输入的url了，但页面并没有刷新，也没有发出任何请求。再输入<code>history.state</code>，就可以看到刚刚传过来的第一个参数state了。</p>
+<p>这时点击后退，url会回到www.daipig.com，同样没有刷新。只不过后退的时候其实是触发了<code>window.onpopstate</code>事件。</p>
+<p>流程：</p>
 <ul>
 <li>页面第一次加载，用 replaceState() 来初始化 history.state 以及处理一些相关的页面初始化事务</li>
 <li>点击链接，触发点击事件，点击事件的处理函数中，禁用链接的默认事件，使用 pushState() 来更新页面的 url，同时根据新 url 的对应 API 发起 Ajax 请求获得数据，更新页面内容，同时更新 history.state 对象</li>
 <li>用户点击浏览器的前进、后退按钮，触发 popState 事件，在这里实现前、后状态的恢复</li>
 </ul>
-</li>
-<li><p>IE6到IE9不支持pushState，要修改Url，只能利用Url的Hash，也即是#号。</p>
-</li>
-<li>随意找个网站，在url后面加上#号和任意内容，页面不会刷新。此时点击后退也只回到上一条#号，同样不刷新。</li>
-<li><p>那只需把<code>pushState(newUrl)</code>换成<code>localtion.hash = newUrl</code>，把<code>onpopstate</code>事件换成<code>onhashchange</code>事件就可以兼容IE了。</p>
-</li>
-<li><p>由于处理单页应用的时候页面是不刷新的，会导致网页内容很难被搜索引擎抓取到。搜索引擎抓取页面要遵循http协议，可#不是协议内的内容。</p>
-</li>
-<li>解决的方法是用 #!号代替#号，因为谷歌会抓取带有#!的URL。</li>
-<li>或者给爬虫看的是一套，对用户做的是另一套。</li>
-</ul>
-<ul>
-<li>下面代码来自厚朴工作室<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;a class=&quot;ajax-anchor&quot; data-href=&quot;abc&quot; href=&quot;/abc&quot;&gt;#abc&lt;/a&gt;</span><br><span class="line">&lt;a class=&quot;ajax-anchor&quot; data-href=&quot;def&quot; href=&quot;/def&quot;&gt;#def&lt;/a&gt;</span><br><span class="line">&lt;div id=&quot;contariner&quot;&gt;数据&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">	var ajaxAnchors = document.querySelectorAll(&apos;.ajax-anchor&apos;);</span><br><span class="line">	var contariner = document.querySelector(&apos;#contariner&apos;);</span><br><span class="line"></span><br><span class="line">	window.addEventListener(&apos;click&apos;, function(e) &#123;</span><br><span class="line">		if ([...ajaxAnchors].indexOf(e.target) &gt; -1) &#123;</span><br><span class="line">			e.preventDefault();</span><br><span class="line">			location.hash = e.target.dataset[&apos;href&apos;];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;, false);</span><br><span class="line"></span><br><span class="line">	var callback = function(responseText, status, xhr) &#123;</span><br><span class="line">		contariner.innerHTML = responseText;</span><br><span class="line">	&#125;;</span><br><span class="line">	window.addEventListener(&apos;hashchange&apos;, function(e) &#123;</span><br><span class="line">		var api = &apos;https://api.yangfch3.com?q=&apos; + location.hash.substr(1);</span><br><span class="line">		new Ajax(api, callback);</span><br><span class="line">	&#125;, false);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></li>
-</ul>
-
+<p>IE6到IE9不支持pushState，要修改Url，只能利用Url的Hash，也即是#号。</p>
+<p>随意找个网站，在url后面加上#号和任意内容，页面不会刷新。此时点击后退也只回到上一条#号，同样不刷新。</p>
+<p>那只需把<code>pushState(newUrl)</code>换成<code>localtion.hash = newUrl</code>，把<code>onpopstate</code>事件换成<code>onhashchange</code>事件就可以兼容IE了。</p>
+<p>由于处理单页应用的时候页面是不刷新的，会导致网页内容很难被搜索引擎抓取到。搜索引擎抓取页面要遵循http协议，可#不是协议内的内容。</p>
+<p>解决的方法是用 #!号代替#号，因为谷歌会抓取带有#!的URL。</p>
+<p>或者给爬虫看的是一套，对用户做的是另一套。</p>
+<p>下面代码来自厚朴工作室</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"ajax-anchor"</span> <span class="attr">data-href</span>=<span class="string">"abc"</span> <span class="attr">href</span>=<span class="string">"/abc"</span>&gt;</span>#abc<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"ajax-anchor"</span> <span class="attr">data-href</span>=<span class="string">"def"</span> <span class="attr">href</span>=<span class="string">"/def"</span>&gt;</span>#def<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"contariner"</span>&gt;</span>数据<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> ajaxAnchors = <span class="built_in">document</span>.querySelectorAll(<span class="string">'.ajax-anchor'</span>);</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> contariner = <span class="built_in">document</span>.querySelector(<span class="string">'#contariner'</span>);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="built_in">window</span>.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> ([...ajaxAnchors].indexOf(e.target) &gt; <span class="number">-1</span>) &#123;</span></span><br><span class="line"><span class="undefined">            e.preventDefault();</span></span><br><span class="line"><span class="javascript">            location.hash = e.target.dataset[<span class="string">'href'</span>];</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="javascript">    &#125;, <span class="literal">false</span>);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> callback = <span class="function"><span class="keyword">function</span>(<span class="params">responseText, status, xhr</span>) </span>&#123;</span></span><br><span class="line"><span class="undefined">        contariner.innerHTML = responseText;</span></span><br><span class="line"><span class="undefined">    &#125;;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">window</span>.addEventListener(<span class="string">'hashchange'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> api = <span class="string">'https://api.yangfch3.com?q='</span> + location.hash.substr(<span class="number">1</span>);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">new</span> Ajax(api, callback);</span></span><br><span class="line"><span class="javascript">    &#125;, <span class="literal">false</span>);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 				</div>
 				<!-- about -->
 				

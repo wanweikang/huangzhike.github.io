@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-jQuery原理及简单实现 | 学而时习之</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-jQuery原理及简单实现">
+		
+		<meta property="og:site_name" content="学而时习之">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">学而时习之</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/" title="">
+						<i class="fa fa-home"></i>Index
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-jQuery原理及简单实现</h2>
+				
+				<div>
+					<div class="post-time">2016-10-31</div>
+				</div>
+				
+				<div class="article-content">
+				<p><strong>2016-12-11更新：</strong>最近在此基础上写了一个mini的jQuery，有兴趣可以到我的Github上查看。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 首先创建匿名自执行函数，将代码写在里面避免全局变量冲突</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// noConflict方法，缓存外部的冲突变量</span></span><br><span class="line">    <span class="keyword">var</span> _jQuery = <span class="built_in">window</span>.jQuery,</span><br><span class="line">        _$ = <span class="built_in">window</span>.$;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 对外暴露接口，用 $.ajax 或 $("#id")即可调用。</span></span><br><span class="line">    <span class="keyword">var</span> jQuery = <span class="built_in">window</span>.jQuery = <span class="built_in">window</span>.$ = <span class="function"><span class="keyword">function</span>(<span class="params">selector, context</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 每次用$调用的时候,直接返回一个$的实例，达到无new调用。</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> jQuery.prototype.init(selector);</span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="comment">//处理插件，原型对象</span></span><br><span class="line">    jQuery.fn = jQuery.prototype = &#123;</span><br><span class="line">        <span class="keyword">constructor</span> : jQuery,</span><br><span class="line">        length : 0,</span><br><span class="line">        splice: [].splice, // 在原型上具有splice属性</span><br><span class="line">        selector : "",</span><br><span class="line"></span><br><span class="line">        jQuery.prototype.attr = function () &#123;&#125;;</span><br><span class="line">        <span class="comment">// $("div") = new jQuery();  // 返回jQuery对象。</span></span><br><span class="line">        <span class="comment">// $("div").attr("name", "Jim");</span></span><br><span class="line">        <span class="comment">// 内部如何返回对象？</span></span><br><span class="line">        <span class="comment">// 如果 return this; 指向windows，this在运行时决定</span></span><br><span class="line">        <span class="comment">// 如果 return new jQuery(); 循环调用 Maximum call stack size exceed</span></span><br><span class="line">        <span class="comment">// 解决原理：</span></span><br><span class="line">        <span class="comment">// function f() &#123;</span></span><br><span class="line">        <span class="comment">//     return f.prototype.init(); // init返回this指向f.prototype，也能有xx属性</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line">        <span class="comment">// f.prototype = &#123;</span></span><br><span class="line">        <span class="comment">//     init:function() &#123;</span></span><br><span class="line">        <span class="comment">//         return this; </span></span><br><span class="line">        <span class="comment">//     &#125;,</span></span><br><span class="line">        <span class="comment">//     xx:"xx"</span></span><br><span class="line">        <span class="comment">// &#125;;</span></span><br><span class="line"></span><br><span class="line">        init : <span class="function"><span class="keyword">function</span>(<span class="params">selector</span>) </span>&#123;</span><br><span class="line">            <span class="comment">// 简单的DOM选择，详细实现略</span></span><br><span class="line">            <span class="keyword">var</span> eles = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"selector"</span>);</span><br><span class="line">            [].push.apply(<span class="keyword">this</span>, eles);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>; </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;;  </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 因为return new jQuery.prototype.init，需要手动把init.prototype指向jQuery.prototype</span></span><br><span class="line">    jQuery.prototype.init.prototype = jQuery.prototype; </span><br><span class="line"></span><br><span class="line">    <span class="comment">//实现继承</span></span><br><span class="line">    jQuery.extend = jQuery.fn.extend = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> o = <span class="built_in">arguments</span>[<span class="number">0</span>];</span><br><span class="line">        <span class="comment">// 浅拷贝</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> p <span class="keyword">in</span> o) &#123;</span><br><span class="line">            <span class="comment">// this在运行时动态指向jQuery或jQuery.fn</span></span><br><span class="line">            <span class="keyword">this</span>[p] = o[p];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加静态方法</span></span><br><span class="line">    <span class="comment">// .method来赋予新的属性和方法，也被称为静态方法。</span></span><br><span class="line">    jQuery.extend(&#123;&#125;);</span><br><span class="line">    <span class="comment">// $.extend(&#123;method: function() &#123;console.log("静态方法")&#125;&#125;);</span></span><br><span class="line">    <span class="comment">// $.method(); // 静态方法</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 解决命名冲突</span></span><br><span class="line">    jQuery.extend(&#123;</span><br><span class="line">        noConflict: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="comment">// 恢复最开始缓存的外部冲突变量</span></span><br><span class="line">            <span class="built_in">window</span>.jQuery = _jQuery;</span><br><span class="line">            <span class="built_in">window</span>.$ = _$</span><br><span class="line">            <span class="comment">// 返回jQuery，防止另外一种情况，即jQuery被后面冲突的覆盖</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>; </span><br><span class="line">            <span class="comment">// 将jQuery赋给另外一个不冲突的命名，如：var j = $.noConflict();</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加实例方法，链式调用</span></span><br><span class="line">    jQuery.fn.extend(&#123;&#125;);</span><br><span class="line">    <span class="comment">// $.fn.extend(&#123;method: function() &#123;console.log("实例方法")&#125;&#125;);</span></span><br><span class="line">    <span class="comment">// $("div").method(); // 实例方法</span></span><br><span class="line">    <span class="comment">// jQuery对象是类数组对象</span></span><br><span class="line"></span><br><span class="line">    jQuery.fn.extend(&#123;</span><br><span class="line"></span><br><span class="line">        each: <span class="function"><span class="keyword">function</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> len = <span class="keyword">this</span>.length,	</span><br><span class="line">                i = <span class="number">0</span>;</span><br><span class="line">            <span class="comment">// jQuery数组对象，如$.("div").each(function(index,item) &#123;&#125;)</span></span><br><span class="line">            <span class="keyword">for</span> (; i &lt; len; i++) &#123;</span><br><span class="line">                <span class="keyword">var</span> val = callback.call(<span class="keyword">this</span>[i], index, <span class="keyword">this</span>[i]);</span><br><span class="line">                <span class="keyword">if</span>(val === <span class="literal">false</span>) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>; <span class="comment">// 链式调用</span></span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        css : <span class="function"><span class="keyword">function</span>(<span class="params">attr,val</span>) </span>&#123;</span><br><span class="line">            <span class="comment">// 查询</span></span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">arguments</span>.length === <span class="number">1</span>) &#123; </span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">this</span>[<span class="number">0</span>].style[<span class="built_in">arguments</span>[<span class="number">0</span>]];</span><br><span class="line">                <span class="comment">// 或者</span></span><br><span class="line">                <span class="keyword">return</span> getComputedStyle(<span class="keyword">this</span>[i],<span class="literal">null</span>)[attr];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 设置</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>;i &lt; <span class="keyword">this</span>.length; i++) &#123;</span><br><span class="line">                <span class="keyword">this</span>[i].style[attr] = val;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        hasClass : <span class="function"><span class="keyword">function</span>(<span class="params">classsName</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> reg = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">"(\\s|^)"</span> + classsName + <span class="string">"(\\s|$)"</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.length; i++) &#123;</span><br><span class="line">                <span class="keyword">var</span> n= <span class="keyword">this</span>[i].className.split(<span class="string">" "</span>);</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; n.length; j++) &#123;			</span><br><span class="line">                    <span class="keyword">if</span> (n[j].className.match(reg)) &#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        addClass : <span class="function"><span class="keyword">function</span>(<span class="params">classsName</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> reg = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">"(\\s|^)"</span> + classsName + <span class="string">"(\\s|$)"</span>);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.length; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span>(!<span class="keyword">this</span>[i].className.match(reg))</span><br><span class="line">                <span class="keyword">this</span>[i].className += <span class="string">" "</span> + classsName;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        removeClass : <span class="function"><span class="keyword">function</span>(<span class="params">classsName</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> reg = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">"(\\s|^)"</span> + classsName + <span class="string">"(\\s|$)"</span>);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.length; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">this</span>[i].className.match(reg)) &#123;</span><br><span class="line">                    <span class="keyword">this</span>[i].className = <span class="keyword">this</span>[i].className.replace(classsName,<span class="string">""</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

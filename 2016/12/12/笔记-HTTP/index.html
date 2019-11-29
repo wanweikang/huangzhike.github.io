@@ -108,30 +108,28 @@
 				<ul>
 <li>客户端HTTP请求包括四部分：请求行、请求头部、空行、请求数据。</li>
 <li>服务器HTTP响应包括四部分：状态行、消息报头、空行、响应正文。</li>
-<li><p>HTTP请求和响应都遵循相同的格式，HTTP包含Header和Body两部分，Body可选</p>
-</li>
-<li><p>客户端请求：</p>
+<li>HTTP请求和响应都遵循相同的格式，HTTP包含Header和Body两部分，Body可选</li>
+</ul>
+<p>客户端请求：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GET /hello.txt HTTP/1.1</span><br><span class="line">User-Agent: curl/7.16.3 libcurl/7.16.3 OpenSSL/0.9.7l zlib/1.2.3</span><br><span class="line">Host: www.example.com</span><br><span class="line">// GET表示请求方式，/表示URL路径，URL总是以/开头，/表示首页，HTTP/1.1表示HTTP协议版本是1.1</span><br><span class="line">// Host表示请求域名。服务器通过Host区分浏览器请求网站</span><br></pre></td></tr></table></figure>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">POST /path HTTP/1.1</span><br><span class="line">Header1: Value1</span><br><span class="line">Header2: Value2</span><br><span class="line">Header3: Value3</span><br><span class="line"></span><br><span class="line">body data goes here...</span><br><span class="line">// 当遇到连续两个\r\n时，Header结束，后面是Body</span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">POST /path HTTP/1.1</span><br><span class="line">Header1: Value1</span><br><span class="line">Header2: Value2</span><br><span class="line">Header3: Value3</span><br><span class="line"></span><br><span class="line">body data goes here...</span><br><span class="line">// 当遇到连续两个\r\n时，Header结束，后面是Body</span><br></pre></td></tr></table></figure>
+<ul>
 <li><p>GET方法，主要是请求某个资源，是最常用到的方法，获取列表数据分页等等。但GET方法数据存放在头部，有大小的限制，详见各浏览器对URL的限制。</p>
 </li>
 <li><p>POST方法，主要是向服务端发送数据，如用户登陆，修改用户资料等。不能因为修改信息少而去改变为get方法，这是违背定义的。</p>
 </li>
-<li><p>GET 方法：查询字符串（名称/值对）在 GET 请求的 URL 中发送：</p>
+</ul>
+<p>GET方法：查询字符串（名称/值对）在GET请求的URL中发送：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/test/demo_form.asp？name1=value1&amp;name2=value2</span><br></pre></td></tr></table></figure>
 <ul>
-<li>GET 请求可被缓存</li>
-<li>GET 请求保留在浏览器历史记录中</li>
-<li>GET 请求可被收藏为书签</li>
-<li>GET 请求不应在处理敏感数据时使用</li>
-<li>GET 请求有长度限制</li>
-<li>GET 请求只应当用于取回数据</li>
+<li>GET请求可被缓存</li>
+<li>GET请求保留在浏览器历史记录中</li>
+<li>GET请求可被收藏为书签</li>
+<li>GET请求不应在处理敏感数据时使用</li>
+<li>GET请求有长度限制</li>
+<li>GET请求只应当用于取回数据</li>
 </ul>
-</li>
-</ul>
-<ul>
-<li><p>POST 方法：查询字符串（名称/值对）在 POST 请求的 HTTP 消息主体中发送：</p>
+<p>POST 方法：查询字符串（名称/值对）在POST请求的HTTP消息主体中发送：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">POST /test/demo_form.asp HTTP/1.1</span><br><span class="line">Host: w3schools.com</span><br><span class="line">name1=value1&amp;name2=value2</span><br></pre></td></tr></table></figure>
 <ul>
 <li>POST 请求不会被缓存</li>
@@ -139,11 +137,8 @@
 <li>POST 不能被收藏为书签</li>
 <li>POST 请求对数据长度没有要求</li>
 </ul>
-</li>
-<li><p>服务端响应：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Date: Mon, 27 Jul 2009 12:28:53 GMT</span><br><span class="line">Server: Apache</span><br><span class="line">Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT</span><br><span class="line">ETag: &quot;34aa387-d-1568eb00&quot;</span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line">Content-Length: 51</span><br><span class="line">Vary: Accept-Encoding</span><br><span class="line">Content-Type: text/plain</span><br><span class="line">// HTTP响应如果包含body，也是通过\r\n\r\n来分隔的</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>HTTP响应头信息</p>
+<p>服务端响应：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Date: Mon, 27 Jul 2009 12:28:53 GMT</span><br><span class="line">Server: Apache</span><br><span class="line">Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT</span><br><span class="line">ETag: &quot;34aa387-d-1568eb00&quot;</span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line">Content-Length: 51</span><br><span class="line">Vary: Accept-Encoding</span><br><span class="line">Content-Type: text/plain</span><br><span class="line">// HTTP响应如果包含body，也是通过\r\n\r\n来分隔的</span><br></pre></td></tr></table></figure></p>
+<p>HTTP响应头信息</p>
 <ul>
 <li>Allow：服务器支持哪些请求方法（如GET、POST等）。</li>
 <li>Content-Encoding：文档的编码（Encode）方法。只有解码之后才可以得到Content-Type头指定的内容类型。当存在Content-Encoding时，Body数据是被压缩的，如gzip。</li>
@@ -156,8 +151,7 @@
 <li><p>Refresh：浏览器在多少时间之后刷新文档，以秒计。可以通过<code>setHeader(&quot;Refresh&quot;, &quot;5; URL=http://host/path&quot;)</code>让浏览器读取指定的页面。 这种功能通常通过设置HTML页面HEAD区的<code>＜META HTTP-EQUIV=&quot;Refresh&quot; CONTENT=&quot;5;URL=http://host/path&quot;＞</code>实现，对于Servlet来说，直接设置Refresh头更加方便。 Refresh的意义是”N秒之后刷新本页面或访问指定页面”，而不是”每隔N秒刷新本页面或访问指定页面”。因此，连续刷新要求每次都发送一个Refresh头，而发送204状态代码则可以阻止浏览器继续刷新，不管是使用Refresh头还是＜META HTTP-EQUIV=”Refresh” …＞。 </p>
 </li>
 </ul>
-</li>
-<li><p>HTTP请求流程：</p>
+<p>HTTP请求流程：</p>
 <ul>
 <li>步骤1：浏览器首先向服务器发送HTTP请求，请求包括：<ul>
 <li>GET仅请求资源，POST会附带用户数据；<ul>
@@ -178,14 +172,10 @@
 </li>
 <li>步骤3：如果浏览器继续向服务器请求其他资源，如图片，就再次发出HTTP请求，重复步骤1、2。</li>
 </ul>
-</li>
-<li><p>虽然浏览器请求的是首页，但在HTML中可以链入其他服务器的资源，从而将请求压力分散到各个服务器上，一个站点可以链接到其他站点，无数个站点互相链接起来，就形成了World Wide Web。</p>
-</li>
-<li><p>HTTP1.0定义了三种请求方法： GET, POST 和 HEAD。</p>
-</li>
-<li><p>HTTP1.1新增了五种请求方法：OPTIONS, PUT, DELETE, TRACE 和 CONNECT 方法。</p>
-</li>
-<li><p>HTTP状态码（HTTP Status Code）共分为5种类型：</p>
+<p>虽然浏览器请求的是首页，但在HTML中可以链入其他服务器的资源，从而将请求压力分散到各个服务器上，一个站点可以链接到其他站点，无数个站点互相链接起来，就形成了World Wide Web。</p>
+<p>HTTP1.0定义了三种请求方法：GET, POST和HEAD。</p>
+<p>HTTP1.1新增了五种请求方法：OPTIONS, PUT, DELETE, TRACE和CONNECT方法。</p>
+<p>HTTP状态码（HTTP Status Code）共分为5种类型：</p>
 <ul>
 <li>1**：信息，服务器收到请求，需要请求者继续执行操作</li>
 <li>2**：成功，操作被成功接收并处理</li>
@@ -193,10 +183,7 @@
 <li>4**：客户端错误，请求包含语法错误或无法完成请求</li>
 <li>5**：服务器错误，服务器在处理请求的过程中发生了错误</li>
 </ul>
-</li>
-<li><p>HTTP Content-Type，内容类型，一般是指网页中存在的Content-Type，用于定义网络文件的类型和网页的编码，决定浏览器将以什么形式、什么编码读取这个文件，比如一些Asp网页点击却是下载一个文件。</p>
-</li>
-</ul>
+<p>HTTP Content-Type，内容类型，一般是指网页中存在的Content-Type，用于定义网络文件的类型和网页的编码，决定浏览器将以什么形式、什么编码读取这个文件，比如一些Asp网页点击却是下载一个文件。</p>
 <table>
 <thead>
 <tr>

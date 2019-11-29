@@ -105,7 +105,7 @@
 				</div>
 				
 				<div class="article-content">
-				<p><a href="https://www.cnblogs.com/fwnboke/p/8529604.html" target="_blank" rel="noopener">参考1</a><br><a href="http://tutorials.jenkov.com/java-nio/index.html" target="_blank" rel="noopener">参考2</a><br><a href>其他</a></p>
+				<p><a href="https://www.cnblogs.com/fwnboke/p/8529604.html" target="_blank" rel="noopener">参考1</a><br><a href="http://tutorials.jenkov.com/java-nio/index.html" target="_blank" rel="noopener">参考2</a></p>
 <p><strong>06-25补充</strong></p>
 <p>IO</p>
 <ul>
@@ -178,12 +178,12 @@
 <li>非阻塞IO模型</li>
 </ul>
 <p>用户线程发出IO请求后，马上就得到一个结果标志。如果数据还没有准备好，它可以再次发出IO请求。一旦内核中的数据准备好了，并且再次收到了用户线程的请求，那就将数据拷贝到用户线程，然后返回。用户线程需要不断轮询内核数据是否就绪，也就是会一直占用CPU。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">while(true)&#123;</span><br><span class="line">    data = socket.read();</span><br><span class="line">    if(data != error)&#123;</span><br><span class="line">        // 处理数据</span><br><span class="line">        break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">    data = socket.read();</span><br><span class="line">    <span class="keyword">if</span>(data != error)&#123;</span><br><span class="line">        <span class="comment">// 处理数据</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>多路复用IO模型</li>
 </ul>
 <p>Java NIO实际上是多路复用IO。<br>有一个线程不断去轮询多个Socket的状态，只有当Socket真正有读写事件时，才真正调用实际的IO读写操作。只需要一个线程就可以管理多个Socket，并且只有在真正有Socket读写事件进行时，才会使用IO资源。Java NIO中，通过Selector#select查询每个通道是否有事件，如果没有则阻塞。在非阻塞IO中，轮询Socket状态是用户线程进行的，在多路复用IO中，是内核进行，效率要高的多。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//  事先调用epoll_ctl注册感兴趣的事件到epollfd</span><br><span class="line">while true &#123;</span><br><span class="line">    // 返回触发注册事件的流</span><br><span class="line">    active_stream[] = epoll_wait(epollfd)</span><br><span class="line">    // 无须遍历所有的流</span><br><span class="line">    for i in active_stream[] &#123;</span><br><span class="line">        read or write till</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  事先调用epoll_ctl注册感兴趣的事件到epollfd</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">true</span> &#123;</span><br><span class="line">    <span class="comment">// 返回触发注册事件的流</span></span><br><span class="line">    active_stream[] = epoll_wait(epollfd)</span><br><span class="line">    <span class="comment">// 无须遍历所有的流</span></span><br><span class="line">    <span class="keyword">for</span> i in active_stream[] &#123;</span><br><span class="line">        read or write till</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>信号驱动IO模型</li>
 </ul>

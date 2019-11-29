@@ -107,7 +107,8 @@
 				<div class="article-content">
 				<p>最近换到了Hexo搭博客，要用到Git，加上要管理在Github上的作品，折腾一晚顺便把Git基础操作学了，其它等需要用再现学吧。</p>
 <p>注：主要参考了<a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="noopener">廖雪峰的Git教程</a>。听说还有另一种版本控制系统SVN，不明觉厉。</p>
-<p><strong>2016-11-13更新</strong><br>参考文章：<br><a href="http://www.runoob.com/git/git-tutorial.html" target="_blank" rel="noopener">http://www.runoob.com/git/git-tutorial.html</a><br><a href="http://deweixu.me/2016/11/05/how-git-works/" target="_blank" rel="noopener">http://deweixu.me/2016/11/05/how-git-works/</a><br><a href="http://read.lingyu.wang/pro-git/base.html" target="_blank" rel="noopener">http://read.lingyu.wang/pro-git/base.html</a></p>
+<p><strong>2016-11-13更新</strong></p>
+<p>参考文章：<br><a href="http://www.runoob.com/git/git-tutorial.html" target="_blank" rel="noopener">http://www.runoob.com/git/git-tutorial.html</a><br><a href="http://deweixu.me/2016/11/05/how-git-works/" target="_blank" rel="noopener">http://deweixu.me/2016/11/05/how-git-works/</a><br><a href="http://read.lingyu.wang/pro-git/base.html" target="_blank" rel="noopener">http://read.lingyu.wang/pro-git/base.html</a></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// Git Bash Here</span><br><span class="line"></span><br><span class="line">mkdir myGit // 当前目录创建myGit文件夹</span><br><span class="line"></span><br><span class="line">cd myGit // 进入文件夹</span><br><span class="line"></span><br><span class="line">mkdir data // 当前文件夹创建文件夹data</span><br><span class="line"></span><br><span class="line">printf &apos;a&apos; &gt; data/readme.md // 创建readme.md，内容是一个字符a</span><br><span class="line"></span><br><span class="line">cd myGit // 进入文件夹</span><br><span class="line"></span><br><span class="line">git init // 初始化，当前目录生成 .git 目录，归Git系统，其他文件称为工作副本</span><br><span class="line"></span><br><span class="line">git init another // 在another目录下初始化</span><br><span class="line"></span><br><span class="line">git pull git@github.com:huangzhike/resume.git // 同步到本地</span><br><span class="line"></span><br><span class="line">git branch // 查看所有分支 当前分支为*</span><br><span class="line"></span><br><span class="line">git branch gh-pages // 在当前分支下新建gh-pages分支</span><br><span class="line"></span><br><span class="line">git checkout gh-pages // 切换到gh-pages分支</span><br><span class="line"></span><br><span class="line">git checkout -b gh-pages // 合并写法，创建+切换分支</span><br><span class="line"></span><br><span class="line">git merge master // 合并master分支到当前分支</span><br><span class="line"></span><br><span class="line">git branch -d master // 合并完成后删除master分支</span><br></pre></td></tr></table></figure>
 <p>注：使用分支完成任务，合并后再删掉分支，和直接在master分支上效果一样，但更快更安全。</p>
 <p>注：当Git无法自动合并分支时，必须先解决conflict，再提交。</p>
@@ -118,17 +119,20 @@
 <p><strong>Git从远程的分支获取最新版本到本地有2个命令：</strong></p>
 <p><code>git fetch</code>：从远程获取最新版本到本地，不会自动merge</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin master // 首先从远程的origin的master主分支下载最新的版本到origin/master分支上</span><br><span class="line">git log -p master..origin/master // 然后比较本地的master分支和origin/master分支的差别</span><br><span class="line">git merge origin/master // 最后合并</span><br><span class="line"></span><br><span class="line">// 更清晰的方式：</span><br><span class="line"></span><br><span class="line">git fetch origin master:tmp // 从远程获取最新的版本到本地的test分支上</span><br><span class="line">git diff tmp // 比较</span><br><span class="line">git merge tmp // 合并</span><br></pre></td></tr></table></figure>
-<p><code>git pull</code>：相当于从远程fetch最新版本并merge到本地</p>
+<p><code>git pull</code>：相当于从远程fetch最新版本并merge到本地。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull origin master // 相当于git fetch 和 git merge</span><br></pre></td></tr></table></figure>
-<p>注：我想把原来的resume转到新建的repository上，同时保留之前的commit记录，旧的给博客用，首先clone到本地，再关联远程旧仓库，再fetch merge push，结果错误也是五花八门，pull 也不行，<code>fatal: refusing to merge unrelated histories</code> ，<code>-allow-unrelated-histories</code>无果，<code>fatal could not read from remote repository</code>（难道是因为我打错了），push<code>[rejected] master -&gt; master (fetch first)</code>，结果加个<code>-f</code>强制完成。其实这个方法不对吧？</p>
+<p>注：我想把原来的resume转到新建的repository上，同时保留之前的commit记录，旧的给博客用，首先clone到本地，再关联远程旧仓库，再fetch merge push，结果错误也是五花八门，pull也不行，<code>fatal: refusing to merge unrelated histories</code>，<code>-allow-unrelated-histories</code>无果，<code>fatal could not read from remote repository</code>（难道是因为我打错了），push<code>[rejected] master -&gt; master (fetch first)</code>，结果加个<code>-f</code>强制完成。其实这个方法不对吧？</p>
 <p><strong>Git简单原理：</strong></p>
 <ul>
-<li>/etc/gitconfig 文件：所有用户都适用。若git config 时用 –system 选项，读写的就是这个文件。</li>
-<li>~/.gitconfig 文件：用户目录下，只适用于该用户。若 git config 时用 –global 选项，读写的就是这个文件。</li>
-<li>工作目录中的 .git/config 文件：仅针对当前项目有效。</li>
+<li>/etc/gitconfig文件：所有用户都适用。若<code>git config</code>时用<code>--system</code>选项，读写的就是这个文件。</li>
+<li>~/.gitconfig文件：用户目录下，只适用于该用户。若<code>git config</code>时用<code>--global</code>选项，读写的就是这个文件。</li>
+<li>工作目录中的.git/config文件：仅针对当前项目有效。</li>
 </ul>
-<p>每一个级别的配置都会覆盖上层的相同配置，.git/config 里的配置会覆盖 /etc/gitconfig 中的同名变量。Windows 系统上，Git 会找寻用户主目录下的 .gitconfig 文件。主目录即 $HOME 变量指定的目录，一般是 C:\Documents and Settings\$USER。此外，Git 还会尝试找寻 /etc/gitconfig 文件，根据当初 Git 安装目录，以此作为根目录定位。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 配置用户名和电子邮件地址：</span><br><span class="line">git config --global user.name &quot;huangzhike&quot;</span><br><span class="line">git config --global user.email huangzhike@huangzhike.com</span><br><span class="line"></span><br><span class="line">// --global 选项：更改位于用户主目录下的配置文件，所有项目默认使用。</span><br><span class="line">// 如果要在特定项目中使用其他名字或电邮，去掉 --global 选项重新配置即可，新设定保存在当前项目的 .git/config 里。</span><br><span class="line"></span><br><span class="line">git config --list // 检查已有配置信息</span><br><span class="line">// 重复的变量名说明来自不同的配置文件（比如 /etc/gitconfig 和 ~/.gitconfig）， Git 实际采用最后一个。</span><br></pre></td></tr></table></figure>
+<p>每一个级别的配置都会覆盖上层的相同配置，.git/config里的配置会覆盖/etc/gitconfig中的同名变量。</p>
+<p>Windows系统上，Git会找寻用户主目录下的.gitconfig文件。</p>
+<p>主目录即$HOME变量指定的目录，一般是<code>C:\Documents and Settings\$USER</code>。</p>
+<p>此外，Git还会尝试找寻/etc/gitconfig文件，根据当初Git安装目录，以此作为根目录定位。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 配置用户名和电子邮件地址：</span><br><span class="line">git config --global user.name &quot;huangzhike&quot;</span><br><span class="line">git config --global user.email huangzhike@huangzhike.com</span><br><span class="line"></span><br><span class="line">// --global选项：更改位于用户主目录下的配置文件，所有项目默认使用</span><br><span class="line">// 如果要在特定项目中使用其他名字或电邮，去掉--global选项重新配置即可，新设定保存在当前项目的.git/config</span><br><span class="line"></span><br><span class="line">git config --list // 检查已有配置信息</span><br><span class="line">// 重复的变量名说明来自不同的配置文件（比如/etc/gitconfig和~/.gitconfig），Git实际采用最后一个</span><br></pre></td></tr></table></figure>
 <p>.gitignore文件：列出要忽略的文件模式</p>
 <p>Git只有三种状态：已提交（committed），已修改（modified）和已暂存（staged）。</p>
 <ul>
@@ -146,30 +150,45 @@
 <ul>
 <li>在工作目录中修改某些文件。</li>
 <li>对这些修改了的文件作快照，并保存到暂存区域。</li>
-<li><p>提交更新，将保存在暂存区域的文件快照转储到 git 目录中。</p>
+<li><p>提交更新，将保存在暂存区域的文件快照转储到git目录中。</p>
 </li>
-<li><p>当对工作区修改（或新增）的文件执行 <code>git add</code> 命令时，暂存区的目录树被更新，同时工作区修改（或新增）的文件内容被写入到对象库中的一个新的对象中，该对象的ID被记录在暂存区的文件索引中。</p>
+<li><p>当对工作区修改（或新增）的文件执行<code>git add</code>命令时，暂存区的目录树被更新，同时工作区修改（或新增）的文件内容被写入到对象库中的一个新的对象中，该对象的ID被记录在暂存区的文件索引中。</p>
 </li>
-<li>当执行提交操作 <code>git commit</code> 时，暂存区的目录树写到版本库（对象库）中，master 分支会做相应的更新。即 master 指向的目录树就是提交时暂存区的目录树。</li>
-<li>当执行 <code>git reset HEAD</code> 命令时，暂存区的目录树会被重写，被 master 分支指向的目录树所替换，但是工作区不受影响。</li>
-<li>当执行 <code>git rm --cached &lt;file&gt;</code> 命令时，会直接从暂存区删除文件，工作区则不做出改变。</li>
-<li>当执行 <code>git checkout .</code> 或者 <code>git checkout -- &lt;file&gt;</code> 命令时，会用暂存区全部或指定的文件替换工作区的文件。危险操作，会清除工作区中未添加到暂存区的改动。</li>
-<li>当执行 <code>git checkout HEAD .</code> 或者 <code>git checkout HEAD &lt;file&gt;</code> 命令时，会用 HEAD 指向的 master 分支中的全部或者部分文件替换暂存区和以及工作区中的文件。危险操作，不但会清除工作区中未提交的改动，也会清除暂存区中未提交的改动。</li>
+<li>当执行提交操作 <code>git commit</code>时，暂存区的目录树写到版本库（对象库）中，master 分支会做相应的更新。即 master 指向的目录树就是提交时暂存区的目录树。</li>
+<li>当执行<code>git reset HEAD</code>命令时，暂存区的目录树会被重写，被 master 分支指向的目录树所替换，但是工作区不受影响。</li>
+<li>当执行<code>git rm --cached &lt;file&gt;</code>命令时，会直接从暂存区删除文件，工作区则不做出改变。</li>
+<li>当执行<code>git checkout .</code>或者<code>git checkout -- &lt;file&gt;</code>命令时，会用暂存区全部或指定的文件替换工作区的文件。危险操作，会清除工作区中未添加到暂存区的改动。</li>
+<li>当执行<code>git checkout HEAD .</code>或者<code>git checkout HEAD &lt;file&gt;</code>命令时，会用HEAD指向的master分支中的全部或者部分文件替换暂存区和以及工作区中的文件。危险操作，不但会清除工作区中未提交的改动，也会清除暂存区中未提交的改动。</li>
 </ul>
-<p><code>git add data/letter.txt</code>：<br>首先，在.git/objects/目录中创建新的blob文件。这个blob文件包含data/letter.txt的压缩内容。 它的名称通过文件内容的Hash(应该是用SHA-1 )得到。如，Git将aes转换为2e65efe2a145dda7ee51d1741299f848e5bf752e，前两个字符用作对象数据库中的目录的名称：.git/objects/2e/。 散列的其余部分用作保存所添加文件的内容的blob文件的名称：.git/objects/2e/65efe2a145dda7ee51d1741299f848e5bf752e。git add将文件添加到Git并将其内容保存到objects目录中。 如果用户从工作副本中删除data/letter.text，它的内容在Git中仍然是安全的。</p>
-<p>其次，git add将文件添加到索引，其中包含Git已被告知要跟踪的每个文件。 它作为一个文件存储在.git/index。 文件的每一行将被跟踪的文件映射到其内容的哈希。 这是运行git add命令后的索引：data/letter.txt 2e65efe2a145dda7ee51d1741299f848e5bf752e</p>
-<p><code>git commit</code>：commit命令有三个步骤。 </p>
+<p><code>git add data/letter.txt</code>：</p>
+<p>首先，在.git/objects/目录中创建新的blob文件。</p>
+<p>这个blob文件包含data/letter.txt的压缩内容。</p>
+<p>它的名称通过文件内容的Hash(应该是用SHA-1 )得到。</p>
+<p>如，Git将aes转换为2e65efe2a145dda7ee51d1741299f848e5bf752e，前两个字符用作对象数据库中的目录的名称：.git/objects/2e/。</p>
+<p>散列的其余部分用作保存所添加文件的内容的blob文件的名称：.git/objects/2e/65efe2a145dda7ee51d1741299f848e5bf752e。</p>
+<p><code>git add</code>将文件添加到Git并将其内容保存到objects目录中。</p>
+<p>如果用户从工作副本中删除data/letter.text，它的内容在Git中仍然是安全的。</p>
+<p>其次，<code>git add</code>将文件添加到索引，其中包含Git已被告知要跟踪的每个文件。</p>
+<p>它作为一个文件存储在.git/index。</p>
+<p>文件的每一行将被跟踪的文件映射到其内容的哈希。</p>
+<p>这是运行git add命令后的索引：data/letter.txt 2e65efe2a145dda7ee51d1741299f848e5bf752e</p>
+<p><code>git commit</code>：commit命令有三个步骤。</p>
 <ul>
-<li>创建一个树形图来表示正在提交的项目版本的内容。 </li>
-<li>创建一个提交对象。 </li>
+<li>创建一个树形图来表示正在提交的项目版本的内容。</li>
+<li>创建一个提交对象。</li>
 <li>将当前分支指向新的提交对象。</li>
 </ul>
-<p>Git通过从索引创建树图来记录项目的当前状态。此树图记录项目中每个文件的位置和内容。<br>该图由两种类型的对象组成：blob和树。<br>git add存储Blob，表示文件的内容。<br>git commit存储树， 树表示工作副本中的目录。</p>
-<p><code>git reset HEAD</code> ：取消之前 git add 添加，但不希望包含在下一提交快照中的缓存。</p>
+<p>Git通过从索引创建树图来记录项目的当前状态。此树图记录项目中每个文件的位置和内容。<br>该图由两种类型的对象组成：blob和树。<br><code>git add</code>存储Blob，表示文件的内容。<br><code>git commit</code>存储树，树表示工作副本中的目录。</p>
+<p><code>git reset HEAD</code> ：取消之前<code>git add</code>添加，但不希望包含在下一提交快照中的缓存。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">$ git status -s</span><br><span class="line">M README</span><br><span class="line">M hello.php</span><br><span class="line">// 两个文件修改后，都提交到了缓存区</span><br><span class="line">$ git add .</span><br><span class="line">$ git status -s</span><br><span class="line">M README</span><br><span class="line">M hello.pp</span><br><span class="line">// 取消其中一个的缓存</span><br><span class="line">$ git reset HEAD -- hello.php </span><br><span class="line">Unstaged changes after reset:</span><br><span class="line">M hello.php</span><br><span class="line">$ git status -s</span><br><span class="line">M README</span><br><span class="line">M hello.php</span><br><span class="line"></span><br><span class="line">// 现在执行 git commit，只会将 README 文件的改动提交，而 hello.php 没有</span><br><span class="line">$ git commit -m &apos;修改&apos;</span><br><span class="line">$ git status -s</span><br><span class="line">M hello.php</span><br><span class="line">// hello.php 文件的修改并未提交</span><br><span class="line"></span><br><span class="line">// 使用以下命令将 hello.php 的修改提交</span><br><span class="line">$ git commit -am &apos;修改 hello.php 文件&apos;</span><br><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">nothing to commit, working directory clean</span><br></pre></td></tr></table></figure>
-<p><code>git rm</code> ：将条目从缓存区中移除。区别于git reset HEAD取消缓存。 “取消缓存”将缓存区恢复为修改前。默认情况下，git rm file 会将文件从缓存区和硬盘（工作目录）删除。如果在工作目录中留着该文件，可以使用 git rm –cached：</p>
+<p><code>git rm</code> ：将条目从缓存区中移除。</p>
+<p>区别于<code>git reset HEAD</code>取消缓存。</p>
+<p>“取消缓存”将缓存区恢复为修改前。</p>
+<p>默认情况下，<code>git rm file</code>会将文件从缓存区和硬盘（工作目录）删除。</p>
+<p>如果在工作目录中留着该文件，可以使用<code>git rm --cached</code>：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 删除 hello.php文件：</span><br><span class="line">$ git rm hello.php </span><br><span class="line">rm &apos;hello.php&apos;</span><br><span class="line">$ ls</span><br><span class="line">README</span><br><span class="line"></span><br><span class="line">// 不从工作区中删除文件：</span><br><span class="line">$ git rm --cached README </span><br><span class="line">rm &apos;README&apos;</span><br><span class="line">$ ls</span><br><span class="line">READM</span><br></pre></td></tr></table></figure>
-<p><code>git mv</code> ： git rm –cached， 重命名磁盘上的文件，再 git add 把新文件添加到缓存区。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 把刚移除的 README 添加回来：</span><br><span class="line">$ git add README </span><br><span class="line">// 重名:</span><br><span class="line">$ git mv README  README.md</span><br><span class="line">$ ls</span><br><span class="line">README.md</span><br></pre></td></tr></table></figure></p>
+<p><code>git mv</code> ： git rm –cached，重命名磁盘上的文件，再<code>git add</code>把新文件添加到缓存区。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 把刚移除的README添加回来：</span><br><span class="line">$ git add README </span><br><span class="line">// 重名:</span><br><span class="line">$ git mv README README.md</span><br><span class="line">$ ls</span><br><span class="line">README.md</span><br></pre></td></tr></table></figure>
 
 				</div>
 				<!-- about -->

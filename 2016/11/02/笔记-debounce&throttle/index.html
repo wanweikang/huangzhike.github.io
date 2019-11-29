@@ -5,7 +5,7 @@
 		<script src="/js/highlight.js"></script>
 				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
 		
-		<title>[笔记]-debounce&amp;throttle | 学而时习之</title>
+		<title>[笔记]-Debounce&amp;Throttle | 学而时习之</title>
 		
 		<meta name="author" content="Huangzhike">
 		
@@ -15,7 +15,7 @@
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		
-		<meta property="og:title" content="[笔记]-debounce&amp;throttle">
+		<meta property="og:title" content="[笔记]-Debounce&amp;Throttle">
 		
 		<meta property="og:site_name" content="学而时习之">
 		
@@ -98,14 +98,15 @@
 			<div class="content">
 				<!-- index -->
 				
-				<h2>[笔记]-debounce&amp;throttle</h2>
+				<h2>[笔记]-Debounce&amp;Throttle</h2>
 				
 				<div>
 					<div class="post-time">2016-11-02</div>
 				</div>
 				
 				<div class="article-content">
-				<p><strong>2016-11-17更新</strong><br><strong>本文内容主要来自hanzichi的github以及腾讯AlloyTeam的blog，由我重新整理</strong></p>
+				<p><strong>2016-11-17更新</strong></p>
+<p><strong>整理自hanzichi的Blog以及腾讯AlloyTeam的Blog</strong></p>
 <p><strong>函数节流</strong>（throttle），指一些事件，函数不要连续的触发，降低触发回调的频率，使得连续的函数执行，变为固定时间间断地执行。函数节流的原理就是定时器。当触发一个事件时，先setTimout让这个事件延迟一会再执行，如果在这个时间内又触发了事件，就清除原来的定时器，再设一个新的定时器。</p>
 <p><strong>函数去抖</strong>（debounce），就是一定时间段的连续的函数调用，只执行一次（通常为DOM事件的回调函数）。浏览器窗口resize事件，onmouseover事件等等，每缩小或放大一次浏览器，会触发N多次resize事件，页面可能一时间没响应。节流只能保证定时触发，用去抖，执行一次就好。函数去抖原理也非常简单，重复添加定时器即可。</p>
 <p><strong>函数节流应用场景</strong>：间隔一定时间触发回调来控制函数调用频率</p>
@@ -121,23 +122,17 @@
 <ul>
 <li>resize/scroll </li>
 <li>文本输入的验证（连续输入文字后发送 AJAX 请求进行验证，验证一次就好）</li>
-<li><p>按一个按钮发送 AJAX（给click加了debounce后就算不停地点这个按钮，只会发送一次，如果是throttle就会间隔发送几次）</p>
-</li>
-<li><p>有两种节流方式。</p>
-</li>
-<li>一是使用定时器，比如当scroll事件刚触发时，打印一个hello world，然后设置个1000ms的定时器，此后每次触发 scroll 事件触发回调，如果已经存在定时器，则回调不执行方法，直到定时器触发，handler被清除，然后重新设置定时器。</li>
-<li><p>高程的方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function throttle(fn, context) &#123;</span><br><span class="line">	clearTimeout(fn.tId);</span><br><span class="line">	fn.tId = setTimeout(function() &#123;</span><br><span class="line">		fn.call(context);</span><br><span class="line">	&#125;, 100);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 两次函数调用之间至少间隔100ms。</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>另外一种：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function throttle(fn, delay) &#123;</span><br><span class="line">	var timer = null;</span><br><span class="line">	//  使用闭包形成私有作用域存放定时器timer。</span><br><span class="line">	return function()&#123; </span><br><span class="line">		var context = this, args = arguments;</span><br><span class="line"></span><br><span class="line">		clearTimeout(timer);</span><br><span class="line">		timer = setTimeout(function() &#123;</span><br><span class="line">			fn.apply(context, args);</span><br><span class="line">		&#125;, delay);</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>函数节流让函数在不断触发后停下来才开始执行，如果是拖拽元素，拖动时元素不动，拖完了直接闪到终点。</p>
-</li>
-<li><p>二是用时间戳来判断是否已到回调该执行时间，记录上次执行的时间戳，然后每次触发scroll事件执行回调，回调中判断当前时间戳距离上次执行时间戳的间隔是否到达 1000ms，如果是，则执行，并更新上次执行的时间戳，如此循环。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">function throttle2(fn, delay, mustRunDelay) &#123;</span><br><span class="line">	var timer , start_t;</span><br><span class="line"></span><br><span class="line">	return function() &#123;</span><br><span class="line">		var context = this, args = arguments, curr_t = +new Date();</span><br><span class="line">		clearTimeout(timer); // 清除之前定时器</span><br><span class="line"></span><br><span class="line">		if (!start_t) &#123;</span><br><span class="line">			start_t = curr_t; // 记录第一次调用的时间戳</span><br><span class="line">		&#125;</span><br><span class="line">		// 每次调用函数都拿当前时间跟上次时间比，超出mustRunDelays至少执行一次</span><br><span class="line">		if (curr_t - start_t &gt;= mustRunDelay) &#123;</span><br><span class="line">			fn.apply(context, args);</span><br><span class="line">			start_t = curr_t;  // 更新记录时间</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			timer = setTimeout(function() &#123;</span><br><span class="line">				fn.apply(context, args); // 设置定时器</span><br><span class="line">			&#125;, delay);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
+<li>按一个按钮发送 AJAX（给click加了debounce后就算不停地点这个按钮，只会发送一次，如果是throttle就会间隔发送几次）</li>
 </ul>
+<p>有两种节流方式。</p>
+<p>一是使用定时器，比如当scroll事件刚触发时，打印一个hello world，然后设置个1000ms的定时器，此后每次触发 scroll 事件触发回调，如果已经存在定时器，则回调不执行方法，直到定时器触发，handler被清除，然后重新设置定时器。</p>
+<p>高程的方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">throttle</span>(<span class="params">fn, context</span>) </span>&#123;</span><br><span class="line">    clearTimeout(fn.tId);</span><br><span class="line">    fn.tId = setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        fn.call(context);</span><br><span class="line">    &#125;, <span class="number">100</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 两次函数调用之间至少间隔100ms</span></span><br></pre></td></tr></table></figure>
+<p>另外一种：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">throttle</span>(<span class="params">fn, delay</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> timer = <span class="literal">null</span>;</span><br><span class="line">    <span class="comment">// 使用闭包形成私有作用域存放定时器timer</span></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">        <span class="keyword">var</span> context = <span class="keyword">this</span>, args = <span class="built_in">arguments</span>;</span><br><span class="line"></span><br><span class="line">        clearTimeout(timer);</span><br><span class="line">        timer = setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            fn.apply(context, args);</span><br><span class="line">        &#125;, delay);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>函数节流让函数在不断触发后停下来才开始执行，如果是拖拽元素，拖动时元素不动，拖完了直接闪到终点。</p>
+<p>二是用时间戳来判断是否已到回调该执行时间，记录上次执行的时间戳，然后每次触发scroll事件执行回调，回调中判断当前时间戳距离上次执行时间戳的间隔是否到达1000ms，如果是，则执行，并更新上次执行的时间戳，如此循环。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">throttle2</span>(<span class="params">fn, delay, mustRunDelay</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> timer , start_t;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> context = <span class="keyword">this</span>, args = <span class="built_in">arguments</span>, curr_t = +<span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">        clearTimeout(timer); <span class="comment">// 清除之前定时器</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!start_t) &#123;</span><br><span class="line">            start_t = curr_t; <span class="comment">// 记录第一次调用的时间戳</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 每次调用函数都拿当前时间跟上次时间比，超出mustRunDelays至少执行一次</span></span><br><span class="line">        <span class="keyword">if</span> (curr_t - start_t &gt;= mustRunDelay) &#123;</span><br><span class="line">            fn.apply(context, args);</span><br><span class="line">            start_t = curr_t;  <span class="comment">// 更新记录时间</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            timer = setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                fn.apply(context, args); <span class="comment">// 设置定时器</span></span><br><span class="line">            &#125;, delay);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 				</div>
 				<!-- about -->
