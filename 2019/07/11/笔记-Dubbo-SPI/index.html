@@ -68,12 +68,6 @@
 			<ul class="nav navbar-nav navbar-right">
 				
 				<li>
-					<a href="https://huangzhike.github.io/" title="">
-						<i class="fa fa-home"></i>Index
-					</a>
-				</li>
-				
-				<li>
 					<a href="https://huangzhike.github.io/archives" title="">
 						<i class="fa fa-list"></i>Archives
 					</a>
@@ -108,32 +102,11 @@
 				<p>关于Dubbo，其实我用的不多，但是对这个名声在外的RPC框架还是挺有兴趣的，所以恭喜它进入了我的源码学习列表（还有RockectMQ）。</p>
 <p><a href="http://dubbo.apache.org/zh-cn/docs/source_code_guide/dubbo-spi.html" target="_blank" rel="noopener">官方文档</a>上基本有你想要的一切，官方中文注释，我基本都是照搬的。</p>
 <p>Version：2.7.2-SNAPSHOT</p>
-<p>P.S. 看Dubbo源码的时候居然收到阿里大佬发的邮件？可惜各种原因，哈哈，下次吧。</p>
-<p>P.P.S. 有点小激动，以后写博客是不是应该认真一点。。。</p>
 <hr>
-<p>几个主要的包：</p>
-<ul>
-<li><p>config：对外API配置接口，以ServiceConfig, ReferenceConfig为中心。</p>
-</li>
-<li><p>registry：注册中心，服务地址的注册与发现。</p>
-</li>
-<li><p>rpc：远程调用，封装RPC调用。</p>
-<ul>
-<li>cluster：路由层，封装多个提供者的路由及负载均衡，并桥接注册中心。</li>
-</ul>
-</li>
-<li><p>remoting：网络通信相关。</p>
-<ul>
-<li><p>exchange：信息交换，封装请求响应模式，同步转异步。</p>
-</li>
-<li><p>transport：网络传输，抽象Mina和Netty为统一接口。</p>
-</li>
-</ul>
-</li>
-</ul>
+<p>2019-12-24，大概半年后再翻了一下Dubbo，发觉好多东西基本都忘了。。。明明之前看过好几遍源码的。。。可能和平时不使用有关系吧。。。</p>
+<p>话说Dubbo是真的有点复杂，不知道当初我是怎么看下去的。。。</p>
 <hr>
 <p>Microkernel + Plugin，通过SPI扩展点实现动态自定义扩展，通过URL传递配置信息，具体不多贴代码了，建议自己看一遍源码。</p>
-<hr>
 <p>Dubbo SPI几个比较关键的方法：</p>
 <p>ExtensionLoader#getAdaptiveExtension</p>
 <ul>

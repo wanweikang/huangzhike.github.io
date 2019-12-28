@@ -68,12 +68,6 @@
 			<ul class="nav navbar-nav navbar-right">
 				
 				<li>
-					<a href="https://huangzhike.github.io/" title="">
-						<i class="fa fa-home"></i>Index
-					</a>
-				</li>
-				
-				<li>
 					<a href="https://huangzhike.github.io/archives" title="">
 						<i class="fa fa-list"></i>Archives
 					</a>
@@ -105,19 +99,25 @@
 				</div>
 				
 				<div class="article-content">
-				<p>计算机内存模型</p>
-<p>计算机指令是在CPU中执行的，程序运行的临时数据是放在主存（物理内存）当中的，CPU执行速度比内存读写快得多，如果任何操作都通过内存进行，会大大降低速度。</p>
-<p>因此运行过程中，会从主存复制一份到CPU的高速缓存当中，直接从高速缓存读写数据，结束之后再将高速缓存中的数据刷新到主存当中。</p>
-<p>如：<code>i = i + 1</code>;</p>
-<p>先从主存读取i的值，然后复制一份到高速缓存，然后 CPU 执行指令对i进行加1操作，然后将数据写入高速缓存，最后将高速缓存中i最新的值刷新到主存。</p>
-<p>比如同时有两个线程执行这段代码，假如初始时i的值为0，希望两个线程执行完之后i的值变为2。</p>
-<p>缓存一致性问题：初始时，两个线程分别读取i的值存入各自所在的 CPU 的高速缓存当中，然后线程1 进行加1操作，然后把i的最新值1写入到内存。</p>
+				<p>2019-12-14更新</p>
+<p>最近看到Oracle的<a href="https://docs.oracle.com/javase/specs/index.html" target="_blank" rel="noopener">Java语言和虚拟机规范</a>，发觉Oracle的这个官方文档真的是个宝库，还是有代码例子的那种。</p>
+<p>简单地翻了一下，我觉得完全可以作为Java的教材了，包含了入门到高级的知识，可惜是英文的，虽然我也能看，但是阅读这种专业文档还是挺吃力的，这个时候就不得不感叹西方人学习是多么方便了。</p>
+<p>不止计算机科学，整个近代人类文明，也基本都是建立在西方文明的基础上，到了现代，这个情况还是没有改变，虽然中国在科研领域已经取得了很多成就，但是，还远远不够。</p>
+<p>在学习上，就体现为，难以获取第一手的知识，毕竟语言不通，所以大部分人只能通过翻译过的版本获取，但是这个翻译后再传播，可能就经过了好几个人的理解，而且不一定完整和及时。</p>
+<p>所以挺尴尬的。</p>
+<p>另外内存模型这里我查了挺多资料，但是对于具体的实现细节大多是模棱两可，或者是各有说法，所以也就看个结论吧，我也无法判断对错，挺多疑问的。</p>
+<p>往下看就是虚拟机的实现甚至更底层的了，现在还是力有未逮。</p>
+<hr>
+<p>计算机内存模型</p>
+<p>计算机指令是在CPU中执行的，程序运行的临时数据是放在主存中的，因为CPU执行速度比内存读写快得多，因此运行过程中，会从主存复制一份到CPU的高速缓存当中，直接从高速缓存读写数据，结束后再将高速缓存中的数据刷回主存。</p>
+<p>如：<code>i = i + 1;</code>，先从主存读取i的值，然后复制一份到高速缓存，CPU执行指令对i进行加1操作，然后将数据写入高速缓存，最后将高速缓存中i最新的值刷新到主存。</p>
+<p>缓存一致性问题：初始时，两个线程分别读取i的值存入各自所在的CPU的高速缓存当中，然后线程1进行加1操作，然后把i的最新值1写入到内存。</p>
 <p>此时线程2的高速缓存当中i的值还是0，进行加1操作之后，i的值为1，然后线程2把i的值写入内存，最终结果i的值是1，而不是2。</p>
 <p>通常有两种解决方法（硬件层面）：</p>
 <ul>
 <li><p>在总线加LOCK#锁</p>
 <ul>
-<li>CPU 和其他部件进行通信都是通过总线来进行的，如果对总线加LOCK#锁的话，阻塞了其他 CPU 对其他部件访问（如内存），从而使得只能有一个 CPU 能使用这个变量的内存。</li>
+<li>CPU和其他部件进行通信都是通过总线来进行的，如果对总线加LOCK#锁的话，阻塞了其他CPU对其他部件访问（如内存），从而使得只能有一个CPU能使用这个变量的内存。</li>
 </ul>
 </li>
 <li><p>通过缓存一致性协议</p>
@@ -130,50 +130,79 @@
 </li>
 </ul>
 <hr>
-<p>Java内存模型</p>
-<p>Java Memory Model 屏蔽各个硬件平台和操作系统的内存访问差异，以实现让Java程序在各平台下都能达到一致的内存访问效果。</p>
-<p>系统存在一个主内存，Java中所有实例变量都储存在主存中，对于所有线程都是共享的。</p>
+<p>Java Memory Model</p>
+<p>Java内存模型屏蔽各个硬件平台和操作系统的内存访问差异，以实现让Java程序在各平台下都能达到一致的内存访问效果。</p>
+<p>Java中所有实例变量都储存在主存中，对于所有线程都是共享的。</p>
 <p>每条线程都有自己的工作内存，线程对变量的操作（读取、赋值等）都在工作内存中进行，不能直接对主存进行操作。</p>
-<p>不同的线程间无法直接访问对方工作内存，线程间变量值的传递通过主内存完成。</p>
-<p>工作内存由缓存和堆栈两部分组成。</p>
-<ul>
-<li><p>缓存中保存的是主存中变量的拷贝，缓存可能并不和主存同步，缓存中变量的修改可能没有立刻写到主存中；</p>
-</li>
-<li><p>堆栈中保存的是线程的局部变量，线程之间无法相互直接访问堆栈中的变量。</p>
-</li>
-</ul>
-<p>假设线程访问一个10MB的对象，不会把这10MB的内存复制一份，但是这个对象的引用、对象中某个在线程访问到的字段是有可能存在拷贝的，不会把整个对象拷贝一次。</p>
-<p>Java内存模型中，也会存在缓存一致性问题和指令重排序的问题。</p>
-<p>如：<code>i = 10;</code>，执行线程先在自己的工作线程中对变量i所在的缓存行进行赋值，再写入主存，而不是直接写入主存。 </p>
-<p>Java中，对基本数据类型的变量的读取和赋值操作是原子性操作。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">10</span>; <span class="comment">// 原子性</span></span><br><span class="line"> </span><br><span class="line">y = x; <span class="comment">// 非原子性，包含2个操作，先读取x的值，再将x的值写入工作内存</span></span><br><span class="line"> </span><br><span class="line">x++; <span class="comment">// 非原子性</span></span><br><span class="line"> </span><br><span class="line">x = x + <span class="number">1</span>; <span class="comment">// 非原子性</span></span><br></pre></td></tr></table></figure>
-<p>只有简单的读取、赋值（而且必须是将数字赋值给某个变量，变量之间的相互赋值不是原子操作）才是原子操作。</p>
-<p>JMM只保证了基本读取和赋值是原子性操作，如果要实现更大范围操作的原子性，可以通过加锁来实现。</p>
-<p><code>synchronized</code>和<code>Lock</code>能够保证任一时刻只有一个线程执行该代码块，自然就不存在原子性问题。</p>
+<p>这里的工作内存是个抽象，不同的线程间无法直接访问对方工作内存，线程间通过主内存传递变量值。</p>
 <hr>
-<p>可见性：多个线程访问同一个变量时，一条线程修改了这个变量的值，新值对于其他线程来说是可以立即得知的（可见）。</p>
-<p><code>synchronized</code>，<code>final</code>，<code>volatile</code>能实现可见性。</p>
-<p>假如线程1先执行，线程2后执行：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 线程1</span></span><br><span class="line"><span class="keyword">boolean</span> stop = <span class="keyword">false</span>;</span><br><span class="line"><span class="keyword">while</span> (!stop) &#123;</span><br><span class="line">    doSomething();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 线程2</span></span><br><span class="line">stop = <span class="keyword">true</span>;</span><br></pre></td></tr></table></figure></p>
-<p>每个线程在运行过程中都有自己的工作内存，线程1在运行的时候，会将stop变量的值拷贝一份放在自己的工作内存当中。</p>
-<p>当线程2更改了stop变量的值之后，但是还没来得及写入主存当中，线程2转去做其他事情了，线程1不知道线程2对stop变量的更改，还会一直循环下去。</p>
-<p><code>volatile</code>会强制将修改的值立即写入主存，当线程2修改stop值时（包括2个操作，修改线程2工作内存中的值，然后将修改后的值写入内存）会导致线程1的工作内存中缓存变量stop的缓存行无效（反映到硬件层的话，就是CPU的L1或者L2缓存中对应的缓存行无效），线程1会等待缓存行对应的主存地址被更新之后，然后去主存读取最新的值。</p>
-<p>当一个共享变量被<code>volatile</code>修饰时，它会保证修改的值会立即被更新到主存，当有其他线程需要读取时，会去内存中读取新值。</p>
-<p>普通共享变量被修改之后，什么时候被写入主存是不确定的，当其他线程去读取时，此时内存中可能还是原来的旧值，无法保证可见性。</p>
-<p><code>synchronized</code>和<code>Lock</code>也能够保证可见性，同一时刻只有一个线程获取锁然后执行同步代码，并且在释放锁之前会将对变量的修改刷新到主存当中。</p>
-<p><code>volatile</code>第二个语义是禁止指令重排序优化。</p>
-<p><code>volatile</code>关键字能禁止指令重排序，所以<code>volatile</code>能在一定程度上保证有序性。</p>
-<p><code>volatile</code>会多出一个<code>lock</code>前缀指令<code>lock</code>前缀指令，相当于一个内存屏障：</p>
+<p>JMM中定义了8种操作处理主内存与工作内存之间的交互：</p>
 <ul>
-<li><p>指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面（执行到内存屏障这句指令时，它前面的操作已经全部完成）；</p>
+<li><p>lock（锁定）：作用于主内存，把一个变量标识为线程独占。</p>
 </li>
-<li><p>强制将对缓存的修改操作立即写入主存，写操作会导致其他CPU中对应的缓存行无效。</p>
+<li><p>unlock（解锁）：作用于主内存，把一个独占状态的变量释放。</p>
 </li>
-<li><p>对一个<code>volatile</code>变量的读，总是能看到（任意线程）对这个<code>volatile</code>变量最后的写入。</p>
+<li><p>read（读取）：作用于主内存，把一个变量的值从主内存传输到工作内存中，以便之后load。</p>
+</li>
+<li><p>load（载入）：作用于工作内存，把read操作的变量值放入工作内存的变量副本中。</p>
+</li>
+<li><p>use（使用）：作用于工作内存，把工作内存中的一个变量的值传递给执行引擎。</p>
+</li>
+<li><p>assign（赋值）：作用于工作内存，把一个从执行引擎接收到的值赋给工作内存的变量。</p>
+</li>
+<li><p>store（存储）：作用于工作内存，把工作内存中的一个变量的值传递到主内存中，以便之后write。</p>
+</li>
+<li><p>write（写入）：作用于主内存，把store操作的变量值放入主内存的变量中。</p>
 </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>; <span class="comment">// 1</span></span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>; <span class="comment">// 2</span></span><br><span class="line"><span class="keyword">int</span> c = a + b; <span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
-<p>理想情况下执行顺序是： 1 &gt; 2 &gt; 3。但可能经过 JVM 优化之后的执行顺序变为了 2 &gt; 1 &gt; 3。</p>
-<p>不管怎么优化，前提都是单线程中最终结果不变的情况下进行的。</p>
+<p>基本规则：</p>
+<ul>
+<li><p>不允许read和load、store和write操作之一单独出现，即不允许出现从主内存读取了而工作内存不接受，或者从工作内存回写了但主内存不接受的情况出现；</p>
+</li>
+<li><p>不允许一个线程丢弃它最近的assign操作，即变量在工作内存变化了必须把该变化同步回主内存；</p>
+</li>
+<li><p>不允许一个线程无原因地（即未发生过assign操作）把一个变量从工作内存同步回主内存；</p>
+</li>
+<li><p>一个新的变量必须在主内存中诞生，不允许工作内存中直接使用一个未被初始化（load或assign）过的变量，换句话说就是对一个变量的use和store操作之前必须执行过load和assign操作；</p>
+</li>
+<li><p>一个变量同一时刻只允许一个线程对其进行lock操作，但lock操作可以被同一个线程执行多次，多次执行lock后，只有执行相同次数的unlock操作，变量才能被解锁。</p>
+</li>
+<li><p>如果对一个变量执行lock操作，将会清空工作内存中此变量的值，在执行引擎使用这个变量前，需要重新执行load或assign操作初始化变量的值；</p>
+</li>
+<li><p>如果一个变量没有被lock操作锁定，则不允许对其执行unlock操作，也不允许unlock一个其它线程锁定的变量；</p>
+</li>
+<li><p>对一个变量执行unlock操作之前，必须先把此变量同步回主内存中，即执行store和write操作；</p>
+</li>
+</ul>
+<p>变量从主内存放入工作内存变量副本中实际是分为两步的，先把主内存的值放在工作内存中，再把放在工作内存的值放入变量副本中，以此类推，这样是为了提高CPU效率，不等待主内存写入完成。</p>
+<p>read、load操作和store、write操作必须按顺序执行，但不需要连续执行。</p>
+<p>如果要把变量从主内存复制到工作内存，那就要按顺序执行read和load操作。</p>
+<p>如果要把变量从工作内存同步回主内存，就就要按顺序执行store和write操作。</p>
+<p>比如，对主内存中的变量a和b的访问，可能按照以下顺序执行：read a -&gt; read b -&gt; load b -&gt; load a。</p>
+<hr>
+<p>如：<code>i = 10;</code>，执行线程先在自己的工作内存中对变量i所在的缓存行进行赋值，再写入主存，而不是直接写入主存。</p>
+<p>Java中，对基本数据类型的变量的读取和赋值操作是原子性操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">10</span>; <span class="comment">// 原子</span></span><br><span class="line"></span><br><span class="line">y = x; <span class="comment">// 非原子，包含2个操作，先读取x的值，再将x的值写入工作内存</span></span><br><span class="line"></span><br><span class="line">x++; <span class="comment">// 非原子，包含3个操作，解决方法，加锁或原子类</span></span><br><span class="line"></span><br><span class="line">x = x + <span class="number">1</span>; <span class="comment">// 非原子</span></span><br></pre></td></tr></table></figure>
+<p>只有简单的读取、赋值（变量之间的相互赋值不是原子操作）才是原子操作（<code>read</code>、<code>load</code>、<code>use</code>、<code>assign</code>、<code>store</code>、<code>write</code>），如果要实现更大范围操作的原子性，可以通过加锁来实现。</p>
+<p><code>synchronized</code>能够保证同一时刻只有一个线程执行该代码块（<code>lock</code>和<code>unlock</code>），不存在原子性问题。</p>
+<p><code>monitorenter</code>和<code>monitorexit</code>与<code>lock</code>和<code>unlock</code>具体的关系是？</p>
+<hr>
+<p>重排序：</p>
+<ul>
+<li><p>编译器优化：代码重排序；</p>
+</li>
+<li><p>指令重排序：指令重排序；</p>
+</li>
+<li><p>内存重排序：处理器使用缓存和缓冲，外部对内存的操作可能观察到乱序；</p>
+</li>
+</ul>
+<p>重排序条件：</p>
+<ul>
+<li><p>在单线程下不能影响程序运行的结果；</p>
+</li>
+<li><p>存在依赖关系的不允许重排序；</p>
+</li>
+</ul>
 <p>有序性：</p>
 <ul>
 <li><p>如果在本线程内观察，所有的操作都是有序的（线程内表现为串行的语义）；</p>
@@ -181,282 +210,140 @@
 <li><p>如果在一个线程中观察另一个线程，所有的操作都是无序的（指令重排序、工作内存与主内存同步延迟）。</p>
 </li>
 </ul>
-<p><code>volatile</code>和<code>synchronized</code>可以保证线程之间操作的有序性。</p>
+<p><code>volatile</code>和<code>synchronized</code>两个关键字可以保证有序性。</p>
+<p><code>synchronized</code>：<code>lock</code>和<code>unlock</code>操作，<code>lock</code>相当于一个内存屏障，我的理解是同步块外的代码不会重排序到代码块内，但是代码块内部应该是不保证顺序的。</p>
+<p><code>volatile</code>：禁止重排序。</p>
+<p>四种组合类型（禁止屏障两侧的指令重排序）：</p>
 <ul>
-<li><p><code>volatile</code>：就包含了禁止指令重排序的语义。</p>
+<li><p>LoadLoad：对于<code>Load a; LoadLoad; Load b;</code>的情况，保证<code>Load a</code>在<code>Load b</code>前完成（即操作可见）。</p>
 </li>
-<li><p><code>synchronized</code>：一个变量在同一个时刻只允许一条线程对其进行lock操作，持有同一个锁的两个同步块只能串行地进入。</p>
+<li><p>StoreStore：对于<code>Store a; StoreStore; Store b;</code>的情况，保证<code>Store a</code>在<code>Store b</code>前完成。</p>
+</li>
+<li><p>LoadStore：对于<code>Load a; LoadStore; Store b;</code>的情况，保证<code>Load a</code>在<code>Store b</code>前完成。</p>
+</li>
+<li><p>StoreLoad：对于<code>Store a; StoreLoad; Load b;</code>的情况，保证<code>Store a</code>在<code>Load b</code>前完成（开销最大）。</p>
 </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// x、y为非volatile变量</span></span><br><span class="line"><span class="comment">// flag为volatile变量</span></span><br><span class="line"></span><br><span class="line">x = <span class="number">2</span>; <span class="comment">// 语句1</span></span><br><span class="line"></span><br><span class="line">y = <span class="number">0</span>; <span class="comment">// 语句2</span></span><br><span class="line"></span><br><span class="line">flag = <span class="keyword">true</span>; <span class="comment">// 语句3</span></span><br><span class="line"></span><br><span class="line">x = <span class="number">4</span>; <span class="comment">// 语句4</span></span><br><span class="line"></span><br><span class="line">y = - <span class="number">1</span>; <span class="comment">// 语句5</span></span><br></pre></td></tr></table></figure>
-<p>由于flag变量<code>volatile</code>变量，在指令重排序的时候，不会将语句3放到语句1、语句2前面，也不会讲语句3放到语句4、语句5后面。</p>
-<p>但是语句1和语句2的顺序、语句4和语句5的顺序是不作任何保证的。</p>
-<p><code>volatile</code>能保证，执行到语句3时，语句1和语句2必定是执行完毕了的，且语句1和语句2的执行结果对语句3、语句4、语句5是可见的。</p>
-<ul>
-<li><p>当第二个操作是<code>volatile</code>写时，不管第一个操作是什么，都不能重排序，确保<code>volatile</code>写之前的操作不会被重排序到<code>volatile</code>写之后。</p>
-</li>
-<li><p>当第一个操作是<code>volatile</code>读时，不管第二个操作是什么，都不能重排序，确保<code>volatile</code>读之后的操作不会被重排序到<code>volatile</code>读之前。</p>
-</li>
-<li><p>当第一个操作是<code>volatile</code>写，第二个操作是<code>volatile</code>读时，不能重排序。</p>
-</li>
-</ul>
-<ul>
-<li><p>线程A写一个<code>volatile</code>变量，实质上是线程A向接下来将要读这个<code>volatile</code>变量的某个线程发出了（其对共享变量所在修改的）消息。</p>
-</li>
-<li><p>线程B读一个<code>volatile</code>变量，实质上是线程B接收了之前某个线程发出的（在写这个<code>volatile</code>变量之前对共享变量所做修改的）消息。</p>
-</li>
-<li><p>线程A写一个<code>volatile</code>变量，随后线程B读这个<code>volatile</code>变量，实质上是线程A通过主内存向线程B发送消息。</p>
-</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Class Reordering &#123;</span><br><span class="line">    <span class="keyword">int</span> x = <span class="number">0</span>, y = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        x = <span class="number">1</span>;</span><br><span class="line">        y = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> r1 = y;</span><br><span class="line">        <span class="keyword">int</span> r2 = x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在两个并发线程中执行这段代码，读取Y变量将会得到2这个值。</p>
-<p>因为这个写入比写到X变量更晚一些，程序员可能认为读取X变量将肯定会得到1。</p>
-<p>但是，写入操作可能被重排序过。如果重排序发生了，可能是r1变量的值是2，但是r2变量的值为0。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">VolatileExample</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">volatile</span> <span class="keyword">boolean</span> v = <span class="keyword">false</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        x = <span class="number">42</span>;</span><br><span class="line">        v = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (v == <span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="comment">// uses x - guaranteed to see 42.</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>假设一个线程叫做“writer”，另外一个线程叫做“reader”。</p>
-<p>对变量v的写操作会等到变量x写入到内存之后，然后读线程就可以看见v的值。</p>
-<p>因此，如果reader线程看到了v的值为true，那么也保证能够看到在之前发生的写入42这个操作。</p>
-<p>如果v不是<code>volatile</code>变量，编译器可以在writer线程中重排序写入操作，reader线程中的读取x变量的操作可能会看到0。</p>
-<p>假如有两个线程分别读写<code>volatile</code>变量时，线程 A 写入了某<code>volatile</code>变量，线程 B 在读取该<code>volatile</code>变量时，便能看到线程 A 对该<code>volatile</code>变量的写入操作，它不仅会看到对该<code>volatile</code>变量的写入操作，A 线程在写<code>volatile</code>变量之前所有可见的共享变量，在 B 线程读同一个<code>volatile</code>变量后，都立即变得对 B 线程可见。</p>
-<p>同步块<code>synchronized</code>的可见性：对一个变量执行unlock操作之前，必须先把此变量同步回主内存中（执行store、write操作）。</p>
-<p><code>volatile</code>变量只能保证可见性，不能保证对变量的操作是原子性，在不符合以下两条规则的运算场景中，仍然要通过加锁来保证原子性。</p>
-<ul>
-<li><p>运算结果不依赖变量的当前值，或者能够确保只有单一的线程修改变量的值。</p>
-</li>
-<li><p>变量不需要与其他的状态变量共同参与不变约束。</p>
-</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="keyword">int</span> inc = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">increase</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        inc++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> Test test = <span class="keyword">new</span> Test();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Thread() &#123;</span><br><span class="line">                ()-&gt; &#123;</span><br><span class="line">                   <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++) &#123;</span><br><span class="line">                        test.increase();</span><br><span class="line">                    &#125; </span><br><span class="line">                &#125;;</span><br><span class="line">            &#125;</span><br><span class="line">            .start();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (Thread.activeCount() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            Thread.yield(); <span class="comment">// 保证前面的线程都执行完</span></span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(test.inc);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>每次运行结果都不一致，都是一个小于10000的数字。</p>
+<p>在<code>volatile</code>写操作前插入StoreStore屏障，在后面插入StoreLoad屏障，即，<code>volatile</code>写之前的写操作不能被重排序到后面，之后的操作不能被重排序到前面：</p>
+<p>写操作 -&gt; StoreStore -&gt; volatile写 -&gt; StoreLoad -&gt; 读或写操作</p>
+<p>在<code>volatile</code>读操作后插入LoadLoad屏障，再在后面插入LoadStore屏障，即，<code>volatile</code>读之后的操作不能被重排序到前面：</p>
+<p>volatile读 -&gt; LoadLoad -&gt; LoadStore -&gt; 读或写操作</p>
+<p>也就是说，<code>volatile</code>的禁止重排序也不是完全的禁止，并且普通变量是没有内存屏障的，普通变量是可能重排序的。</p>
+<p>关于内存屏障，之前我的理解是，普通变量的读写对工作内存和主内存的操作不是同步的，<code>volatile</code>变量的读写是同步的，普通变量的读（<code>read</code>和<code>load</code>）和写（<code>store</code>和<code>write</code>），可能会发生排序，所以在多线程下可能会有可见性等问题。</p>
+<p>并发包的锁也是通过一个<code>volatile</code>变量来进行线程间的通信，比如ReentrantLock，之前在想某个对象使用了锁，锁对象的变量可见性是怎么影响该对象的变量的可见性的，应该是内存屏障会保障前后的读写指令的可见性，比如<code>volatile</code>写会保证之前所有写操作会由工作内存刷回主内存，应该是这样的。</p>
+<p>另外看到“<code>volatile</code>变量的操作会插入<code>lock</code>指令，相当于内存屏障”，这么一句话，那么内存屏障具体是什么？啧，挺多地方都是不明不白的。</p>
+<hr>
+<p>可见性：多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程立即可感知修改（可见）。</p>
+<p>假如线程1先执行，线程2后执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 线程1</span></span><br><span class="line"><span class="keyword">boolean</span> stop = <span class="keyword">false</span>;</span><br><span class="line"><span class="keyword">while</span> (!stop) &#123;</span><br><span class="line">    doSomething();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 线程2</span></span><br><span class="line">stop = <span class="keyword">true</span>;</span><br></pre></td></tr></table></figure>
+<p>线程1运行时，将stop变量值拷贝一份在工作内存，线程2更改了stop变量值之后，可能会一直循环下去。</p>
+<p>不过，是因为线程2没把值写回主内存，还是因为线程1没有从主内存读取最新的值？猜测应该是后者，那么只有一开始从主内存读取值，之后都不会？</p>
+<p><code>synchronized</code>，<code>final</code>，<code>volatile</code>能实现可见性。</p>
+<p><code>synchronized</code>也能够保证可见性，同一时刻只有一个线程获取锁然后执行同步代码，<code>lock</code>操作要求重新执行<code>load</code>或<code>assign</code>操作初始化，<code>unlock</code>操作之前，必须先把此变量同步回主内存中，即执行<code>store</code>和<code>write</code>操作。</p>
+<p><code>volatile</code>变量的每次修改都必须立即回写到主内存中，<code>volatile</code>变量的每次读取都必须从主内存刷新最新的值。</p>
+<p>StoreLaod屏障，是确保可见性的关键，因为它会将屏障之前的数据全部刷新到主内存中。</p>
+<p><code>volatile</code>读和<code>monitorenter</code>有相同的语义，<code>volatile</code>写和<code>monitorexit</code>有相同的语义。</p>
+<hr>
+<p><code>volatile</code>只能保证可见性和有序性，不能保证对变量的操作是原子性。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keyword">int</span> counter = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">increment</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        counter++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        CountDownLatch countDownLatch = <span class="keyword">new</span> CountDownLatch(<span class="number">1000</span>);</span><br><span class="line">        IntStream.range(<span class="number">0</span>, <span class="number">1000</span>).forEach(i-&gt;</span><br><span class="line">                <span class="keyword">new</span> Thread(()-&gt; &#123;</span><br><span class="line">                    increment();</span><br><span class="line">                    countDownLatch.countDown();</span><br><span class="line">                &#125;).start());</span><br><span class="line">        countDownLatch.await();</span><br><span class="line">        System.out.println(counter);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>每次运行结果都是一个小于1000的数字。</p>
 <p>可见性只能保证每次读取的是最新的值，但<code>volatile</code>没法保证对变量的操作的原子性。</p>
-<p>自增操作是不具备原子性的，它包括读取变量的原始值、进行加1操作、写入工作内存。</p>
-<p>自增操作的三个子操作可能会分割开执行，可能出现：</p>
+<p>自增操作是不具备原子性的，它包括读取变量的值、进行加1操作、写入内存。</p>
 <ul>
-<li><p>假如某个时刻变量inc的值为10，线程1对变量进行自增操作：线程1先读取了变量inc的原始值，然后线程1被阻塞了；</p>
+<li><p>假如某个时刻counter的值为10，线程1先读取了变量counter的值，然后线程1被阻塞了；</p>
 </li>
-<li><p>然后线程2对变量进行自增操作：线程2也去读取变量inc的原始值，由于线程1只是对变量inc进行读取操作，而没有对变量进行修改操作，不会导致线程2的工作内存中缓存变量inc的缓存行无效，线程2会直接去主存读取inc的值，发现inc的值时10，然后进行加1操作，并把11写入工作内存，最后写入主存。</p>
+<li><p>然后线程2也去读取counter的值，由于线程1没有对变量进行修改操作，counter的值为10，然后进行加1操作，最后写入主存。</p>
 </li>
-<li><p>线程1接着进行加1操作，由于已经读取了inc的值，此时在线程1的工作内存中inc的值仍然为10，所以线程1对inc进行加1操作后inc的值为11，然后将11写入工作内存，最后写入主存。</p>
+<li><p>线程1接着进行加1操作，由于已经读取了counter的值，此时在线程1的工作内存中counter的值仍然为10，然后进行加1操作，最后写入主存。</p>
 </li>
-<li><p>两个线程分别进行了一次自增操作后，inc只增加了1。</p>
+<li><p>两个线程分别进行了一次自增操作后，counter只增加了1。</p>
 </li>
 </ul>
-<p>解决方法：对提供原子性的自增操作即可（<code>java.util.concurrent.atomic</code>）。</p>
-<p>atomic是利用CAS来实现原子性操作的（Compare And Swap），CAS是利用处理器提供的CMPXCHG指令实现的，而处理器执行CMPXCHG指令是一个原子性操作。</p>
+<p>解决方法：原子类，利用CMPXCHG指令实现，处理器执行CMPXCHG指令是一个原子性操作。</p>
 <hr>
-<p>JMM中定义了 8 种操作来完成主内存与工作内存之间交互：</p>
+<p>先行发生原则（happens-before）：</p>
 <ul>
-<li><p>lock（锁定）：作用于主内存的变量，它把一个变量标示为一条线程独占的状态。</p>
+<li><p>操作A先行发生于操作B，就是说操作A的影响能被操作B观察到。</p>
 </li>
-<li><p>unlock（解锁）：作用于主内存的变量，它把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定。</p>
-</li>
-<li><p>read（读取）：作用于主内存的变量，它把一个变量的值从主内存传输到工作内存中，以便随后的 load 动作使用。</p>
-</li>
-<li><p>load（载入）：作用于工作内存的变量，它把 read 操作从主内存中得到的变量值放入工作内存的变量副本中。</p>
-</li>
-<li><p>use（使用）：作用于工作内存的变量，它把工作内存中的一个变量的值传递给执行引擎，每当虚拟机遇到一个需要使用到变量的值得字节码指令时将会执行这个操作。</p>
-</li>
-<li><p>assign（赋值）：作用于工作内存的变量，它把一个从执行引擎接收到的值赋给工作内存的变量，每当虚拟机遇到一个给变量赋值的字节码指令时执行这个操作。</p>
-</li>
-<li><p>store（存储）：作用于工作内存的变量，它把工作内存中的一个变量的值传递到主内存中，以便随后的 write 操作使用。</p>
-</li>
-<li><p>write（写入）：作用于主内存的变量，它把 store 操作从工作内存中得到的变量值放入主内存的变量中。</p>
-</li>
-</ul>
-<hr>
-<p>当一个变量被定义成<code>volatile</code>之后，他将具备两种特性：</p>
-<ul>
-<li><p>保证此变量对所有线程的可见性。<code>volatile</code>变量的写操作除了对它本身的读操作可见外，<code>volatile</code>写操作之前的所有共享变量均对<code>volatile</code>读操作之后的操作可见。</p>
-</li>
-<li><p>禁止指令重排序优化。普通的变量仅仅会保证在该方法的执行过程中所有依赖赋值结果的地方都能获得正确的结果，而不能保证变量赋值操作的顺序与程序中的执行顺序一致，在单线程中是无法感知这一点的。</p>
+<li><p>两个操作之间存在先行发生关系，不意味着具体实现必须要按照指定的顺序来执行。</p>
 </li>
 </ul>
 <hr>
 <ul>
-<li><p><code>volatile</code>变量是一种稍弱的同步机制，在访问<code>volatile</code>变量时不会执行加锁操作，因此也就不会使执行线程阻塞。</p>
-</li>
-<li><p>从内存可见性的角度看，写入<code>volatile</code>变量相当于退出同步代码块，而读取<code>volatile</code>变量相当于进入同步代码块。</p>
-</li>
-<li><p>加锁机制（同步机制）既可以确保可见性又可以确保原子性，而<code>volatile</code>变量只能确保可见性。</p>
-</li>
-<li><p>当且仅当满足以下条件时，才使用<code>volatile</code>变量：</p>
+<li><code>final</code>域是基础数据类型</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FinalExample</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> FinalExample obj;</span><br><span class="line">    <span class="keyword">int</span> i; <span class="comment">// 普通变量</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> j; <span class="comment">// final变量</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">FinalExample</span><span class="params">()</span> </span>&#123; <span class="comment">// 构造函数</span></span><br><span class="line">        i = <span class="number">1</span>; <span class="comment">// 写普通域</span></span><br><span class="line">        j = <span class="number">2</span>; <span class="comment">// 写final域</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writer</span><span class="params">()</span> </span>&#123; <span class="comment">// 写线程A</span></span><br><span class="line">        obj = <span class="keyword">new</span> FinalExample();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123; <span class="comment">// 读线程B</span></span><br><span class="line">        FinalExample object = obj; <span class="comment">// 读对象引用</span></span><br><span class="line">        <span class="keyword">int</span> a = object.i; <span class="comment">// 读普通域</span></span><br><span class="line">        <span class="keyword">int</span> b = object.j; <span class="comment">// 读final域</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译器会在<code>final</code>域的写之后，构造函数返回之前，插入一个StoreStore屏障，禁止处理器把<code>final</code>域的写重排序到构造函数之外。</p>
+<p><code>writer</code>：构造函数开始 -&gt; 普通域的写操作 -&gt; <code>final</code>域的写操作 -&gt; 内存屏障 -&gt; 构造函数结束 -&gt; 引用赋值，可以保证引用赋值前<code>final</code>域的写已经完成，但是普通域的写不具有这个保障？</p>
+<p>在一个线程中，初次读对象引用与初次读该对的<code>final</code>域，禁止处理器重排序这两个操作，编译器会在读<code>final</code>域操作的前面插入一个LoadLoad屏障。</p>
+<p><code>reader</code>：读对象引用 -&gt; 内存屏障 -&gt; 读对象的<code>final</code>域。</p>
 <ul>
-<li><p>对变量的写入操作不依赖变量的当前值，或者能确保只有单个线程更新变量的值。</p>
-</li>
-<li><p>该变量没有包含在具有其他变量的不变式中。</p>
-</li>
+<li><code>final</code>域是引用类型</li>
 </ul>
-</li>
-</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FinalReferenceExample</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> FinalReferenceExample obj;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span>[] intArray; <span class="comment">// final是引用类型</span></span><br><span class="line"></span><br><span class="line">    FinalReferenceExample() &#123; <span class="comment">// 构造函数</span></span><br><span class="line">        intArray = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">1</span>]; <span class="comment">// 1</span></span><br><span class="line">        intArray[<span class="number">0</span>] = <span class="number">1</span>; <span class="comment">// 2</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writerOne</span><span class="params">()</span> </span>&#123; <span class="comment">// 写线程A</span></span><br><span class="line">        obj = <span class="keyword">new</span> FinalReferenceExample(); <span class="comment">// 3</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writerTwo</span><span class="params">()</span> </span>&#123; <span class="comment">// 写线程B</span></span><br><span class="line">        obj.intArray[<span class="number">0</span>] = <span class="number">2</span>; <span class="comment">// 4</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123; <span class="comment">// 读线程C</span></span><br><span class="line">        <span class="keyword">if</span> (obj != <span class="keyword">null</span>) &#123; <span class="comment">// 5</span></span><br><span class="line">            <span class="keyword">int</span> temp1 = obj.intArray[<span class="number">0</span>]; <span class="comment">// 6</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在构造函数内对一个<code>final</code>引用的对象的成员域的写入，与随后在构造函数外把这个被构造对象的引用赋值给一个引用变量，这两个操作不能重排序。</p>
+<p>首先线程A执行writerOne方法，执行完后线程B执行writerTwo方法，执行完后线程C执行reader方法。</p>
+<p>1是对<code>final</code>域的写入，2是对这个<code>final</code>域引用的对象的成员域的写入，3是把被构造的对象的引用赋值给某个引用变量。</p>
+<p>可以确保读线程C至少能看到写线程A在构造函数中对<code>final</code>引用对象的成员域的写入，即C至少能看到数组下标0的值为1。</p>
+<p>而写线程B对数组元素的写入，读线程C可能看的到，也可能看不到。</p>
 <hr>
-<p><code>final</code>域是不能修改的，在JMM中，<code>final</code>域能确保初始化过程的安全性，在共享这些对象时无须同步。</p>
-<p><code>final</code>修饰的字段在构造器中一旦被初始化完成，并且构造器没有把<code>this</code>的引用传递出去（<code>this</code>引用逃逸是很危险的，其他线程有可能通过这个引用访问到初始化未完成的对象），在其他线程中就能看到<code>final</code>字段的值。</p>
-<ul>
-<li><p>在构造函数内对一个<code>final</code>域的写入，与随后把这个被构造对象的引用赋值给一个引用变量，这两个操作之间不能重排序。</p>
-</li>
-<li><p>初次读一个包含<code>final</code>域的对象的引用，与随后初次读这个<code>final</code>域，这两个操作之间不能重排序。</p>
-</li>
-</ul>
-<p><code>final</code>域是基础数据类型<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinalExample</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> FinalExample obj;</span><br><span class="line">    <span class="keyword">int</span> i; <span class="comment">// 普通变量 </span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> j; <span class="comment">// final 变量 </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">FinalExample</span><span class="params">()</span> </span>&#123; <span class="comment">// 构造函数 </span></span><br><span class="line">        i = <span class="number">1</span>; <span class="comment">// 写普通域 </span></span><br><span class="line">        j = <span class="number">2</span>; <span class="comment">// 写 final 域 </span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writer</span><span class="params">()</span> </span>&#123; <span class="comment">// 写线程 A 执行 </span></span><br><span class="line">        obj = <span class="keyword">new</span> FinalExample();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123; <span class="comment">// 读线程 B 执行 </span></span><br><span class="line">        FinalExample object = obj; <span class="comment">// 读对象引用 </span></span><br><span class="line">        <span class="keyword">int</span> a = object.i; <span class="comment">// 读普通域 </span></span><br><span class="line">        <span class="keyword">int</span> b = object.j; <span class="comment">// 读 final 域 </span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>假设一个线程 A 执行<code>writer()</code>方法，随后另一个线程 B 执行<code>reader()</code>方法，假设线程 B 读对象引用与读对象的成员域之间没有重排序。</p>
-<p>writer ()：<code>finalExample = new FinalExample ()</code>：</p>
-<ul>
-<li><p>构造一个 FinalExample 类型的对象；</p>
-</li>
-<li><p>把这个对象的引用赋值给引用变量 obj。</p>
-</li>
-</ul>
-<p>写普通域的操作被编译器重排序到了构造函数之外，读线程 B 错误的读取了普通变量 i 初始化之前的值。</p>
-<p>写<code>final</code>域的操作，被写<code>final</code>域的重排序规则“限定”在了构造函数之内，读线程 B 正确的读取了<code>final</code>变量初始化之后的值。</p>
-<p>写<code>final</code>域的重排序规则可以确保：在对象引用为任意线程可见之前，对象的<code>final</code>域已经被正确初始化过了，而普通域不具有这个保障。</p>
-<p>reader()：</p>
-<ul>
-<li><p>初次读引用变量 obj;</p>
-</li>
-<li><p>初次读引用变量 obj 指向对象的普通域 j。</p>
-</li>
-<li><p>初次读引用变量 obj 指向对象的 final 域 i。</p>
-</li>
-</ul>
-<p>假设写线程 A 没有发生任何重排序。</p>
-<p>读对象的普通域的操作被处理器重排序到读对象引用之前。</p>
-<p>读普通域时，该域还没有被写线程 A 写入，这是一个错误的读取操作。</p>
-<p>读<code>final</code>域的重排序规则会把读对象<code>final</code>域的操作“限定”在读对象引用之后，此时该<code>final</code>域已经被 A 线程初始化过了，这是一个正确的读取操作。</p>
-<p>读<code>final</code>域的重排序规则可以确保：在读一个对象的<code>final</code>域之前，一定会先读包含这个<code>final</code>域的对象的引用。</p>
-<p><code>final</code>域是引用类型</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinalReferenceExample</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> FinalReferenceExample obj;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span>[] intArray; <span class="comment">// final 是引用类型 </span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FinalReferenceExample</span><span class="params">()</span> </span>&#123; <span class="comment">// 构造函数 </span></span><br><span class="line">        intArray = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">1</span>]; <span class="comment">// 1</span></span><br><span class="line">        intArray[<span class="number">0</span>] = <span class="number">1</span>; <span class="comment">// 2</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writerOne</span><span class="params">()</span> </span>&#123; <span class="comment">// 写线程 A 执行 </span></span><br><span class="line">        obj = <span class="keyword">new</span> FinalReferenceExample(); <span class="comment">// 3</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writerTwo</span><span class="params">()</span> </span>&#123; <span class="comment">// 写线程 B 执行 </span></span><br><span class="line">        obj.intArray[<span class="number">0</span>] = <span class="number">2</span>; <span class="comment">// 4</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123; <span class="comment">// 读线程 C 执行 </span></span><br><span class="line">        <span class="keyword">if</span> (obj != <span class="keyword">null</span>) &#123; <span class="comment">// 5</span></span><br><span class="line">            <span class="keyword">int</span> temp1 = obj.intArray[<span class="number">0</span>]; <span class="comment">// 6</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在构造函数内对一个<code>final</code>引用的对象的成员域的写入，与随后在构造函数外把这个被构造对象的引用赋值给一个引用变量，这两个操作之间不能重排序。</p>
-<p>首先线程 A 执行<code>writerOne()</code>方法，执行完后线程 B 执行<code>writerTwo()</code>方法，执行完后线程 C 执行 <code>reader()</code>方法。</p>
-<p>1 是对<code>final</code>域的写入，2 是对这个<code>final</code>域引用的对象的成员域的写入，3 是把被构造的对象的引用赋值给某个引用变量。</p>
-<p>1 不能和 3 重排序，2 和 3 也不能重排序。</p>
-<p>JMM 可以确保读线程 C 至少能看到写线程 A 在构造函数中对<code>final</code>引用对象的成员域的写入，即 C 至少能看到数组下标 0 的值为 1。</p>
-<p>而写线程 B 对数组元素的写入，读线程 C 可能看的到，也可能看不到。</p>
-<p>JMM 不保证线程 B 的写入对读线程 C 可见，因为写线程 B 和读线程 C 之间存在数据竞争，此时的执行结果不可预知。</p>
-<p>如果想要确保读线程 C 看到写线程 B 对数组元素的写入，写线程 B 和读线程 C 之间需要使用同步来确保内存可见性。</p>
-<p>写<code>final</code>域的重排序规则可以确保：在引用变量为任意线程可见之前，该引用变量指向的对象的<code>final</code>域已经在构造函数中被正确初始化过了。</p>
-<p>前提：对象引用不能在构造函数中“逸出”。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinalReferenceEscapeExample</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> FinalReferenceEscapeExample obj;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FinalReferenceEscapeExample</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        i = <span class="number">1</span>; <span class="comment">// 1 写 final 域 </span></span><br><span class="line">        obj = <span class="keyword">this</span>; <span class="comment">// 2 this 引用在此“逸出”</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> FinalReferenceEscapeExample();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (obj != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> temp = obj.i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>final</code>修饰的字段在构造器中一旦被初始化完成，并且构造器没有把<code>this</code>的引用传递出去（使得其他线程有可能通过这个引用访问到初始化未完成的对象），在其他线程中就能看到初始化的<code>final</code>字段的值。</p>
+<p>前提：对象引用不能在构造函数中“逸出”。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FinalReferenceEscapeExample</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> FinalReferenceEscapeExample obj;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> i;</span><br><span class="line">    FinalReferenceEscapeExample() &#123;</span><br><span class="line">        i = <span class="number">1</span>; <span class="comment">// 写final域</span></span><br><span class="line">        obj = <span class="keyword">this</span>; <span class="comment">// this引用逸出</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> FinalReferenceEscapeExample();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (obj != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> temp = obj.i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <hr>
-<p>先行发生原则</p>
-<p>操作A先行发生于操作B，就是说在发生操作B之前，操作A产生的影响能被操作B观察到，“影响”包括修改了内存中共享变量的值、发送了消息、调用了方法等。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> value = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function">pubilc <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.value = value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>假设存在线程A和B，线程A先（时间上的先后）调用了“setValue”，然后线程B调用了同一个对象的“getValue”，线程B收到的返回值是不确定的。</p>
-<p>要么把getter/setter方法都定义为<code>synchronized</code>方法，要么把value定义为<code>volatile</code>变量，setter方法对value的修改不依赖value的原值。</p>
+<p>DCL（双重检查加锁）单例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazySingleton</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> someField;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazySingleton instance;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazySingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.someField = <span class="keyword">new</span> Random().nextInt(<span class="number">100</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazySingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (LazySingleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> LazySingleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSomeField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.someField;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>得到单例是没有问题的，虽然可以得到单例的正确引用，但是却有可能访问到成员变量的不正确值。</p>
+<p>即，<code>Singleton.getInstance().getSomeField()</code>有可能返回<code>someField</code>的默认值0。</p>
+<p>解决方法：将<code>someField</code>域设置成<code>final</code>，或者，将<code>instance</code>域声明为<code>volatile</code>。</p>
+<p><code>instance = new LazySingleton();</code>这段代码其实是分为三步：</p>
+<ol>
+<li><p>为Singleton对象分配内存。</p>
+</li>
+<li><p>调用构造函数初始化Singleton对象。</p>
+</li>
+<li><p>将Singleton对象指向分配的内存地址。</p>
+</li>
+</ol>
+<p>如果不用<code>volatile</code>，一个可能的顺序就是1 -&gt; 3 -&gt; 2，假设此时2还没完成，那么线程可能观察到一个初始化还没完成的对象，因为是非空的，所以不会进入同步代码块，但是返回的对象的属性可能是初始值(0/false/null)，而不是构造函数中的指定值。</p>
+<p>最简单安全的方法是使用<code>static</code>内部类：一个类直到被使用时才被初始化，而类初始化的过程是非并行的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span>  </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125; <span class="comment">// Lazy initialization holder class idiom for static fields</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">InstanceHolder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> InstanceHolder.instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <hr>
 <p>线程安全的实现方法</p>
-<p>1.互斥同步（Mutual Exclusion＆Synchronization）</p>
-<p>同步是指在多个线程并发访问共享数据时，共享数据在同一个时刻只被一个（或者是一些，使用信号量的时候）线程使用。</p>
-<p>互斥是实现同步的手段，临界区（CriticalSection）、互斥量（Mutex）和信号量（Semaphore）都是主要的互斥实现方式。</p>
+<h5 id="互斥同步（Mutual-Exclusion＆Synchronization）"><a href="#互斥同步（Mutual-Exclusion＆Synchronization）" class="headerlink" title="互斥同步（Mutual Exclusion＆Synchronization）"></a>互斥同步（Mutual Exclusion＆Synchronization）</h5><p>同步是指在多个线程并发访问共享数据时，共享数据在同个时刻只被一个（或一些，如信号量）线程使用。</p>
+<p>互斥是实现同步的手段，最基本的互斥同步就是<code>synchronized</code>，编译后，会在同步块的前后分别形成<code>monitorenter</code>和<code>monitorexit</code>两个字节码指令，这两个指令都需要一个引用类型来指明要锁定和解锁的对象。</p>
 <ul>
-<li><p>最基本的互斥同步就是<code>synchronized</code>，编译后，会在同步块的前后分别形成<code>monitorenter</code>和<code>monitorexit</code>两个字节码指令，这两个字节码都需要一个reference类型的参数来指明要锁定和解锁的对象。</p>
-<ul>
-<li><p>对于同步方法，锁是当前实例对象的reference。</p>
+<li><p>对于同步方法，锁是当前实例对象的引用。</p>
 </li>
-<li><p>对于静态同步方法，锁是当前对象的Class对象的reference。</p>
+<li><p>对于静态同步方法，锁是当前对象的Class对象的引用。</p>
 </li>
-<li><p>对于同步方法块，锁是<code>synchronized</code>括号里配置的对象的reference。</p>
+<li><p>对于同步方法块，锁是<code>synchronized</code>括号里配置的对象的引用。</p>
 </li>
 </ul>
-</li>
-<li><p>执行<code>monitorenter</code>指令时，首先要尝试获取对象的锁。</p>
-</li>
+<p>执行<code>monitorenter</code>指令时，首先要尝试获取对象的锁。</p>
+<ul>
 <li><p>如果这个对象没被锁定，或者当前线程已经拥有了那个对象的锁，把锁的计数器加1，相应的，在执行<code>monitorexit</code>指令时会将锁计数器减1，当计数器为0时，锁就被释放。</p>
 </li>
 <li><p>如果获取对象锁失败，那当前线程就要阻塞等待，直到对象锁被另外一个线程释放为止。</p>
 </li>
-<li><p><code>synchronized</code>同步块对同一条线程来说是可重入的，不会把自己锁死，同步块在已进入的线程执行完之前，会阻塞后面其他线程的进入。</p>
-</li>
-<li><p>当某个线程请求一个由其他线程持有的锁时，发出请求的线程就会阻塞，然而，由于锁是可重入的，因此如果线程试图获得一个已经由它自己持有的锁，请求就会成功。</p>
-</li>
-<li><p>重入的一种实现方法是，为每个锁关联一个获取计数值和一个所有者线程。</p>
+<li><p><code>synchronized</code>同步块对同一线程来说是可重入的，重入的一种实现方法是，为每个锁关联一个获取计数值和一个所有者线程。</p>
 <ul>
-<li><p>当计数值为 0 时，这个锁就被认为是没有被任何线程所持有，当线程请求一个未被持有的锁时，JVM 将记下锁的持有者，并且将获取计数值置为 1。</p>
+<li><p>当计数值为0时，这个锁就被认为是没有被任何线程所持有，当线程请求一个未被持有的锁时，记下锁的持有者，并且将获取计数值置为1。</p>
 </li>
 <li><p>如果同一个线程再次获取这个锁，计数值将递增，而当线程退出同步代码块时，计数器会相应地递减。</p>
 </li>
-<li><p>当计数值为 0 时，这个锁将被释放。</p>
+<li><p>当计数值为0时，这个锁将被释放。</p>
 </li>
 </ul>
 </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Father</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> <span class="keyword">extends</span> <span class="title">Father</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>子类覆写了父类的同步方法，然后调用父类中的方法，如果没有可重入锁，将产生死锁。</p>
-<p><code>Father</code>和<code>Child</code>中的<code>doSomething</code>方法都是<code>synchronized</code>方法，因此每个<code>doSomething</code>方法在执行前都会获取<code>Child</code>对象实例上的锁。</p>
-<p>如果内置锁不是可重入的，在调用<code>super.doSomething</code>时将无法获得该<code>Child</code>对象上的互斥锁，因为这个锁已经被持有，线程会阻塞下去等待一个永远也无法获取的锁。</p>
-<p>Java的线程是映射到操作系统的原生线程上的，阻塞或唤醒一个线程，都需要操作系统来帮忙完成，这就需要从用户态转换到核心态中，状态转换需要耗费很多的处理器时间。</p>
-<p>互斥同步属于悲观的并发策略，认为只要不去做正确的同步措施，那就肯定会出现问题，无论共享数据是否真的会竞争，都要进行加锁（概念模型，虚拟机会优化掉不必要的加锁）、用户态核心态转换、维护锁计数器和检查是否有被阻塞的线程需要唤醒等操作。</p>
-<p>2.非阻塞同步（Non-Blocking Synchronization）</p>
-<p>随着硬件指令集的发展，有了另外一个选择：基于冲突检测的乐观并发策略。</p>
-<ul>
-<li><p>先进行操作，如果没有其他线程争用共享数据，那操作就成功了；</p>
-</li>
-<li><p>如果共享数据有争用，产生了冲突，那就再采取其他的补偿措施（不断地重试，直到成功）。</p>
-</li>
-</ul>
+<p>Java的线程是映射到操作系统的原生线程上的，阻塞或唤醒一个线程，都需要操作系统完成，这就需要从用户态转换到核心态中，状态转换需要耗费很多的处理器时间。</p>
+<p>互斥同步属于悲观的并发策略，认为只要不去做正确的同步措施，那就肯定会出现问题，无论共享数据是否真的会竞争，都要加锁（虚拟机会优化掉不必要的锁）、用户态核心态转换、维护锁计数器和检查是否有被阻塞的线程需要唤醒等操作。</p>
+<h5 id="非阻塞同步（Non-Blocking-Synchronization）"><a href="#非阻塞同步（Non-Blocking-Synchronization）" class="headerlink" title="非阻塞同步（Non-Blocking Synchronization）"></a>非阻塞同步（Non-Blocking Synchronization）</h5><p>基于冲突检测的乐观并发策略：先进行操作，如果没有其他线程争用共享数据，那操作就成功了，如果共享数据有争用，产生了冲突，那就再采取补偿措施（不断重试，直到成功）。</p>
+<p>AtomicInteger#incrementAndGet</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">incrementAndGet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> ( ; ) &#123;</span><br><span class="line">        <span class="keyword">int</span> current = get();</span><br><span class="line">        <span class="keyword">int</span> next = current + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(compareAndSet(current, next))</span><br><span class="line">           <span class="keyword">return</span> next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>incrementAndGet</code>方法在一个循环中，不断尝试将一个比当前值大1的新值赋给自己，如果失败了，那说明在执行“获取-设置”操作的时候值已经有了修改，于是再次循环进行下一次操作，直到设置成功为止。</p>
-<p>尽管CAS看起来很美，但是存在漏洞（“ABA”问题）：</p>
-<ul>
-<li><p>如果一个变量V初次读取的时候是A值，并且在准备赋值的时候检查到它仍然为A值，那能说它的值没有被其他线程改变过了吗？</p>
-</li>
-<li><p>如果在这段期间它的值曾经被改成了B，后来又被改回为A，那CAS操作就会误认为它从来没有被改变过。</p>
-</li>
-</ul>
-<p>3.无同步</p>
-<p>要保证线程安全，并不是一定就要进行同步，同步只是保证共享数据争用时的正确性，如果一个方法本来就不涉及共享数据，就无须任何同步。</p>
-<p>线程本地存储（Thread Local Storage）：</p>
-<ul>
-<li><p>如果一个变量要被某个线程独享，可以通过<code>java.lang.ThreadLocal</code>类来实现线程本地存储的功能。</p>
-</li>
-<li><p>每个<code>Thread</code>线程对象都有一个<code>ThreadLocalMap</code>对象，当在某个线程中访问时，会取出这个线程自己的<code>ThreadLocalMap</code>并且用当前<code>ThreadLocal</code>对象做索引（<code>threadLocalHashCode</code>）来取出相对应的Value值，从而达到不同线程不同值的效果。</p>
-</li>
-<li><p><code>ThreadLocalMap</code>里的<code>Entry</code>对象是一个<code>WeakReference&lt;ThreadLocal&gt;</code> ，对<code>ThreadLocal</code>对象的弱引用，如果<code>ThreadLocal</code>对象没有外部强引用指向它，该<code>ThreadLocal</code>随时可能会被回收，导致Value的Key是<code>null</code>（需要把这样的<code>Entry</code>给remove掉，避免内存泄漏)，而程序中也无法访问这些key为null的<code>Entry</code>，如果当前线程不结束的话（尤其是线程池线程复用），这个key为null的<code>Entry</code>的value就会一直存在从GCRoots过来的强引用链，即在threadLocal设为<code>null</code>和线程结束前这段时间内<code>Entry</code>不会被回收，造成了内存泄漏。</p>
-</li>
-<li><p>因为线程的声明周期是长于<code>ThreadLocal</code>对象的，当此对象不再需要的时候如果线程中还持有它的引用也会产生内存泄漏的问题，所以应该是用弱引用来进行key的保存。</p>
-</li>
-<li><p>建议将<code>ThreadLocal</code>变量定义为<code>private static</code>，这样<code>ThreadLocal</code>对象的生命周期就长（一直存在<code>ThreadLocal</code>对象的强引用，所以它不会被回收），从而能保证任何时候都能根据<code>ThreadLocal</code>的弱引用访问到<code>Entry</code>的value值，在用完后调用<code>remove</code>方法删除它。</p>
-</li>
-</ul>
-<hr>
-<p>DCL（双重检查加锁）单例：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazySingleton</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> someField;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazySingleton instance;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazySingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.someField = <span class="keyword">new</span> Random().nextInt(<span class="number">200</span>) + <span class="number">1</span>; <span class="comment">// (1)</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazySingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123; <span class="comment">// (2)</span></span><br><span class="line">            <span class="keyword">synchronized</span> (LazySingleton.class) &#123;  <span class="comment">// (3)</span></span><br><span class="line">                <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123; <span class="comment">// (4)</span></span><br><span class="line">                    instance = <span class="keyword">new</span> LazySingleton(); <span class="comment">// (5)</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance; <span class="comment">// (6)</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSomeField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.someField; <span class="comment">// (7)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>得到单一的<code>instance</code>实例是没有问题的，尽管得到了<code>Singleton</code>的正确引用，但是却有可能访问到其成员变量的不正确值。</p>
-<p><code>Singleton.getInstance().getSomeField()</code>有可能返回<code>someField</code>的默认值 0。</p>
-<ul>
-<li><p>假设线程Ⅰ是初次调用<code>getInstance()</code>方法，紧接着线程Ⅱ也调用了<code>getInstance()</code>方法和<code>getSomeField()</code>方法，</p>
-</li>
-<li><p>线程Ⅱ在执行<code>getInstance()</code>方法的语句(2)时，由于对<code>instance</code>的访问并没有处于同步块中，线程Ⅱ可能观察到也可能观察不到线程Ⅰ在语句(5)时对<code>instance</code>的写入，<code>instance</code>的值可能为空也可能为非空。</p>
-<ul>
-<li><p>假设<code>instance</code>的值非空，也就观察到了线程Ⅰ对<code>instance</code>的写入，这时线程Ⅱ就会执行语句(6)直接返回<code>instance</code>的值，然后对<code>instance</code>调用<code>getSomeField()</code>方法，该方法也是在没有同步情况被调用，因此线程Ⅱ在执行语句(7)完全有可能观测不到线程Ⅰ在语句(1)处对<code>someFiled</code>写入的值，这就是 DCL 的问题。</p>
-</li>
-<li><p>假设<code>instance</code>的值观察到空值，那它要进入同步块执行语句(4)，在语句(4)处线程Ⅱ不可能读到<code>instance</code>的空值，因为这时对<code>instance</code>的写和读都是发生在同一个锁的同步块中，这时读到的数据是最新的数据。</p>
-</li>
-<li><p>线程Ⅱ在语句(3)处会执行一个<code>lock</code>操作，而线程Ⅰ在语句(5)后会执行一个<code>unlock</code>操作，这两个操作都是针对同一个锁–<code>Singleton.class</code>，</p>
-</li>
-<li><p>线程Ⅰ的<code>unlock</code>操作<code>happen - before</code>线程Ⅱ的<code>lock</code>操作，<code>线程Ⅰ的语句(5) -&gt; 线程Ⅰ的 unlock 操作</code>，<code>线程Ⅱ的 lock操作 -&gt; 线程Ⅱ的语句(4)</code>，根据传递规则，就有<code>线程Ⅰ的语句(5) -&gt; 线程Ⅱ的语句(4)</code>，线程Ⅱ在执行语句(4)时能够观测到线程Ⅰ在语句(5)时对<code>Singleton</code>的写入值。</p>
-</li>
-<li><p>接着对返回的<code>instance</code>调用<code>getSomeField()</code>方法时，<code>线程Ⅰ的语句(1) -&gt; 线程Ⅱ的语句(7)</code>（线程Ⅱ有进入<code>synchronized</code>块），表明这时<code>getSomeField</code>能够得到正确的值。</p>
-</li>
-</ul>
-</li>
-</ul>
-<p>对引用（包括对象引用和数组引用）的非同步访问，即使得到该引用的最新值，却并不能保证也能得到其成员变量（对数组而言就是每个数组元素）的最新值。</p>
-<p>最简单安全的方法是使用<code>static</code>内部类：一个类直到被使用时才被初始化，而类初始化的过程是非并行的。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span>  </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125; <span class="comment">// Lazy initialization holder class idiom for static fields</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">InstanceHolder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> InstanceHolder.instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>DCL的问题正好在于看到对象的成员变量的默认值，因此可以将<code>LazySingleton</code>的<code>someField</code>变量设置成<code>final</code>。</p>
-<p>另外，可以将<code>instance</code>声明为<code>volatile</code>;</p>
-<p><code>线程Ⅰ的语句(5) -&gt; 线程Ⅱ的语句(2)</code>，根据单线程规则，<code>线程Ⅰ的语句(1) -&gt; 线程Ⅰ的语句(5)</code>和<code>语线程Ⅱ的句(2) -&gt; 语线程Ⅱ的句(7)</code>，再根据传递规则就有<code>线程Ⅰ的语句(1) -&gt; 语线程Ⅱ的句(7)</code>，这表示线程Ⅱ能够观察到线程Ⅰ在语句(1)时对<code>someFiled</code>的写入值，程序能够得到正确的行为。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">    <span class="comment">// volatile 关键字主要是为了防止指令重排</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Singleton singleton;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// 防止指令重排</span></span><br><span class="line">                    singleton = <span class="keyword">new</span> Singleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如果不用<code>volatile</code> ，<code>singleton = newSingleton();</code>这段代码其实是分为三步：</p>
-<ul>
-<li><p>分配内存。</p>
-</li>
-<li><p>初始化对象。</p>
-</li>
-<li><p>将<code>singleton</code>对象指向分配的内存地址。</p>
-</li>
-</ul>
-<p>加上<code>volatile</code>是为了让以上的三步操作顺序执行，反之有可能第二步在第三步之前被执行就有可能某个线程拿到的单例对象是还没有初始化的。</p>
-<p>上面好像有两种说法，我比较倾向于第一种。</p>
+<p>在一个循环中，不断尝试将一个比当前值大1的新值赋给自己，如果失败，说明在CAS时值已经被修改，于是再次循环，直到成功。</p>
+<h5 id="无同步"><a href="#无同步" class="headerlink" title="无同步"></a>无同步</h5><p>要保证线程安全，不一定就要同步，同步只是保证共享数据竞争时的正确性，如果不涉及共享数据，就无须同步，比如ThreadLocal。</p>
 
 				</div>
 				<!-- about -->

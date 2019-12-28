@@ -68,12 +68,6 @@
 			<ul class="nav navbar-nav navbar-right">
 				
 				<li>
-					<a href="https://huangzhike.github.io/" title="">
-						<i class="fa fa-home"></i>Index
-					</a>
-				</li>
-				
-				<li>
 					<a href="https://huangzhike.github.io/archives" title="">
 						<i class="fa fa-list"></i>Archives
 					</a>
@@ -105,13 +99,13 @@
 				</div>
 				
 				<div class="article-content">
-				<p>原子包主要是通过CAS函数完成的。</p>
-<p>Compare And Swap，比较并交换，原子操作。</p>
+				<p>原子类主要是通过volatile变量和CAS函数完成的。</p>
+<p>Compare And Swap，比较并交换。</p>
 <p>CAS需要3个操作数：内存地址V，旧的预期值A，即将要更新的目标值B。</p>
-<p>当且仅当内存地址V的值与预期值A相等时，将内存地址V的值修改为B，否则就什么都不做。</p>
+<p>当且仅当内存地址V的值与预期值A相等时，将内存地址V的值修改为目标值B，否则什么都不做。</p>
 <p>整个比较并替换的操作是一个原子操作。</p>
 <ul>
-<li><p>乐观的机制，自旋循环时间长的话开销大，适用于竞争不激烈的操作。</p>
+<li><p>乐观的机制，自旋循环时间长的话开销大，适用于竞争不激烈的情况。</p>
 </li>
 <li><p>只能保证一个共享变量的原子操作。</p>
 </li>
