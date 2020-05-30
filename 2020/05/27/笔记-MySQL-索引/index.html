@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-MySQL-索引 | 学而时习之</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-MySQL-索引">
+		
+		<meta property="og:site_name" content="学而时习之">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">学而时习之</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-索引</h2>
+				
+				<div>
+					<div class="post-time">2020-05-27</div>
+				</div>
+				
+				<div class="article-content">
+				<p>扇区：物理磁盘的最小单位。</p>
+<p>磁盘块（簇）：文件系统的最小操作单位，通常由相邻的扇区组成。</p>
+<p>页：内存系统的最小操作单位。</p>
+<p>4K对齐：使簇与扇区相对应，即物理硬盘分区与操作系统的逻辑分区对齐，保证硬盘读写效率。</p>
+<p>预读：操作系统一次IO时，不仅把当前磁盘地址的数据，还把相邻的数据也读取到内存缓冲区。</p>
+<p>DoubleWrite：解决部分写（PartialWrite）问题。</p>
+<p>MySQL默认一个数据页的大小是16K，所以数据库IO的最小单位是16K，假设文件系统IO的最小单位是4K，磁盘IO的最小单位是512字节（一个扇区），如果在把内存中的脏页写到数据库的时候，写了2K突然掉电，那么前2K数据是新的，后14K是旧的，这个数据页就损坏了。</p>
+<p>REDO重做日志记录的是对页的物理修改，如果页本身已经损坏，重做日志也无法判断哪些数据需要被修复。</p>
+<p>DoubleWrite由两部分组成，一部分为内存中的缓冲，另一部分是磁盘上共享表空间中连续的页。</p>
+<p>当触发数据缓冲池中的脏页刷新时，并不直接写入磁盘，而是先拷贝至内存中的DoubleWrite缓冲，接着顺序写入DoubleWrite文件。</p>
+<p>保证DoubleWrite完成刷盘后，再将DoubleWrite缓冲中的数据写入各个表空间文件（随机写）。</p>
+<p>如果在将页写入磁盘的过程中发生崩溃，在恢复时可以从DoubleWrite中找到该页的最近的副本，将其复制到表空间文件，再应用REDO完成恢复。</p>
+<hr>
+<p>哈希索引：不适合范围查询，在等值查询时比较快，基于散列，一般只需要一次查询就能定位，而B树的查找次数取决于树的高度，一般为3~4层，则需要3~4次查询。</p>
+<p>B+树索引：比较均衡，为磁盘设计的平衡查找树，B不是Binary二叉，而是Balance平衡。B+树索引不能找到指定的行，只能找到行所在的页，再通过把页读到内存进行查找。</p>
+<p>全文索引：略。</p>
+<hr>
+<p>表空间（tablespace）：InnoDB存储引擎的最高层，默认所有表和索引共享一个表空间（但是由多个文件组成）。</p>
+<p>表空间由段（segment）、区（extent）、页（page）组成，页也称为块（block），是MySQL最小的I/O单位，默认16k，是操作系统块大小的整数倍。</p>
+<p>InnoDB存储引擎是索引组织的，索引即数据，数据即索引。</p>
+<p>一个表就是一个段，段可以分成：数据段、索引段、回滚段。</p>
+<p>B+树的非叶子节点存放索引段，叶子节点存放数据段，</p>
+<p>对于聚簇索引，叶子节点存放的是数据行，对于二级索引，是索引列和主键值。</p>
+<p>区是磁盘空间分配的最小单位，由连续的页组成，页是磁盘和内存I/O的最小单位，各个页组成一个双向链表，每页存放着多个行。</p>
+<p>每行都包含了下一行的地址偏移，所有行按主键从小到大顺序形成一个单向链表。</p>
+<p>页是在逻辑上连续，在物理存储上不一定连续。</p>
+<p>因为是有序的，所以可以使用二分法进行快速查找。</p>
+<p>如果没有索引，只能从第一个页沿着双向链表遍历。</p>
+<hr>
+<p>B树：二叉搜索树，每个节点只存储一个关键字，等于则命中，小于走左节点，大于走右节点；</p>
+<p>B-树：多路搜索树，每个节点存储M/2~M个关键字，非叶子节点存储指向关键字范围的子节点，所有关键字在整颗树中出现且只出现一次，非叶子节点可以命中；</p>
+<p>B+树：在B-树基础上，为叶子节点增加链表指针，所有关键字都在叶子节点中出现，非叶子节点作为叶子节点的索引，关键字和子节点有重复，只有到叶子节点才命中；</p>
+<p>B*树：在B+树基础上，为非叶子节点也增加链表指针；</p>
+<p>B+树的优点：</p>
+<p>叶子节点包含了全部数据，组成一个有序链表，范围查询时，只需在叶子节点上遍历即可。</p>
+<p>非叶子节点不含全部数据，因此磁盘页中可以容纳更多节点，层级更低，IO次数更少。</p>
+<p>查找必会查到叶子节点，更加稳定，IO次数是个常数，等于树的高度。</p>
+<hr>
+<p>聚簇索引：</p>
+<p>简单理解为以主键创建的索引，叶子节点存储的是表中的行数据。</p>
+<p>数据行存放在叶子节点中，非叶子结点存放索引项。</p>
+<p>聚簇指的是数据行和相邻的键值紧凑地存储在一起，因为数据行只有一份，所以一个表只能有一个聚簇索引。</p>
+<p>插入速度依赖于插入的顺序，按主键顺序插入是最快的，比如自增主键，UUID这种随机的主键性能就很差。</p>
+<p>在插入新行，或者主键被更新导致需要移动行时，可能面临页分裂的问题，当必须将某行插入到某个已满的页时，会将该页分裂为两个页。</p>
+<p>建议让主键AUTO_INCREMENT，让存储引擎生成主键。</p>
+<p>索引优点：</p>
+<ul>
+<li>减少了需要扫描的数据量。</li>
+<li>避免了排序和临时表。</li>
+<li>将随机IO变为顺序IO。</li>
+</ul>
+<p><img src="/imgs/B+Tree.png" alt="聚簇索引"></p>
+<p>非聚簇索引：</p>
+<p>即二级索引，以非主键创建的索引，叶子节点存储的是主键和索引列。</p>
+<p>二级节点的叶子节点保存的不是指向行的指针，而是行的主键值，为的就是页分裂移动行时无需更新二级索引。</p>
+<p>二级索引访问需要两次索引查找（回表）。</p>
+<p>回表：使用非聚簇索引查询时，获得主键后再去聚簇索引根据主键查询数据，是随机IO，比较耗时。</p>
+<p>如果是索引扫描，那么访问二级索引使用顺序IO，访问聚簇索引使用随机IO。</p>
+<p>回表的记录越多，使用二级索引的性能就越低，全表扫描效率可能比二级索引还高。</p>
+<p>覆盖索引：叶子节点的索引列本身已经包含查找的数据列，不需要再回表。</p>
+<p>当使用复合索引时，如<code>(name, age, sex)</code>，B+树的数据项是复合的数据结构，按从左到右的顺序来建立搜索树。</p>
+<p>当<code>(xxx, 20, F)</code>这样检索时，先比较name来确定下一步的所搜方向，如果name相同再依次比较age和sex，最后得到检索的数据。</p>
+<p>当<code>(20 ,F)</code>这样没有name时，B+树不知道该查哪个节点，因为name是第一个比较因子。</p>
+<p>当<code>(xxx, F)</code>这样检索时，B+树可以用name来确定搜索方向，但下一个字段age缺失，所以只能把名字等于张三的数据都找到，然后再匹配性别是F的数据，即索引的最左匹配。</p>
+<hr>
+<p>每次IO的单位称为页(page)，一次磁盘IO时间约10ms，访问磁盘的成本太高，二叉树不符合要求。</p>
+<p>B+树是一个高度可控的多路搜索树，为文件系统设计，通过B+树索引，查找任何一行数据都要访问相同数量的非叶子页。</p>
+<p>B+树高度一般在2~4之间（即使是千万行的数据），磁盘IO次数是个常数。</p>
+<p>MySQL默认每页的大小为16KB，假设一行数据大小为1K，一页就能存16条数据（包括索引和行）。</p>
+<p>对于非叶子节点，假设主键为bigint类型，长度为8B，指针为6B，一共14B，那么一页里就可以存储16K/14=1170个（包括主键和指针）。</p>
+<p>那么一颗高度为3的B+树能存储的数据为千万级别。</p>
+<p>IO次数取决于B+树的高度，一个数据页的大小是固定的，如果数据项占的空间越小，数据项的数量越多，树的高度越低。</p>
+<p>所以每个数据项，即索引字段要尽量的小，比如int占4字节，比bigint占8字节少一半。</p>
+<p>所以B+树把数据放到叶子节点而不是内层节点，一旦放到内层节点，磁盘块的数据项会大幅度下降，导致树增高。</p>
+<hr>
+<p>索引是有时间和空间代价的，每建立一个索引都要为它建立一棵B+树，每次对表中的数据进行增、删、改，都需要去修改各个B+树索引。</p>
+<p>B+树节点按照索引的值从小到大的顺序排序，同时是一个平衡树。</p>
+<p>如果主键索引不是自增的，在插入时可能会导致频繁的页分裂和重平衡，同时随机读写的性能会比顺序读写差很多。</p>
+<p>所以千万不要用UUID做主键。</p>
+<p>InnoDB的主键生成策略：优先使用自定义主键，如果没有，则选取一个Unique键作为主键，如果没有，默认添加一个隐藏列作为主键。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

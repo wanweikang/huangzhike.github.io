@@ -1,0 +1,255 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-LEAF | 学而时习之</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-LEAF">
+		
+		<meta property="og:site_name" content="学而时习之">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">学而时习之</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-LEAF</h2>
+				
+				<div>
+					<div class="post-time">2020-05-30</div>
+				</div>
+				
+				<div class="article-content">
+				<p>美团的LEAF序列号算法。</p>
+<hr>
+<p>序列号的一些特点：</p>
+<ul>
+<li><p>全局唯一：唯一标识不能出现重复的ID号。</p>
+</li>
+<li><p>趋势递增：InnoDB引擎中使用的是聚集索引，B-tree的数据结构来存储索引数据，主键应该尽量有序保证写入性能。</p>
+</li>
+<li><p>单调递增：下一个ID一定大于上一个ID，例如事务版本号、IM增量消息、排序等需求。</p>
+</li>
+<li><p>信息安全：如果ID是连续的，会方便恶意扒取，还会可能会泄露一天的数据量，一些场景下需要ID无规则。</p>
+</li>
+<li><p>高可用：平均延迟和TP999延迟都要尽可能低，可用性5个9，高QPS。</p>
+</li>
+</ul>
+<hr>
+<h4 id="UUID"><a href="#UUID" class="headerlink" title="UUID"></a>UUID</h4><p>包含32个16进制数字，以连字号分为五段，形式为8-4-4-4-12的36个字符，如：<code>550e8400-e29b-41d4-a716-446655440000</code>。</p>
+<p>优点：</p>
+<ul>
+<li>性能非常高，本地生成，没有网络消耗。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li><p>不易于存储：UUID太长。</p>
+</li>
+<li><p>信息不安全：基于MAC地址生成UUID的算法可能会造成MAC地址泄露。</p>
+</li>
+<li><p>不适用做DB主键：主键过长影响性能，InnoDB引擎下，无序主键会引起数据位置频繁变动，严重影响性能。</p>
+</li>
+</ul>
+<h4 id="Snowflake"><a href="#Snowflake" class="headerlink" title="Snowflake"></a>Snowflake</h4><p>划分命名空间来生成ID，把64-bit分别划分成多段。</p>
+<p>最高位保留，符号位0。</p>
+<p>41位表示时间，可以表示 (1 &lt;&lt; 41)  /  (1000 <em> 3600 </em> 24 * 365) = 69 年。</p>
+<p>10位表示机器，可以表示 2^10 = 1024 台IDC/机器。</p>
+<p>12位表示自增序列，可以表示 2^12 = 4096 个序列号。</p>
+<p>可以保证在任何一台机器在任意毫秒内生成的ID都是不同的。</p>
+<p>优点：</p>
+<ul>
+<li><p>毫秒数在高位，自增序列在低位，整个ID是趋势递增的。</p>
+</li>
+<li><p>不依赖数据库，性能非常高。</p>
+</li>
+<li><p>天然的分布式支持。</p>
+</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>强依赖机器时钟，如果时钟回拨，可能导致ID重复。</li>
+</ul>
+<h4 id="使用数据库的自增主键"><a href="#使用数据库的自增主键" class="headerlink" title="使用数据库的自增主键"></a>使用数据库的自增主键</h4><p>给字段设置auto<em>increment</em>和auto_increment_offset来保证ID自增。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">BEGIN</span>;</span><br><span class="line"><span class="keyword">REPLACE</span> <span class="keyword">INTO</span> table_name (column_name) <span class="keyword">VALUES</span> (‘value_xxx’);</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">LAST_INSERT_ID</span>();</span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+<p>优点：</p>
+<ul>
+<li><p>非常简单，成本小。</p>
+</li>
+<li><p>单调自增。</p>
+</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>强依赖DB，受单台MySQL的读写性能限制。</li>
+</ul>
+<h4 id="Redis自增命令：incr"><a href="#Redis自增命令：incr" class="headerlink" title="Redis自增命令：incr"></a>Redis自增命令：incr</h4><p>优点：</p>
+<ul>
+<li>性能高。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>不可靠的持久化。</li>
+</ul>
+<h4 id="分布式多台节点"><a href="#分布式多台节点" class="headerlink" title="分布式多台节点"></a>分布式多台节点</h4><p>设置初始值和步长，步长等于节点数，如设置2台节点，则步长为2，初始值可以分别为1和1 + 2。</p>
+<p>获取时每次自增步长值。</p>
+<p>缺点：</p>
+<ul>
+<li><p>水平扩展困难，比如增加节点。</p>
+</li>
+<li><p>趋势递增，但不是单调递增。</p>
+</li>
+</ul>
+<hr>
+<p>LeafAlloc</p>
+<p>对应数据库结构。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LeafAlloc</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String key;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> maxId;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> step;</span><br><span class="line">    <span class="keyword">private</span> String updateTime;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Segment</p>
+<p>缓冲段</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Segment</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 基于内存获取序列号</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> AtomicLong value = <span class="keyword">new</span> AtomicLong(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 本批获取的最大序列号限制，超过了需要重新从数据库获取</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">long</span> max;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> step;</span><br><span class="line">    <span class="keyword">private</span> SegmentBuffer buffer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SegmentBuffer</p>
+<p>缓冲</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SegmentBuffer</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 隔离业务的标签</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String key;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 双buffer缓冲，存放两个Segment，方便切换</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Segment[] segments;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 当前使用的segment缓冲的index</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> currentPos;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 下一个segment缓冲是否处于可切换状态</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> nextReady;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 是否初始化完成</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> initOk;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 是否有线程正在从数据库获取号段</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> AtomicBoolean threadRunning;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ReadWriteLock lock;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 从数据库获取的号段步长</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> step;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> minStep;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">long</span> updateTimestamp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SegmentIDGenImpl</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SegmentIDGenImpl</span> <span class="keyword">implements</span> <span class="title">IDGen</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 最大步长不超过100,0000</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_STEP = <span class="number">1000000</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 一个Segment维持时间为15分钟</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> SEGMENT_DURATION = <span class="number">15</span> * <span class="number">60</span> * <span class="number">1000L</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 从数据库更新获取最大序列号的线程池，之所以是线程池是因为可能有多个Tag隔离的序列号</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> ExecutorService service = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">5</span>, Integer.MAX_VALUE, <span class="number">60L</span>, TimeUnit.SECONDS, <span class="keyword">new</span> SynchronousQueue&lt;Runnable&gt;(), <span class="keyword">new</span> UpdateThreadFactory());</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 不同的业务使用不同的Tag来隔离序列号，命名空间</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, SegmentBuffer&gt; cache = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SegmentIDGenImpl#get</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Result <span class="title">get</span><span class="params">(<span class="keyword">final</span> String key)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">if</span> (cache.containsKey(key)) &#123;</span><br><span class="line">        SegmentBuffer buffer = cache.get(key);</span><br><span class="line">        <span class="comment">// 第一次进来，缓冲还没初始化</span></span><br><span class="line">        <span class="keyword">if</span> (!buffer.isInitOk()) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (buffer) &#123;</span><br><span class="line">                <span class="comment">// DCL</span></span><br><span class="line">                <span class="keyword">if</span> (!buffer.isInitOk()) &#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        <span class="comment">// 初始化缓冲，从数据库获取分段到缓冲</span></span><br><span class="line">                        updateSegmentFromDb(key, buffer.getCurrent());</span><br><span class="line">                        <span class="comment">// ...</span></span><br><span class="line">                    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                        <span class="comment">// ...</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 之后都是直接从缓存获取序列号</span></span><br><span class="line">        <span class="keyword">return</span> getIdFromSegmentBuffer(cache.get(key));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SegmentIDGenImpl#updateSegmentFromDb</p>
+<p>从数据库获取号段。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateSegmentFromDb</span><span class="params">(String key, Segment segment)</span> </span>&#123;</span><br><span class="line">    SegmentBuffer buffer = segment.getBuffer();</span><br><span class="line">    LeafAlloc leafAlloc;</span><br><span class="line">    <span class="comment">// 缓冲没初始化</span></span><br><span class="line">    <span class="keyword">if</span> (!buffer.isInitOk()) &#123;</span><br><span class="line">        <span class="comment">// 从数据库获取序列号范围</span></span><br><span class="line">        leafAlloc = dao.updateMaxIdAndGetLeafAlloc(key);</span><br><span class="line">        buffer.setStep(leafAlloc.getStep());</span><br><span class="line">        buffer.setMinStep(leafAlloc.getStep());<span class="comment">//leafAlloc中的step为DB中的step</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 缓冲还没从数据库更新过，即这是第二次从数据库获取，区别就是更新了一个时间戳</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (buffer.getUpdateTimestamp() == <span class="number">0</span>) &#123;</span><br><span class="line">        leafAlloc = dao.updateMaxIdAndGetLeafAlloc(key);</span><br><span class="line">        buffer.setUpdateTimestamp(System.currentTimeMillis());</span><br><span class="line">        buffer.setStep(leafAlloc.getStep());</span><br><span class="line">        buffer.setMinStep(leafAlloc.getStep());<span class="comment">//leafAlloc中的step为DB中的step</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 说明现在是第三次及以上获取序列号范围了</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 上次获取到现在的时长</span></span><br><span class="line">        <span class="keyword">long</span> duration = System.currentTimeMillis() - buffer.getUpdateTimestamp();</span><br><span class="line">        <span class="keyword">int</span> nextStep = buffer.getStep();</span><br><span class="line">        <span class="comment">// 号段在时间范围内提前用完</span></span><br><span class="line">        <span class="keyword">if</span> (duration &lt; SEGMENT_DURATION) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nextStep * <span class="number">2</span> &gt; MAX_STEP) &#123;</span><br><span class="line">                <span class="comment">//do nothing</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 下一次步长翻倍还没超过最大步长，那就用这个步长获取</span></span><br><span class="line">            <span class="comment">// 一个时段内，提前用完了分配的号段，那么下一次获取的范围会翻倍，自适应步长，避免频繁从数据库获取</span></span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                nextStep = nextStep * <span class="number">2</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 号段在时间范围内还没用完，但是在两倍范围内，NOOP</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (duration &lt; SEGMENT_DURATION * <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="comment">//do nothing with nextStep</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 号段严重过剩</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 缩小步长，避免号段浪费，但是不能小于最小步长</span></span><br><span class="line">            nextStep = nextStep / <span class="number">2</span> &gt;= buffer.getMinStep() ? nextStep / <span class="number">2</span> : nextStep;</span><br><span class="line">        &#125;</span><br><span class="line">        LeafAlloc temp = <span class="keyword">new</span> LeafAlloc();</span><br><span class="line">        temp.setKey(key);</span><br><span class="line">        <span class="comment">// 更新步长</span></span><br><span class="line">        temp.setStep(nextStep);</span><br><span class="line">        <span class="comment">// 根据步长从数据库获取，但是数据库的步长字段是不变的，变化的是SegmentBuffer的步长</span></span><br><span class="line">        leafAlloc = dao.updateMaxIdByCustomStepAndGetLeafAlloc(temp);</span><br><span class="line">        buffer.setUpdateTimestamp(System.currentTimeMillis());</span><br><span class="line">        buffer.setStep(nextStep);</span><br><span class="line">        buffer.setMinStep(leafAlloc.getStep());<span class="comment">//leafAlloc的step为DB中的step</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// must set value before set max</span></span><br><span class="line">    <span class="comment">// 起始序列号 = 范围内的最大序列号 - 步长</span></span><br><span class="line">    <span class="keyword">long</span> value = leafAlloc.getMaxId() - buffer.getStep();</span><br><span class="line">    segment.getValue().set(value);</span><br><span class="line">    segment.setMax(leafAlloc.getMaxId());</span><br><span class="line">    segment.setStep(buffer.getStep());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SegmentIDGenImpl#getIdFromSegmentBuffer</p>
+<p>从缓冲获取序列号。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Result <span class="title">getIdFromSegmentBuffer</span><span class="params">(<span class="keyword">final</span> SegmentBuffer buffer)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 不断重试</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="comment">// 读锁</span></span><br><span class="line">        buffer.rLock().lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> Segment segment = buffer.getCurrent();</span><br><span class="line">            <span class="comment">// 下一段缓冲没准备好 &amp;&amp; 当前缓冲段已经使用了10%以上 &amp;&amp; CAS将该缓冲由false更新为true成功 标识有线程在更新该缓冲</span></span><br><span class="line">            <span class="keyword">if</span> (!buffer.isNextReady() &amp;&amp; (segment.getIdle() &lt; <span class="number">0.9</span> * segment.getStep()) &amp;&amp; buffer.getThreadRunning().compareAndSet(<span class="keyword">false</span>, <span class="keyword">true</span>)) &#123;</span><br><span class="line">                <span class="comment">// 异步更新</span></span><br><span class="line">                service.execute(() -&gt; &#123;</span><br><span class="line">                    <span class="comment">// 下一段缓冲 因为是双缓冲 所以是在两个缓冲间切换</span></span><br><span class="line">                    Segment next = buffer.getSegments()[buffer.nextPos()];</span><br><span class="line">                    <span class="keyword">boolean</span> updateOk = <span class="keyword">false</span>;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        <span class="comment">// 从数据库更新下一段到下一段缓冲</span></span><br><span class="line">                        updateSegmentFromDb(buffer.getKey(), next);</span><br><span class="line">                        updateOk = <span class="keyword">true</span>;</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                        <span class="keyword">if</span> (updateOk) &#123;</span><br><span class="line">                            <span class="comment">//</span></span><br><span class="line">                            buffer.wLock().lock();</span><br><span class="line">                            <span class="comment">// 下一段准备好了</span></span><br><span class="line">                            buffer.setNextReady(<span class="keyword">true</span>);</span><br><span class="line">                            <span class="comment">// 缓冲更新完成</span></span><br><span class="line">                            buffer.getThreadRunning().set(<span class="keyword">false</span>);</span><br><span class="line">                            buffer.wLock().unlock();</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            buffer.getThreadRunning().set(<span class="keyword">false</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125; <span class="comment">// 更新代码结束</span></span><br><span class="line">            <span class="comment">// 获取序列号并自增</span></span><br><span class="line">            <span class="keyword">long</span> value = segment.getValue().getAndIncrement();</span><br><span class="line">            <span class="comment">// 没超过范围 直接返回结果</span></span><br><span class="line">            <span class="keyword">if</span> (value &lt; segment.getMax()) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> Result(value, Status.SUCCESS);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            buffer.rLock().unlock();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 当前段的缓冲已经耗尽 等待更新下一段 下个循环继续</span></span><br><span class="line">        waitAndSleep(buffer);</span><br><span class="line">        <span class="comment">// 写锁</span></span><br><span class="line">        buffer.wLock().lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 这里和上面重复 猜测应该是处理多线程获取序列号情况下 下一段缓冲被别的线程切到了当前 所以先尝试从当前获取</span></span><br><span class="line">            <span class="keyword">final</span> Segment segment = buffer.getCurrent();</span><br><span class="line">            <span class="keyword">long</span> value = segment.getValue().getAndIncrement();</span><br><span class="line">            <span class="keyword">if</span> (value &lt; segment.getMax()) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> Result(value, Status.SUCCESS);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 切换缓冲 下个循环继续</span></span><br><span class="line">            <span class="keyword">if</span> (buffer.isNextReady()) &#123;</span><br><span class="line">                buffer.switchPos();</span><br><span class="line">                buffer.setNextReady(<span class="keyword">false</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 高并发情况下偶尔出现，不能保证100%获取成功</span></span><br><span class="line">                <span class="comment">// 考虑场景：缓冲用完，A线程阻塞等待从数据库获取分段，唤醒后假设A阻塞获取写锁，而其它线程将下一段缓冲切到了当前位置，并迅速将分段耗尽</span></span><br><span class="line">                <span class="comment">// 此时线程A才获取到了写锁（非公平锁），那么一进来就是两个缓冲都未准备好</span></span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> Result(EXCEPTION_ID_TWO_SEGMENTS_ARE_NULL, Status.EXCEPTION);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            buffer.wLock().unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SegmentIDGenImpl#waitAndSleep</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">waitAndSleep</span><span class="params">(SegmentBuffer buffer)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> roll = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 等待缓冲从数据库获取号段成功</span></span><br><span class="line">    <span class="keyword">while</span> (buffer.getThreadRunning().get()) &#123;</span><br><span class="line">        roll += <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// 先自旋 超过次数后阻塞等待</span></span><br><span class="line">        <span class="keyword">if</span> (roll &gt; <span class="number">10000</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                TimeUnit.MILLISECONDS.sleep(<span class="number">10</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>IDAllocDaoImpl#updateMaxIdByCustomStepAndGetLeafAlloc</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> LeafAlloc <span class="title">updateMaxIdByCustomStepAndGetLeafAlloc</span><span class="params">(LeafAlloc leafAlloc)</span> </span>&#123;</span><br><span class="line">    SqlSession sqlSession = sqlSessionFactory.openSession();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// UPDATE leaf_alloc SET max_id = max_id + #&#123;step&#125; WHERE biz_tag = #&#123;key&#125;</span></span><br><span class="line">        sqlSession.update(<span class="string">"com.sankuai.inf.leaf.segment.dao.IDAllocMapper.updateMaxIdByCustomStep"</span>, leafAlloc);</span><br><span class="line">        <span class="comment">// SELECT biz_tag, max_id, step FROM leaf_alloc WHERE biz_tag = #&#123;tag&#125;</span></span><br><span class="line">        LeafAlloc result = sqlSession.selectOne(<span class="string">"com.sankuai.inf.leaf.segment.dao.IDAllocMapper.getLeafAlloc"</span>, leafAlloc.getKey());</span><br><span class="line">        sqlSession.commit();</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        sqlSession.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总结：</p>
+<p>基本思想和微信序列号一样，先预先申请一个号段并持久化，成功后该号段内的序列号即可在内存中分配，极大减缓了数据库压力。</p>
+<p>双缓冲，即有两个号段，一个号段用完了即可切到另一个号段，使用读写锁进行并发控制。</p>
+<p>同时，后台线程计划任务，检查缓冲中的号段的使用情况，并决定是否从数据库申请新的号段。</p>
+<p>另外还可根据号段在时间范围内的使用率，动态调整获取的号段步长，自动弹性伸缩。</p>
+<p>使用命名空间隔离，对应数据库表的一行，通过事务保证并发安全。</p>
+<p>缺点：</p>
+<p>不是100%可用，开十个线程测试获取，偶尔还是会出现双缓冲都耗尽的情况，但是基本也实现了高可用。</p>
+<p>另外，分布式环境下，只能保证一个命名空间下各个节点分配的序列号不重复并且趋势递增，如果要求单调递增，那么只能根据哈希取模之类的算法路由到一台节点上串行处理，等于是单点了。</p>
+<p>LEAF算法还有一个雪花算法的版本，有兴趣的可以去看看。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

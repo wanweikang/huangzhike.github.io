@@ -1,0 +1,550 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-MySQL-锁 | 学而时习之</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-MySQL-锁">
+		
+		<meta property="og:site_name" content="学而时习之">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">学而时习之</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-锁</h2>
+				
+				<div>
+					<div class="post-time">2020-05-27</div>
+				</div>
+				
+				<div class="article-content">
+				<h4 id="读未提交-Read-Uncommitted-："><a href="#读未提交-Read-Uncommitted-：" class="headerlink" title="读未提交(Read Uncommitted)："></a>读未提交(Read Uncommitted)：</h4><p>允许脏读，会读到其他事务未提交的数据。</p>
+<p>写的时候加排他锁，读无需加锁。</p>
+<h4 id="读已提交-Read-Committed-："><a href="#读已提交-Read-Committed-：" class="headerlink" title="读已提交(Read Committed)："></a>读已提交(Read Committed)：</h4><p>只能读到已提交的数据，但不可重复读，即在一个事务中多次读取同一行数据返回的结果不一致（被别的事务UPDATE或DELETE了）。</p>
+<p>写的时候加排他锁，读的时候通过MVCC来控制可见性。</p>
+<h4 id="可重复读-Repeatable-Read-："><a href="#可重复读-Repeatable-Read-：" class="headerlink" title="可重复读(Repeatable Read)："></a>可重复读(Repeatable Read)：</h4><p>可重复读，但是还存在幻读，如某事务对一个范围内所有的行进行了UPDATE操作，此期间其它事务INSERT了一行进入了这个范围，那么新插入的一行没有被该事务UPDATE。</p>
+<p>InnoDB默认可重复读隔离级别，同时通过多版本并发控制（MVCC）解决幻读。</p>
+<p>写的时候加排他锁，读的时候通过MVCC来控制可见性。</p>
+<h4 id="串行读-Serializable-："><a href="#串行读-Serializable-：" class="headerlink" title="串行读(Serializable)："></a>串行读(Serializable)：</h4><p>完全串行化的读，事务串行化执行，写和读的时候都加锁，读加共享锁，写加独占锁，读写互斥。</p>
+<hr>
+<p>可重复读隔离级别：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">顺序</th>
+<th style="text-align:center">事务A</th>
+<th style="text-align:center">事务B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">BEGIN;</td>
+<td style="text-align:center">BEGIN;</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">INSERT INTO …(clomn_name) VALUES(‘xxx’);</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">COMMIT;</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">UPDATE … SET clomn_name = ‘yyy’;</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">COMMIT;</td>
+</tr>
+</tbody>
+</table>
+<p>期望的结果可能是：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">id</th>
+<th style="text-align:center">name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">xxx</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">yyy</td>
+</tr>
+</tbody>
+</table>
+<p>实际上：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">id</th>
+<th style="text-align:center">name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">yyy</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">yyy</td>
+</tr>
+</tbody>
+</table>
+<p>并不是BEGIN语句就是开始一个事务，而是执行了第一条SQL语句才开始事务，也就是说快照从此开始。</p>
+<p>对数据修改的操作(UPDATE、INSERT、DELETE)都是采用当前读，会读取最新的记录，即使是别的事务提交的数据也可以查询到。</p>
+<p>可重复读隔离级别下当执行普通SELECT查询时，默认会执行快照读，快照开始于第一次执行SELECT的时候。</p>
+<p>当A开启了事务，没有执行任何操作，这时候B插入一行然后提交，这时候A在事务中执行查询，就能看到B提交的数据，之后其它事务提交也没有影响。</p>
+<p>MVCC允许可重复读，但读到的是历史数据，称为快照读(Snapshot Read)，而读取当前版本的方式，叫当前读(Current Read)，需要加锁。</p>
+<p>在读已提交级别，每次读取都是新的快照，在可重复读级别，一次快照读后，后面都会读快照。</p>
+<p>快照读不加锁，当前读会获取相应的锁。</p>
+<p>为了解决当前读的幻读问题，MySQL事务使用了Next-Key锁，即行锁和间隙锁的合并，行锁防止不同事务修改提交时造成冲突，间隙锁避免别的事务插入数据。</p>
+<p>快照读：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ... <span class="comment">-- 普通的查询</span></span><br></pre></td></tr></table></figure>
+<p>当前读：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> … <span class="keyword">LOCK</span> <span class="keyword">IN</span> SHRAE <span class="keyword">MODE</span>; <span class="comment">-- 对读取的行加S锁</span></span><br><span class="line"><span class="keyword">SELECT</span> ... <span class="keyword">FOR</span> <span class="keyword">UPDATE</span>; <span class="comment">-- 对读取的行加X锁</span></span><br><span class="line"><span class="keyword">UPDATE</span> ...</span><br><span class="line"><span class="keyword">DELETE</span> ...</span><br><span class="line"><span class="keyword">INSERT</span> ...</span><br></pre></td></tr></table></figure>
+<p>一致性锁定读：悲观锁，读写数据时都加锁，其它事务无法修改或读取这些数据。</p>
+<p>一致性非锁定读：基于MVCC，如果读取的行正在被DELETE或UPDATE，不需要等待锁的释放，而是读快照。</p>
+<p>读锁：共享（S）锁，读锁之间互相不阻塞。</p>
+<p>写锁：独占（X）锁，不允许其他锁同时存在，优先级高，可被插入到读锁队列之前。</p>
+<p>表锁：锁定整张表，开销小，服务器层实现。</p>
+<p>行锁：锁定行，开销大，并发度高，存储引擎层实现。</p>
+<p>三种行锁：</p>
+<ul>
+<li><p>Record Lock：锁定单个行（即，锁定主键索引）。</p>
+</li>
+<li><p>Gap Lock：间隙锁，锁定一个范围，但不锁定行本身。</p>
+</li>
+<li><p>Next-Key Lock：Record Lock和Gap Lock的结合，锁定一个范围和行本身。</p>
+</li>
+</ul>
+<p>假如索引有10，11，13，20四个值，则可能被锁定的区间为：<code>(-∞, 10]</code>，<code>(10, 11]</code>，<code>(11, 13]</code>，<code>(13, 20]</code>，<code>(20, +∞)</code>。</p>
+<p>当查询的是唯一索引时，会将Next-Key锁降级为Record锁，仅锁住索引本身，而不是范围。</p>
+<p>假如唯一索引由多个列组成，而查询仅是多个索引列中的一个，那么查询其实是范围类型，依然使用Next-Key锁。</p>
+<hr>
+<p>MVCC大概的思路：</p>
+<p>每行加两个隐藏列，创建行时的系统版本号，删除行时的系统版本号。</p>
+<p>每开启一个事务，系统版本号就会递增，事务开始时的版本号会作为事务的版本号，用来对比行数据。</p>
+<p>以可重复读隔离级别为例：</p>
+<p>INSERT</p>
+<p>插入行，保存当前事务的版本号，作为创建版本号。</p>
+<p>UPDATE</p>
+<p>插入行，保存当前事务的版本号，作为创建版本号，同时，保存当前事务的版本号，作为原本的行的删除版本号。</p>
+<p>DELETE</p>
+<p>更新行，保存当前事务的版本号，作为删除版本号。</p>
+<p>SELECT</p>
+<p>只查找创建事务版本号小于等于当前事务的行，保证不会读到别的事务未提交的数据行（要么是已经存在的，要么是事务自身修改的）。</p>
+<p>只查找删除事务版本号为空或者大于当前事务的行，保证该行在事务开始前没被删除。</p>
+<hr>
+<p>MVCC只在可重复读和读已提交的隔离级别下工作，因为读未提交永远读最新的行，而串行化对所有读的行都加锁。</p>
+<p>可以实现非阻塞的读，性能很好，但MVCC如何解决并发提交时冲突？</p>
+<p>MVCC大概的思路是，每行都有一个版本号，每次修改时复制一份，更新版本，各个事务之间无干扰。</p>
+<p>提交时比较版本号，成功则覆盖原记录，失败则放弃。</p>
+<p>MVCC是乐观锁，在提交的时候才知道能否成功。</p>
+<p>事务在访问数据之前先加锁叫悲观锁，先加锁，独占数据。</p>
+<p>乐观锁实际上不加锁，而在读写之前检查一下版本，等到提交时再检查一下版本，如果两次相同，说明期间外部没有修改过数据，那么可以提交（类似CAS）。</p>
+<p>乐观体现在，访问数据时不提前加锁，在冲突不激烈情况下，用乐观锁性能较好。</p>
+<p>但如果资源冲突严重，乐观锁会不断失败重试，那还不如直接加锁。</p>
+<p>InnoDB实现“MVCC”的方式：</p>
+<p>行的一些隐藏列：</p>
+<ul>
+<li><p>DB_TRX_ID：最近一个修改该行记录的事务号。</p>
+</li>
+<li><p>DB_ROLL_PTR：指向回滚段在UNDO LOG位置的指针。</p>
+</li>
+<li><p>DB_ROW_ID：隐含的自增ID，找不到主键时自动以DB_ROW_ID产生一个聚簇索引。</p>
+</li>
+<li><p>DELETE BIT：标识该行是否被删除，最终删除是在PURGE操作完成。</p>
+</li>
+</ul>
+<p>UNDO LOG：InnoDB实现MVCC和事务回滚的日志，默认在系统表空间中。如果一行记录被更新，UNDO LOG包含回滚需要的所有信息。</p>
+<p>事务修改某行数据时，先用排它锁，锁定该行，再把该行的初始值复制到UNDO LOG的回滚段，然后再修改当前行，更新事务号，使回滚指针指向UNDO LOG中的副本。</p>
+<p>事务提交时，只需标记事务状态为COMMIT，不需其他额外操作，而回滚则需要根据行的回滚指针从UNDO LOG中找出事务修改前的版本并恢复。</p>
+<p>注意此时是会加独占锁的，所以其它事务在锁释放前不能读写该行数据，锁释放后，假设有别的事务获取了锁，并修改该行，那么UNDO LOG的回滚段会组成一个链表，遍历链表可以看到该行的变化。</p>
+<p>UNDO LOG保存了历史版本，当链表较长，那么回滚会比较耗时，所以回滚性能不如提交。</p>
+<p>对于INSERT操作，在事务提交前只有当前事务可见，因此产生的UNDO日志可以在事务提交后直接删除。</p>
+<p>对于UPDATE/DELETE操作，则需要维护多版本信息，不仅在事务回滚时需要，MVCC一致性读也需要，所以不能直接删除，PURGE线程会找到比当前最早开始的未提交的事务还早的UNDO，因为没有快照读需要引用该日志，可以删除。</p>
+<p>所以InnoDB不是严格的MVCC，因为写操作加了锁，UNDO LOG只是串行的结果，不是乐观的实现，基本都是因为死锁而回滚，而不是因为写冲突而回滚。</p>
+<p>MVCC是难以实现的，特别是当事务影响到多行数据时，如，事务A修改RowA成功，修改RowB失败，那么需要回滚RowA，但RowA没有被锁定，又被事务B修改，如果此时回滚RowA，则会影响事务B。</p>
+<hr>
+<p>ReadView：</p>
+<p>InnoDB实现MVCC快照读的关键，在SELECT语句执行时创建。</p>
+<p>三个主要字段：</p>
+<ul>
+<li><p>UP_TRX_ID：该SELECT执行时，最小的未提交的事务的事务号，即，当前最早创建但还未提交的事务的事务号；</p>
+</li>
+<li><p>LOW_TRX_ID：该SELECT执行时，最大的未提交的事务的事务号，即，除自身外最近创建的未提交的事务的事务号；</p>
+</li>
+<li><p>TRX_IDS：该SELECT执行时，未提交的事务号链表集合，即，对当前事务不可见的事务号。</p>
+</li>
+</ul>
+<p>所有DATA_TRX_ID小于UP_TRX_ID的记录，说明该事务在当前事务之前已提交，所以修改对当前事务可见。</p>
+<p>所有DATA_TRX_ID大于LOW_TRX_ID的记录，说明该事务在当前事务之后，所以修改对当前事务不可见。</p>
+<p>ReadView是与SQL绑定的，不是事务，即使在同一个事务中，每次SQL执行时构造的ReadView的UP_TRX_ID和LOW_TRX_ID也可能不一样。</p>
+<p>对于读已提交级别，所有已提交的事务都是对当前事务可见的，每次读取，都会创建新的ReadView，这样就能读取到其他事务已提交的内容。</p>
+<p>对于可重复读级别，ReadView是执行事务中的第一条SELECT语句时创建，后续所有的SELECT都是复用该ReadView，所以能保证可重复读。</p>
+<p>可见性比较（可重复读级别）：</p>
+<p>假设要读取的行的最近提交的事务号为TRX_ID_CURRENT。</p>
+<p>TRX_ID_CURRENT &lt; UP_TRX_ID：那么TRX_ID_CURRENT该行数据是对当前事务可见的，直接返回TRX_ID_CURRENT行的数据即可。</p>
+<p>TRX_ID_CURRENT &gt; LOW_TRX_ID：TRX_ID_CURRENT该行数据对当前事务不可见，从该行的回滚段指针从UNDO LOG取出新的事务号，赋值给TRX_ID_CURRENT，继续比较。</p>
+<p>按我的理解，写操作是加了排它锁的，所以在某一刻，该行只可能有一条未提交事务在修改，可能有多条已提交事务，至于<code>[UP_TRX_ID, LOW_TRX_ID]</code>，都是不可见的。</p>
+<hr>
+<p>一般程序在方法的开始就已经知道会使用哪些数据，可以全部锁住，最后再全部解锁，这样可以避免死锁，但数据库在事务开始时并不知道会用到哪些数据。</p>
+<p>数据库遵循两段锁协议，将事务分成两个阶段，事务执行中，随时可以锁定，只有在提交或回滚时，所有锁才会统一释放。</p>
+<p>MySQL默认自动提交，使用事务前需要关闭自动提交。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">BEGIN</span>;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> ... <span class="comment">-- 加对应的锁</span></span><br><span class="line"><span class="keyword">UPDATE</span> ... <span class="comment">-- 加对应的锁</span></span><br><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> ... <span class="comment">-- 加对应的锁</span></span><br><span class="line"><span class="keyword">COMMIT</span>; <span class="comment">-- 事务提交时，同时释放所有锁</span></span><br></pre></td></tr></table></figure>
+<p>InnoDB中，行锁不是直接锁记录，而是锁索引。</p>
+<p>只有通过索引条件检索，才使用行级锁，否则锁全表。</p>
+<p>虽然是访问不同行，但如果使用相同的索引键，可能出现锁冲突。</p>
+<p>当表有多个索引的时候，不同的事务可以使用不同的索引锁定不同的行。</p>
+<p>即便使用了索引，但是否使用索引由执行计划决定，如果MySQL认为全表扫描效率更高，比如对很小的表，可能不会使用索引，而是锁全表。</p>
+<p>如果一条SQL操作了主键索引，就会锁定这条主键索引，如果操作了非主键索引，先锁定该非主键索引，再锁定相关的主键索引。</p>
+<p>事务在以非主键索引为WHERE条件进行UPDATE时，先对该非主键索引加锁，然后再查询该非主键索引对应的主键索引，再对这些主键索引加锁。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">id</th>
+<th style="text-align:center">class_name</th>
+<th style="text-align:center">teacher_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">xxx</td>
+<td style="text-align:center">5</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">xxx</td>
+<td style="text-align:center">30</td>
+</tr>
+</tbody>
+</table>
+<p>假设teacher_id是二级索引列，class_name不是索引列。</p>
+<p>假设两个事务执行<code>UPDATE ... WHERE teacher_id = 30;</code>，先执行的事务会给<code>teacher_id = 30</code>的行加上行锁，在提交事务释放行锁之前，另一个事务只能等待。</p>
+<p>假设两个事务执行<code>UPDATE ... WHERE class_name = &#39;xxx&#39;;</code>，因为没有索引，无法过滤，InnoDB存储引擎会给整张表的所有行加行锁，再由MySQL Server层过滤。</p>
+<p>MySQL在Server过滤条件，发现不满足后，会释放行锁（违背了二段锁协议的约束），保证最后只会满足条件记录上行锁，但是加锁操作不能省略（适用于读已提交和可重复读隔离级别）。</p>
+<p>可重复读级别中，假设事务A先执行<code>UPDATE ... WHERE teacher_id = 30;</code>，事务B则无法执行<code>INSERT INTO ... VALUES(null, &#39;xxx&#39;, 30);</code>插入数据，只能等待事务A提交后释放锁。</p>
+<p>事务A在UPDATE后加GAP锁，事务B无法插入新数据，这样事务A在UPDATE前后读的数据保持一致，避免了幻读，读已提交级别则是没有间隙锁的。</p>
+<p>InnoDB使用聚簇索引，teacher_id是个二级索引，维护一个索引字段和主键的树，并保持顺序排列。</p>
+<p>InnoDB将这段数据分成几个个区间：<code>(-∞, 5]</code>, <code>(5, 30]</code>, <code>(30, +∞)</code>。</p>
+<p><code>UPDATE ... WHERE teacher_id = 30;</code>不仅用行锁，锁住了相应行，同时也在两边的区间，<code>(5, 30]</code>和<code>(30, +∞)</code>，都加入了间隙锁，这样其它事务就无法在这个两个区间插入新数据。</p>
+<p>如果使用的是没有索引的字段，如<code>UPDATE ... WHERE class_name = &#39;x&#39;;</code>，即使没有匹配到任何数据，也会给全表加间隙锁。</p>
+<p>同时，不能像上面行锁一样经过MySQL Server过滤自动释放不满足条件的锁，因为没有索引，也就没有排序，没有区间。</p>
+<p>除非该事务提交，否则其它事务无法插入任何数据。</p>
+<p>行锁防止别的事务修改或删除，GAP锁防止别的事务新增，行锁和GAP锁结合形成的的Next-Key锁共同解决了可重复读级别的幻读问题。</p>
+<p>补充，精确查询、范围查询、查询结果为空三种情况加锁应该是不同的。</p>
+<p>对于读已提交，对二级索引的精确查询，会给命中的二级索引和聚簇索引加行锁。</p>
+<p>对于可重复读，对二级索引的精确查询，除了加行锁外，还会给二级索引加上间隙锁（防止幻读）。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">会话A</th>
+<th style="text-align:center">会话B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">BEGIN;</td>
+<td style="text-align:center">BEGIN;</td>
+</tr>
+<tr>
+<td style="text-align:center">SELECT * FROM t WHERE id = 5 FOR UPDATE;</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">INSERT INTO t SELECT 4;</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">COMMIT; // 成功，无需等待</td>
+</tr>
+<tr>
+<td style="text-align:center">COMMIT;</td>
+</tr>
+</tbody>
+</table>
+<p>但是非唯一索引则情况则不同。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> z ( a <span class="built_in">INT</span>, b <span class="built_in">INT</span>, PRIMARY <span class="keyword">KEY</span>(a), <span class="keyword">KEY</span>(b) );</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> z <span class="keyword">SELECT</span> <span class="number">1</span>, <span class="number">1</span>;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> z <span class="keyword">SELECT</span> <span class="number">3</span>, <span class="number">1</span>;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> z <span class="keyword">SELECT</span> <span class="number">5</span>, <span class="number">3</span>;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> z <span class="keyword">SELECT</span> <span class="number">7</span>, <span class="number">6</span>;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> z <span class="keyword">SELECT</span> <span class="number">10</span>, <span class="number">8</span>;</span><br></pre></td></tr></table></figure>
+<p><code>SELECT * FROM z WHERE b = 3 FOR UPDATE;</code></p>
+<p>使用Next-Key锁，因为有两个索引，需要分别锁定。</p>
+<p>对于聚簇索引，值对a=5的索引加上Record Lock。</p>
+<p>对于二级索引，加的是Next-Key锁，锁定的范围是<code>(1, 3)</code>和<code>(3, 6)</code>。</p>
+<p>因此，在另一个事务运行下面的SQL，都会被阻塞：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 因为主键a = 5 被加上X锁</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> z <span class="keyword">WHERE</span> a = <span class="number">5</span> <span class="keyword">LOCK</span> <span class="keyword">IN</span> <span class="keyword">SHARE</span> <span class="keyword">MODE</span>;</span><br><span class="line"><span class="comment">--  因为二级索引b在锁定范围内</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> z <span class="keyword">SELECT</span> <span class="number">4</span>, <span class="number">2</span>;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> z <span class="keyword">SELECT</span> <span class="number">6</span>, <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
+<p>读已提交</p>
+<p>如果列是主键，将会对应的聚簇索引上加上X锁，如果非主键，在对应的索引上加X锁后还会找到对应的聚簇索引上加上X锁，如果列没有索引，则全表扫描加X锁，但MySQL有优化，不满足条件的行会提前释放。</p>
+<p>疑问：为什么不统一只在聚簇索引加锁？</p>
+<p>可重复读：</p>
+<p>如果列是主键，将会对应的聚簇索引上加上X锁，如果非主键，在对应的索引上加Next-Key锁后还会找到对应的聚簇索引上加上X锁，如果列没有索引，则全表扫描加Next-Key锁，但不会提前释放。</p>
+<hr>
+<p>死锁</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">START</span> <span class="keyword">TRANSACTION</span>;</span><br><span class="line"><span class="keyword">UPDATE</span> table_a <span class="keyword">SET</span> column_a = <span class="string">'xxx'</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">UPDATE</span> table_a <span class="keyword">SET</span> column_a = <span class="string">'xxx'</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">START</span> <span class="keyword">TRANSACTION</span>;</span><br><span class="line"><span class="keyword">UPDATE</span> table_a <span class="keyword">SET</span> column_a = <span class="string">'xxx'</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">UPDATE</span> table_a <span class="keyword">SET</span> column_a = <span class="string">'xxx'</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+<p>假设两个事务都准备执行第一条UPDATE，此时会对该行加上行锁，当更新完成时，发觉下一行已经被对方锁定，此时互相持有对方等待的锁又不能释放，导致死锁。</p>
+<p>简单的解决方法是，通过锁的等待超时机制，选一个事务进行回滚并释放锁，另一种方式是等待图机制，如果图中存在回路，说明存在死锁。</p>
+<hr>
+<p>可重复读</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">事务A</th>
+<th style="text-align:center">事务B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">BEGIN;</td>
+<td style="text-align:center">BEGIN;</td>
+</tr>
+<tr>
+<td style="text-align:center">DELETE FROM … WHERE column = ‘1111’;</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">DELETE FROM … WHERE column = ‘2222’;</td>
+</tr>
+<tr>
+<td style="text-align:center">INSERT …(column) VALUES(‘1111’)</td>
+</tr>
+</tbody>
+</table>
+<p>假设column没有索引，那么事务B执行DELETE会等待，事务A执行INSERT会死锁。</p>
+<p>事务A全表扫描获得所有行的GAP锁和X锁，准备DELETE。</p>
+<p>事务B全表扫描获得所有行的GAP锁，等待事务A释放X锁。</p>
+<p>事务A尝试获得GAP锁，执行INSERT，但是事务B一直不释放，死锁。</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">id</th>
+<th style="text-align:center">name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">11</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">66</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">66</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">33</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">66</td>
+</tr>
+</tbody>
+</table>
+<p>假设id为主键索引，name没有索引。</p>
+<p>事务A：<code>UPDATE ... SET name = &#39;66&#39; WHERE name = &#39;66&#39;;</code>，但是一直不提交。</p>
+<p>事务B：<code>UPDATE ... SET name = &#39;66&#39; WHERE id = 1;</code>。</p>
+<p>结果：<code>Lock wait timeout exceeded;</code>。</p>
+<p>name非索引，用于修改条件，虽然有满足条件的行，也会导致全表扫描并逐行加X锁。</p>
+<p>如果给name加上索引，可以发现修改成功。</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">id</th>
+<th style="text-align:center">name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">33</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">33</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">33</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">55</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">66</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">66</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">66</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">77</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">77</td>
+</tr>
+</tbody>
+</table>
+<p>假设id为主键索引，name为非唯一索引。</p>
+<p>事务A：<code>UPDATE ... SET name = &#39;xxx&#39; WHERE name = &#39;66&#39;;</code>。</p>
+<p>事务B：<code>UPDATE ... SET name = &#39;55&#39; WHERE name = &#39;33&#39;;</code>。</p>
+<p>结果：<code>Lock wait timeout exceeded;</code>。</p>
+<p>事务B尝试修改name为55会获得索引为55的X锁和GAP锁，但是被事务A获得没释放，所以造成锁等待。</p>
+<hr>
+<p>线程A拥有线程B需要的锁Y，同时线程B拥有线程A需要的锁X，线程A/B互相依赖对方释放锁。</p>
+<p>非公平锁中，如果某些线程非常活跃，这类线程可能总是拿到锁，那么活跃度低的线程可能就一直拿不到锁（饥饿）。</p>
+<p>在一个死循环里面总是尝试做某件事，结果却总是失败，现在线程将永远不能跳出这个循环。</p>
+<p>在一个队列中每次从队列头取出一个任务来执行，每次都失败，然后将任务放入队列头，接下来再一次从队列头取出任务执行，仍然失败。</p>
+<p>对于MySQL来说，DELETE和UPDATE应该尽量避免使用非索引字段为条件。</p>
+<p>同时避免类型不同导致隐式转换，走全表扫描锁表。</p>
+<p>避免无序的操作。</p>
+<p>因为InnoDB事务中，行锁是在需要的时候才加上的，但要等到事务结束时才释放。</p>
+<p>因为无论怎样安排语句顺序，所有行锁都是在事务提交的时候才释放的。</p>
+<p>所以尽量把最可能造成锁冲突的锁后放，这样该锁的持有时间最短，尽量提高并发度。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
