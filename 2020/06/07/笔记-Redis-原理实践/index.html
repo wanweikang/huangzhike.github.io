@@ -1,0 +1,574 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-Redis-原理实践 | 学而时习之</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-Redis-原理实践">
+		
+		<meta property="og:site_name" content="学而时习之">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">学而时习之</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Redis-原理实践</h2>
+				
+				<div>
+					<div class="post-time">2020-06-07</div>
+				</div>
+				
+				<div class="article-content">
+				<p><strong>Redis深度历险：核心原理和应用实践（钱文品 著）</strong> 的读书笔记。</p>
+<p>受益良多。</p>
+<hr>
+<p>Redis所有的数据结构都是以唯一的Key字符串作为名称，然后通过这个唯一值来获取相应的Value数据。</p>
+<p>不同类型的数据结构的差异在于Value的结构不一样。</p>
+<h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><p>Redis的字符串叫SDS（Simple Dynamic String），是个带长度的动态字节数组，类似ArrayList，预分配冗余空间，减少内存的频繁分配。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> SDS&lt;T&gt; &#123;</span><br><span class="line">    T capacity; <span class="comment">// 数组容量</span></span><br><span class="line">    T len; <span class="comment">// 数组长度</span></span><br><span class="line">    byte flags; <span class="comment">// 特殊标识位</span></span><br><span class="line">    byte[] content; <span class="comment">// 数组内容</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h4><p>Redis的列表List相当于LinkedList，它是链表而不是数组。</p>
+<p>List的插入和删除非常快，时间复杂度为O(1)，但是索引定位很慢，时间复杂度为O(n)。</p>
+<p>单纯的链表比较占空间（指针）以及内存的碎片化，Redis使用了称为快速链表QuickList的结构。</p>
+<p>QuickList是ZipList和LinkedList的混合，它将LinkedList按段切分，每一段使用ZipList来紧凑存储，ZipList之间使用双向指针串接。</p>
+<p>在列表元素较少时，使用连续的内存存储（ZipList，压缩列表），所有元素紧挨着一起，分配的是一块连续的内存。</p>
+<p>当数据量多的时候，将链表和ZipList结合组成了QuickList，将多个ZipList使用双向指针连接。</p>
+<p>既满足了快速的插入删除性能，又不会出现太大的空间冗余。</p>
+<p>为了节约内存，ZSet和Hash对象在元素个数较少的时候，也采用压缩列表进行存储。</p>
+<p>如果是Hash，Key和Value会作为两个Entry相邻存在一起。</p>
+<p>如果是ZSet，Value和Score会作为两个Entry 相邻存在一起。</p>
+<p>当集合对象的元素不断增加，或者某个Value值过大，则会被升级为标准结构。</p>
+<h4 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h4><p>Redis的字典相当于HashMap，是无序字典，数组和链表的二维结构。</p>
+<p>字典Dict是Redis最常见的复合型数据结构，除了Hash结构会用到字典外，整个Redis数据库的所有键值也组成了一个全局字典，还有带过期时间的Key集合也是一个字典。</p>
+<p>Zset集合中存储Value和Score值的映射关系也是通过Dict结构实现的。</p>
+<p>字典内部包含两个哈希表，在字典扩容缩容时，为了不堵塞，进行渐进式搬迁，待搬迁结束后，旧的哈希表被删除，新的哈希表取而代之。</p>
+<p>大字典的扩容比较耗时间，需要重新申请新的数组，然后将旧字典所有链表中的元素重新挂到新的数组下，这是一个 O(n)级别的操作，单线程的Redis很难承受。</p>
+<p>渐进式REHASH，在REHASH的同时，保留新旧两个Hash结构，查询时会同时查询两个，然后在后续的定时任务中，循序渐进地将旧Hash的内容迁移到新的Hash中。</p>
+<p>哈希表的性能取决于哈希函数，如果哈希函数存在偏向性，黑客就可能利用这种偏向性对服务器进行攻击。</p>
+<p>特定模式的输入会导致哈希的链表长度极不均匀，甚至所有的元素都集中到个别链表中，导致查找效率从O(1)退化到O(n)。</p>
+<p>正常情况下，当哈希表中元素的个数等于数组的长度时，就会开始扩容，扩容的新数组是原数组大小的2倍。</p>
+<h4 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h4><p>Redis的集合Set相当于HashSet，键值对是无序的唯一的。</p>
+<p>内部实现相当于一个字典，字典中所有的值都是NULL。</p>
+<h4 id="有序集合"><a href="#有序集合" class="headerlink" title="有序集合"></a>有序集合</h4><p>Redis的有序集合ZSet类似SortedSet和HashMap的结合，它是一个Set，保证了内部值的唯一性，还可以给每个值赋予一个Score，代表值的排序权重。</p>
+<p>内部实现用的是跳跃列表SkipList的数据结构。</p>
+<p>链表的元素按Score有序排列，当有新元素插入时，要定位到插入点。</p>
+<p>ZSet支持随机的插入和删除，所以不好使用数组，不能使用数组或树的二分查找。</p>
+<p>跳跃列表类似有序链表，所有的元素通过指针连接，不同之处在于，有的元素可能有多个指针。</p>
+<p>跳跃列表是一个多级的有序链表，元素可能同时处于不同的层级，可以快速在不同层次之间进行跳跃。</p>
+<p>定位插入点时，先在顶层进行定位，然后下潜到下一级定位，一直下潜到最底层，将新元素插进去。</p>
+<p>跳跃列表采取随机策略来决定一个新元素可以同时处于几层（指针）。</p>
+<p>最底层的概率是100%，上一层的概率是50%，再上一层的概率是25%，以此类推，当然最大层级数是有限制的。</p>
+<p>当调用zadd方法时，如果对应的值不存在，那就是插入。</p>
+<p>如果这个值已经存在了，只是更新Score，如果新的Score不会带来位置上的改变，那么直接修改元素的Score。</p>
+<p>如果排序位置改变了，那就先删除这个元素，再插入这个元素，需要经过两次路径搜索。</p>
+<p>极端的情况下，所有的Score值都是一样的，ZSet的查找性能会退化为O(n)么？</p>
+<p>ZSet的排序元素不只看Score值，如果Score值相同，还要再比较Value值。</p>
+<p>ZSet可以获取元素的排名，Redis在跳跃列表的forward指针上都增加了span属性，表示从前一个节点沿着当前层的forward指针跳到当前这个节点中间会跳过多少个节点。</p>
+<p>Redis在插入删除操作时会更新span值的大小。</p>
+<p>计算元素的排名时，只需要将搜索路径上的经过的所有节点的跨度span值叠加即可。</p>
+<hr>
+<p>分布式锁本质上是占位，当别的进程发现已经被占时，放弃或者重试。</p>
+<p>Redis一般是使用<code>setnx</code>(set if not exists)指令，先来先占，用完再调用<code>del</code>指令释放。</p>
+<p>但如果出现异常，可能导致<code>del</code>指令没有被调用，锁永远得不到释放，陷入死锁。</p>
+<p>所以在拿到锁之后，给锁加上一个过期时间，这样即使中间出现异常也可以保证过期后锁会自动释放。</p>
+<p>但<code>setnx</code>和<code>expire</code>是两条指令而不是原子指令。</p>
+<p>Redis事务也解决不了，因为<code>expire</code>是依赖于<code>setnx</code>的执行结果的，如果<code>setnx</code>失败，<code>expire</code>不应该执行。</p>
+<p>如果加锁和释放锁之间的时间太长，超出了锁的超时限制，并且没有续约，这时候锁过期了，第二个线程持有了这把锁，接着第一个线程执行完，把锁释放了，第三个线程就会在第二个线程执行完之前拿到锁。</p>
+<p>为了避免这个问题，Redis分布式锁不要用于较长时间的任务。</p>
+<p>安全的方案是为<code>set</code>指令的value参数设置为一个唯一标识或随机数，释放锁时先匹配随机数是否一致，再删除key。</p>
+<p>但是匹配value和删除key不是原子操作，这需要用Lua脚本，保证连续多个指令的原子性执行。</p>
+<p>Redis分布式锁如果要支持可重入，需要对客户端的set方法进行包装，使用线程的Threadlocal变量存储重入计数。</p>
+<p>这种分布式锁在集群环境下，不是绝对安全的。</p>
+<p>如在Sentinel集群中，主节点挂掉时，从节点会取而代之，客户端却无感知。</p>
+<p>第一个客户端在主节点中成功申请了一把锁，但是还没有来得及同步到从节点，主节点突然挂掉。</p>
+<p>然后从节点变成了主节点，这个新的节点内部没有这个锁，当另一个客户端过来请求加锁时，立即通过了，导致一把锁被两个客户端同时持有。</p>
+<p>Redlock算法解决了这个问题，需要提供多个 Redis 实例，这些实例之间相互独立没有主从关系。</p>
+<p>Redlock使用「大多数机制」，加锁时会向所有节点发送<code>set(key, value, nx=True, ex=xxx)</code>指令，只要过半节点成功，那就认为加锁成功。</p>
+<p>释放锁时，向所有节点发送<code>del</code>指令。</p>
+<p>还要考虑重试、时钟漂移等细节，同时因为需要向多个节点进行读写，相比单实例Redis性能会下降。</p>
+<hr>
+<p>延时队列可以通过Redis的ZSet实现。</p>
+<p>将消息序列化成一个字符串作为ZSet的Value，消息的到期处理时间作为Score，然后用多个线程轮询ZSet获取到期任务进行处理。</p>
+<p>通过<code>zrem</code>方法的返回值决定了当前线程有没有抢到任务。</p>
+<p>同一个任务可能会被多个线程取到之后再使用<code>zrem</code>进行争抢，可以考虑使用Lua脚本优化，将<code>zrangebyscore</code>和<code>zrem</code>一同挪到服务器端进行原子化操作。</p>
+<hr>
+<p>Redis的位图其实就是普通的字符串，也就是字节数组。</p>
+<hr>
+<p>统计每个网页每天的UV数据，需要去重，同一个用户一天之内的多次访问请求只能计数一次。</p>
+<p>要求每个网页请求都需要带上用户的ID，如果使用Set集合统计，遇到一个几千万的UV，则需要很大空间。</p>
+<p>当数据不需要太精确，Redis提供了HyperLogLog数据结构解决这种统计问题。</p>
+<p>HyperLogLog提供不精确的去重计数方案。</p>
+<hr>
+<p>如果想知道某一个值是不是已经在HyperLogLog里面了，它就无能为力了。</p>
+<p>使用新闻客户端看新闻时，它会不停推荐新的内容，每次推荐时要去重，去掉那些已经看过的内容。</p>
+<p>如果历史记录存储在关系数据库里，去重就需要频繁地对数据库进行查询，压力太大。</p>
+<p>如果缓存历史记录，存储空间消耗太大。</p>
+<p>布隆过滤器(Bloom Filter)解决这种去重问题，去重的同时，还节约空间，只是不精确，有误判概率。</p>
+<p>布隆过滤器对应到Redis的数据结构就是一个大型的位数组和几个不一样的无偏哈希函数，所谓无偏就是能够把元素的哈希值算得比较均匀。</p>
+<p>向布隆过滤器中添加Key时，会使用多个哈希函数对Key计算哈希值，然后对位数组长度取模，得到一个位置，每个哈希函数都会算得一个不同的位置，再把位数组的这几个位置都置为1，完成操作。</p>
+<p>向布隆过滤器询问Key是否存在时，也会计算哈希值，看看位数组中这几个位是否都为1，只要有一个位为0，那么说明不存在。</p>
+<p>如果都是1，不能说明一定存在，只是极有可能存在，因为这些位被置为1可能是因为其它的Key存在。</p>
+<p>如果这个位数组比较稀疏，存在概率很大，如果这个位数组比较拥挤，概率就会降低。</p>
+<p>只要参数设置的合理，精确度可以控制的相对精确。</p>
+<p>当布隆过滤器说某个值存在时，这个值可能不存在；当它说不存在时，那肯定不存在。</p>
+<p>在爬虫系统中，需要对URL进行去重，已经爬过的网页就可以不用爬了，可以考虑使用布隆过滤器。</p>
+<p>它可以大幅降低去重存储消耗，不过也会使得爬虫系统错过少量的页面。</p>
+<p>布隆过滤器在NoSQL领域使用非常广泛，HBase、RocksDB内部都有布隆过滤器结构，可以显著降低数据库的IO。</p>
+<p>当查询某一行时，可以先通过内存中的布隆过滤器过滤掉大量不存在的请求，然后再去磁盘进行查询。</p>
+<p>邮箱系统的垃圾邮件过滤功能也普遍用到了布隆过滤器，遇到某些正常的邮件被放进了垃圾邮件目录中，这就是误判。</p>
+<hr>
+<p>根据用户维度，进行限流。</p>
+<p>滑动窗口：使用ZSet结构，通过Score圈出时间窗口来，只需要保留这个时间窗口，窗口之外的数据都不关心。</p>
+<p>通过统计滑动窗口内的行为数量与阈值进行比较就可以得出当前的行为是否允许。</p>
+<p>这里只有Score值重要，Value值没有特别的意义，只需要保证唯一，可以使用毫秒时间戳。</p>
+<p>因为这几个连续的Redis操作都是针对同一个Key的，可以使用Pipeline提升Redis效率。</p>
+<p>缺点是要记录时间窗口内所有的行为记录，如果这个量很大，比如60s内操作不得超过100w次这样，则不适合。</p>
+<hr>
+<p>漏斗(funnel)限流：漏洞的容量有限，剩余空间代表着当前行为可以持续进行的数量，流水速率代表着系统允许该行为的最大频率。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FunnelRateLimiter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Funnel</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> capacity;</span><br><span class="line">        <span class="keyword">float</span> leakingRate;</span><br><span class="line">        <span class="keyword">int</span> leftQuota;</span><br><span class="line">        <span class="keyword">long</span> leakingTs;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Funnel</span><span class="params">(<span class="keyword">int</span> capacity, <span class="keyword">float</span> leakingRate)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">            <span class="keyword">this</span>.leakingRate = leakingRate;</span><br><span class="line">            <span class="keyword">this</span>.leftQuota = capacity;</span><br><span class="line">            <span class="keyword">this</span>.leakingTs = System.currentTimeMillis();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">makeSpace</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">long</span> nowTs = System.currentTimeMillis();</span><br><span class="line">            <span class="keyword">long</span> deltaTs = nowTs - leakingTs;</span><br><span class="line">            <span class="keyword">int</span> deltaQuota = (<span class="keyword">int</span>) (deltaTs * leakingRate);</span><br><span class="line">            <span class="keyword">if</span> (deltaQuota &lt; <span class="number">0</span>) &#123; <span class="comment">// 间隔时间太长，整数数字过大溢出</span></span><br><span class="line">                <span class="keyword">this</span>.leftQuota = capacity;</span><br><span class="line">                <span class="keyword">this</span>.leakingTs = nowTs;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (deltaQuota &lt; <span class="number">1</span>) &#123; <span class="comment">// 腾出空间太小，最小单位是 1</span></span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">this</span>.leftQuota += deltaQuota;</span><br><span class="line">            <span class="keyword">this</span>.leakingTs = nowTs;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.leftQuota &gt; <span class="keyword">this</span>.capacity) &#123;</span><br><span class="line">                <span class="keyword">this</span>.leftQuota = <span class="keyword">this</span>.capacity;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">boolean</span> <span class="title">watering</span><span class="params">(<span class="keyword">int</span> quota)</span> </span>&#123;</span><br><span class="line">            makeSpace();</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.leftQuota &gt;= quota) &#123;</span><br><span class="line">                <span class="keyword">this</span>.leftQuota -= quota;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, Funnel&gt; funnels = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isActionAllowed</span><span class="params">(String userId, String actionKey, <span class="keyword">int</span> capacity, <span class="keyword">float</span> leakingRate)</span> </span>&#123;</span><br><span class="line">        String key = String.format(<span class="string">"%s:%s"</span>, userId, actionKey);</span><br><span class="line">        Funnel funnel = funnels.get(key);</span><br><span class="line">        <span class="keyword">if</span> (funnel == <span class="keyword">null</span>) &#123;</span><br><span class="line">            funnel = <span class="keyword">new</span> Funnel(capacity, leakingRate);</span><br><span class="line">            funnels.put(key, funnel);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> funnel.watering(<span class="number">1</span>); <span class="comment">// 需要 1 个 quota</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>每次灌水（处理请求）前都会触发漏水，根据过去时间及流水的速率，给漏斗腾出空间。</p>
+<p>Funnel对象占据的空间大小不再和行为的频率成正比，是一个常量。</p>
+<p>可以将Funnel对象的内容按字段存储到Redis的Hash结构中，灌水的时候将Hash结构的字段取出来进行逻辑运算后，再将新值回填到Hash结构中就完成了一次行为频度的检测。</p>
+<p>但是无法保证整个过程的原子性，从Hash结构中取值，在内存里运算，再回填到Hash结构，这三个过程无法原子化，意味着需要加锁控制。</p>
+<p>而一旦加锁，就意味着会有加锁失败，加锁失败就需要选择重试或者放弃，如果重试，就会导致性能下降。</p>
+<p>Redis提供了限流模块，redis-cell，使用了漏斗算法，并提供了原子的限流指令。</p>
+<hr>
+<p>Redis提供了地理位置GEO模块，可以使用Redis来实现“附近的XXX”这样的功能。</p>
+<p>Redis使用GeoHash算法进行地理位置距离排序。</p>
+<p>GeoHash算法将二维的经纬度数据映射到一维的整数，这样所有的元素都将在挂载到一条线上，距离靠近的二维坐标映射到一维后的点之间距离也会很接近。</p>
+<p>要计算「附近的人时」，先将目标位置映射到这条线上，然后在这个一维的线上获取附近的点。</p>
+<p>这个映射算法将一个二维平面划分成了一系列正方形的方格，好比围棋棋盘，所有的地图元素坐标都将放置于唯一的方格中，方格越小，坐标越精确。</p>
+<p>对这些方格进行整数编码，越是靠近的方格编码越是接近。</p>
+<p>设想一个正方形的蛋糕，二刀下去均分分成四块小正方形，这四个小正方形可以分别标记为：<code>00, 01, 10, 11</code>四个二进制整数。</p>
+<p>然后对每一个小正方形继续用二刀法切割一下，这时每个小小正方形就可以使用 4bit 的二进制整数予以表示。</p>
+<p>继续切下去，正方形就会越来越小，二进制整数也会越来越长，精确度就会越来越高。</p>
+<p>编码之后，每个地图元素的坐标都将变成一个整数，通过这个整数可以还原出元素的坐标，整数越长，还原出来的坐标值的损失程度就越小。</p>
+<p>对于「附近的人」功能而言，损失的精确度可以忽略不计。</p>
+<p>Redis的Geo的内部结构实际上是一个zset(SkipList)，通过Score排序就可以得到坐标附近的其它元素，将Score还原成坐标值就可以得到元素的原始坐标。</p>
+<hr>
+<p><code>keys</code>是遍历算法，复杂度是O(n)，如果实例中有千万级的key，这个指令就会导致Redis卡顿，其它指令都会被延后甚至超时，因为Redis是单线程顺序执行所有指令。</p>
+<p><code>scan</code>相比<code>keys</code>具备有以下特点：</p>
+<ul>
+<li><p>复杂度虽然也是O(n)，但是通过游标分步进行，增量式迭代，不会阻塞线程太久；</p>
+</li>
+<li><p>服务器无状态，状态在scan返回给客户端的游标，客户端可以随时中止而不需通知服务端；</p>
+</li>
+<li><p>同一个元素可能会被返回多次，需要客户端去重复；</p>
+</li>
+<li><p>一个元素在迭代过程中被添加或被删除，这个元素可能会被返回，也可能不会；</p>
+</li>
+<li><p>单次返回的结果是空的并不意味着遍历结束，而要看返回的游标值是否为零；</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ScanKeyJob</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">(String key)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scan</span><span class="params">(String pattern, <span class="keyword">int</span> limit, ScanKeyJob scanKeyJob)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> (Jedis jedis = jedisPool.getResource()) &#123;</span><br><span class="line">        <span class="comment">// 游标初始为0</span></span><br><span class="line">        String cursor = ScanParams.SCAN_POINTER_START;</span><br><span class="line">        ScanParams scanParams = <span class="keyword">new</span> ScanParams().match(pattern).count(limit);</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            ScanResult&lt;String&gt; scanResult = jedis.scan(cursor, scanParams);</span><br><span class="line">            <span class="comment">// 下次的游标</span></span><br><span class="line">            cursor = scanResult.getStringCursor();</span><br><span class="line">            List&lt;String&gt; list = scanResult.getResult();</span><br><span class="line">            <span class="keyword">if</span> (list != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (String s : list) &#123;</span><br><span class="line">                    scanKeyJob.run(s);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 0 也是结束</span></span><br><span class="line">        <span class="keyword">while</span> (!cursor.equals(ScanParams.SCAN_POINTER_START));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假设limit是1000，返回的结果可能只有10个，因为limit不是限定返回结果的数量，而是限定服务器单次遍历的字典槽位数量。</p>
+<p>如果将limit设置为10，可能返回结果是空的，但是游标值不为零，意味着遍历还没结束。</p>
+<p>Redis中所有的key都存储在一个字典中，scan指令返回的游标就是数组的位置索引，称为槽(slot)。</p>
+<p>limit参数表示需要遍历的槽位数，返回的结果可能多可能少，不是所有的槽位上都会挂接链表，有些槽位可能是空的，有些槽位挂的链表上可能有多个元素。</p>
+<p>每次遍历都会将limit数量的槽位上挂的所有链表元素匹配过滤后，一次性返回给客户端。</p>
+<p>scan的遍历顺序不是从数组的开头遍历到末尾，而是采用高位进位加法，从左边加，进位往右边移动。</p>
+<p>原因是考虑到字典的扩容和缩容时，避免重复遍历槽位，或者遗漏。</p>
+<p>HashMap扩容时，重新分配一个新的2倍大小的数组，然后将所有的元素REHASH到新的数组下。</p>
+<p>假设当前的字典的数组长度由8位扩容到16位，那么3号槽位011的元素将会被REHASH到3号槽位011或11号槽位1011（11就是对3的二进制增加了一个高位1）。</p>
+<p>采用高位进位加法的遍历顺序，REHASH后的槽位在遍历顺序上是相邻的。</p>
+<p>假设当前要即将遍历110这个位置，那么扩容后，当前槽位上所有的元素对应的新槽位是0110和1110，也就是在槽位的二进制数增加一个高位0或1。</p>
+<p>这时从0110这个槽位开始往后继续遍历，0110槽位之前的所有槽位都是已经遍历过的，避免扩容后对已经遍历过的槽位重复遍历。</p>
+<p>对于缩容，缩容后，当前槽位所有的元素对应的新槽位是10，也就是去掉槽位二进制最高位。</p>
+<p>这时从10这个槽位继续往后遍历，10槽位之前的所有槽位都是已经遍历过的，避免缩容的重复遍历。</p>
+<p>不过缩容会010这个槽位上的元素进行重复遍历，因为缩容后10槽位的元素是010和110上挂接的元素的融合。</p>
+<p>scan是一系列指令，除了可以遍历所有的key外，还可以对指定的容器集合进行遍历。</p>
+<p>zscan遍历zset集合元素，hscan遍历hash字典的元素、sscan遍历set集合的元素。</p>
+<p>原理同scan类似，hash底层就是字典，set也是一个特殊的hash(所有的value指向同一个元素)，zset内部也使用了字典来存储所有的元素内容。</p>
+<p>keys、smembers、hmget这些都是危险命令，生产环境慎用，返回大数据时可能长时间阻塞服务器。</p>
+<p>耗时 - Redis单线程 - 其它客户端请求全部阻塞 - 无法获得缓存 - 请求进入数据库。</p>
+<p>类似MySQL的慢查询，都是很危险的。</p>
+<p>假设一个哈希表过大，删除这个哈希表时也可能阻塞服务器，可以使用scan的方法循环删除，避免长时间阻塞，其它大集合也是类似。</p>
+<hr>
+<p>大key</p>
+<p>在Redis实例中形成很大的对象，如一个很大的哈希或集合。</p>
+<p>在集群环境下，如果某个key太大，会数据导致迁移卡顿。</p>
+<p>在内存分配上，如果一个key太大，当它需要扩容时，会一次性申请更大的一块内存，会导致卡顿。</p>
+<p>如果这个大key被删除，内存会一次性回收，也会导致卡顿。</p>
+<hr>
+<p>Redis单线程如何处理多客户端并发连接？</p>
+<ul>
+<li>非阻塞IO</li>
+</ul>
+<p>对于非阻塞IO，在套接字Socket上读写时，不会阻塞，而是通过返回值来告知实际读写了多少字节。</p>
+<p>能否读写取决于内核为套接字分配的缓冲区是否有空闲空间。</p>
+<ul>
+<li>多路复用</li>
+</ul>
+<p>即事件轮询，非阻塞IO有个问题，线程不知道事件什么时候才就绪，线程如何得到通知。</p>
+<p>最简单的事件轮询是select，输入是读写描述符列表<code>read_fds &amp; write_fds</code>，输出是与之对应的可读可写事件。</p>
+<p>同时提供了<code>timeout</code>参数，如果没有任何事件到来，线程最多阻塞等待<code>timeout</code>时间。</p>
+<p>期间有任何事件到来，就可以立即返回，时间过了之后还是没有事件到来，也会立即返回。</p>
+<p>拿到就绪事件后，线程挨个处理相应的事件，处理完了继续轮询。</p>
+<p>这个死循环称为事件循环。</p>
+<hr>
+<p>指令队列：</p>
+<p>Redis将每个客户端套接字都关联一个指令队列，客户端的指令排队顺序处理。</p>
+<p>响应队列：</p>
+<p>Redis为每个客户端套接字关联一个响应队列，将指令的返回结果回复给客户端。</p>
+<p>如果队列为空，意味着连接处于空闲状态，不需要去获取写事件，可以将当前的客户端描述符从<code>write_fds</code>里面移出来，等队列有数据了，再将描述符放进去。</p>
+<p>避免缓冲可写时，select立即返回，结果没有数据要写，CPU空转。</p>
+<p>类似Java的NIO，每次处理就绪事件前，都先将事件移除，只有真正关心可写事件时才注册。</p>
+<hr>
+<p>服务器处理要响应IO事件外，还要处理其它事情，如定时任务。</p>
+<p>如果线程阻塞在select上，定时任务将无法得到准时调度。</p>
+<p>Redis的定时任务放在一个最小堆中，最早要执行的任务排在堆的最上方。</p>
+<p>在每个事件循环周期，Redis都会将最小堆里面已经到时的任务取出处理。</p>
+<p>处理完毕后，将剩下最早要执行的任务还需要的时间记录下来，就是select的timeout，睡眠timeout后继续处理。</p>
+<p>Java的计划任务线程池也是类似的原理。</p>
+<hr>
+<p>Redis的管道(Pipeline)不是服务器直接提供的技术，而是由客户端提供的。</p>
+<p>使用客户端对Redis进行一次操作时，客户端将请求传送给服务器，服务器处理完毕后，再将响应回复给客户端，花费一个网络数据包来回的时间。</p>
+<p>如果连续执行多条指令，那就会花费多个网络数据包来回的时间。</p>
+<ul>
+<li><p>发送端进程调用<code>write</code>将消息写到操作系统内核为套接字分配的发送缓冲<code>send buffer</code>，系统内核异步将发送缓冲的内容发送到网卡，网卡将数据发送到接收端的网卡。</p>
+</li>
+<li><p>接收端操作系统内核将网卡的数据放到内核为套接字分配的接收缓冲<code>recv buffer</code>，接收端进程调用<code>read</code>从接收缓冲中取出消息进行处理。</p>
+</li>
+</ul>
+<p>write操作只负责将数据写到本地操作系统内核的发送缓冲然后就返回了，如果缓冲满了，需要等待缓冲空出空闲空间来，这才是写操作IO的真正耗时。</p>
+<p>read操作只负责将数据从操作系统内核的接收缓冲中取出来，如果缓冲是空的，就需要等待数据到来，这才是读操作IO的真正耗时。</p>
+<p>对于客户端来说，写操作基本没有耗时，而读操作需要等待网络上的数据包到达，这才是真正的开销。</p>
+<p>对于管道来说，只管连续写请求，不用等待收到该请求的响应才继续发下一个请求，之后第一个读操作会等待大约一个RTT，基本上所有的请求的响应都已经到达了，直接返回。</p>
+<p>所以Redis的管道，客户端会维护一个队列，而Redis服务端本身就有维护了一个队列，保证了响应的顺序。</p>
+<p>至于网络包的顺序，是由底层TCP协议维护的。</p>
+<hr>
+<p>Redis认为数据库系统的瓶颈不在于网络流量，即使Redis使用了浪费流量的文本协议，依然可以取得极高的访问性能。</p>
+<hr>
+<p>Redis事务指令分别是：multi/exec/discard。</p>
+<p>multi指示事务的开始，exec指示事务的执行，discard指示事务的丢弃。</p>
+<p>所有的指令在exec之前不执行，而是缓存在服务器的一个事务队列中，收到exec指令才开执行，执行完毕后一次性返回所有指令的运行结果。</p>
+<p>Redis的事务不能算「原子性」，仅仅满足了事务的「隔离性」，因为Redis的单线程特性，保证了隔离性中的串行化。</p>
+<p>Redis事务在指令执行失败后，后面的指令还继续执行，而事务的原子性指要么全部成功，要么全部失败。</p>
+<p>Redis为事务提供了一个discard指令，用于丢弃事务缓存队列中的所有指令，在exec执行之前。</p>
+<p>当一个事务内部的指令较多时，通常结合Pipeline一起使用。</p>
+<hr>
+<p>考虑一个场景，Redis存储了账户余额，它是一个整数，有两个并发的客户端要对账户余额进行修改操作，要对余额乘以一个倍数。</p>
+<p>需要先取出余额然后在内存里乘以倍数，再将结果写回Redis，这就会出现并发问题。</p>
+<p>可以通过Redis的分布式锁来避免冲突，分布式锁是悲观锁，Redis提供了watch机制，它是一种乐观锁。</p>
+<p>watch会在事务开始之前盯住关键变量，当事务执行时，也就是服务器收到了exec指令要顺序执行缓存的事务队列时，会检查关键变量自watch后，是否被修改了。</p>
+<p>如果关键变量被修改了，exec指令就会返回null，告知客户端事务执行失败，客户端一般会选择重试。</p>
+<p>Redis禁止在multi和exec之间执行watch指令，必须在multi之前watch。</p>
+<hr>
+<p>Redis的List不足之处，就是不支持消息的多播机制。</p>
+<p>Redis的PubSub模块支持消息多播，也就是PublisherSubscriber，发布者订阅者模型。</p>
+<p>PubSub的生产者和消费者是不同的连接，Redis不允许连接在订阅等待消息时进行其它操作。</p>
+<p>PubSub的生产者传递过来一个消息，Redis会直接找到相应的消费者传递过去。</p>
+<p>如果一个消费者都没有，那么消息直接丢弃。</p>
+<p>如果开始有三个消费者，一个消费者突然挂掉了，生产者会继续发送消息，另外两个消费者可以持续收到消息。</p>
+<p>但是挂掉的消费者重新连上的时候，这断连期间生产者发送的消息，对于这个消费者来说就是彻底丢失了。</p>
+<p>如果Redis停机重启，PubSub的消息是不会持久化的，所有的消息直接被丢弃。</p>
+<hr>
+<p>Stream有一个消息链表，每个消息都有一个唯一的ID和对应的内容，消息是持久化的。</p>
+<p>消息ID的形式是<code>timestampInMillis-sequence</code>，如<code>1527846880572-5</code>，表示当前的消息在毫秒时间戳<code>1527846880572</code>时产生，并且是该毫秒内产生的第5条消息。</p>
+<p>消息ID必须保证后面加入的消息的ID要大于前面的消息ID。</p>
+<p>Stream可以挂多个消费组，每个消费组的状态都是独立的，每个消费组有个游标<code>last_delivered_id</code>，表示当前消费组的消息消费偏移。</p>
+<p>同一份Stream内的消息会被每个消费组消费到。</p>
+<p>同一个消费组可以挂接多个消费者，这些消费者之间是竞争关系，任意一个消费者读取了消息都会使游标<code>last_delivered_id</code>前移。</p>
+<p>消费者内部有个状态变量<code>pending_ids</code>，称为PEL，Pending Entries List，记录了当前已被客户端读取，但还没ack的消息。</p>
+<p>客户端消费者读取消息，Redis服务器将消息回复给客户端的过程中，客户端突然断开了连接，消息就丢失了。</p>
+<p>但PEL里已经保存了发出去的消息ID，客户端重连后，可以再次收到PEL中的消息ID列表。</p>
+<p>Redis的服务器没有原生支持分区能力，如果想要使用分区，需要分配多个Stream，然后客户端使用生产消息到不同的Stream。</p>
+<p>Kafka的客户端也存在HashStrategy，也是通过客户端的哈希算法来将不同的消息塞入不同分区的。</p>
+<p>Kafka支持动态增加分区数量，但不会把之前已经存在的内容进行REHASH，不会重新分区历史数据。</p>
+<p>Stream的消费模型借鉴了Kafka的消费分组的概念，弥补了Redis的Pub/Sub不能持久化消息的缺陷。</p>
+<hr>
+<p>Redis的持久化机制有两种，第一种是快照SnapShot，第二种是AOF日志。</p>
+<p>快照是一次全量备份，AOF日志是连续的增量备份。</p>
+<p>快照是内存数据的二进制序列化形式，在存储上非常紧凑，而AOF日志记录的是内存数据修改的指令记录文本。</p>
+<h4 id="快照"><a href="#快照" class="headerlink" title="快照"></a>快照</h4><p>为了不阻塞线上的业务，需要边持久化边响应客户端请求，持久化的同时，内存数据结构还在改变。</p>
+<p>Redis使用操作系统的多进程COW(Copy On Write)机制来实现快照持久化。</p>
+<p>Redis在持久化时会调用fork函数产生一个子进程，快照持久化交给子进程来处理，父进程继续处理客户端请求。</p>
+<p>子进程刚刚产生时，和父进程完全共享资源。</p>
+<p>子进程不会修改现有的内存数据结构，它只是对数据结构进行遍历读取，然后序列化写到磁盘中。</p>
+<p>父进程持续响应请求，然后对内存数据结构进行不间断的修改。</p>
+<p>使用操作系统的COW机制来进行数据段页面的分离。</p>
+<p>数据段由很多操作系统的页组合而成，每个页面只有4K，当父进程对其中一个页面的数据进行修改时，会将被共享的页面复制一份分离出来，然后对这个复制的页面进行修改。</p>
+<p>子进程相应的页面是没有变化的，随着父进程修改操作的持续进行，越来越多的共享页面被分离出来，内存会持续增长，但是也不会超过原有数据内存的2倍。</p>
+<p>子进程看到的内存里的数据在进程产生的一瞬间就凝固了，再也不会改变，这也是叫「快照」的原因。</p>
+<h4 id="AOF日志"><a href="#AOF日志" class="headerlink" title="AOF日志"></a>AOF日志</h4><p>AOF日志存储的是Redis服务器的顺序指令序列，只记录对内存进行修改的指令记录。</p>
+<p>对一个空的Redis实例顺序执行所有的指令，即「重放」，可以恢复内存数据结构的状态。</p>
+<p>Redis将指令文本存储到AOF日志中，也就是先持久化，再执行指令。</p>
+<p>这样即使遇到突发宕机，根据AOF日志的指令进行重放就可以恢复。</p>
+<p>AOF日志在长期的运行中会变的无比庞大，而重启时需要加载AOF日志进行指令重放，耗时很长，所以需要定期进行AOF重写。</p>
+<p>Redis开辟一个子进程对内存进行遍历，转换成一系列Redis的操作指令，序列化到一个新的AOF日志文件中。</p>
+<p>序列化完毕后再将操作期间发生的增量AOF日志追加到这个新的AOF日志文件，之后替代旧的AOF日志文件，AOF重写完成。</p>
+<p>AOF日志以文件形式存在，当程序对AOF日志文件进行写操作时，实际上是将内容写到了内核为文件描述符分配的一个内存缓存中，内核会异步将脏数据刷回到磁盘。</p>
+<p>如果机器突然宕机，AOF日志内容可能还没有来得及完全刷到磁盘中，就会出现日志丢失。</p>
+<p>Redis通常每隔1s执行一次fsync操作，将指定文件的内容强制从内核缓存刷到磁盘，在数据安全和性能之间做了妥协。</p>
+<p>通常Redis的主节点不会进行持久化操作，持久化操作主要在从节点进行。</p>
+<p>如果出现网络分区，从节点长期连不上主节点，就会出现数据不一致的问题，如果在网络分区后，主节点宕机了，那么数据就会丢失，</p>
+<h4 id="混合持久化"><a href="#混合持久化" class="headerlink" title="混合持久化"></a>混合持久化</h4><p>将rdb文件的内容和增量的AOF日志文件存在一起，这里的AOF日志不再是全量的日志，而是自持久化开始到持久化结束的这段时间发生的增量AOF日志。</p>
+<p>Redis重启的时候，可以先加载rdb的内容，再重放增量AOF日志就可以替代之前的AOF全量文件重放。</p>
+<hr>
+<p>内存回收机制</p>
+<p>Redis并不总是可以将空闲内存立即归还给操作系统。</p>
+<p>如果当前Redis内存有10G，当删除了1GB的key后，可能内存变化不会太大。</p>
+<p>因为操作系统回收内存是以页为单位，如果这个页上只要有一个key还在使用，那么它就不能被回收。</p>
+<p>虽然删除了1GB的key，但是这些key分散到了很多页面中，每个页面都还有其它key存在，导致内存不会立即被回收。</p>
+<hr>
+<p>Redis将每个设置了过期时间的key放到一个独立的字典中，定时遍历这个字典来删除到期的key。</p>
+<p>除了定时遍历，还会用惰性策略，即在客户端访问这个key的时候，检查key的过期时间，过期了就立即删除。</p>
+<p>定时删除是集中处理，惰性删除是零散处理。</p>
+<p>Redis默认每秒进行十次过期扫描，过期扫描不会遍历过期字典中所有的key，而是采用了简单的贪心策略。</p>
+<ul>
+<li><p>从过期字典中随机取20个key；</p>
+</li>
+<li><p>删除这20个key中已经过期的key；</p>
+</li>
+<li><p>如果过期的key比率超过1/4，重复上一步；</p>
+</li>
+</ul>
+<p>为了保证过期扫描不会循环过度，还增加了扫描时间的上限。</p>
+<p>假如所有的key在同一时间过期了，Redis会持续扫描过期字典，直到过期字典中过期的key变得稀疏，才会停止。</p>
+<p>这会导致线上性能明显下降，另外的原因是频繁回收内存页。</p>
+<p>虽然扫描时间有上限，但短时间内频繁的扫描回收，不间断的积累就会出现明显的性能下降。</p>
+<p>所以一定要注意过期时间，可以给过期时间设置一个随机范围，不能全部在同一时间过期。</p>
+<p>从库不会进行过期扫描，对过期的处理是被动的。</p>
+<p>主库在key到期时，会在AOF文件里增加一条del指令，同步到所有的从库，从库通过执行指令来删除过期的key。</p>
+<p>因为指令同步是异步的，所以主库过期的key的del指令没有及时同步到从库的话，会出现主从数据不一致，主库没有的数据在从库里还存在。</p>
+<hr>
+<p>当Redis内存超出物理内存限制时，内存的数据会开始和磁盘产生频繁的交换 (swap)，基本等于不可用。</p>
+<p>生产环境中不允许Redis出现交换行为，设有最大内存限制。</p>
+<p>LRU算法除了需要key/value字典外，还需要一个链表，链表中的元素按照一定的顺序进行排列。</p>
+<p>当空间满的时候，踢掉链表尾部的元素。</p>
+<p>当字典的某个元素被访问时，它被移动到链表头，链表的元素排列顺序就是元素最近被访问的顺序。</p>
+<p>位于链表尾部的元素就是不常用的元素，会被踢掉。</p>
+<p>Redis使用的是近似LRU算法，因为LRU算法需要消耗大量的额外的内存，对现有的数据结构进行较大的改造。</p>
+<p>Redis给每个key增加了一个额外的字段，最后一次被访问的时间戳，它只有懒处理。</p>
+<p>当Redis执行写操作时，发现内存超出限制，就会执行一次LRU淘汰算法。</p>
+<p>即，随机采样出5个key，然后淘汰掉最老的key，如果内存还是超出限制，继续随机采样淘汰，直到低于限制。</p>
+<p>Redis实际上并不是只有一个主线程，它还有几个异步线程专门用来处理一些耗时的操作。</p>
+<p>del会直接释放对象的内存，如果删除的key是一个非常大的对象，就会导致单线程卡顿。</p>
+<p>为了解决这个问题，Redis引入了unlink指令，它对删除操作进行懒处理，丢给后台线程异步回收内存。</p>
+<p>这里不会出现多个线程同时并发修改数据结构的情况。</p>
+<p>可以将Redis内存里面所有有效的数据想象成一棵树，unlink只是把树中的一个树枝切开，交给异步线程处理。</p>
+<p>树枝离开大树的一瞬，再也无法被主线程的指令访问到了，因为主线程只会沿着这颗树来访问（类似GCRoot?）。</p>
+<hr>
+<p>主从同步</p>
+<p>没有使用Redis的集群，但是至少应该做主从。</p>
+<p>有了主从，当主库宕机，运维让从库过来接管，服务就可以继续。</p>
+<p>在网络分区发生时，两个分布式节点之间无法进行通信，对一个节点进行的修改操作无法同步到另外一个节点，所以数据的「一致性」将无法满足。</p>
+<p>除非牺牲「可用性」，即暂停分布式节点服务，不再提供修改数据，直到网络恢复。</p>
+<p>CAP原理就是，网络分区发生时，一致性和可用性两难全。</p>
+<p>Redis的主从数据是异步同步的，所以分布式的Redis系统并不满足「一致性」要求。</p>
+<p>即使在主从网络断开的情况下，主节点依旧可以正常对外提供修改服务，所以Redis满足「可用性」。</p>
+<p>Redis 保证「最终一致性」，如果网络断开了，一旦网络恢复，从节点会努力追赶主节点，最终从节点的状态会和主节点的状态将保持一致。</p>
+<p>Redis同步的是指令流，主节点将对自己的状态产生影响的指令记录在本地的内存缓冲中，然后异步将缓冲中的指令同步到从节点。</p>
+<p>从节点一边执行同步的指令流，一边向主节点反馈自己的同步偏移。</p>
+<p>内存的缓冲是有限的，是一个定长的环形数组，如果满了，就会从头开始覆盖前面的内容。</p>
+<p>如果网络状况不好，从节点无法和主节点同步，当网络恢复时，主节点中没有同步的指令可能已经被后续的指令覆盖掉了，这时候就需要快照同步。</p>
+<p>快照同步是非常耗资源的操作，主节点会一边遍历内存，一边将序列化的内容通过套接字发送到从节点。</p>
+<p>从节点接受完快照文件后，执行一次全量加载，加载完后通知主节点继续进行增量同步。</p>
+<p>整个快照同步的过程中，主节点的复制缓冲还在不停的往前移动，如果快照同步的时间过长或者复制缓冲太小，可能会陷入快照同步的死循环。</p>
+<p>从节点刚刚加入到集群时，它必须先要进行一次快照同步，同步完成后再继续进行增量同步。</p>
+<hr>
+<p>Redis的Sentinel集群类似注册中心，一般由3～5个节点组成，监控主从节点的健康，当主节点挂掉时，自动选择一个最优的从节点切换为主节点。</p>
+<p>客户端连接集群时，首先连接Sentinel，通过Sentinel查询主节点的地址，然后再连接主节点。</p>
+<p>当主节点发生故障时，客户端会重新向Sentinel获取最新的主节点地址。</p>
+<p>Redis主从采用异步复制，当主节点挂掉时，从节点可能没有收到全部的同步消息，这部分未同步的消息就丢失了。</p>
+<p>如果主从延迟特别大，丢失的数据就可能特别多。</p>
+<hr>
+<p>Codis是个代理中间件，当客户端向Codis发送指令时，Codis将指令转发到Redis实例执行，并将结果转回给客户端。</p>
+<p>Codis上挂接的所有Redis实例构成一个Redis集群。</p>
+<p>Codis是无状态的，可以启动多个Codis实例，挂掉一个Codis代理没关系，还有很多Codis代理可以继续服务。</p>
+<p>Codis默认划分1024个槽位(slot)，首先对客户端传过来的key进行哈希运算，再对槽位数量取模得到一个余数，对应key的槽位。</p>
+<p>每个槽位唯一映射到后面的多个Redis实例之一，Codis在内存维护槽位和Redis实例的映射关系。</p>
+<p>Codis使用ZooKeeper分布式配置中心，用来持久化槽位关系，实现多个Codis代理间共享槽位关系配置。</p>
+<p>刚开始Codis只有一个Redis实例，1024个槽位全部指向同一个Redis，后来又加了一个Redis实例。</p>
+<p>这时候需要调整槽位关系，将一半的槽位划分到新的节点，将这一半的槽位对应的所有key迁移到新的Redis实例。</p>
+<p>在迁移过程中，还会接收新的请求，Codis无法判定迁移过程中的key究竟在哪个实例中，所以会立即强制对当前的单个key进行迁移，迁移完成后，再将请求转发到新的Redis实例。</p>
+<p>单个key被迁移一次后，在旧实例中它就彻底被删除了，不会被扫描出来。</p>
+<p>因为所有的key分散在不同的Redis实例中，所以事务就不再支持了。</p>
+<hr>
+<p>RedisCluster是Redis官方的集群化方案。</p>
+<p>RedisCluster是去中心化的，Redis节点相互连接组成一个对等的集群，通过Gossip协议交换集群信息。</p>
+<p>一个节点认为某个节点失联了，并不代表所有的节点都认为它失联了，集群还得经过一次协商，只有当大多数节点都认定了某个节点失联了，集群才认为该节点需要进行主从切换来容错。</p>
+<p>Redis集群节点采用Gossip协议广播自己的状态以及自己对整个集群认知的改变。</p>
+<p>一个节点发现某个节点失联了(PFail)，它会将这条信息向整个集群广播。</p>
+<p>如果一个节点收到了某个节点失联的数量(PFail Count)已经达到了集群的大多数，就可以标记该节点为确定下线状态(Fail)。</p>
+<p>然后向整个集群广播，强迫其它节点也接收该节点已经下线的事实，并立即对该失联节点进行主从切换。</p>
+<p>RedisCluster可以为每个主节点设置若干个从节点，单主节点故障时，集群会自动将其中某个从节点提升为主节点。</p>
+<p>如果某个主节点没有从节点，当它发生故障时，集群将完全处于不可用状态。</p>
+<p>RedisCluster将所有数据划分为多个槽，每个key进行哈希运算再取模得到具体槽位，每个节点负责其中一部分槽位。</p>
+<p>槽位的信息存储于每个节点中，不需要另外的分布式存储来存储节点槽位信息。</p>
+<p>RedisCluster的每个节点会将集群的配置信息持久化到配置文件中，所以必须确保配置文件是可写的。</p>
+<p>当客户端连接集群时，也会得到集群的槽位配置信息，这样当客户端要查找某个key时，可以直接定位到目标节点。</p>
+<p>因为槽位信息可能会存在客户端与服务器不一致，还需要纠正机制。</p>
+<p>当客户端向一个错误的节点发出了指令，该节点会发现指令的key所在的槽位不归自己管理，它会向客户端发送跳转指令，告诉客户端去连这个节点去获取数据。</p>
+<p>当服务器节点变更时，客户端应该即时得到通知，分2种情况：</p>
+<ul>
+<li>目标节点挂掉了：</li>
+</ul>
+<p>客户端会抛出连接异常，接着随机挑一个节点重试，被重试的节点会告知目标槽位被分配到的新的节点地址。</p>
+<ul>
+<li>运维手动修改了集群信息，切换新的主节点，并将旧的主节点移除集群：</li>
+</ul>
+<p>客户端会收到一个ClusterDown的异常，告知当前节点已不在集群。</p>
+<p>这时客户端就会关闭所有的连接，清空槽位映射关系表，然后向上层抛错。</p>
+<p>Redis迁移的单位是槽，当一个槽正在迁移时，这个槽就处于中间过渡状态。</p>
+<p>这个槽在源节点的状态为<code>migrating</code>，在目标节点的状态为<code>importing</code>，表示数据正在从源流向目标。</p>
+<p>先在源节点和目标节点设置好中间过渡状态，然后一次性获取源节点槽位的所有key列表，再挨个key进行迁移。</p>
+<p>源节点对当前的key执行dump指令得到序列化内容，然后发送指令restore携带序列化的内容作为参数，目标节点再进行反序列化恢复到内存中，源节点收到确认后，再把key删除。</p>
+<p>这里的迁移过程是同步的，在目标节点执行restore指令到源节点删除key之间，源节点的主线程处于阻塞状态。</p>
+<p>迁移过程中，如果key的内容很大，会同时导致源节点和目标节点阻塞，影响集群的稳定。</p>
+<p>所以在集群环境下，尽可能避免大key的产生。</p>
+<p>在迁移过程中，新旧两个节点对应的槽位都存在部分key数据。</p>
+<p>客户端先尝试访问旧节点，如果对应的数据还在旧节点里面，那么正常处理。</p>
+<p>如果不在，要么该数据在新节点里，要么根本不存在。</p>
+<p>旧节点会向客户端返回一个<code>asking error</code>重定向指令，包含目标节点地址。</p>
+<p>客户端收到后，先去目标节点执行一个不带参数的<code>asking</code>指令，然后在目标节点再重新执行原先的指令。</p>
+<p>为什么执行一个不带参数的<code>asking</code>指令呢？</p>
+<p>因为在迁移没有完成之前，这个槽位还是不归新节点管理的。</p>
+<p>这个时候向目标节点发送该槽位的指令，它会返回客户端一个<code>moved</code>重定向指令，告诉它去源节点去执行（即使该key已经迁移过来了），这样就会形成重定向的死循环。</p>
+<p><code>moved</code>是用来纠正槽位的，如果将指令发送到了错误的节点，该节点发现对应的指令槽位不归自己管理，就会将目标节点的地址随同<code>moved</code>指令回复给客户端，通知客户端去目标节点去访问。</p>
+<p>客户端会刷新自己的槽位关系表，然后重试指令，后续所有该槽位的指令都会转到目标节点。</p>
+<p><code>asking</code>是用来临时纠正槽位的，告诉目标节点，下一条指令不能不理，而要当成自己的槽位来处理。</p>
+<p>客户端不会刷新槽位映射关系表。</p>
+<p>迁移会影响效率的，正常情况下一个RTL就能完成，而在迁移中得3个RTL。</p>
+<hr>
+<p>Info指令分为9大块：</p>
+<ul>
+<li><p>Server，服务器运行的环境参数；</p>
+</li>
+<li><p>Clients，客户端相关信息；</p>
+</li>
+<li><p>Memory，服务器运行内存统计数据；</p>
+</li>
+<li><p>Persistence，持久化信息；</p>
+</li>
+<li><p>Stats，通用统计数据；</p>
+</li>
+<li><p>Replication，主从复制相关信息；</p>
+</li>
+<li><p>CPU，CPU使用情况；</p>
+</li>
+<li><p>Cluster，集群信息；</p>
+</li>
+<li><p>KeySpace，键值对统计数量信息；</p>
+</li>
+</ul>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
