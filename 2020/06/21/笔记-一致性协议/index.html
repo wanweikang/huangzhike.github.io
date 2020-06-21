@@ -1,0 +1,332 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-一致性协议 | 学而时习之</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-一致性协议">
+		
+		<meta property="og:site_name" content="学而时习之">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">学而时习之</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-一致性协议</h2>
+				
+				<div>
+					<div class="post-time">2020-06-21</div>
+				</div>
+				
+				<div class="article-content">
+				<p>Paxos协议</p>
+<p>角色：</p>
+<ul>
+<li><p>Proposer：提出提案。</p>
+</li>
+<li><p>Acceptor：参与决策。</p>
+</li>
+<li><p>Learner：不参与提案，只接收已确定的提案，提高集群对外提供读服务的能力。</p>
+</li>
+</ul>
+<p>一个节点可以同时充当多个角色。</p>
+<p>提案选定分两阶段：</p>
+<ul>
+<li>Prepare阶段</li>
+</ul>
+<p>Proposer向过半的Acceptor成员广播Prepare请求，携带全局唯一且递增的Proposal ID，如时间戳+Server ID；</p>
+<p>Acceptor收到时，做出“两个承诺，一个应答”：</p>
+<ol>
+<li><p>不再接受Proposal ID小于等于当前请求的Prepare请求。</p>
+</li>
+<li><p>不再接受Proposal ID小于当前请求的Propose请求。</p>
+</li>
+<li><p>不违背承诺的情况下，回复已经Accept过的提案中Proposal ID最大的提案的Value和Proposal ID，没有则返回空值。</p>
+</li>
+</ol>
+<ul>
+<li>Accept阶段</li>
+</ul>
+<p>Proposer收到过半的Acceptor对于Prepare请求的响应，那么从应答中选择Proposal ID最大的提案的Value，作为本次要发起的提案。</p>
+<p>如果所有应答的提案Value均为空值，则可以自己随意决定提案Value。</p>
+<p>然后携带当前Proposal ID，向所有Acceptors发送Propose请求。</p>
+<p>Acceptor收到Propose请求后，在不违背自己之前的承诺下（未对大于M编号的提案做出响应），接受提案并持久化当前Proposal ID和提案Value。</p>
+<p>当然，如果收到过半的Acceptor对于Prepare请求的响应时，发现响应的返回值有更新的提议的情况，那么重新进行Prepare阶段的步骤，生成新的Proposal ID继续。</p>
+<ul>
+<li>Learn阶段</li>
+</ul>
+<p>不属于选定提案，Proposer收到多数Acceptors的Accept后，决议形成，将形成的决议发送给所有Learners。</p>
+<p>Basic Paxos只能对一个值形成决议，决议的形成至少需要两次网络来回，极端情况下可能形成活锁，比如两个Proposers交替Prepare成功，但是Accept失败。</p>
+<p>Multi Paxos基于Basic Paxos做了改进：</p>
+<p>在所有Proposers中选举一个Leader，由Leader唯一地提交Proposal给Acceptors进行表决。</p>
+<p>没有Proposer竞争，解决了活锁问题。</p>
+<p>在系统中仅有一个Leader进行Value提交的情况下，Prepare阶段就可以跳过，将两阶段变为一阶段。</p>
+<p>Multi Paxos允许有多个自认为是Leader的节点并发提交Proposal而不影响安全性，即退化为Basic Paxos。</p>
+<p>只要有过半的节点可用，集群就可以进行Leader选举，对外服务，通常用来保证数据的多个副本间的一致性，构建一个分布式的一致性状态机。</p>
+<p>ZooKeeper使用的是Paxos的变种ZAB协议。</p>
+<hr>
+<p>Raft协议</p>
+<p>Raft协议号称是更易理解和实施的一致性协议。</p>
+<p>角色：</p>
+<ul>
+<li><p>Leader：发出提案。</p>
+</li>
+<li><p>Follower：参与决策。</p>
+</li>
+<li><p>Candidate：Leader选举中的临时角色。</p>
+</li>
+</ul>
+<p>刚开始所有节点都是Follower状态，然后转为Candidate进行Leader选举。</p>
+<p>Leader接受所有客户端的请求，然后把日志发送给所有Follower，当收到过半的节点的回复时，就返回客户端成功并更新提交的Index。</p>
+<p>Leader会周期性地发送心跳给所有的Follower，同步提交的Index，Follower收到后就保持Follower状态，并应用提交的Index及其之前对应的日志。</p>
+<p>如果Follower等待心跳超时了，则开始新的Leader选举，先把当前任期自增，自己成为Candidate，然后给自己投票并向其它节点发投票请求。</p>
+<p>直到它赢得选举，或者另一个节点成为Leader。</p>
+<p>在选举期间，Candidate可能收到来自其它自称为Leader的写请求，如果该Leader的任期大于等于Candidate的当前任期，那么Candidate承认它是合法的Leader，并回到Follower状态，否则拒绝请求。</p>
+<p>如果两个Candidate得票一样多，则它们都无法获取超过半数投票，然后进行新一轮的选举。</p>
+<p>Raft协议的Leader选举、日志复制等都有详细的实现，JRaft就是其中的一个，建议去看看，这里不多说。</p>
+<hr>
+<p>Gossip协议</p>
+<p>Gossip协议最大的特点就是去中心化，Paxos和Raft都有Leader的角色来统筹安排，但是Gossip协议中没有Leader，每个节点都是平等的。</p>
+<p>Gossip协议又称Epidemic协议，是基于流行病传播方式的节点或者进程之间信息交换的协议。</p>
+<p>类似绯闻或流行病的传播，在一个有界网络中，每个节点都随机地与其他节点通信，最终所有节点的状态都会达成一致（最终一致）。</p>
+<p>每个节点可能知道所有节点，也可能仅知道几个节点，只要可以通过网络连通，最终的状态都是一致的。</p>
+<p>要传播谣言就要有种子节点，种子节点周期性地随机向N个目标节点发送自己拥有的节点列表，及需要传播的消息。</p>
+<p>一般需要O(logN)轮就可以将信息传播（感染）到所有的节点，其中N代表节点的个数。</p>
+<p>任何新加入的节点，会传播到全网，节点加入或退出都很容易。</p>
+<p>节点并不会等待消息的应答，所以消息传送失败也没关系，因为可以通过其他节点将消息传递。</p>
+<p>Gossip协议是去中心化的协议，集群中的所有节点都是对等的，任何节点出现问题都不会阻止其他节点继续发送消息。</p>
+<p>任何节点都可以随时加入或离开，而不会影响系统的整体服务。</p>
+<p>Gossip协议的主要用途就是信息传播和扩散，被用于数据库复制，信息扩散，集群成员身份确认，故障探测等。</p>
+<p>基于Gossip协议的一些系统：Redis（Cluster模式），Consul的集群节点发现。</p>
+<p>节点状态：</p>
+<ul>
+<li><p>Alive：节点是活的。</p>
+</li>
+<li><p>Suspect：没有应答或应答超时，状态是可疑的。</p>
+</li>
+<li><p>Dead：节点已死亡。</p>
+</li>
+</ul>
+<p>如果节点B无法被对节点A发出的请求进行响应，或者响应超时，它会被节点A标为Suspect。</p>
+<p>如果Suspect持续一段时间（或它收到足够多的其它节点关于B的SuspectMsg），节点A会在集群中广播SuspectMsg，告知集群中的其它节点，节点B很可疑。</p>
+<p>如果B收到了针对它的SuspectMsg，B可以通过发送AliveMsg告知对方，那么在对方节点看来B的状态从Suspect变为Alive。</p>
+<p>如果一段时间内，B的状态仍然是Suspect，那么对节点A而言，B的状态会被置为Dead。</p>
+<p>如果节点B在down掉一段时间后，重新上线，它可以通过与种子节点的Gossip，重新被认为Alive。</p>
+<p>动作：</p>
+<ul>
+<li>Probe</li>
+</ul>
+<p>周期性的探测集群中状态为Alive和Suspect的节点，每个周期只探测1个节点。</p>
+<ul>
+<li>Push/Pull</li>
+</ul>
+<p>周期性的从已知的Alive的集群节点中选1个节点进行Push/Pull交换信息，包含集群信息和自定义的状态信息。</p>
+<ul>
+<li>Gossip</li>
+</ul>
+<p>广播所有处于Dead的节点，只广播一次。</p>
+<p>不把消息发给集群中的每一个节点，而是随机挑选N个，将消息发送出去。</p>
+<p>处于Dead状态的节点，仍然会被保留在集群信息中一段时间，以便Push/Pull的时候，这个状态能够被扩散出去。</p>
+<p>极端情况，集群中有A、B、C，3个节点，A为种子节点，B、C为普通节点。</p>
+<p>某时刻，节点A、B、C都认为集群中有3个节点。</p>
+<p>某时刻，节点A宕机。</p>
+<p>某时刻，节点B、C都认为集群中有<code>[B, C]</code>2个节点。</p>
+<p>某时刻，节点A重新上线，但它已知的集群就只有<code>[A]</code>1个节点，节点B、C做Push/Pull的时候也只会在<code>[B、C]</code>中选取，因此集群分裂了。</p>
+<p>要避免这种问题，方法是多配种子节点，只要确保所有的种子节点不同时宕机即可。</p>
+<p>传播方法：</p>
+<ul>
+<li>Anti-Entropy：反熵，以固定的概率传播所有的数据。</li>
+</ul>
+<p>每个节点周期性地随机选择其他节点，然后通过互相交换自己的所有数据来消除两者之间的差异。</p>
+<p>非常可靠，但是会带来非常大的通信负担。</p>
+<p>包含两种状态：Susceptible和Infective。</p>
+<p>处于Infective状态的节点代表其有数据更新，并且会将这个数据分享给其他节点。</p>
+<p>处于Susceptible状态的节点代表其并没有收到来自其他节点的更新。</p>
+<ul>
+<li>Rumor-Mongering：谣言传播，仅传播新到达的数据。</li>
+</ul>
+<p>当一个节点有了新的信息后，这个节点变成活跃状态，并周期性地联系其他节点向其发送新信息，直到所有的节点都知道该新信息。</p>
+<p>节点之间只是交换新信息，大大减少了通信负担。</p>
+<p>多了一种状态：Removed，处于该状态的节点说明其已经接收到来自其他节点的更新，但是并不会将这个更新分享给其他节点。</p>
+<p>为了在通信代价和可靠性之间取得折中，需要将这两种方法结合使用。</p>
+<p>交互方式：</p>
+<ul>
+<li>Push：</li>
+</ul>
+<p>发起信息交换的节点A随机选择联系节点B，并向其发送自己的信息，节点B在收到信息后更新比自己新的数据。</p>
+<p>一般拥有新信息的节点才会作为发起节点。</p>
+<ul>
+<li>Pull：</li>
+</ul>
+<p>发起信息交换的节点A随机选择联系节点 B，并从对方获取信息。</p>
+<p>一般无新信息的节点才会作为发起节点。</p>
+<ul>
+<li>Push&amp;Pull：</li>
+</ul>
+<p>发起信息交换的节点A向选择的节点B发送信息，同时从对方获取数据，用于更新自己的本地数据。</p>
+<p>Gossip看起来很美好，但是去中心化本身太复杂，节点之间沟通成本高，最终一致等待时间较长。</p>
+<p>还有拜占庭问题（Byzantine），如果有一个恶意传播消息的节点，系统就会出问题。</p>
+<p>社会还是需要领导的。</p>
+<hr>
+<p>NWR机制</p>
+<ul>
+<li><p>N：有多少份数据副本</p>
+</li>
+<li><p>W：一次成功的写操作至少有W份数据写入成功</p>
+</li>
+<li><p>R：一次成功的读操作至少有R份数据读取成功</p>
+</li>
+</ul>
+<p>NWR的不同组合会产生不同的一致性效果。</p>
+<ul>
+<li><p>W + R &gt; N：读取操作和写入操作成功的数据一定会有交集，可以保证能够读取到最新版本的更新数据，保证数据的强一致性。</p>
+</li>
+<li><p>W + R &lt;= N：成功写和成功读集合可能不存在交集，读操作无法保证读取到最新的更新数值，无法保证数据的强一致性。</p>
+</li>
+</ul>
+<p>版本的新旧需要版本控制算法来判别，比如向量时钟。</p>
+<p>R或者W不能太大，需要操作的副本越多，耗时越长。</p>
+<hr>
+<p>Quorum机制</p>
+<p>保证数据冗余和最终一致性的投票算法，来源于鸽巢原理。</p>
+<p>在有冗余数据的分布式存储系统当中，冗余数据对象在不同机器之间存放多份拷贝。</p>
+<p>但是同一时刻一个数据对象的多份拷贝只能用于读或者用于写。</p>
+<p>Quorum机制其实就是NWR机制。</p>
+<p>分布式系统中的每一份数据拷贝对象都被赋予一票。</p>
+<p>每一个操作必须要获得最小的读票数（Vr）或者最小的写票数（Vw）才能读或者写。</p>
+<p>如果一个系统有V票（意味着一个数据对象有V份冗余拷贝），那么这最小读写票必须满足：</p>
+<ul>
+<li>Vr + Vw &gt; V</li>
+</ul>
+<p>写操作必须获得Vw个冗余拷贝的许可，V - Vw &lt; Vr，因此不能再有读请求。</p>
+<p>同理，当读请求已经获得了Vr个冗余拷贝的许可时，写请求就无法获得许可。</p>
+<p>保证了一个数据不会被同时读写。</p>
+<ul>
+<li>Vw &gt; V/2</li>
+</ul>
+<p>一份数据的冗余拷贝不可能同时被两个写请求修改，保证了数据的串行化修改。</p>
+<hr>
+<p>Lease机制</p>
+<p>Master给Slave同步的数据都具有有效时间，在租约时间内，客户端可以直接向Slave请求数据，如果超过时间客户端就去Master请求数据。</p>
+<p>Slave可以定时主动向Master续租并更新数据，Master在数据发生变化时也可以主动通知Slave，在可用性与一致性之间进行权衡。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
