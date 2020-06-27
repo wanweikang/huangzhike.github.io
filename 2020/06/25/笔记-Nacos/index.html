@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-Nacos | 学而时习之</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-Nacos">
+		
+		<meta property="og:site_name" content="学而时习之">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">学而时习之</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Nacos</h2>
+				
+				<div>
+					<div class="post-time">2020-06-25</div>
+				</div>
+				
+				<div class="article-content">
+				<p>其实几个月前就开始看Nacos了，不过一直996，端午还要加班，好吧，抽空整理一下。</p>
+<p>之前边看边写的注释在一次Update后没了，我。。。</p>
+<p>Nacos版本：1.3.0。</p>
+<hr>
+<p>模块：</p>
+<ul>
+<li>address：地址服务器，依赖naming模块；</li>
+<li>api：主要是naming和config等的接口定义和相关的类；</li>
+<li>client：客户端的naming和config等的实现，依赖api模块；</li>
+<li>cmdb：不了解；</li>
+<li>common：一些公用的工具类等；</li>
+<li>config：配置中心，依赖api和core模块；</li>
+<li>consistency：一致性相关的接口定义等；</li>
+<li>console：控制台，依赖naming、config和istio模块；</li>
+<li>core：顾名思义；</li>
+<li>distribution：部署相关；</li>
+<li>istio：不了解；</li>
+<li>naming：命名服务，即服务注册发现相关，依赖api和core模块；</li>
+</ul>
+<hr>
+<p>其它的一些注册中心：</p>
+<hr>
+<p>Consul是开源的分布式服务发现和配置管理系统，Go语言开发。</p>
+<p>Consul分为Client和Server两种节点（所有节点也称为Agent）。</p>
+<p>Server节点有一个Leader和多个Follower，Leader将数据同步到Follower，Leader挂掉时会选举产生新的Leader。</p>
+<p>服务的健康检查由服务注册到的Agent来处理，这个Agent可以是Client也可以是Server。</p>
+<p>服务信息保存在Server节点中，通过Raft协议实现强一致性。</p>
+<p>Consul支持多数据中心DataCenter，只有Server节点参与跨数据中心的通信。</p>
+<p>一个数据中心的Server属于一个Raft Peer，选出一个Leade负责处理所有的查询。</p>
+<p>集群内的读写请求可以直接发到Server，也可以通过Client转发到Server，非Leader Server接收到请求后会转发到Leader。</p>
+<p>Client不是必须的。</p>
+<p>Client是无状态的，它将注册信息转发到Server，</p>
+<p>Client没有本地缓存，因为Consul是CP的。</p>
+<p>Consul强一致性会导致：</p>
+<ul>
+<li><p>服务注册会稍慢，因为Raft协议要求必须过半数的节点都写入成功才认为注册成功，所以不是节点越多越好。</p>
+</li>
+<li><p>Leader挂掉时，选举期间服务不可用，保证了强一致性但牺牲了可用性。</p>
+</li>
+</ul>
+<p>类似的，ZooKeeper也是CP的，不过是基于Paxos协议维护一致性，利用临时节点和心跳维护服务信息。</p>
+<p>工作中使用Consul遇到的一个问题是，某个服务实例以某个服务名启动并注册到Consul，然后下线，之后同一个IP和端口上，以另外一个服务名启动另外一个服务，这时候可以观察到两个服务同时存在，但实际上之前的服务是已经下线的，额，所以Consul心跳检测的时候不会检测服务名，而且是服务端主动检测的？</p>
+<p>集群内的Consul节点通过Gossip协议维护成员关系，了解集群内有哪些节点，这些节点是Client还是Server。</p>
+<p>Gossip协议一般用来维护成员关系，故障检测和事件广播。</p>
+<p>Consul有两个GossipPool（LAN和WAN）。</p>
+<p>LAN池是同个数据中心内部通信的，有多个，包含所有位于同一个局域网或者数据中心的所有节点。</p>
+<p>WAN池是多个数据中心通信的，只有一个，只包含Server，这些Server分布在不同的数据中心。</p>
+<p>服务注册可以通过HTTP的API或者配置文件的方式。</p>
+<p>服务发现可以通过HTTP的API或者DNS方式，DNS方式可能需要注意DNS缓存。</p>
+<p>如果服务发现采用的是DNS方式，则域名解析请求首先到达本机DNS代理，然后转发到本机Consul Client，本机Client会将请求转发到Consul Server，Consul Server查询到信息返回。</p>
+<hr>
+<p>对于服务发现来说，拿到不正确的服务实例，也比因为无法获取实例而不可用好。</p>
+<p>Eureka是AP的，Eureka Server采用点对点的对等通信，去中心化的架构，无Master/Slave，每个Peer都是对等的。</p>
+<p>节点互相注册，每个节点都可视为其他节点的副本。</p>
+<p>如果某台Eureka Server宕机，Eureka Client的请求会自动切换到新的Eureka Server节点上。</p>
+<p>宕机的Server恢复后，Eureka再次将其纳入到集群管理之中。</p>
+<p>一个新的Eureka Server节点启动后，会首先尝试从邻近节点获取所有注册信息，并完成初始化。</p>
+<p>Eureka Server会通过心跳定期更新获取所有的节点。</p>
+<p>如果Eureka Server在一定时间内没有接收到某个服务实例的心跳，Eureka Server会注销该实例。</p>
+<p>Eureka的集群中，只要有一台Eureka Server，就能保证注册服务可用，只不过查到的信息可能不是最新的。</p>
+<p>如果Eureka Server节点在短时间内丢失过多的心跳，那么Eureka认为客户端与注册中心出现了网络故障，这个节点会进入自我保护模式：</p>
+<ul>
+<li><p>不再移除因为长时间没有收到心跳而过期的服务；</p>
+</li>
+<li><p>仍然能够接受服务注册和查询请求，但是不会被同步到其它节点上（保证当前节点依然可用）；</p>
+</li>
+<li><p>当网络稳定时，当前实例新注册的信息会被同步到其它节点中；</p>
+</li>
+</ul>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>

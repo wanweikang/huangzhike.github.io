@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+	<head><meta name="generator" content="Hexo 3.9.0">
+		<meta charset="utf-8">
+		<script src="/js/highlight.js"></script>
+				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
+		
+		<title>[笔记]-Nacos-Config-Client | 学而时习之</title>
+		
+		<meta name="author" content="Huangzhike">
+		
+		
+		<meta name="description" content="K.I.S.S">
+		
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<meta property="og:title" content="[笔记]-Nacos-Config-Client">
+		
+		<meta property="og:site_name" content="学而时习之">
+		
+		
+		<!-- favicon -->
+		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+ 
+
+
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+		<meta name="theme-color" content="#009688">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
+
+		<!-- favicon end -->
+		<!-- <link href="//ok.ico" rel="icon"> -->
+		
+		<!-- toc -->
+		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+		<!-- material design -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+		 
+		 
+		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+	</head>
+</html>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">学而时习之</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+	<div class="container" >
+		<div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Nacos-Config-Client</h2>
+				
+				<div>
+					<div class="post-time">2020-06-25</div>
+				</div>
+				
+				<div class="article-content">
+				<p>发布配置，略。</p>
+<hr>
+<p>NacosConfigService#getConfigInner</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">getConfigInner</span><span class="params">(String tenant, String dataId, String group, <span class="keyword">long</span> timeoutMs)</span> <span class="keyword">throws</span> NacosException </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// 优先使用本地配置</span></span><br><span class="line">    <span class="comment">// 如果本地有Failover文件的话，就从文件读取返回</span></span><br><span class="line">    String content = LocalConfigInfoProcessor.getFailover(agent.getName(), dataId, group, tenant);</span><br><span class="line">    <span class="keyword">if</span> (content != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">return</span> content;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 从服务器获取返回</span></span><br><span class="line">        String[] ct = worker.getServerConfig(dataId, group, tenant, timeoutMs);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">return</span> content;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NacosException ioe) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 否则尝试从本地的Snapshot文件读取返回</span></span><br><span class="line">    content = LocalConfigInfoProcessor.getSnapshot(agent.getName(), dataId, group, tenant);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">return</span> content;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户端有缓存，那就不是严格的CP了，但是可用性必须要保证。</p>
+<p>ClientWorker#getServerConfig</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String[] getServerConfig(String dataId, String group, String tenant, <span class="keyword">long</span> readTimeout)</span><br><span class="line">    <span class="keyword">throws</span> NacosException &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    HttpResult result = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="comment">// 从服务器获取配置</span></span><br><span class="line">        result = agent.httpGet(Constants.CONFIG_CONTROLLER_PATH, <span class="keyword">null</span>, params, agent.getEncode(), readTimeout);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">switch</span> (result.code) &#123;</span><br><span class="line">        <span class="keyword">case</span> HttpURLConnection.HTTP_OK:</span><br><span class="line">            <span class="comment">// 持久化快照</span></span><br><span class="line">            LocalConfigInfoProcessor.saveSnapshot(agent.getName(), dataId, group, tenant, result.content);</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            <span class="keyword">return</span> ct;</span><br><span class="line">        <span class="keyword">case</span> HttpURLConnection.HTTP_NOT_FOUND:</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">case</span> HttpURLConnection.HTTP_CONFLICT: &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> HttpURLConnection.HTTP_FORBIDDEN: &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">default</span>: &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ServerHttpAgent#httpGet</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> HttpResult <span class="title">httpGet</span><span class="params">(String path, List&lt;String&gt; headers, List&lt;String&gt; paramValues, String encoding,</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">long</span> readTimeoutMs)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">long</span> endTime = System.currentTimeMillis() + readTimeoutMs;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> isSSL = <span class="keyword">false</span>;</span><br><span class="line">    injectSecurityInfo(paramValues);</span><br><span class="line">    String currentServerAddr = serverListMgr.getCurrentServerAddr();</span><br><span class="line">    <span class="keyword">int</span> maxRetry = <span class="keyword">this</span>.maxRetry;</span><br><span class="line">    <span class="comment">// 循环重试至超时或者到达上限</span></span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            List&lt;String&gt; newHeaders = getSpasHeaders(paramValues);</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            HttpResult result = HttpSimpleClient.httpGet(</span><br><span class="line">                getUrl(currentServerAddr, path), newHeaders, paramValues, encoding,</span><br><span class="line">                readTimeoutMs, isSSL);</span><br><span class="line">            <span class="keyword">if</span> (result.code == HttpURLConnection.HTTP_INTERNAL_ERROR</span><br><span class="line">                || result.code == HttpURLConnection.HTTP_BAD_GATEWAY</span><br><span class="line">                || result.code == HttpURLConnection.HTTP_UNAVAILABLE) &#123;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// Update the currently available server addr</span></span><br><span class="line">                serverListMgr.updateCurrentServerAddr(currentServerAddr);</span><br><span class="line">                <span class="keyword">return</span> result;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ConnectException ce) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (SocketTimeoutException stoe) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (serverListMgr.getIterator().hasNext()) &#123;</span><br><span class="line">            <span class="comment">// 换一个Server重试</span></span><br><span class="line">            currentServerAddr = serverListMgr.getIterator().next();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            maxRetry--;</span><br><span class="line">            <span class="keyword">if</span> (maxRetry &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125;</span><br><span class="line">            serverListMgr.refreshCurrentServerAddr();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (System.currentTimeMillis() &lt;= endTime);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>ServerListManager</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ServerListManager</span><span class="params">(Properties properties)</span> <span class="keyword">throws</span> NacosException </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// 如果手动配置了Server列表</span></span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isNotEmpty(serverAddrsStr)) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 否则认为配置了Endpoint，将定期从地址服务器获取Server列表</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>ClientWorker#addTenantListeners</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addTenantListeners</span><span class="params">(String dataId, String group, List&lt;? extends Listener&gt; listeners)</span> <span class="keyword">throws</span> NacosException </span>&#123;</span><br><span class="line">    group = null2defaultGroup(group);</span><br><span class="line">    String tenant = agent.getTenant();</span><br><span class="line">    CacheData cache = addCacheDataIfAbsent(dataId, group, tenant);</span><br><span class="line">    <span class="comment">// 注册监听器回调</span></span><br><span class="line">    <span class="keyword">for</span> (Listener listener : listeners) &#123;</span><br><span class="line">        cache.addListener(listener);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ClientWorker#addCacheDataIfAbsent</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> CacheData <span class="title">addCacheDataIfAbsent</span><span class="params">(String dataId, String group, String tenant)</span> <span class="keyword">throws</span> NacosException </span>&#123;</span><br><span class="line">    CacheData cache = getCache(dataId, group, tenant);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != cache) &#123;</span><br><span class="line">        <span class="keyword">return</span> cache;</span><br><span class="line">    &#125;</span><br><span class="line">    String key = GroupKey.getKeyTenant(dataId, group, tenant);</span><br><span class="line">    <span class="comment">// 双重检查加锁</span></span><br><span class="line">    <span class="keyword">synchronized</span> (cacheMap) &#123;</span><br><span class="line">        CacheData cacheFromMap = getCache(dataId, group, tenant);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != cacheFromMap) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            cache = <span class="keyword">new</span> CacheData(configFilterChainManager, agent.getName(), dataId, group, tenant);</span><br><span class="line">            <span class="keyword">if</span> (enableRemoteSyncConfig) &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Map&lt;String, CacheData&gt; copy = <span class="keyword">new</span> HashMap&lt;String, CacheData&gt;(<span class="keyword">this</span>.cacheMap.get());</span><br><span class="line">        copy.put(key, cache);</span><br><span class="line">        cacheMap.set(copy);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">return</span> cache;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ClientWorker#checkConfigInfo</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">checkConfigInfo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Dispatch taskes.</span></span><br><span class="line">    <span class="keyword">int</span> listenerSize = cacheMap.get().size();</span><br><span class="line">    <span class="comment">// Round up the longingTaskCount.</span></span><br><span class="line">    <span class="keyword">int</span> longingTaskCount = (<span class="keyword">int</span>) Math.ceil(listenerSize / ParamUtil.getPerTaskConfigSize());</span><br><span class="line">    <span class="comment">// 需要增加长轮询任务</span></span><br><span class="line">    <span class="keyword">if</span> (longingTaskCount &gt; currentLongingTaskCount) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = (<span class="keyword">int</span>) currentLongingTaskCount; i &lt; longingTaskCount; i++) &#123;</span><br><span class="line">            <span class="comment">// The task list is no order.So it maybe has issues when changing.</span></span><br><span class="line">            executorService.execute(<span class="keyword">new</span> LongPollingRunnable(i));</span><br><span class="line">        &#125;</span><br><span class="line">        currentLongingTaskCount = longingTaskCount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ClientWorker$LongPollingRunnable#run</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    List&lt;CacheData&gt; cacheDatas = <span class="keyword">new</span> ArrayList&lt;CacheData&gt;();</span><br><span class="line">    List&lt;String&gt; inInitializingCacheList = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (CacheData cacheData : cacheMap.get().values()) &#123;</span><br><span class="line">            <span class="comment">// 匹配自己的任务Id就加入</span></span><br><span class="line">            <span class="keyword">if</span> (cacheData.getTaskId() == taskId) &#123;</span><br><span class="line">                cacheDatas.add(cacheData);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 再次更新一遍</span></span><br><span class="line">                    checkLocalConfig(cacheData);</span><br><span class="line">                    <span class="comment">// ...</span></span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    <span class="comment">// ...</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 向服务端长轮询，返回发生变化的Key</span></span><br><span class="line">        List&lt;String&gt; changedGroupKeys = checkUpdateDataIds(cacheDatas, inInitializingCacheList);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="comment">// 遍历</span></span><br><span class="line">        <span class="keyword">for</span> (String groupKey : changedGroupKeys) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 从Server更新</span></span><br><span class="line">                String[] ct = getServerConfig(dataId, group, tenant, <span class="number">3000L</span>);</span><br><span class="line">                CacheData cache = cacheMap.get().get(GroupKey.getKeyTenant(dataId, group, tenant));</span><br><span class="line">                cache.setContent(ct[<span class="number">0</span>]);</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (NacosException ioe) &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (CacheData cacheData : cacheDatas) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">        inInitializingCacheList.clear();</span><br><span class="line">        <span class="comment">// 立即执行下一次长轮询</span></span><br><span class="line">        executorService.execute(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">        <span class="comment">// 发生了异常就延迟执行</span></span><br><span class="line">        executorService.schedule(<span class="keyword">this</span>, taskPenaltyTime, TimeUnit.MILLISECONDS);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+		<footer>
+			 
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+		</footer>
+	</div>
+	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
+	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+	<!-- material design -->
+	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+	<!-- toc -->
+	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+	<!-- <script src="/js/main.js"></script> -->
+</body>
+</html>
