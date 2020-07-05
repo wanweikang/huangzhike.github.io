@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-Dubbo-SPI(Service Provider Interface) | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-Dubbo-SPI(Service Provider Interface)">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-Dubbo-SPI(Service Provider Interface) | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-Dubbo-SPI(Service Provider Interface)"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -130,7 +126,44 @@
 <hr>
 <p>ExtensionLoader#getAdaptiveExtension</p>
 <p>以Protocol为例：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Protocol</span>$<span class="title">Adaptive</span> <span class="keyword">implements</span> <span class="title">org</span>.<span class="title">apache</span>.<span class="title">dubbo</span>.<span class="title">rpc</span>.<span class="title">Protocol</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">"The method public abstract void org.apache.dubbo.rpc.Protocol.destroy() of interface org.apache.dubbo.rpc.Protocol is not adaptive method!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getDefaultPort</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">"The method public abstract int org.apache.dubbo.rpc.Protocol.getDefaultPort() of interface org.apache.dubbo.rpc.Protocol is not adaptive method!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> org.apache.dubbo.rpc.<span class="function">Exporter <span class="title">export</span><span class="params">(org.apache.dubbo.rpc.Invoker arg0)</span> <span class="keyword">throws</span> org.apache.dubbo.rpc.RpcException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (arg0 == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"org.apache.dubbo.rpc.Invoker argument == null"</span>);</span><br><span class="line">        <span class="keyword">if</span> (arg0.getUrl() == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"org.apache.dubbo.rpc.Invoker argument getUrl() == null"</span>);</span><br><span class="line">        org.apache.dubbo.common.URL url = arg0.getUrl();</span><br><span class="line">        String extName = (url.getProtocol() == <span class="keyword">null</span> ? <span class="string">"dubbo"</span> : url.getProtocol());</span><br><span class="line">        <span class="keyword">if</span> (extName == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Failed to get extension (org.apache.dubbo.rpc.Protocol) name from url ("</span> + url.toString() + <span class="string">") use keys([protocol])"</span>);</span><br><span class="line">        org.apache.dubbo.rpc.Protocol extension = (org.apache.dubbo.rpc.Protocol) ExtensionLoader.getExtensionLoader(org.apache.dubbo.rpc.Protocol.class).getExtension(extName);</span><br><span class="line">        <span class="keyword">return</span> extension.export(arg0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> org.apache.dubbo.rpc.<span class="function">Invoker <span class="title">refer</span><span class="params">(java.lang.Class arg0, org.apache.dubbo.common.URL arg1)</span> <span class="keyword">throws</span> org.apache.dubbo.rpc.RpcException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (arg1 == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"url == null"</span>);</span><br><span class="line">        org.apache.dubbo.common.URL url = arg1;</span><br><span class="line">        <span class="comment">// 从URL获取扩展名称，"dubbo"来自扩展点上@SPI注解value指定的cachedDefaultName</span></span><br><span class="line">        String extName = (url.getProtocol() == <span class="keyword">null</span> ? <span class="string">"dubbo"</span> : url.getProtocol());</span><br><span class="line">        <span class="keyword">if</span> (extName == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Failed to get extension (org.apache.dubbo.rpc.Protocol) name from url ("</span> + url.toString() + <span class="string">") use keys([protocol])"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 通过扩展名动态获取扩展实例对象，调用扩展实例对象方法</span></span><br><span class="line">        org.apache.dubbo.rpc.Protocol extension = (org.apache.dubbo.rpc.Protocol) ExtensionLoader.getExtensionLoader(org.apache.dubbo.rpc.Protocol.class).getExtension(extName);</span><br><span class="line">        <span class="keyword">return</span> extension.refer(arg0, arg1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Protocol</span>$Adaptive <span class="token keyword">implements</span> <span class="token class-name">org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>Protocol</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">UnsupportedOperationException</span><span class="token punctuation">(</span><span class="token string">"The method public abstract void org.apache.dubbo.rpc.Protocol.destroy() of interface org.apache.dubbo.rpc.Protocol is not adaptive method!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">getDefaultPort</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">UnsupportedOperationException</span><span class="token punctuation">(</span><span class="token string">"The method public abstract int org.apache.dubbo.rpc.Protocol.getDefaultPort() of interface org.apache.dubbo.rpc.Protocol is not adaptive method!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>Exporter <span class="token function">export</span><span class="token punctuation">(</span>org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>Invoker arg0<span class="token punctuation">)</span> <span class="token keyword">throws</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>RpcException <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>arg0 <span class="token operator">==</span> null<span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"org.apache.dubbo.rpc.Invoker argument == null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>arg0<span class="token punctuation">.</span><span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> null<span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"org.apache.dubbo.rpc.Invoker argument getUrl() == null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>URL url <span class="token operator">=</span> arg0<span class="token punctuation">.</span><span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String extName <span class="token operator">=</span> <span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> null <span class="token operator">?</span> <span class="token string">"dubbo"</span> <span class="token operator">:</span> url<span class="token punctuation">.</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>extName <span class="token operator">==</span> null<span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Failed to get extension (org.apache.dubbo.rpc.Protocol) name from url ("</span> <span class="token operator">+</span> url<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">") use keys([protocol])"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>Protocol extension <span class="token operator">=</span> <span class="token punctuation">(</span>org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>Protocol<span class="token punctuation">)</span> ExtensionLoader<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span>org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>Protocol<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span>extName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> extension<span class="token punctuation">.</span><span class="token function">export</span><span class="token punctuation">(</span>arg0<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>Invoker <span class="token function">refer</span><span class="token punctuation">(</span>java<span class="token punctuation">.</span>lang<span class="token punctuation">.</span>Class <span class="token class-name">arg0</span><span class="token punctuation">,</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>URL arg1<span class="token punctuation">)</span> <span class="token keyword">throws</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>RpcException <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>arg1 <span class="token operator">==</span> null<span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"url == null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>common<span class="token punctuation">.</span>URL url <span class="token operator">=</span> arg1<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 从URL获取扩展名称，"dubbo"来自扩展点上@SPI注解value指定的cachedDefaultName</span>
+        String extName <span class="token operator">=</span> <span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> null <span class="token operator">?</span> <span class="token string">"dubbo"</span> <span class="token operator">:</span> url<span class="token punctuation">.</span><span class="token function">getProtocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>extName <span class="token operator">==</span> null<span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Failed to get extension (org.apache.dubbo.rpc.Protocol) name from url ("</span> <span class="token operator">+</span> url<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">") use keys([protocol])"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 通过扩展名动态获取扩展实例对象，调用扩展实例对象方法</span>
+        org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>Protocol extension <span class="token operator">=</span> <span class="token punctuation">(</span>org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>Protocol<span class="token punctuation">)</span> ExtensionLoader<span class="token punctuation">.</span><span class="token function">getExtensionLoader</span><span class="token punctuation">(</span>org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>dubbo<span class="token punctuation">.</span>rpc<span class="token punctuation">.</span>Protocol<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getExtension</span><span class="token punctuation">(</span>extName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> extension<span class="token punctuation">.</span><span class="token function">refer</span><span class="token punctuation">(</span>arg0<span class="token punctuation">,</span> arg1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span></code></pre>
+
 				</div>
 				<!-- about -->
 				
@@ -148,26 +181,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-深入理解JAVA虚拟机 | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-深入理解JAVA虚拟机">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-深入理解JAVA虚拟机 | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-深入理解JAVA虚拟机"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -244,7 +240,7 @@
 </li>
 <li><p>引用中存储的是稳定的句柄地址，在对象被移动（如GC）时只会改变句柄中的指针，而引用本身不需要修改。</p>
 </li>
-<li><p><img src="/imgs/句柄访问.PNG" alt="使用句柄访问 by huangzhike"></p>
+<li><p><img src="/imgs/%E5%8F%A5%E6%9F%84%E8%AE%BF%E9%97%AE.PNG" alt="使用句柄访问 by huangzhike"></p>
 </li>
 </ul>
 </li>
@@ -256,7 +252,7 @@
 </li>
 <li><p>速度更快，因为节省了一次指针定位的时间开销。</p>
 </li>
-<li><p><img src="/imgs/指针访问.PNG" alt="直接指针访问 by huangzhike"></p>
+<li><p><img src="/imgs/%E6%8C%87%E9%92%88%E8%AE%BF%E9%97%AE.PNG" alt="直接指针访问 by huangzhike"></p>
 </li>
 </ul>
 </li>
@@ -587,10 +583,51 @@
 </li>
 </ul>
 <p>这5种场景中的行为称为对一个类进行主动引用，除此之外，所有引用类的方式都不会触发初始化，称为被动引用。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SuperClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">"SuperClass init！"</span>)；</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> value = <span class="number">0</span>；</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubClass</span> <span class="keyword">extends</span> <span class="title">SuperClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">"SubClass init！"</span>)；</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 被动使用类字段，通过子类引用父类的静态字段，不会导致子类初始化</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NotInitialization</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main（String[] args）&#123;</span><br><span class="line">        System.out.println(SubClass.value)；</span><br><span class="line">        <span class="comment">// 只会输出“SuperClass init！”，不会输出“SubClass init！”</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SuperClass</span> <span class="token punctuation">{</span>
+    <span class="token keyword">static</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"SuperClass init！"</span><span class="token punctuation">)</span>；
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> value <span class="token operator">=</span> <span class="token number">0</span>；
+<span class="token punctuation">}</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SubClass</span> <span class="token keyword">extends</span> <span class="token class-name">SuperClass</span> <span class="token punctuation">{</span>
+    <span class="token keyword">static</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"SubClass init！"</span><span class="token punctuation">)</span>；
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">/**
+* 被动使用类字段，通过子类引用父类的静态字段，不会导致子类初始化
+*/</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">NotInitialization</span><span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> main（String<span class="token punctuation">[</span><span class="token punctuation">]</span> args）<span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>SubClass<span class="token punctuation">.</span>value<span class="token punctuation">)</span>；
+        <span class="token comment" spellcheck="true">// 只会输出“SuperClass init！”，不会输出“SubClass init！”</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
 <p>对于静态字段，只有直接定义这个字段的类才会被初始化，因此通过其子类来引用父类中定义的静态字段，只会触发父类的初始化而不会触发子类的初始化。</p>
 <p>至于是否要触发子类的加载和验证，在虚拟机规范中并未明确规定。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AppMain的信息都放入方法区</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppMain</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// main方法本身放入方法区</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// test是引用，放到栈区里，Sample是自定义对象应该放到堆里面</span></span><br><span class="line">        Sample test = <span class="keyword">new</span> Sample(<span class="string">"测试"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sample</span> </span>&#123;</span><br><span class="line">    <span class="comment">// new Sample实例后，name引用放入栈区里，name对象放入堆里</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Sample</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// printName方法本身放入方法区里</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// AppMain的信息都放入方法区</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AppMain</span> <span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">// main方法本身放入方法区</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// test是引用，放到栈区里，Sample是自定义对象应该放到堆里面</span>
+        Sample test <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Sample</span><span class="token punctuation">(</span><span class="token string">"测试"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Sample</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// new Sample实例后，name引用放入栈区里，name对象放入堆里</span>
+    <span class="token keyword">private</span> String name<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">Sample</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">// printName方法本身放入方法区里</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">printName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span> </code></pre>
 <p>JVM首先从classpath中找到AppMain.class文件，读取二进制数据，然后把Appmain类的类信息存放到运行时数据区的方法区中，称为类的加载。</p>
 <p>接着虚拟机定位到方法区中AppMain类的Main()方法的字节码，开始执行它的指令：<code>Sample test = new Sample(&quot;测试&quot;);</code></p>
 <p>虚拟机创建一个Sample实例，并且使引用变量test引用这个实例。</p>
@@ -624,26 +661,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-SpringMVC-数据验证 | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-SpringMVC-数据验证">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-SpringMVC-数据验证 | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-SpringMVC-数据验证"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -102,106 +98,241 @@
 				<p>来源于网络</p>
 <p><strong>12-27重新整理更新Spring笔记</strong></p>
 <p>SpringMVC支持JSR303 - Bean Validation数据验证规范，该规范的常用实现者是Hibernate Validator。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> mmp.model;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Size</span>(min = <span class="number">3</span>, max = <span class="number">30</span>)</span><br><span class="line">    <span class="keyword">private</span> String firstName;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Size</span>(min = <span class="number">3</span>, max = <span class="number">30</span>)</span><br><span class="line">    <span class="keyword">private</span> String lastName;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotEmpty</span></span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@DateTimeFormat</span>(pattern = <span class="string">"yyyy-MM-dd"</span>)</span><br><span class="line">    <span class="meta">@Past</span></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="keyword">private</span> Date dob;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Email</span></span><br><span class="line">    <span class="meta">@NotEmpty</span></span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotEmpty</span></span><br><span class="line">    <span class="keyword">private</span> String section;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotEmpty</span></span><br><span class="line">    <span class="keyword">private</span> String country;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> firstAttempt;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotEmpty</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; subjects = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// getter setter</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> mmp.controller;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// This method will serve as default GET handler.</span></span><br><span class="line">    <span class="meta">@RequestMapping</span>(method = RequestMethod.GET)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">newRegistration</span><span class="params">(ModelMap model)</span> </span>&#123;</span><br><span class="line">        Student student = <span class="keyword">new</span> Student();</span><br><span class="line">        model.addAttribute(<span class="string">"student"</span>, student);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"enroll"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// This method will be called on form submission, handling POST request. </span></span><br><span class="line">    <span class="comment">// It also validates the user input.</span></span><br><span class="line">    <span class="meta">@RequestMapping</span>(method = RequestMethod.POST)</span><br><span class="line">    <span class="comment">// 要验证的参数数据打包后由处理器方法以Bean形参类型的方式接收，并用@Validated</span></span><br><span class="line">    <span class="comment">// 不能将@Validated注解在String类型与基本类型的形参前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">saveRegistration</span><span class="params">(@Valid Student student, BindingResult result, ModelMap model)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (result.hasErrors()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"enroll"</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * BindingResult接口可获取到所有验证异常信息，常用方法：</span></span><br><span class="line"><span class="comment">         * getAllErrors()：获取所有异常信息，返回List，若没有异常，size()为 0，非List为 Null</span></span><br><span class="line"><span class="comment">         * getFieldError()：获取指定属性的异常信息</span></span><br><span class="line"><span class="comment">         * getErrorCount()：获取所有异常的数量</span></span><br><span class="line"><span class="comment">         * getRawFieldValue()：获取用户输入的引发验证异常的原始值</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line"></span><br><span class="line">        model.addAttribute(<span class="string">"success"</span>, student.getFirstName() + <span class="string">" , your Registration completed successfully"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Method used to populate the Section list in view.</span></span><br><span class="line">    <span class="comment">// Note that here you can call external systems to provide real data.</span></span><br><span class="line">    <span class="meta">@ModelAttribute</span>(<span class="string">"sections"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">initializeSections</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        List&lt;String&gt; sections = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        sections.add(<span class="string">"Graduate"</span>);</span><br><span class="line">        sections.add(<span class="string">"Post Graduate"</span>);</span><br><span class="line">        sections.add(<span class="string">"Research"</span>);</span><br><span class="line">        <span class="keyword">return</span> sections;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ModelAttribute</span>(<span class="string">"countries"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">initializeCountries</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        List&lt;String&gt; countries = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        countries.add(<span class="string">"USA"</span>);</span><br><span class="line">        countries.add(<span class="string">"CHINA"</span>);</span><br><span class="line">        countries.add(<span class="string">"FRANCE"</span>);</span><br><span class="line">        <span class="keyword">return</span> countries;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ModelAttribute</span>(<span class="string">"subjects"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">initializeSubjects</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        List&lt;String&gt; subjects = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        subjects.add(<span class="string">"Physics"</span>);</span><br><span class="line">        subjects.add(<span class="string">"Chemistry"</span>);</span><br><span class="line">        subjects.add(<span class="string">"Life Science"</span>);</span><br><span class="line">        <span class="keyword">return</span> subjects;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> mmp.configuration;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span> <span class="comment">// @Configuration指明Spring配置文件</span></span><br><span class="line"><span class="meta">@EnableWebMvc</span> <span class="comment">// 等于&lt;mvc:annotation-driven/&gt;</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(basePackages = <span class="string">"mmp"</span>) <span class="comment">// 等于&lt;context:component-scan base-package="mmp"/&gt;</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldConfiguration</span> <span class="keyword">extends</span> <span class="title">WebMvcConfigurerAdapter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Configure View Resolver</span></span><br><span class="line">    <span class="meta">@Bean</span> <span class="comment">// @Bean定义bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ViewResolver <span class="title">viewResolver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        InternalResourceViewResolver viewResolver = <span class="keyword">new</span> InternalResourceViewResolver();</span><br><span class="line">        viewResolver.setViewClass(JstlView.class);</span><br><span class="line">        viewResolver.setPrefix(<span class="string">"/WEB-INF/views/"</span>);</span><br><span class="line">        viewResolver.setSuffix(<span class="string">".jsp"</span>);</span><br><span class="line">        <span class="keyword">return</span> viewResolver;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Configure ResourceHandlers to serve static resources like CSS/ Javascript etc...</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">// 配置ResourceHandler静态资源</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addResourceHandlers</span><span class="params">(ResourceHandlerRegistry registry)</span> </span>&#123;</span><br><span class="line">        registry.addResourceHandler(<span class="string">"/static/**"</span>).addResourceLocations(<span class="string">"/static/"</span>);</span><br><span class="line">        <span class="comment">// 资源请求以/static/开始，将从webapps文件夹下/static/提供</span></span><br><span class="line">        <span class="comment">// 这里css文件放在/static/css 目录</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Configure MessageSource to provide internationalized messages</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MessageSource <span class="title">messageSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ResourceBundleMessageSource messageSource = <span class="keyword">new</span> ResourceBundleMessageSource();</span><br><span class="line">        messageSource.setBasename(<span class="string">"messages"</span>);</span><br><span class="line">        <span class="keyword">return</span> messageSource;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>假如是XML格式<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"mmp"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:resources</span> <span class="attr">mapping</span>=<span class="string">"/static/**"</span> <span class="attr">location</span>=<span class="string">"/static/"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:default-servlet-handler</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 校验错误信息配置文件 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"messageSource"</span> <span class="attr">class</span>=<span class="string">"org.springframework.context.support.ResourceBundleMessageSource"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"basename"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>messages<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.view.InternalResourceViewResolver"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"prefix"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>/WEB-INF/views/<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"suffix"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>.jsp<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> mmp<span class="token punctuation">.</span>model<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Student</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Size</span><span class="token punctuation">(</span>min <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span> max <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> String firstName<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Size</span><span class="token punctuation">(</span>min <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span> max <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> String lastName<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@NotEmpty</span>
+    <span class="token keyword">private</span> String sex<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@DateTimeFormat</span><span class="token punctuation">(</span>pattern <span class="token operator">=</span> <span class="token string">"yyyy-MM-dd"</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@Past</span>
+    <span class="token annotation punctuation">@NotNull</span>
+    <span class="token keyword">private</span> Date dob<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Email</span>
+    <span class="token annotation punctuation">@NotEmpty</span>
+    <span class="token keyword">private</span> String email<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@NotEmpty</span>
+    <span class="token keyword">private</span> String section<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@NotEmpty</span>
+    <span class="token keyword">private</span> String country<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> firstAttempt<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@NotEmpty</span>
+    <span class="token keyword">private</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> subjects <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// getter setter</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> String <span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span></code></pre>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> mmp<span class="token punctuation">.</span>controller<span class="token punctuation">;</span>
+
+<span class="token annotation punctuation">@Controller</span>
+<span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloWorldController</span> <span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">// This method will serve as default GET handler.</span>
+    <span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span>method <span class="token operator">=</span> RequestMethod<span class="token punctuation">.</span>GET<span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String <span class="token function">newRegistration</span><span class="token punctuation">(</span>ModelMap model<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Student student <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Student</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        model<span class="token punctuation">.</span><span class="token function">addAttribute</span><span class="token punctuation">(</span><span class="token string">"student"</span><span class="token punctuation">,</span> student<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">"enroll"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// This method will be called on form submission, handling POST request. </span>
+    <span class="token comment" spellcheck="true">// It also validates the user input.</span>
+    <span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span>method <span class="token operator">=</span> RequestMethod<span class="token punctuation">.</span>POST<span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">// 要验证的参数数据打包后由处理器方法以Bean形参类型的方式接收，并用@Validated</span>
+    <span class="token comment" spellcheck="true">// 不能将@Validated注解在String类型与基本类型的形参前</span>
+    <span class="token keyword">public</span> String <span class="token function">saveRegistration</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Valid</span> Student student<span class="token punctuation">,</span> BindingResult result<span class="token punctuation">,</span> ModelMap model<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span><span class="token function">hasErrors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token string">"enroll"</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">/*
+         * BindingResult接口可获取到所有验证异常信息，常用方法：
+         * getAllErrors()：获取所有异常信息，返回List，若没有异常，size()为 0，非List为 Null
+         * getFieldError()：获取指定属性的异常信息
+         * getErrorCount()：获取所有异常的数量
+         * getRawFieldValue()：获取用户输入的引发验证异常的原始值
+         */</span>
+
+        model<span class="token punctuation">.</span><span class="token function">addAttribute</span><span class="token punctuation">(</span><span class="token string">"success"</span><span class="token punctuation">,</span> student<span class="token punctuation">.</span><span class="token function">getFirstName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" , your Registration completed successfully"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">"success"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// Method used to populate the Section list in view.</span>
+    <span class="token comment" spellcheck="true">// Note that here you can call external systems to provide real data.</span>
+    <span class="token annotation punctuation">@ModelAttribute</span><span class="token punctuation">(</span><span class="token string">"sections"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> <span class="token function">initializeSections</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        List<span class="token operator">&lt;</span>String<span class="token operator">></span> sections <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span>String<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        sections<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"Graduate"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        sections<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"Post Graduate"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        sections<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"Research"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> sections<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@ModelAttribute</span><span class="token punctuation">(</span><span class="token string">"countries"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> <span class="token function">initializeCountries</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        List<span class="token operator">&lt;</span>String<span class="token operator">></span> countries <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span>String<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        countries<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"USA"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        countries<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"CHINA"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        countries<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"FRANCE"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> countries<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@ModelAttribute</span><span class="token punctuation">(</span><span class="token string">"subjects"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> <span class="token function">initializeSubjects</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        List<span class="token operator">&lt;</span>String<span class="token operator">></span> subjects <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span>String<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        subjects<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"Physics"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        subjects<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"Chemistry"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        subjects<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">"Life Science"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> subjects<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span></code></pre>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> mmp<span class="token punctuation">.</span>configuration<span class="token punctuation">;</span>
+
+<span class="token annotation punctuation">@Configuration</span> <span class="token comment" spellcheck="true">// @Configuration指明Spring配置文件</span>
+<span class="token annotation punctuation">@EnableWebMvc</span> <span class="token comment" spellcheck="true">// 等于&lt;mvc:annotation-driven/></span>
+<span class="token annotation punctuation">@ComponentScan</span><span class="token punctuation">(</span>basePackages <span class="token operator">=</span> <span class="token string">"mmp"</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 等于&lt;context:component-scan base-package="mmp"/></span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloWorldConfiguration</span> <span class="token keyword">extends</span> <span class="token class-name">WebMvcConfigurerAdapter</span> <span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">// Configure View Resolver</span>
+    <span class="token annotation punctuation">@Bean</span> <span class="token comment" spellcheck="true">// @Bean定义bean</span>
+    <span class="token keyword">public</span> ViewResolver <span class="token function">viewResolver</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        InternalResourceViewResolver viewResolver <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InternalResourceViewResolver</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        viewResolver<span class="token punctuation">.</span><span class="token function">setViewClass</span><span class="token punctuation">(</span>JstlView<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        viewResolver<span class="token punctuation">.</span><span class="token function">setPrefix</span><span class="token punctuation">(</span><span class="token string">"/WEB-INF/views/"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        viewResolver<span class="token punctuation">.</span><span class="token function">setSuffix</span><span class="token punctuation">(</span><span class="token string">".jsp"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> viewResolver<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// Configure ResourceHandlers to serve static resources like CSS/ Javascript etc...</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token comment" spellcheck="true">// 配置ResourceHandler静态资源</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addResourceHandlers</span><span class="token punctuation">(</span>ResourceHandlerRegistry registry<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        registry<span class="token punctuation">.</span><span class="token function">addResourceHandler</span><span class="token punctuation">(</span><span class="token string">"/static/**"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addResourceLocations</span><span class="token punctuation">(</span><span class="token string">"/static/"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 资源请求以/static/开始，将从webapps文件夹下/static/提供</span>
+        <span class="token comment" spellcheck="true">// 这里css文件放在/static/css 目录</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// Configure MessageSource to provide internationalized messages</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> MessageSource <span class="token function">messageSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        ResourceBundleMessageSource messageSource <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ResourceBundleMessageSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        messageSource<span class="token punctuation">.</span><span class="token function">setBasename</span><span class="token punctuation">(</span><span class="token string">"messages"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> messageSource<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span></code></pre>
+<p>假如是XML格式</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">context:</span>component-scan</span> <span class="token attr-name">base-package</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>mmp<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">mvc:</span>annotation-driven</span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">mvc:</span>resources</span> <span class="token attr-name">mapping</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/**<span class="token punctuation">"</span></span> <span class="token attr-name">location</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">mvc:</span>default-servlet-handler</span><span class="token punctuation">/></span></span>
+<span class="token comment" spellcheck="true">&lt;!-- 校验错误信息配置文件 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>bean</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>messageSource<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org.springframework.context.support.ResourceBundleMessageSource<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>basename<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>value</span><span class="token punctuation">></span></span>messages<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>value</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>property</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>bean</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>bean</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org.springframework.web.servlet.view.InternalResourceViewResolver<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>prefix<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>value</span><span class="token punctuation">></span></span>/WEB-INF/views/<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>value</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>property</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>suffix<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>value</span><span class="token punctuation">></span></span>.jsp<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>value</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>property</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>bean</span><span class="token punctuation">></span></span></code></pre>
 <p>src/main/resources/messages.properties</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 模式：&#123;ValidationAnnotationClass&#125;.&#123;modelObject&#125;.&#123;fieldName&#125;</span><br><span class="line">Size.student.firstName=First Name must be between &#123;2&#125; and &#123;1&#125; characters long</span><br><span class="line">Size.student.lastName=Last Name must be between &#123;2&#125; and &#123;1&#125; characters long</span><br><span class="line">NotEmpty.student.sex=Please specify your gender</span><br><span class="line">NotNull.student.dob=Date of birth can not be blank</span><br><span class="line">Past.student.dob=Date of birth must be in the past</span><br><span class="line">Email.student.email=Please provide a valid Email address</span><br><span class="line">NotEmpty.student.email=Email can not be blank</span><br><span class="line">NotEmpty.student.country=Please select your country</span><br><span class="line">NotEmpty.student.section=Please select your section</span><br><span class="line">NotEmpty.student.subjects=Please select at least one subject</span><br><span class="line">typeMismatch=Invalid format</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 校验器注入到处理器适配器中 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span> <span class="attr">conversion-service</span>=<span class="string">"conversionService"</span> <span class="attr">validator</span>=<span class="string">"validator"</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 校验器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"validator"</span> <span class="attr">class</span>=<span class="string">"org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- hibernate校验器--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"providerClass"</span> <span class="attr">value</span>=<span class="string">"org.hibernate.validator.HibernateValidator"</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 指定校验使用的资源文件，在文件中配置校验错误信息，如果不指定则默认使用classpath下的ValidationMessages.properties --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"validationMessageSource"</span> <span class="attr">ref</span>=<span class="string">"messageSource"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> mmp.configuration;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableWebMvc</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(basePackages = <span class="string">"mmp"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code># 模式：{ValidationAnnotationClass}.{modelObject}.{fieldName}
+Size.student.firstName=First Name must be between {2} and {1} characters long
+Size.student.lastName=Last Name must be between {2} and {1} characters long
+NotEmpty.student.sex=Please specify your gender
+NotNull.student.dob=Date of birth can not be blank
+Past.student.dob=Date of birth must be in the past
+Email.student.email=Please provide a valid Email address
+NotEmpty.student.email=Email can not be blank
+NotEmpty.student.country=Please select your country
+NotEmpty.student.section=Please select your section
+NotEmpty.student.subjects=Please select at least one subject
+typeMismatch=Invalid format</code></pre><pre class=" language-xml"><code class="language-xml"><span class="token comment" spellcheck="true">&lt;!-- 校验器注入到处理器适配器中 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">mvc:</span>annotation-driven</span> <span class="token attr-name">conversion-service</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>conversionService<span class="token punctuation">"</span></span> <span class="token attr-name">validator</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>validator<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token comment" spellcheck="true">&lt;!-- 校验器 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>bean</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>validator<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org.springframework.validation.beanvalidation.LocalValidatorFactoryBean<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token comment" spellcheck="true">&lt;!-- hibernate校验器--></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>providerClass<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org.hibernate.validator.HibernateValidator<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    <span class="token comment" spellcheck="true">&lt;!-- 指定校验使用的资源文件，在文件中配置校验错误信息，如果不指定则默认使用classpath下的ValidationMessages.properties --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>validationMessageSource<span class="token punctuation">"</span></span> <span class="token attr-name">ref</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>messageSource<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>bean</span><span class="token punctuation">></span></span></code></pre>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> mmp<span class="token punctuation">.</span>configuration<span class="token punctuation">;</span>
+
+<span class="token annotation punctuation">@Configuration</span>
+<span class="token annotation punctuation">@EnableWebMvc</span>
+<span class="token annotation punctuation">@ComponentScan</span><span class="token punctuation">(</span>basePackages <span class="token operator">=</span> <span class="token string">"mmp"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloWorldConfiguration</span> <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span></code></pre>
 <p>初始化类实现，替代web.xml中定义的Spring配置。在Servlet 3.0容器启动时，这个类会被加载并实例化。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> mmp.configuration;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldInitializer</span> <span class="keyword">implements</span> <span class="title">WebApplicationInitializer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStartup</span><span class="params">(ServletContext container)</span> <span class="keyword">throws</span> ServletException </span>&#123;</span><br><span class="line"></span><br><span class="line">        AnnotationConfigWebApplicationContext ctx = <span class="keyword">new</span> AnnotationConfigWebApplicationContext();</span><br><span class="line">        ctx.register(HelloWorldConfiguration.class);</span><br><span class="line">        ctx.setServletContext(container);</span><br><span class="line"></span><br><span class="line">        ServletRegistration.Dynamic servlet = container.addServlet(<span class="string">"dispatcher"</span>, <span class="keyword">new</span> DispatcherServlet(ctx));</span><br><span class="line"></span><br><span class="line">        servlet.setLoadOnStartup(<span class="number">1</span>);</span><br><span class="line">        servlet.addMapping(<span class="string">"/"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> mmp<span class="token punctuation">.</span>configuration<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloWorldInitializer</span> <span class="token keyword">implements</span> <span class="token class-name">WebApplicationInitializer</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onStartup</span><span class="token punctuation">(</span>ServletContext container<span class="token punctuation">)</span> <span class="token keyword">throws</span> ServletException <span class="token punctuation">{</span>
+
+        AnnotationConfigWebApplicationContext ctx <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AnnotationConfigWebApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ctx<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span>HelloWorldConfiguration<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ctx<span class="token punctuation">.</span><span class="token function">setServletContext</span><span class="token punctuation">(</span>container<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        ServletRegistration<span class="token punctuation">.</span>Dynamic servlet <span class="token operator">=</span> container<span class="token punctuation">.</span><span class="token function">addServlet</span><span class="token punctuation">(</span><span class="token string">"dispatcher"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DispatcherServlet</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        servlet<span class="token punctuation">.</span><span class="token function">setLoadOnStartup</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        servlet<span class="token punctuation">.</span><span class="token function">addMapping</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span></code></pre>
 <p>更简洁：Java-based Spring configuration</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.websystique.springmvc.configuration;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldInitializer</span> <span class="keyword">extends</span> <span class="title">AbstractAnnotationConfigDispatcherServletInitializer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Class&lt;?&gt;[] getRootConfigClasses() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Class[] &#123; HelloWorldConfiguration.class &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Class&lt;?&gt;[] getServletConfigClasses() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> String[] getServletMappings() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String[] &#123; <span class="string">"/"</span> &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> com<span class="token punctuation">.</span>websystique<span class="token punctuation">.</span>springmvc<span class="token punctuation">.</span>configuration<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HelloWorldInitializer</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractAnnotationConfigDispatcherServletInitializer</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">getRootConfigClasses</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Class</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span> HelloWorldConfiguration<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">getServletConfigClasses</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">getServletMappings</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span> <span class="token string">"/"</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span></code></pre>
 <p>WebApplicationInitializer和Spring基于Java配置API依赖Servlet3.0容器，确保没有在web.xml使用小于3.0声明Servlet。</p>
 <p>这里要删除web.xml。</p>
 <hr>
-<table>
-<thead>
-<tr>
-<th>注解</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>@AssertFalse</td>
-<td>验证注解的元素值是false</td>
-</tr>
-<tr>
-<td>@AssertTrue</td>
-<td>验证注解的元素值是true</td>
-</tr>
-<tr>
-<td>@DecimalMax(value = x)</td>
-<td>验证注解的元素值小于等于指定的十进制value</td>
-</tr>
-<tr>
-<td>@DecimalMin(value = x)</td>
-<td>验证注解的元素值大于等于指定的十进制value</td>
-</tr>
-<tr>
-<td>@Digits(integer = 整数位数, fraction = 小数位数)</td>
-<td>验证注解的元素值的整数位数和小数位数上限</td>
-</tr>
-<tr>
-<td>@Future</td>
-<td>验证注解的元素值(日期类型)比当前时间晚</td>
-</tr>
-<tr>
-<td>@Max(value = x)</td>
-<td>验证注解的元素值小于等于指定的value值</td>
-</tr>
-<tr>
-<td>@Min(value = x)</td>
-<td>验证注解的元素值大于等于指定的value值</td>
-</tr>
-<tr>
-<td>@NotNull</td>
-<td>验证注解的元素值不是null</td>
-</tr>
-<tr>
-<td>@Null</td>
-<td>验证注解的元素值是null</td>
-</tr>
-<tr>
-<td>@Past</td>
-<td>验证注解的元素值(日期类型)比当前时间早</td>
-</tr>
-<tr>
-<td>@Pattern(regex = 正则表达式)</td>
-<td>验证注解的元素值不指定的正则表达式匹配</td>
-</tr>
-<tr>
-<td>@Size(min = 最小值, max = 最大值)</td>
-<td>验证注解的元素值的在min和max(包含)指定区间之内，如字符长度、集合大小</td>
-</tr>
-<tr>
-<td>@Valid</td>
-<td>验证关联的对象，如账户对象里有一个订单对象，指定验证订单对象</td>
-</tr>
-<tr>
-<td>@NotEmpty</td>
-<td>验证注解的元素值不为null且不为空(字符串长度不为0、集合大小不为0)</td>
-</tr>
-<tr>
-<td>@Range(min = 最小值, max = 最大值)</td>
-<td>验证注解的元素值在最小值和最大值之间</td>
-</tr>
-<tr>
-<td>@NotBlank</td>
-<td>验证注解的元素值不为空(不为null、去除首位空格后长度为0)，等同@NotEmpty，@NotBlank只应用于字符串且在比较时会去除字符串的空格</td>
-</tr>
-<tr>
-<td>@Length(min = 下限, max = 上限)</td>
-<td>验证注解的元素值长度在min和max区间内</td>
-</tr>
-<tr>
-<td>@Email</td>
-<td>验证注解的元素值是Email，也可以通过正则表达式和flag指定自定义的email格式</td>
-</tr>
-</tbody>
-</table>
+<p>注解|<br>—-|——<br>@AssertFalse | 验证注解的元素值是false<br>@AssertTrue | 验证注解的元素值是true<br>@DecimalMax(value = x) | 验证注解的元素值小于等于指定的十进制value<br>@DecimalMin(value = x) | 验证注解的元素值大于等于指定的十进制value<br>@Digits(integer = 整数位数, fraction = 小数位数) | 验证注解的元素值的整数位数和小数位数上限<br>@Future | 验证注解的元素值(日期类型)比当前时间晚<br>@Max(value = x) | 验证注解的元素值小于等于指定的value值<br>@Min(value = x) | 验证注解的元素值大于等于指定的value值<br>@NotNull | 验证注解的元素值不是null<br>@Null | 验证注解的元素值是null<br>@Past | 验证注解的元素值(日期类型)比当前时间早<br>@Pattern(regex = 正则表达式) | 验证注解的元素值不指定的正则表达式匹配<br>@Size(min = 最小值, max = 最大值) | 验证注解的元素值的在min和max(包含)指定区间之内，如字符长度、集合大小<br>@Valid | 验证关联的对象，如账户对象里有一个订单对象，指定验证订单对象<br>@NotEmpty | 验证注解的元素值不为null且不为空(字符串长度不为0、集合大小不为0)<br>@Range(min = 最小值, max = 最大值) | 验证注解的元素值在最小值和最大值之间<br>@NotBlank | 验证注解的元素值不为空(不为null、去除首位空格后长度为0)，等同@NotEmpty，@NotBlank只应用于字符串且在比较时会去除字符串的空格<br>@Length(min = 下限, max = 上限) | 验证注解的元素值长度在min和max区间内<br>@Email | 验证注解的元素值是Email，也可以通过正则表达式和flag指定自定义的email格式</p>
 <hr>
 
 				</div>
@@ -221,26 +352,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

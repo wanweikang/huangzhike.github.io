@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-HttpServletResponse | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-HttpServletResponse">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-HttpServletResponse | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-HttpServletResponse"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -101,16 +97,74 @@
 				<div class="article-content">
 				<p><strong>12-31重新整理</strong></p>
 <p>使用<code>OutputStream</code>或者<code>PrintWriter</code>向浏览器输出汉字与数字</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">outputOneByOutputStream</span><span class="params">(HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">    response.setHeader(<span class="string">"content-type"</span>, <span class="string">"text/html;charset=UTF-8"</span>);</span><br><span class="line"></span><br><span class="line">    OutputStream outputStream = response.getOutputStream(); <span class="comment">// 获取OutputStream输出流</span></span><br><span class="line"></span><br><span class="line">    String data = <span class="string">"中国"</span>;</span><br><span class="line">    <span class="comment">// data.getBytes()将字符转换成字节数组，不带参数中文环境默认GB2312，查码表转成对应数字</span></span><br><span class="line">    <span class="keyword">byte</span>[] dataByteArr = data.getBytes(<span class="string">"UTF-8"</span>);</span><br><span class="line">    outputStream.write(dataByteArr);</span><br><span class="line">    <span class="comment">// outputStream.write("中国".getBytes("UTF-8"));</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// outputStream.write(1); 数字1没输出</span></span><br><span class="line">    outputStream.write((<span class="number">1</span> + <span class="string">""</span>).getBytes());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">outputOneByPrintWriter</span><span class="params">(HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">    <span class="comment">// 这两个步骤不能颠倒</span></span><br><span class="line">    response.setCharacterEncoding(<span class="string">"UTF-8"</span>); <span class="comment">// 设置输出客户端编码</span></span><br><span class="line">    PrintWriter out = response.getWriter(); <span class="comment">// 获取PrintWriter输出流</span></span><br><span class="line">    out.write(<span class="string">"&lt;meta http-equiv='content-type' content='text/html;charset=UTF-8'/&gt;"</span>);</span><br><span class="line">    <span class="comment">// 等同于response.setHeader("content-type", "text/html;charset=UTF-8");</span></span><br><span class="line"></span><br><span class="line">    String data = <span class="string">"中国"</span>;</span><br><span class="line">    out.write(data);</span><br><span class="line"></span><br><span class="line">    out.write(<span class="number">1</span> + <span class="string">""</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">outputOneByOutputStream</span><span class="token punctuation">(</span>HttpServletResponse response<span class="token punctuation">)</span>
+        <span class="token keyword">throws</span> ServletException<span class="token punctuation">,</span> IOException <span class="token punctuation">{</span>
+    response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"content-type"</span><span class="token punctuation">,</span> <span class="token string">"text/html;charset=UTF-8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    OutputStream outputStream <span class="token operator">=</span> response<span class="token punctuation">.</span><span class="token function">getOutputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 获取OutputStream输出流</span>
+
+    String data <span class="token operator">=</span> <span class="token string">"中国"</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// data.getBytes()将字符转换成字节数组，不带参数中文环境默认GB2312，查码表转成对应数字</span>
+    <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> dataByteArr <span class="token operator">=</span> data<span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token string">"UTF-8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    outputStream<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>dataByteArr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// outputStream.write("中国".getBytes("UTF-8"));</span>
+
+    <span class="token comment" spellcheck="true">// outputStream.write(1); 数字1没输出</span>
+    outputStream<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">+</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">outputOneByPrintWriter</span><span class="token punctuation">(</span>HttpServletResponse response<span class="token punctuation">)</span>
+        <span class="token keyword">throws</span> ServletException<span class="token punctuation">,</span> IOException <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 这两个步骤不能颠倒</span>
+    response<span class="token punctuation">.</span><span class="token function">setCharacterEncoding</span><span class="token punctuation">(</span><span class="token string">"UTF-8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 设置输出客户端编码</span>
+    PrintWriter out <span class="token operator">=</span> response<span class="token punctuation">.</span><span class="token function">getWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 获取PrintWriter输出流</span>
+    out<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token string">"&lt;meta http-equiv='content-type' content='text/html;charset=UTF-8'/>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 等同于response.setHeader("content-type", "text/html;charset=UTF-8");</span>
+
+    String data <span class="token operator">=</span> <span class="token string">"中国"</span><span class="token punctuation">;</span>
+    out<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    out<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">+</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
 <p>需要向浏览器输出字符数据时，使用<code>PrintWriter</code>比较方便，省去了将字符转换成字节数组。</p>
-<p><code>Response</code>实现文件下载<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">downloadFileByOutputStream</span><span class="params">(HttpServletResponse response)</span> </span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> FileNotFoundException, IOException </span>&#123;</span><br><span class="line">    <span class="comment">// 下载的文件的绝对路径</span></span><br><span class="line">    String realPath = <span class="keyword">this</span>.getServletContext().getRealPath(<span class="string">"/download/1.JPG"</span>);</span><br><span class="line">    <span class="comment">// 要下载的文件名</span></span><br><span class="line">    String fileName = realPath.substring(realPath.lastIndexOf(<span class="string">"\\"</span>) + <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 设置content-disposition响应头控制浏览器以下载的形式打开文件</span></span><br><span class="line">    response.setHeader(<span class="string">"content-disposition"</span>, <span class="string">"attachment; filename="</span> + fileName);</span><br><span class="line">    <span class="comment">// 中文名用URLEncoder.encode，否则文件名乱码</span></span><br><span class="line">    <span class="comment">// response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));</span></span><br><span class="line">    <span class="comment">// 要下载的文件输入流</span></span><br><span class="line">    InputStream in = <span class="keyword">new</span> FileInputStream(realPath);</span><br><span class="line">    <span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 创建数据缓冲区</span></span><br><span class="line">    <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">    <span class="comment">// 通过response对象获取OutputStream流</span></span><br><span class="line">    OutputStream out = response.getOutputStream();</span><br><span class="line">    <span class="comment">// 将FileInputStream流写入到buffer缓冲区</span></span><br><span class="line">    <span class="keyword">while</span> ((len = in.read(buffer)) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 用OutputStream将缓冲区的数据输出到客户端浏览器</span></span><br><span class="line">        out.write(buffer, <span class="number">0</span>, len);</span><br><span class="line">    &#125;</span><br><span class="line">    in.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>Response</code>实现文件下载</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">downloadFileByOutputStream</span><span class="token punctuation">(</span>HttpServletResponse response<span class="token punctuation">)</span> 
+        <span class="token keyword">throws</span> FileNotFoundException<span class="token punctuation">,</span> IOException <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 下载的文件的绝对路径</span>
+    String realPath <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getServletContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getRealPath</span><span class="token punctuation">(</span><span class="token string">"/download/1.JPG"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 要下载的文件名</span>
+    String fileName <span class="token operator">=</span> realPath<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span>realPath<span class="token punctuation">.</span><span class="token function">lastIndexOf</span><span class="token punctuation">(</span><span class="token string">"\\"</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 设置content-disposition响应头控制浏览器以下载的形式打开文件</span>
+    response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"content-disposition"</span><span class="token punctuation">,</span> <span class="token string">"attachment; filename="</span> <span class="token operator">+</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 中文名用URLEncoder.encode，否则文件名乱码</span>
+    <span class="token comment" spellcheck="true">// response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));</span>
+    <span class="token comment" spellcheck="true">// 要下载的文件输入流</span>
+    InputStream in <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileInputStream</span><span class="token punctuation">(</span>realPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> len <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 创建数据缓冲区</span>
+    <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> buffer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">byte</span><span class="token punctuation">[</span><span class="token number">1024</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 通过response对象获取OutputStream流</span>
+    OutputStream out <span class="token operator">=</span> response<span class="token punctuation">.</span><span class="token function">getOutputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 将FileInputStream流写入到buffer缓冲区</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>len <span class="token operator">=</span> in<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 用OutputStream将缓冲区的数据输出到客户端浏览器</span>
+        out<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>buffer<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> len<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    in<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>文件下载时用<code>OutputStream</code>流，避免<code>PrintWriter</code>流。</p>
 <p>因为<code>OutputStream</code>流是字节流，可以处理任意类型的数据，而<code>PrintWriter</code>流是字符流，只能处理字符数据。</p>
 <p>如果用字符流处理字节数据，会导致数据丢失。</p>
 <p><code>getOutputStream</code>和<code>getWriter</code>方法分别用于得到输出二进制数据、输出文本数据的<code>ServletOuputStream</code>、<code>Printwriter</code>对象。</p>
 <p><code>getOutputStream</code>和<code>getWriter</code>方法互相排斥，调用一个方法后不能再调用另一方法。</p>
 <p>Serlvet的service方法结束后，将检查输出流对象是否已经调用过<code>close</code>方法，如果没有，将调用<code>close</code>方法关闭。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过response实现请求重定向</span></span><br><span class="line">response.sendRedirect(<span class="string">"/JavaWeb/index.jsp"</span>);</span><br><span class="line"><span class="comment">// sendRedirect内部原理：使用response设置302状态码和设置location响应头实现重定向</span></span><br><span class="line"><span class="comment">// response.setHeader("Location", "/JavaWeb/index.jsp");</span></span><br><span class="line"><span class="comment">// 设置302状态码，等同于response.setStatus(302);</span></span><br><span class="line"><span class="comment">// response.setStatus(HttpServletResponse.SC_FOUND);</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 通过response实现请求重定向</span>
+response<span class="token punctuation">.</span><span class="token function">sendRedirect</span><span class="token punctuation">(</span><span class="token string">"/JavaWeb/index.jsp"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// sendRedirect内部原理：使用response设置302状态码和设置location响应头实现重定向</span>
+<span class="token comment" spellcheck="true">// response.setHeader("Location", "/JavaWeb/index.jsp");</span>
+<span class="token comment" spellcheck="true">// 设置302状态码，等同于response.setStatus(302);</span>
+<span class="token comment" spellcheck="true">// response.setStatus(HttpServletResponse.SC_FOUND); </span></code></pre>
 <p>返回JSON数据</p>
 <p>将<code>response.setContentType(&quot;text/html;charset=UTF-8&quot;);</code>改为<code>response.setContentType(&quot;application/json;charset=UTF-8&quot;);</code></p>
 <p>转发</p>
@@ -143,26 +197,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-正则规则 | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-正则规则">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-正则规则 | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-正则规则"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -101,16 +97,23 @@
 				<div class="article-content">
 				<p><strong>2016-11-20重新整理</strong></p>
 <p>正则表达式（regular expression）</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span>  reg = <span class="regexp">/xyz/i</span>; <span class="comment">// 基本采用字面量法</span></span><br><span class="line"><span class="keyword">var</span>  reg = <span class="keyword">new</span>  <span class="built_in">RegExp</span>(<span class="string">"xyz"</span>, <span class="string">"i"</span>); <span class="comment">// 构造函数</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var  reg = /xyz/i; // 基本采用字面量法
+var  reg = new  RegExp("xyz", "i"); // 构造函数</code></pre>
 <ul>
 <li>字面量字符（literal characters）</li>
 <li>普通字符包括：字母（abcABC），数字（123），下划线（_）</li>
 <li>特殊字符（元字符，metacharacters）</li>
 <li>转义符：需要转义：<code>(</code> <code>)</code> <code>[</code> <code>]</code> <code>{</code> <code>}</code> <code>^</code> <code>$</code> <code>*</code> <code>?</code> <code>\</code> <code>|</code> <code>+</code> <code>.</code></li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/\^a/</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/\\m/</span>; <span class="comment">// 特殊字符要转义</span></span><br><span class="line"></span><br><span class="line">/google\.com/ <span class="comment">// 匹配google.com</span></span><br><span class="line">/C:\\Windows/ <span class="comment">// 匹配C:\Windows。</span></span><br><span class="line">/Windows\d+<span class="regexp">/ /</span><span class="regexp">/ 匹配Windows后跟1个或更多数字</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var reg = /\^a/
+var reg = /\\m/; // 特殊字符要转义
+
+/google\.com/ // 匹配google.com
+/C:\\Windows/ // 匹配C:\Windows。
+/Windows\d+/ // 匹配Windows后跟1个或更多数字</code></pre>
 <p>RegExp方法生成正则对象，转义要两个斜杠，因为字符串内部先转义一次。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/<span class="number">1</span>\+<span class="number">1</span>/.test(<span class="string">"1+1"</span>); <span class="comment">// true</span></span><br><span class="line">(<span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">"1\\+1"</span>)).test(<span class="string">"1+1"</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/1\+1/.test("1+1"); // true
+(new RegExp("1\\+1")).test("1+1"); // true</code></pre>
 <p>预定义特殊字符</p>
 <ul>
 <li><code>.</code>：单个字符，除换行<code>\n</code> 、行结束符（回车<code>\r</code>），相当于<code>[^\n\r]</code>，还包括行分隔符<code>\u2028</code>和段分隔符<code>\u2029</code>？</li>
@@ -132,32 +135,67 @@
 <li><code>\xdd</code>：以十六进制数dd规定的字符。</li>
 <li><code>\uxxxx</code>：以十六进制数xxxx规定的Unicode字符。</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/c.t/; <span class="comment">// 匹配c和t之间任一字符，只要在同一行，如cat、c2t、c-t，不匹配coot</span></span><br><span class="line"></span><br><span class="line">/<span class="number">00</span>\d/ <span class="comment">// 可匹配"007"</span></span><br><span class="line"></span><br><span class="line">/\d\d\d/ <span class="comment">// 可匹配"010"</span></span><br><span class="line"></span><br><span class="line">/\w\w/ <span class="comment">// 可匹配"js"</span></span><br><span class="line"></span><br><span class="line">/^js$/ <span class="comment">// 整行匹配，只匹配"js"</span></span><br><span class="line"></span><br><span class="line">/js/ <span class="comment">// 可匹配"jsp"</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/c.t/; // 匹配c和t之间任一字符，只要在同一行，如cat、c2t、c-t，不匹配coot
+
+/00\d/ // 可匹配"007"
+
+/\d\d\d/ // 可匹配"010"
+
+/\w\w/ // 可匹配"js"
+
+/^js$/ // 整行匹配，只匹配"js"
+
+/js/ // 可匹配"jsp"</code></pre>
 <p>分界</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ^：行的开头，^\d：数字开头</span></span><br><span class="line"><span class="comment">// $：行的结束，\d$：数字结束</span></span><br><span class="line">/^abc/; <span class="comment">// 是否以abc开始</span></span><br><span class="line">/xyz$/; <span class="comment">// 是否以xyz结尾</span></span><br><span class="line">/^test$/.test(<span class="string">"test"</span>); <span class="comment">// true</span></span><br><span class="line">/^test$/.test(<span class="string">"test test"</span>); <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// \b：单词分隔符</span></span><br><span class="line"><span class="comment">// \B：非单词分隔符</span></span><br><span class="line">/\bworld/.test(<span class="string">"hello-world"</span>); <span class="comment">// true</span></span><br><span class="line">/\bworld/.test(<span class="string">"helloworld"</span>); <span class="comment">// false</span></span><br><span class="line">/\Bworld/.test(<span class="string">"hello-world"</span>); <span class="comment">// false</span></span><br><span class="line">/\Bworld/.test(<span class="string">"helloworld"</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/\bhi\b/ <span class="comment">// 精确查找hi</span></span><br><span class="line">/\bhi\b.*\bLucy\b/ <span class="comment">// 先是单词hi，然后是任意个任意字符（除换行），最后是单词Lucy</span></span><br><span class="line">/\b\w&#123;<span class="number">6</span>&#125;\b/ <span class="comment">// 刚好6个字符的单词</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">// ^：行的开头，^\d：数字开头
+// $：行的结束，\d$：数字结束
+/^abc/; // 是否以abc开始
+/xyz$/; // 是否以xyz结尾
+/^test$/.test("test"); // true
+/^test$/.test("test test"); // false
+
+// \b：单词分隔符
+// \B：非单词分隔符
+/\bworld/.test("hello-world"); // true
+/\bworld/.test("helloworld"); // false
+/\Bworld/.test("hello-world"); // false
+/\Bworld/.test("helloworld"); // true</code></pre>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/\bhi\b/ // 精确查找hi
+/\bhi\b.*\bLucy\b/ // 先是单词hi，然后是任意个任意字符（除换行），最后是单词Lucy
+/\b\w{6}\b/ // 刚好6个字符的单词</code></pre>
 <p>通常，正则表达式遇到换行符<code>\n</code>就会停止匹配。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> html = <span class="string">"&lt;b&gt;Hello&lt;/b&gt;\n&lt;i&gt;world!&lt;/i&gt;"</span>;</span><br><span class="line">/.*<span class="regexp">/.exec(html)[0] /</span><span class="regexp">/ "&lt;b&gt;Hello&lt;/</span>b&gt;<span class="string">"</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var html = "<b>Hello</b>\n<i>world!</i>";
+/.*/.exec(html)[0] // "<b>Hello</b>"</code></pre>
 <p>点字符<code>.</code>不匹配换行符，使用<code>\s</code>字符类（<code>[\S\s]</code>指代一切字符），就能包括换行符。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> html = <span class="string">"&lt;b&gt;Hello&lt;/b&gt;\n&lt;i&gt;world!&lt;/i&gt;"</span>;</span><br><span class="line">/[\S\s]*<span class="regexp">/.exec(html)[0] /</span><span class="regexp">/ "&lt;b&gt;Hello&lt;/</span>b&gt;\n&lt;i&gt;world!<span class="xml"><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><span class="string">"</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var html = "<b>Hello</b>\n<i>world!</i>";
+/[\S\s]*/.exec(html)[0] // "<b>Hello</b>\n<i>world!</i>"</code></pre>
 <p>另一种写法（非捕获组）：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/(?:.|\s)*<span class="regexp">/.exec(html)[0] /</span><span class="regexp">/ "&lt;b&gt;Hello&lt;/</span>b&gt;\n&lt;i&gt;world!<span class="xml"><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><span class="string">"</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/(?:.|\s)*/.exec(html)[0] // "<b>Hello</b>\n<i>world!</i>"</code></pre>
 <p>字符集<code>[]</code>：字符类（class），只匹配其中一个就行。如<code>[xyz]</code> 表示x、y、z之中任一个匹配。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/[abc]/.test(<span class="string">"apple"</span>) <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line">[…] <span class="comment">// 在集合中的任一个字符</span></span><br><span class="line">[^…] <span class="comment">// 除集合中的任一个字符</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/[abc]/.test("apple") // true
+
+[…] // 在集合中的任一个字符
+[^…] // 除集合中的任一个字符</code></pre>
 <p>脱字符<code>^</code>：如果方括号内第一个字符是[^]，表示除了字符类之中的字符，都可匹配。如[^xyz]表示除x、y、z之外。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/[^abc]/.test(<span class="string">"bbc"</span>) <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/[^abc]/.test("bbc") // false</code></pre>
 <p>如果方括号内只有<code>[^]</code>，表示匹配一切字符，包括换行符，而点号<code>.</code>不包括换行符。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"abc efg\n123 456"</span>.match(<span class="regexp">/efg.*456/</span>) <span class="comment">// null</span></span><br><span class="line"><span class="string">"abc efg\n123 456"</span>.match(<span class="regexp">/efg[^]*456/</span>) <span class="comment">// ["efg\n123 456"]</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">"abc efg\n123 456".match(/efg.*456/) // null
+"abc efg\n123 456".match(/efg[^]*456/) // ["efg\n123 456"]</code></pre>
 <p>注意，脱字符只有在[]第一个位置才有特殊含义。</p>
 <p>连字符<code>-</code>：表示字符的连续范围。</p>
 <p><code>[abc]</code>等于<code>[a-c]</code>，<code>[0123456789]</code>等于<code>[0-9]</code>，<code>[A-Z]</code>表示26个大写字母。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/a-z/.test(<span class="string">"b"</span>) <span class="comment">// false</span></span><br><span class="line">/[a-z]/.test(<span class="string">"b"</span>) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/a-z/.test("b") // false
+/[a-z]/.test("b") // true</code></pre>
 <p>当连字号（dash）不在方括号中，只代表字面含义。只有在方括号中，才表示连续的字符序列。</p>
 <p>以下都是合法的字符类简写。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">0</span><span class="number">-9.</span>,]</span><br><span class="line">[<span class="number">0</span><span class="number">-9</span>a-fA-F]</span><br><span class="line">[a-zA-Z0<span class="number">-9</span>-]</span><br><span class="line">[<span class="number">1</span><span class="number">-31</span>] <span class="comment">// 不代表1到31，只代表1到3</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">[0-9.,]
+[0-9a-fA-F]
+[a-zA-Z0-9-]
+[1-31] // 不代表1到31，只代表1到3</code></pre>
 <p>字符类的连字符必须在头尾两个字符中间，才有特殊含义，否则就是字面含义。<code>[-9]</code>表示连字符和9，而不是0到9。</p>
 <p>连字符可以指定Unicode字符范围。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">"\u0130\u0131\u0132"</span>;</span><br><span class="line">/[\u0128-\uFFFF]/.test(str) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var str = "\u0130\u0131\u0132";
+/[\u0128-\uFFFF]/.test(str) // true</code></pre>
 <p>不要过分使用连字符，设定一个很大的范围。如<code>[A-z]</code>，表面上是选中从大写的A到小写的z之间52个字母，但在ASCII编码之中，大写字母与小写字母之间还有其他字符。</p>
 <ul>
 <li>简单类：<code>[abDF45]</code>表示由abDF45六个字符组成的一个集合</li>
@@ -174,13 +212,19 @@
 <li><code>{n,m}</code>：重复n~m次(中间不能有空格) </li>
 <li><code>{n,}</code>：至少重复n次 </li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/lo&#123;<span class="number">2</span>,<span class="number">5</span>&#125;k/.test(<span class="string">"looook"</span>) <span class="comment">// true</span></span><br><span class="line">/t+est/.test(<span class="string">"est"</span>) <span class="comment">// false</span></span><br><span class="line">/t*est/.test(<span class="string">"est"</span>) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/lo{2,5}k/.test("looook") // true
+/t+est/.test("est") // false
+/t*est/.test("est") // true</code></pre>
 <p>贪婪匹配：<code>?</code> <code>+</code> <code>*</code> 三个量词符，默认贪婪模式，匹配尽可能多的字符。</p>
 <p>如，对于字符串”aaaa”，<code>/a+/</code>匹配”aaaa”，不会匹配”aa”。</p>
 <p>在量词符后加一个问号，改为非贪婪模式，<code>/a+?/</code>只匹配”a”。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"aaaa"</span>.match(<span class="regexp">/a+?/</span>) <span class="comment">// ["a"]</span></span><br><span class="line"><span class="string">"aaaa"</span>.match(<span class="regexp">/a+/</span>) <span class="comment">// ["aaaa"]</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">"aaaa".match(/a+?/) // ["a"]
+"aaaa".match(/a+/) // ["aaaa"]</code></pre>
 <p>匹配数字后的0：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/^(\d+)(<span class="number">0</span>*)$/.exec(<span class="string">"102300"</span>); <span class="comment">// ["102300", "102300", ""] </span></span><br><span class="line"><span class="comment">// \d+贪婪匹配，把0全部匹配了，0*只能匹配空字符串。</span></span><br><span class="line"></span><br><span class="line">/^(\d+?)(<span class="number">0</span>*)$/.exec(<span class="string">"102300"</span>); <span class="comment">// ["102300", "1023", "00"]</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/^(\d+)(0*)$/.exec("102300"); // ["102300", "102300", ""] 
+// \d+贪婪匹配，把0全部匹配了，0*只能匹配空字符串。
+
+/^(\d+?)(0*)$/.exec("102300"); // ["102300", "1023", "00"]</code></pre>
 <p><code>\s+</code>是贪婪模式，尽可能多匹配空格，匹配次数较少，性能更高</p>
 <p><code>\s</code>只表示一个空格，匹配次数多，性能相对低。</p>
 <p>懒惰限定符</p>
@@ -191,11 +235,26 @@
 <li><code>{n,m}?</code>：重复n到m次，但尽可能少重复 </li>
 <li><code>{n,}?</code>：重复n次以上，但尽可能少重复 </li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 中国的电话号码</span></span><br><span class="line">/<span class="number">0</span>\d\d-\d\d\d\d\d\d\d\d/ </span><br><span class="line"><span class="comment">// 0开头，然后两个数字，然后一个连字号“-”，最后是8个数字</span></span><br><span class="line"><span class="comment">// 等于</span></span><br><span class="line">/<span class="number">0</span>\d&#123;<span class="number">2</span>&#125;-\d&#123;<span class="number">8</span>&#125;/</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以任意个空格隔开的带区号的电话号码</span></span><br><span class="line">/^\d&#123;<span class="number">3</span>&#125;\s+\d&#123;<span class="number">3</span>,<span class="number">8</span>&#125;$/</span><br><span class="line"></span><br><span class="line">/^\d&#123;<span class="number">3</span>&#125;\-\d&#123;<span class="number">3</span>,<span class="number">8</span>&#125;$/ </span><br><span class="line"><span class="comment">// 匹配"010-12345"，无法匹配"010 - 12345"，因为有空格</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">// 中国的电话号码
+/0\d\d-\d\d\d\d\d\d\d\d/ 
+// 0开头，然后两个数字，然后一个连字号“-”，最后是8个数字
+// 等于
+/0\d{2}-\d{8}/
+
+// 以任意个空格隔开的带区号的电话号码
+/^\d{3}\s+\d{3,8}$/
+
+/^\d{3}\-\d{3,8}$/ 
+// 匹配"010-12345"，无法匹配"010 - 12345"，因为有空格</code></pre>
 <p><code>\s</code>匹配一个空格（包括Tab等空白符），\s+表示至少有一个空格，如” “，”\t\t”等；</p>
 <p>分枝条件</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A|B <span class="comment">// A或B</span></span><br><span class="line">Java[S|s]cript <span class="comment">// 匹配"JavaScript"、"Javascript"</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/<span class="number">0</span>\d&#123;<span class="number">2</span>&#125;-\d&#123;<span class="number">8</span>&#125;|<span class="number">0</span>\d&#123;<span class="number">3</span>&#125;-\d&#123;<span class="number">7</span>&#125;/ <span class="comment">// 010-12345678或0376-2233445</span></span><br><span class="line">/\(?<span class="number">0</span>\d&#123;<span class="number">2</span>&#125;\)?[- ]?\d&#123;<span class="number">8</span>&#125;|<span class="number">0</span>\d&#123;<span class="number">2</span>&#125;[- ]?\d&#123;<span class="number">8</span>&#125;/ </span><br><span class="line"><span class="comment">// 3位区号的电话号码，区号可用小括号括起来，也可不用，区号与本地号间可用连字号或空格间隔，也可没间隔。</span></span><br><span class="line">/\d&#123;<span class="number">5</span>&#125;-\d&#123;<span class="number">4</span>&#125;|\d&#123;<span class="number">5</span>&#125;/ <span class="comment">// 5位数字，或连字号间隔的9位数字</span></span><br><span class="line">/\d&#123;<span class="number">5</span>&#125;|\d&#123;<span class="number">5</span>&#125;-\d&#123;<span class="number">4</span>&#125;/ <span class="comment">// 5位数字，或9位数字的前5位</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">A|B // A或B
+Java[S|s]cript // 匹配"JavaScript"、"Javascript"</code></pre>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/0\d{2}-\d{8}|0\d{3}-\d{7}/ // 010-12345678或0376-2233445
+/\(?0\d{2}\)?[- ]?\d{8}|0\d{2}[- ]?\d{8}/ 
+// 3位区号的电话号码，区号可用小括号括起来，也可不用，区号与本地号间可用连字号或空格间隔，也可没间隔。
+/\d{5}-\d{4}|\d{5}/ // 5位数字，或连字号间隔的9位数字
+/\d{5}|\d{5}-\d{4}/ // 5位数字，或9位数字的前5位</code></pre>
 <p>匹配分枝条件时，从左到右测试每个条件，如果满足了某个分枝，不再管其它条件。</p>
 <ul>
 <li>重复单个字符：直接在字符后加上限定符；</li>
@@ -203,54 +262,121 @@
 <li><code>/(\d{1,3}\.){3}\d{1,3}/</code>简单的IP地址匹配表达式，它也匹配 256.300.888.999。</li>
 <li>只能用冗长的分组，选择，字符类描述正确的IP地址：</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/((<span class="number">2</span>[<span class="number">0</span><span class="number">-4</span>]\d|<span class="number">25</span>[<span class="number">0</span><span class="number">-5</span>]|[<span class="number">01</span>]?\d\d?)\.)&#123;<span class="number">3</span>&#125;(<span class="number">2</span>[<span class="number">0</span><span class="number">-4</span>]\d|<span class="number">25</span>[<span class="number">0</span><span class="number">-5</span>]|[<span class="number">01</span>]?\d\d?)/</span><br><span class="line"><span class="comment">// 关键是理解2[0-4]\d|25[0-5]|[01]?\d\d?</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)/
+// 关键是理解2[0-4]\d|25[0-5]|[01]?\d\d?</code></pre>
 <p>分组：正则还可以提取子串，用<code>()</code>表示要提取的分组</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义两个组</span></span><br><span class="line"><span class="keyword">var</span> re = <span class="regexp">/^(\d&#123;3&#125;)-(\d&#123;3,8&#125;)$/</span>;</span><br><span class="line"><span class="comment">// 从匹配字符串中提取区号和本地号码</span></span><br><span class="line">re.exec(<span class="string">"010-12345"</span>); <span class="comment">// ["010-12345", "010", "12345"]</span></span><br><span class="line">re.exec(<span class="string">"010 12345"</span>); <span class="comment">// null</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">// 定义两个组
+var re = /^(\d{3})-(\d{3,8})$/;
+// 从匹配字符串中提取区号和本地号码
+re.exec("010-12345"); // ["010-12345", "010", "12345"]
+re.exec("010 12345"); // null </code></pre>
 <p>如果正则中定义了组，可以在RegExp对象上用exec()方法提取子串。</p>
 <p>exec()方法匹配成功后，返回一个Array，第一个元素是原始字符串，后面的字符串表示匹配成功的子串。</p>
 <p>exec()方法匹配失败返回null。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 识别合法时间</span></span><br><span class="line"><span class="keyword">var</span> re = <span class="regexp">/^(0[0-9]|1[0-9]|2[0-3]|[0-9])\:(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|[0-9])\:(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|[0-9])$/</span>;</span><br><span class="line">re.exec(<span class="string">"19:05:30"</span>); <span class="comment">// ["19:05:30", "19", "05", "30"]</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">// 识别合法时间
+var re = /^(0[0-9]|1[0-9]|2[0-3]|[0-9])\:(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|[0-9])\:(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|[0-9])$/;
+re.exec("19:05:30"); // ["19:05:30", "19", "05", "30"] </code></pre>
 <p>有时正则也无法完全识别如”2-30”，”4-31”这样的非法日期：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> re = <span class="regexp">/^(0[1-9]|1[0-2]|[0-9])-(0[1-9]|1[0-9]|2[0-9]|3[0-1]|[0-9])$/</span>;</span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var re = /^(0[1-9]|1[0-2]|[0-9])-(0[1-9]|1[0-9]|2[0-9]|3[0-1]|[0-9])$/; </code></pre>
 <p>电子邮件识别：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/;</span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/;</code></pre>
 <p>[\w-]表示所有的字符，数字，下划线及减号，[\w-]+表示集合最少重复一次；</p>
 <p>括号表示分组，修饰符星号 (*)表示重复零或多次。匹配任意字母，数字，下划线及中划线的集合，且至少重复一次。</p>
 <p>@后部分，分组的修饰符 (+)，表示至少重复一次，后半部分至少有一个点号(.)，且点号后至少有一个字符，限制输入串中必须包含域名。</p>
 <p>最后，脱字符(^)和美元符号($)限制，以…开始，且以…结束。</p>
 <p>括号常见有三种作用：</p>
 <p>一，括号标记子表达式，区别其他表达式，很多命令行程序帮助命令，h和help一样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">h(elp) <span class="comment">// h必选，h后的elp可有可无</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">h(elp) // h必选，h后的elp可有可无</code></pre>
 <p>二，括号分组，正则执行完后，匹配的文本按规则填入分组，如，某数据库的主键格式：四个字符表示省份，四个数字表示区号，然后两位字符表示区县，如yunn0871cg表示云南省昆明市呈贡县，分离出区号和区县的两位字符代码：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> pattern = <span class="regexp">/\w&#123;4&#125;(\d&#123;4&#125;)(\w&#123;2&#125;)/</span>;</span><br><span class="line"><span class="keyword">var</span> result = pattern.exec(<span class="string">"yunn0871cg"</span>);</span><br><span class="line"></span><br><span class="line"><span class="string">"city code = "</span>+result[<span class="number">1</span>]+<span class="string">", county code = "</span>+result[<span class="number">2</span>]; </span><br><span class="line"><span class="comment">// city code = 0871, county code = cg</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var pattern = /\w{4}(\d{4})(\w{2})/;
+var result = pattern.exec("yunn0871cg");
+
+"city code = "+result[1]+", county code = "+result[2]; 
+// city code = 0871, county code = cg</code></pre>
 <p>如果匹配成功，正则的exec方法返回一个数组，数组的第一个元素表示整个串，第一个元素为第一个分组，第二个元素为第二个分组，以此类推。</p>
 <p>三，括号辅助引用，同一表达式中，后边式子引用前边匹配的文本。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">"hello, world"</span>;</span><br><span class="line"><span class="keyword">var</span> str = <span class="string">"fair enough"</span>;</span><br><span class="line"><span class="keyword">var</span> pattern = <span class="regexp">/['"][^'"]*['"]/</span>;</span><br><span class="line"><span class="comment">// 如果输入：</span></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">'hello, world";</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var str = "hello, world";
+var str = "fair enough";
+var pattern = /['"][^'"]*['"]/;
+// 如果输入：
+var str = 'hello, world";</code></pre>
 <p>这就要引用，用斜杠加数字表示，<code>\1</code>表示第一个分组，<code>\2</code>表示第二个分组。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> pattern = <span class="regexp">/(['"])[^'"]*\1/</span>;</span><br></pre></td></tr></table></figure>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 单引号中不允许双引号，双引号中也不允许单引号</span></span><br><span class="line"><span class="keyword">var</span> pattern = <span class="regexp">/(['"])[^\1]*\1/</span>;</span><br></pre></td></tr></table></figure>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一个括号捕获a，第二个括号捕获c</span></span><br><span class="line"><span class="string">"abcabc"</span>.match(<span class="regexp">/(.)b(.)/</span>); <span class="comment">// ["abc", "a", "c"]</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var pattern = /(['"])[^'"]*\1/;</code></pre>
+<pre class=" language-JavaScript"><code class="language-JavaScript">// 单引号中不允许双引号，双引号中也不允许单引号
+var pattern = /(['"])[^\1]*\1/;</code></pre>
+<pre class=" language-JavaScript"><code class="language-JavaScript">// 第一个括号捕获a，第二个括号捕获c
+"abcabc".match(/(.)b(.)/); // ["abc", "a", "c"]</code></pre>
 <p>组匹配，不宜用g修饰符，否则match方法不会捕获分组内容。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"abcabc"</span>.match(<span class="regexp">/(.)b(.)/g</span>); <span class="comment">// ["abc", "abc"]</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">"abcabc".match(/(.)b(.)/g); // ["abc", "abc"]</code></pre>
 <p><code>\n</code>引用括号匹配的内容，n是从1开始的自然数，表示对应的括号。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// \1表示第一个括号匹配内容a，\2表示第二个括号匹配内容b</span></span><br><span class="line">/(.)b(.)\<span class="number">1</span>b\<span class="number">2</span>/.test(<span class="string">"abcabc"</span>) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">// \1表示第一个括号匹配内容a，\2表示第二个括号匹配内容b
+/(.)b(.)\1b\2/.test("abcabc") // true</code></pre>
 <p>组匹配匹配网页标签。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/<span class="xml"><span class="tag">&lt;<span class="name">([^</span>&gt;</span>]+)&gt;[^<span class="tag">&lt;<span class="name">]*</span>&lt;\/\<span class="attr">1</span>&gt;</span>/.exec("<span class="tag">&lt;<span class="name">b</span>&gt;</span>bold<span class="tag">&lt;/<span class="name">b</span>&gt;</span>")[1] // "b"</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">/<([^>]+)>[^<]*<\/\1>/.exec("<b>bold</b>")[1] // "b"</code></pre>
 <p>捕获有属性的标签。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> html = <span class="string">"&lt;b class="</span>hello<span class="string">"&gt;Hello&lt;/b&gt;&lt;i&gt;world&lt;/i&gt;"</span>;</span><br><span class="line"><span class="keyword">var</span> tag = <span class="regexp">/&lt;(\w+)([^&gt;]*)&gt;(.*)&lt;\/\1&gt;/g</span>;</span><br><span class="line"><span class="keyword">var</span> match = tag.exec(html);</span><br><span class="line">match[<span class="number">1</span>] <span class="comment">// "b"</span></span><br><span class="line">match[<span class="number">2</span>] <span class="comment">// "class="hello""</span></span><br><span class="line">match[<span class="number">3</span>] <span class="comment">// "Hello"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> match = tag.exec(html);</span><br><span class="line">match[<span class="number">1</span>] <span class="comment">// "i"</span></span><br><span class="line">match[<span class="number">2</span>] <span class="comment">// ""</span></span><br><span class="line">match[<span class="number">3</span>] <span class="comment">// "world"</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var html = "<b class="hello">Hello</b><i>world</i>";
+var tag = /<(\w+)([^>]*)>(.*)<\/\1>/g;
+var match = tag.exec(html);
+match[1] // "b"
+match[2] // "class="hello""
+match[3] // "Hello"
+
+var match = tag.exec(html);
+match[1] // "i"
+match[2] // ""
+match[3] // "world"</code></pre>
 <p>非捕获组（Non-capturing group）：(?:x)，不返回该组匹配的内容，这个括号不计入匹配结果。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一个括号是非捕获组，返回的第一个被捕获的组是第二个括号匹配的c</span></span><br><span class="line"><span class="keyword">var</span> m = <span class="string">"abc"</span>.match(<span class="regexp">/(?:.)b(.)/</span>);</span><br><span class="line">m[<span class="number">1</span>] <span class="comment">// "c"</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">// 第一个括号是非捕获组，返回的第一个被捕获的组是第二个括号匹配的c
+var m = "abc".match(/(?:.)b(.)/);
+m[1] // "c"</code></pre>
 <p>分解网址。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> url = <span class="regexp">/(http|ftp):\/\/([^/\r\n]+)(\/[^\r\n]*)/</span>;</span><br><span class="line">url.exec(<span class="string">"http://google.com/"</span>); <span class="comment">// ["http://google.com/", "http", "google.com", "/"]</span></span><br><span class="line"><span class="comment">// 正常匹配，第一个括号返回网络协议http</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> url = <span class="regexp">/(?:http|ftp):\/\/([^/\r\n]+)(\/[^\r\n]*)/</span>;</span><br><span class="line">url.exec(<span class="string">"http://google.com/"</span>); <span class="comment">// ["http://google.com/", "google.com", "/"]</span></span><br><span class="line"><span class="comment">// 非捕获匹配，返回结果不包括http</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var url = /(http|ftp):\/\/([^/\r\n]+)(\/[^\r\n]*)/;
+url.exec("http://google.com/"); // ["http://google.com/", "http", "google.com", "/"]
+// 正常匹配，第一个括号返回网络协议http
+
+var url = /(?:http|ftp):\/\/([^/\r\n]+)(\/[^\r\n]*)/;
+url.exec("http://google.com/"); // ["http://google.com/", "google.com", "/"]
+// 非捕获匹配，返回结果不包括http</code></pre>
 <p>先行断言（Positive look-ahead）：x(?=y)，x在y前面才匹配，y不计入返回结果。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"abc"</span>.match(<span class="regexp">/b(?=c)/</span>); <span class="comment">// ["b"]</span></span><br><span class="line"><span class="comment">// b在c前所以匹配，括号对应的c不会返回</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">"abc".match(/b(?=c)/); // ["b"]
+// b在c前所以匹配，括号对应的c不会返回</code></pre>
 <p>后行断言（Negative look-ahead）：x(?!y)，x不在y前面才匹配，y不计入返回结果。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"abd"</span>.match(<span class="regexp">/b(?!c)/</span>); <span class="comment">// ["b"]</span></span><br><span class="line"><span class="comment">// b不在c前所以匹配，括号对应的d不会返回</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">"abd".match(/b(?!c)/); // ["b"]
+// b不在c前所以匹配，括号对应的d不会返回</code></pre>
 <p>修饰符（modifier）</p>
 <p>g修饰符：global，全局匹配。默认情况下，第一次匹配成功后就停止。global将匹配全部符合的结果，主要用于搜索和替换。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> r = <span class="regexp">/test/g</span>;</span><br><span class="line"><span class="comment">// 等价于</span></span><br><span class="line"><span class="keyword">var</span> r = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">"test"</span>, <span class="string">"g"</span>); </span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span>  reg = <span class="regexp">/b/</span>;</span><br><span class="line"><span class="comment">// 不加g修饰符，每次匹配都从字符串头部开始</span></span><br><span class="line">reg.test(<span class="string">"abba"</span>); <span class="comment">// true</span></span><br><span class="line">reg.test(<span class="string">"abba"</span>); <span class="comment">// true</span></span><br><span class="line">reg.test(<span class="string">"abba"</span>); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span>  reg = <span class="regexp">/b/g</span>;</span><br><span class="line"><span class="comment">// 加g修饰符，每次匹配都从上一次匹配成功处开始</span></span><br><span class="line">reg.test(<span class="string">"abba"</span>); <span class="comment">// true</span></span><br><span class="line">reg.test(<span class="string">"abba"</span>); <span class="comment">// true</span></span><br><span class="line">reg.test(<span class="string">"abba"</span>); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var r = /test/g;
+// 等价于
+var r = new RegExp("test", "g"); 
+
+var  reg = /b/;
+// 不加g修饰符，每次匹配都从字符串头部开始
+reg.test("abba"); // true
+reg.test("abba"); // true
+reg.test("abba"); // true
+
+var  reg = /b/g;
+// 加g修饰符，每次匹配都从上一次匹配成功处开始
+reg.test("abba"); // true
+reg.test("abba"); // true
+reg.test("abba"); // false</code></pre>
 <p>全局匹配可多次执行exec()搜索字符串。指定g后，每次exec()，会更新lastIndex属性，表示上次匹配到的最后索引：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> s = <span class="string">"JavaScript, VBScript, JScript and ECMAScript"</span>;</span><br><span class="line"><span class="keyword">var</span> re = <span class="regexp">/[a-zA-Z]+Script/g</span>;</span><br><span class="line"><span class="comment">// 全局匹配:</span></span><br><span class="line">re.exec(s); <span class="comment">// ["JavaScript"]</span></span><br><span class="line">re.lastIndex; <span class="comment">// 10</span></span><br><span class="line"></span><br><span class="line">re.exec(s); <span class="comment">// ["VBScript"]</span></span><br><span class="line">re.lastIndex; <span class="comment">// 20</span></span><br><span class="line"></span><br><span class="line">re.exec(s); <span class="comment">// ["JScript"]</span></span><br><span class="line">re.lastIndex; <span class="comment">// 29</span></span><br><span class="line"></span><br><span class="line">re.exec(s); <span class="comment">// ["ECMAScript"]</span></span><br><span class="line">re.lastIndex; <span class="comment">// 44</span></span><br><span class="line"></span><br><span class="line">re.exec(s); <span class="comment">// null，直到结束仍没匹配到</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">var s = "JavaScript, VBScript, JScript and ECMAScript";
+var re = /[a-zA-Z]+Script/g;
+// 全局匹配:
+re.exec(s); // ["JavaScript"]
+re.lastIndex; // 10
+
+re.exec(s); // ["VBScript"]
+re.lastIndex; // 20
+
+re.exec(s); // ["JScript"]
+re.lastIndex; // 29
+
+re.exec(s); // ["ECMAScript"]
+re.lastIndex; // 44
+
+re.exec(s); // null，直到结束仍没匹配到 </code></pre>
 <p>全局匹配类似搜索，因此不能使用<code>/^...$/</code>，那样只会最多匹配一次。</p>
 <p>i修饰符：ignorecase，忽略大小写。</p>
 <p>m修饰符：multiline，多行模式，到达一行文本末还继续查找下一行。</p>
@@ -258,7 +384,13 @@
 <li>字符串的头部或尾部可能会有换行符。正则默认将换行符算入字符串的开头或结尾。</li>
 <li>加上m修饰符后会忽略字符串头部或尾部的换行符，即<code>^</code>和<code>$</code>会忽略换行符。</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不加m修饰符，匹配失败，因为结尾不是world</span></span><br><span class="line">/world$/.test(<span class="string">"hello world\n"</span>) <span class="comment">// false</span></span><br><span class="line"><span class="comment">// 加上后，换行符被忽略，匹配成功</span></span><br><span class="line">/world$/m.test(<span class="string">"hello world\n"</span>) <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line">/^javascript/.test(<span class="string">"java\njavascript"</span>); <span class="comment">// false</span></span><br><span class="line">/^javascript/m.test(<span class="string">"java\njavascript"</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-JavaScript"><code class="language-JavaScript">// 不加m修饰符，匹配失败，因为结尾不是world
+/world$/.test("hello world\n") // false
+// 加上后，换行符被忽略，匹配成功
+/world$/m.test("hello world\n") // true
+
+/^javascript/.test("java\njavascript"); // false
+/^javascript/m.test("java\njavascript"); // true</code></pre>
 <p>修饰符多个一起用：<code>var reg = /test/ig;</code>。</p>
 
 				</div>
@@ -278,26 +410,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

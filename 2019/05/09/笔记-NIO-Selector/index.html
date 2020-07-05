@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-NIO-Selector | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-NIO-Selector">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-NIO-Selector | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-NIO-Selector"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -100,8 +96,175 @@
 				
 				<div class="article-content">
 				<p>Selector</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Selector</span> <span class="keyword">implements</span> <span class="title">Closeable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">Selector</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Selector <span class="title">open</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SelectorProvider.provider().openSelector();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isOpen</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> SelectorProvider <span class="title">provider</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Set&lt;SelectionKey&gt; <span class="title">keys</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Set&lt;SelectionKey&gt; <span class="title">selectedKeys</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 立即返回不阻塞</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">selectNow</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 直到指定时间或者就绪</span></span><br><span class="line">    <span class="comment">// 返回的int值表示有多少通道已经就绪</span></span><br><span class="line">    <span class="comment">// 即，自上次调用select()方法后有多少通道变成就绪状态</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">long</span> timeout)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 阻塞到至少有一个通道在注册的事件上就绪了</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">select</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 某个线程调用select()方法后阻塞了，其它线程调用wakeup()使阻塞在select()方法上的线程马上返回</span></span><br><span class="line">    <span class="comment">// 如果有其它线程调用了wakeup()方法，但当前没有线程阻塞在select()方法上，下个调用select()方法的线程会立即wakeup</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Selector <span class="title">wakeup</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 关闭该Selector，且使注册到该Selector上的所有SelectionKey实例无效</span></span><br><span class="line">    <span class="comment">// 通道本身并不会关闭</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">int</span> BUF_SIZE = <span class="number">1024</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">int</span> TIMEOUT = <span class="number">3000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打开ServerSocketChannel</span></span><br><span class="line">ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打开Selector</span></span><br><span class="line">Selector selector = Selector.open();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 配置为非阻塞模式</span></span><br><span class="line">serverSocketChannel.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line"><span class="comment">// ServerSocketChannel监听8080端口</span></span><br><span class="line">serverSocketChannel.socket().bind(<span class="keyword">new</span> InetSocketAddress(<span class="number">8080</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 只有非阻塞的Channel才能注册到Selector，FileChannel不能用选择器，因为是阻塞的</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 将ServerSocketChannel注册到Selector中，指定关注OP_ACCEPT事件</span></span><br><span class="line"><span class="comment">// 通常先注册OP_ACCEPT事件，然后在OP_ACCEPT时，再将这个Channel的OP_READ事件注册到Selector中</span></span><br><span class="line">SelectionKey key = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一个Channel仅可以被注册到一个Selector一次，重复注册，相当于更新SelectionKey的interestSet</span></span><br><span class="line"><span class="comment">// 在注册的时候加一个附件</span></span><br><span class="line">key = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, <span class="keyword">new</span> Object());</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">    <span class="comment">// select方法阻塞地等待Channel就绪，返回值表示有多少个Channel就绪</span></span><br><span class="line">    <span class="keyword">if</span> (selector.select(TIMEOUT) == <span class="number">0</span>) &#123;</span><br><span class="line">        System.out.print(<span class="string">"..."</span>);</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 有通道就绪了，然后可以访问已关注选择键集合中的就绪通道</span></span><br><span class="line">    Set&lt;SelectionKey&gt; selectedKeys = selector.selectedKeys();</span><br><span class="line"></span><br><span class="line">    Iterator&lt;SelectionKey&gt; keyIterator = selectedKeys.iterator();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (keyIterator.hasNext()) &#123;</span><br><span class="line">        <span class="comment">// 每次迭代将SelectionKey删除，表示已处理</span></span><br><span class="line">        keyIterator.remove();</span><br><span class="line"></span><br><span class="line">        SelectionKey selectionKey = keyIterator.next();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取对应的Channel，需要转型</span></span><br><span class="line">        Channel channel = selectionKey.channel();</span><br><span class="line">        <span class="comment">// 获取对应的Selector</span></span><br><span class="line">        Selector _selector = selectionKey.selector();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 加一个附件</span></span><br><span class="line">        selectionKey.attach(<span class="keyword">new</span> Object());</span><br><span class="line">        <span class="comment">// 获取附件</span></span><br><span class="line">        Object attachedObj = selectionKey.attachment();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取关注事件集</span></span><br><span class="line">        <span class="keyword">int</span> interestSet = selectionKey.interestOps();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> isInterestedInAccept = interestSet &amp; SelectionKey.OP_ACCEPT;</span><br><span class="line">        <span class="keyword">int</span> isInterestedInConnect = interestSet &amp; SelectionKey.OP_CONNECT;</span><br><span class="line">        <span class="keyword">int</span> isInterestedInRead = interestSet &amp; SelectionKey.OP_READ;</span><br><span class="line">        <span class="keyword">int</span> isInterestedInWrite = interestSet &amp; SelectionKey.OP_WRITE;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 也可以通过这个来判断就绪事件</span></span><br><span class="line">        <span class="keyword">int</span> readySet = selectionKey.readyOps();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (selectionKey.isAcceptable()) &#123;</span><br><span class="line">            <span class="comment">// 创建SocketChannel有两种：</span></span><br><span class="line">            <span class="comment">// 打开SocketChannel并连接到主机</span></span><br><span class="line">            <span class="comment">// 一个新连接到达ServerSocketChannel时，会创建一个SocketChannel</span></span><br><span class="line">            SocketChannel clientChannel = ((ServerSocketChannel) selectionKey.channel()).accept();</span><br><span class="line">            clientChannel.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line">            <span class="comment">// 如果没有设置OP_READ，即interestSet仍是OP_CONNECT的话，select方法会直接返回</span></span><br><span class="line">            clientChannel.register(selectionKey.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(BUF_SIZE));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (selectionKey.isReadable()) &#123;</span><br><span class="line">            SocketChannel clientChannel = (SocketChannel) selectionKey.channel();</span><br><span class="line">            ByteBuffer buf = (ByteBuffer) selectionKey.attachment();</span><br><span class="line">            <span class="comment">// 返回的int值表示从通道读了多少字节进缓冲里</span></span><br><span class="line">            <span class="comment">// 如果返回-1，表示已经读到了流的末尾（连接关闭了）</span></span><br><span class="line">            <span class="keyword">long</span> bytesRead = clientChannel.read(buf);</span><br><span class="line">            <span class="keyword">if</span> (bytesRead == -<span class="number">1</span>) &#123;</span><br><span class="line">                clientChannel.close();</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (bytesRead &gt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 或运算组合多个事件 更新</span></span><br><span class="line">                selectionKey.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);</span><br><span class="line">                System.out.println(<span class="string">"Get data length: "</span> + bytesRead);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (selectionKey.isValid() &amp;&amp; selectionKey.isWritable()) &#123;</span><br><span class="line">            ByteBuffer buf = (ByteBuffer) key.attachment();</span><br><span class="line">            <span class="comment">// 切换到读模式</span></span><br><span class="line">            buf.flip();</span><br><span class="line">            SocketChannel clientChannel = (SocketChannel) selectionKey.channel();</span><br><span class="line">            <span class="comment">// 从缓冲写入通道</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (buf.hasRemaining()) &#123;</span><br><span class="line">                clientChannel.write(buf);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 如果没有剩余</span></span><br><span class="line">            selectionKey.interestOps(SelectionKey.OP_READ);</span><br><span class="line"></span><br><span class="line">            buf.compact();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// SelectionKey.OP_ACCEPT</span></span><br><span class="line">        <span class="comment">// 连接建立完成</span></span><br><span class="line">        <span class="keyword">if</span> (selectionKey.isAcceptable()) &#123;</span><br><span class="line">            <span class="comment">// a connection was accepted by a ServerSocketChannel.</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// SelectionKey.OP_CONNECT</span></span><br><span class="line">        <span class="comment">// TCP三次握手完成</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (selectionKey.isConnectable()) &#123;</span><br><span class="line">            <span class="comment">// a connection was established with a remote server.</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// SelectionKey.OP_READ</span></span><br><span class="line">        <span class="comment">// TCP接收缓冲区可读</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (selectionKey.isReadable()) &#123;</span><br><span class="line">            <span class="comment">// a channel is ready for reading</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// SelectionKey.OP_WRITE</span></span><br><span class="line">        <span class="comment">// TCP发送缓冲区可写</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (selectionKey.isWritable()) &#123;</span><br><span class="line">            <span class="comment">// a channel is ready for writing</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    serverSocketChannel.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Selector</span> <span class="token keyword">implements</span> <span class="token class-name">Closeable</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">protected</span> <span class="token function">Selector</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> Selector <span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> SelectorProvider<span class="token punctuation">.</span><span class="token function">provider</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">openSelector</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">boolean</span> <span class="token function">isOpen</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">abstract</span> SelectorProvider <span class="token function">provider</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">abstract</span> Set<span class="token operator">&lt;</span>SelectionKey<span class="token operator">></span> <span class="token function">keys</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">abstract</span> Set<span class="token operator">&lt;</span>SelectionKey<span class="token operator">></span> <span class="token function">selectedKeys</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 立即返回不阻塞</span>
+    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">int</span> <span class="token function">selectNow</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 直到指定时间或者就绪</span>
+    <span class="token comment" spellcheck="true">// 返回的int值表示有多少通道已经就绪</span>
+    <span class="token comment" spellcheck="true">// 即，自上次调用select()方法后有多少通道变成就绪状态</span>
+    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">int</span> <span class="token function">select</span><span class="token punctuation">(</span><span class="token keyword">long</span> timeout<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 阻塞到至少有一个通道在注册的事件上就绪了</span>
+    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">int</span> <span class="token function">select</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">;</span>
+
+
+    <span class="token comment" spellcheck="true">// 某个线程调用select()方法后阻塞了，其它线程调用wakeup()使阻塞在select()方法上的线程马上返回</span>
+    <span class="token comment" spellcheck="true">// 如果有其它线程调用了wakeup()方法，但当前没有线程阻塞在select()方法上，下个调用select()方法的线程会立即wakeup</span>
+    <span class="token keyword">public</span> <span class="token keyword">abstract</span> Selector <span class="token function">wakeup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 关闭该Selector，且使注册到该Selector上的所有SelectionKey实例无效</span>
+    <span class="token comment" spellcheck="true">// 通道本身并不会关闭</span>
+    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span></code></pre>
+<pre class=" language-java"><code class="language-java">        <span class="token keyword">final</span> <span class="token keyword">int</span> BUF_SIZE <span class="token operator">=</span> <span class="token number">1024</span><span class="token punctuation">;</span>
+        <span class="token keyword">final</span> <span class="token keyword">int</span> TIMEOUT <span class="token operator">=</span> <span class="token number">3000</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 打开ServerSocketChannel</span>
+        ServerSocketChannel serverSocketChannel <span class="token operator">=</span> ServerSocketChannel<span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 打开Selector</span>
+        Selector selector <span class="token operator">=</span> Selector<span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 配置为非阻塞模式</span>
+        serverSocketChannel<span class="token punctuation">.</span><span class="token function">configureBlocking</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ServerSocketChannel监听8080端口</span>
+        serverSocketChannel<span class="token punctuation">.</span><span class="token function">socket</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InetSocketAddress</span><span class="token punctuation">(</span><span class="token number">8080</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 只有非阻塞的Channel才能注册到Selector，FileChannel不能用选择器，因为是阻塞的</span>
+
+        <span class="token comment" spellcheck="true">// 将ServerSocketChannel注册到Selector中，指定关注OP_ACCEPT事件</span>
+        <span class="token comment" spellcheck="true">// 通常先注册OP_ACCEPT事件，然后在OP_ACCEPT时，再将这个Channel的OP_READ事件注册到Selector中</span>
+        SelectionKey key <span class="token operator">=</span> serverSocketChannel<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span>selector<span class="token punctuation">,</span> SelectionKey<span class="token punctuation">.</span>OP_ACCEPT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 一个Channel仅可以被注册到一个Selector一次，重复注册，相当于更新SelectionKey的interestSet</span>
+        <span class="token comment" spellcheck="true">// 在注册的时候加一个附件</span>
+        key <span class="token operator">=</span> serverSocketChannel<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span>selector<span class="token punctuation">,</span> SelectionKey<span class="token punctuation">.</span>OP_ACCEPT<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// select方法阻塞地等待Channel就绪，返回值表示有多少个Channel就绪</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>selector<span class="token punctuation">.</span><span class="token function">select</span><span class="token punctuation">(</span>TIMEOUT<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">continue</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">// 有通道就绪了，然后可以访问已关注选择键集合中的就绪通道</span>
+            Set<span class="token operator">&lt;</span>SelectionKey<span class="token operator">></span> selectedKeys <span class="token operator">=</span> selector<span class="token punctuation">.</span><span class="token function">selectedKeys</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            Iterator<span class="token operator">&lt;</span>SelectionKey<span class="token operator">></span> keyIterator <span class="token operator">=</span> selectedKeys<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>keyIterator<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 每次迭代将SelectionKey删除，表示已处理</span>
+                keyIterator<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                SelectionKey selectionKey <span class="token operator">=</span> keyIterator<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// 获取对应的Channel，需要转型</span>
+                Channel channel <span class="token operator">=</span> selectionKey<span class="token punctuation">.</span><span class="token function">channel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 获取对应的Selector</span>
+                Selector _selector <span class="token operator">=</span> selectionKey<span class="token punctuation">.</span><span class="token function">selector</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// 加一个附件</span>
+                selectionKey<span class="token punctuation">.</span><span class="token function">attach</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 获取附件</span>
+                Object attachedObj <span class="token operator">=</span> selectionKey<span class="token punctuation">.</span><span class="token function">attachment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// 获取关注事件集</span>
+                <span class="token keyword">int</span> interestSet <span class="token operator">=</span> selectionKey<span class="token punctuation">.</span><span class="token function">interestOps</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token keyword">int</span> isInterestedInAccept <span class="token operator">=</span> interestSet <span class="token operator">&amp;</span> SelectionKey<span class="token punctuation">.</span>OP_ACCEPT<span class="token punctuation">;</span>
+                <span class="token keyword">int</span> isInterestedInConnect <span class="token operator">=</span> interestSet <span class="token operator">&amp;</span> SelectionKey<span class="token punctuation">.</span>OP_CONNECT<span class="token punctuation">;</span>
+                <span class="token keyword">int</span> isInterestedInRead <span class="token operator">=</span> interestSet <span class="token operator">&amp;</span> SelectionKey<span class="token punctuation">.</span>OP_READ<span class="token punctuation">;</span>
+                <span class="token keyword">int</span> isInterestedInWrite <span class="token operator">=</span> interestSet <span class="token operator">&amp;</span> SelectionKey<span class="token punctuation">.</span>OP_WRITE<span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// 也可以通过这个来判断就绪事件</span>
+                <span class="token keyword">int</span> readySet <span class="token operator">=</span> selectionKey<span class="token punctuation">.</span><span class="token function">readyOps</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>selectionKey<span class="token punctuation">.</span><span class="token function">isAcceptable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// 创建SocketChannel有两种：</span>
+                    <span class="token comment" spellcheck="true">// 打开SocketChannel并连接到主机</span>
+                    <span class="token comment" spellcheck="true">// 一个新连接到达ServerSocketChannel时，会创建一个SocketChannel</span>
+                    SocketChannel clientChannel <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>ServerSocketChannel<span class="token punctuation">)</span> selectionKey<span class="token punctuation">.</span><span class="token function">channel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">accept</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    clientChannel<span class="token punctuation">.</span><span class="token function">configureBlocking</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 如果没有设置OP_READ，即interestSet仍是OP_CONNECT的话，select方法会直接返回</span>
+                    clientChannel<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span>selectionKey<span class="token punctuation">.</span><span class="token function">selector</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> SelectionKey<span class="token punctuation">.</span>OP_READ<span class="token punctuation">,</span> ByteBuffer<span class="token punctuation">.</span><span class="token function">allocate</span><span class="token punctuation">(</span>BUF_SIZE<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>selectionKey<span class="token punctuation">.</span><span class="token function">isReadable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    SocketChannel clientChannel <span class="token operator">=</span> <span class="token punctuation">(</span>SocketChannel<span class="token punctuation">)</span> selectionKey<span class="token punctuation">.</span><span class="token function">channel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    ByteBuffer buf <span class="token operator">=</span> <span class="token punctuation">(</span>ByteBuffer<span class="token punctuation">)</span> selectionKey<span class="token punctuation">.</span><span class="token function">attachment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 返回的int值表示从通道读了多少字节进缓冲里</span>
+                    <span class="token comment" spellcheck="true">// 如果返回-1，表示已经读到了流的末尾（连接关闭了）</span>
+                    <span class="token keyword">long</span> bytesRead <span class="token operator">=</span> clientChannel<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>bytesRead <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        clientChannel<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>bytesRead <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+                        <span class="token comment" spellcheck="true">// 或运算组合多个事件 更新</span>
+                        selectionKey<span class="token punctuation">.</span><span class="token function">interestOps</span><span class="token punctuation">(</span>SelectionKey<span class="token punctuation">.</span>OP_READ <span class="token operator">|</span> SelectionKey<span class="token punctuation">.</span>OP_WRITE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Get data length: "</span> <span class="token operator">+</span> bytesRead<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>selectionKey<span class="token punctuation">.</span><span class="token function">isValid</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> selectionKey<span class="token punctuation">.</span><span class="token function">isWritable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    ByteBuffer buf <span class="token operator">=</span> <span class="token punctuation">(</span>ByteBuffer<span class="token punctuation">)</span> key<span class="token punctuation">.</span><span class="token function">attachment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 切换到读模式</span>
+                    buf<span class="token punctuation">.</span><span class="token function">flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    SocketChannel clientChannel <span class="token operator">=</span> <span class="token punctuation">(</span>SocketChannel<span class="token punctuation">)</span> selectionKey<span class="token punctuation">.</span><span class="token function">channel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 从缓冲写入通道</span>
+
+                    <span class="token keyword">while</span> <span class="token punctuation">(</span>buf<span class="token punctuation">.</span><span class="token function">hasRemaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        clientChannel<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+
+                    <span class="token comment" spellcheck="true">// 如果没有剩余</span>
+                    selectionKey<span class="token punctuation">.</span><span class="token function">interestOps</span><span class="token punctuation">(</span>SelectionKey<span class="token punctuation">.</span>OP_READ<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                    buf<span class="token punctuation">.</span><span class="token function">compact</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment" spellcheck="true">// SelectionKey.OP_ACCEPT</span>
+                <span class="token comment" spellcheck="true">// 连接建立完成</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>selectionKey<span class="token punctuation">.</span><span class="token function">isAcceptable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// a connection was accepted by a ServerSocketChannel.</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment" spellcheck="true">// SelectionKey.OP_CONNECT</span>
+                <span class="token comment" spellcheck="true">// TCP三次握手完成</span>
+                <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>selectionKey<span class="token punctuation">.</span><span class="token function">isConnectable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// a connection was established with a remote server.</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment" spellcheck="true">// SelectionKey.OP_READ</span>
+                <span class="token comment" spellcheck="true">// TCP接收缓冲区可读</span>
+                <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>selectionKey<span class="token punctuation">.</span><span class="token function">isReadable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// a channel is ready for reading</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">// SelectionKey.OP_WRITE</span>
+                <span class="token comment" spellcheck="true">// TCP发送缓冲区可写</span>
+                <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>selectionKey<span class="token punctuation">.</span><span class="token function">isWritable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// a channel is ready for writing</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            serverSocketChannel<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span></code></pre>
 
 				</div>
 				<!-- about -->
@@ -120,26 +283,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

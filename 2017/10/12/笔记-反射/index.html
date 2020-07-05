@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-反射 | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-反射">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-反射 | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-反射"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -99,60 +95,286 @@
 				</div>
 				
 				<div class="article-content">
-				<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">clazz.getName(); <span class="comment">// 得到类的名称</span></span><br><span class="line">clazz.getSuperclass(); <span class="comment">// 父类</span></span><br><span class="line">clazz.getPackage(); <span class="comment">// 包</span></span><br><span class="line">Class&lt;?&gt; c[] = clazz.getInterfaces(); <span class="comment">// 以数组形式返回实现的全部接口</span></span><br><span class="line">Class&lt;?&gt;[] inners = clazz.getDeclaredClasses(); <span class="comment">// 全部内部类</span></span><br><span class="line">Class inClazz = Class.forName(<span class="string">"X$Inner"</span>); <span class="comment">// 内部类</span></span><br><span class="line">inClazz.getDeclaringClass(); <span class="comment">// 外部类</span></span><br><span class="line"></span><br><span class="line">X x = (X) clazz.newInstance(); <span class="comment">// 无参实例化</span></span><br><span class="line">Constructor&lt;?&gt; cons[] = clazz.getConstructors(); <span class="comment">// public构造器</span></span><br><span class="line">Constructor&lt;?&gt; cons[] = clazz.getDeclaredConstructors(); <span class="comment">// 全部构造器</span></span><br><span class="line">X x = (X) cons[<span class="number">0</span>].newInstance(<span class="string">"cnm"</span>, <span class="number">18</span>); <span class="comment">// 有参实例化对象</span></span><br><span class="line">Constructor ctor = clazz.getConstructor(String.class); <span class="comment">// 带一个字符串参数的构造器</span></span><br><span class="line">Object obj = ctor.newInstance(<span class="string">"cnm"</span>); <span class="comment">// 调用Constructor的newInstance方法创建对象</span></span><br><span class="line"></span><br><span class="line">Method[] mtds = clazz.getMethods(); <span class="comment">// 全部public方法</span></span><br><span class="line">Method metd = clazz.getMethod(<span class="string">"info"</span>);</span><br><span class="line">Method[] mtds = clazz.getMethod(<span class="string">"info"</span>, String.class); <span class="comment">// 带一个字符串参数的info方法</span></span><br><span class="line">Method metd = clazz.getMethod(<span class="string">"info"</span>, String.class, <span class="keyword">int</span>.class);</span><br><span class="line">String rv = (String) metd.invoke(clazz.newInstance(), <span class="string">"cnm"</span>, <span class="number">18</span>); <span class="comment">// 调用方法</span></span><br><span class="line"></span><br><span class="line">Annotation[] anns = clazz.getAnnotations(); <span class="comment">// 全部注释</span></span><br><span class="line"></span><br><span class="line">Field nameField = clazz.getDeclaredField(<span class="string">"name"</span>); <span class="comment">// 取得name属性</span></span><br><span class="line">nameField.setAccessible(<span class="keyword">true</span>); <span class="comment">// 此属性对外部可见</span></span><br><span class="line">nameField.set(obj, <span class="string">"cnm"</span>); <span class="comment">// 设置name属性内容</span></span><br><span class="line">System.out.println(<span class="string">"姓名："</span> + nameField.get(obj));</span><br></pre></td></tr></table></figure>
+				<pre class=" language-Java"><code class="language-Java">clazz.getName(); // 得到类的名称
+clazz.getSuperclass(); // 父类
+clazz.getPackage(); // 包
+Class<?> c[] = clazz.getInterfaces(); // 以数组形式返回实现的全部接口
+Class<?>[] inners = clazz.getDeclaredClasses(); // 全部内部类
+Class inClazz = Class.forName("X$Inner"); // 内部类
+inClazz.getDeclaringClass(); // 外部类
+
+X x = (X) clazz.newInstance(); // 无参实例化
+Constructor<?> cons[] = clazz.getConstructors(); // public构造器
+Constructor<?> cons[] = clazz.getDeclaredConstructors(); // 全部构造器
+X x = (X) cons[0].newInstance("cnm", 18); // 有参实例化对象
+Constructor ctor = clazz.getConstructor(String.class); // 带一个字符串参数的构造器
+Object obj = ctor.newInstance("cnm"); // 调用Constructor的newInstance方法创建对象
+
+Method[] mtds = clazz.getMethods(); // 全部public方法
+Method metd = clazz.getMethod("info");
+Method[] mtds = clazz.getMethod("info", String.class); // 带一个字符串参数的info方法
+Method metd = clazz.getMethod("info", String.class, int.class);
+String rv = (String) metd.invoke(clazz.newInstance(), "cnm", 18); // 调用方法
+
+Annotation[] anns = clazz.getAnnotations(); // 全部注释
+
+Field nameField = clazz.getDeclaredField("name"); // 取得name属性
+nameField.setAccessible(true); // 此属性对外部可见
+nameField.set(obj, "cnm"); // 设置name属性内容
+System.out.println("姓名：" + nameField.get(obj));</code></pre>
 <p>Class对象</p>
 <p>所有类型包括基本类型，数组都有类对象。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;?&gt; aClass = MyObject.class;</span><br><span class="line">Class&lt;?&gt; aClass = Class.forName(<span class="string">"xxx.className"</span>); <span class="comment">// 类全名</span></span><br><span class="line">Class&lt;?&gt; aClass = <span class="keyword">new</span> MyObject().getClass()</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">Class<?> aClass = MyObject.class;
+Class<?> aClass = Class.forName("xxx.className"); // 类全名
+Class<?> aClass = new MyObject().getClass()</code></pre>
 <p>通常一个JVM下，只有一个ClassLoader。一个ClassLoader下，一种类，只有一个类对象。</p>
 <p>获取类对象会导致类属性被初始化，而且只执行一次。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> String copyright;</span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    System.out.println(<span class="string">"初始化 copyright"</span>);</span><br><span class="line">    copyright = <span class="string">""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">static String copyright;
+static {
+    System.out.println("初始化 copyright");
+    copyright = "";
+}</code></pre>
 <p>类名</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">String className = aClass.getName(); <span class="comment">// 全限定类名</span></span><br><span class="line"></span><br><span class="line">String simpleClassName = aClass.getSimpleName(); <span class="comment">// 不包含包名</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">String className = aClass.getName(); // 全限定类名
+
+String simpleClassName = aClass.getSimpleName(); // 不包含包名</code></pre>
 <p>修饰符</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> modifiers = aClass.getModifiers();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 检查修饰符的类型</span></span><br><span class="line">Modifier.isAbstract(<span class="keyword">int</span> modifiers);</span><br><span class="line">Modifier.isFinal(<span class="keyword">int</span> modifiers);</span><br><span class="line">Modifier.isInterface(<span class="keyword">int</span> modifiers);</span><br><span class="line">Modifier.isNative(<span class="keyword">int</span> modifiers);</span><br><span class="line">Modifier.isPrivate(<span class="keyword">int</span> modifiers);</span><br><span class="line">Modifier.isProtected(<span class="keyword">int</span> modifiers);</span><br><span class="line">Modifier.isPublic(<span class="keyword">int</span> modifiers);</span><br><span class="line">Modifier.isStatic(<span class="keyword">int</span> modifiers);</span><br><span class="line">Modifier.isStrict(<span class="keyword">int</span> modifiers);</span><br><span class="line">Modifier.isSynchronized(<span class="keyword">int</span> modifiers);</span><br><span class="line">Modifier.isTransient(<span class="keyword">int</span> modifiers);</span><br><span class="line">Modifier.isVolatile(<span class="keyword">int</span> modifiers);</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">int modifiers = aClass.getModifiers();
+
+// 检查修饰符的类型
+Modifier.isAbstract(int modifiers);
+Modifier.isFinal(int modifiers);
+Modifier.isInterface(int modifiers);
+Modifier.isNative(int modifiers);
+Modifier.isPrivate(int modifiers);
+Modifier.isProtected(int modifiers);
+Modifier.isPublic(int modifiers);
+Modifier.isStatic(int modifiers);
+Modifier.isStrict(int modifiers);
+Modifier.isSynchronized(int modifiers);
+Modifier.isTransient(int modifiers);
+Modifier.isVolatile(int modifiers);</code></pre>
 <p>包信息</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过 Package 对象可以获取包信息，比如包名</span></span><br><span class="line">Package <span class="keyword">package</span> = aClass.getPackage();</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 通过 Package 对象可以获取包信息，比如包名</span>
+Package <span class="token keyword">package</span> <span class="token operator">=</span> aClass<span class="token punctuation">.</span><span class="token function">getPackage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p>父类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class superclass = aClass.getSuperclass();</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">Class <span class="token class-name">superclass</span> <span class="token operator">=</span> aClass<span class="token punctuation">.</span><span class="token function">getSuperclass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p>实现的接口</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class[] interfaces = aClass.getInterfaces(); <span class="comment">// 只返回当前类所实现的接口，不包括父类</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">Class<span class="token punctuation">[</span><span class="token punctuation">]</span> interfaces <span class="token operator">=</span> aClass<span class="token punctuation">.</span><span class="token function">getInterfaces</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 只返回当前类所实现的接口，不包括父类</span></code></pre>
 <p>构造器</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Constructor[] constructors = aClass.getConstructors(); <span class="comment">// 公有（Public）构造方法</span></span><br><span class="line"></span><br><span class="line">Constructor constructor = aClass.getConstructor(<span class="keyword">new</span> Class[]&#123;String.class&#125;); <span class="comment">// 构造方法的方法参数为 String 类型</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取指定构造方法的方法参数</span></span><br><span class="line">Class[] parameterTypes = constructor.getParameterTypes();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Constructor 对象实例化一个类</span></span><br><span class="line">Constructor constructor = MyObject.class.getConstructor(String.class);</span><br><span class="line">MyObject myObject = (MyObject) constructor.newInstance(<span class="string">"constructor-arg1"</span>);</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">Constructor[] constructors = aClass.getConstructors(); // 公有（Public）构造方法
+
+Constructor constructor = aClass.getConstructor(new Class[]{String.class}); // 构造方法的方法参数为 String 类型
+
+// 获取指定构造方法的方法参数
+Class[] parameterTypes = constructor.getParameterTypes();
+
+// Constructor 对象实例化一个类
+Constructor constructor = MyObject.class.getConstructor(String.class);
+MyObject myObject = (MyObject) constructor.newInstance("constructor-arg1");</code></pre>
 <p>方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Method[] methods = aClass.getMethods(); <span class="comment">// 公有的(public)的方法集合</span></span><br><span class="line">Method[] methods = aClass.getDeclaredMethods() <span class="comment">// 包括私有方法</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Class.getMethod(String name, Class[] parameterTypes)</span></span><br><span class="line"><span class="comment">// Class.getDeclaredMethod(String name, Class[] parameterTypes)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回公有方法对象名称doSomething，方法参数是 String 类型</span></span><br><span class="line">Method method = aClass.getMethod(<span class="string">"doSomething"</span>, <span class="keyword">new</span> Class[]&#123;String.class&#125;);</span><br><span class="line">Method method = aClass.getMethod(<span class="string">"doSomething"</span>, String.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取的方法没有参数</span></span><br><span class="line">Method method = aClass.getMethod(<span class="string">"doSomething"</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// method.setAccessible(true);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 静态方法调用的话则可以用 null 代替指定对象实例作为 invoke()的参数</span></span><br><span class="line">Object returnValue = method.invoke(objectInstance, <span class="string">"parameter-value1"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取指定方法的方法参数</span></span><br><span class="line">Class[] parameterTypes = method.getParameterTypes();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取指定方法的返回类型</span></span><br><span class="line">Class returnType = method.getReturnType();</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">Method[] methods = aClass.getMethods(); // 公有的(public)的方法集合
+Method[] methods = aClass.getDeclaredMethods() // 包括私有方法
+
+// Class.getMethod(String name, Class[] parameterTypes)
+// Class.getDeclaredMethod(String name, Class[] parameterTypes)
+
+// 返回公有方法对象名称doSomething，方法参数是 String 类型
+Method method = aClass.getMethod("doSomething", new Class[]{String.class});
+Method method = aClass.getMethod("doSomething", String.class);
+
+// 获取的方法没有参数
+Method method = aClass.getMethod("doSomething", null);
+
+// method.setAccessible(true);
+
+// 静态方法调用的话则可以用 null 代替指定对象实例作为 invoke()的参数
+Object returnValue = method.invoke(objectInstance, "parameter-value1");
+
+// 获取指定方法的方法参数
+Class[] parameterTypes = method.getParameterTypes();
+
+// 获取指定方法的返回类型
+Class returnType = method.getReturnType();</code></pre>
 <p>获取Getter和Setter</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printGettersSetters</span><span class="params">(Class aClass)</span> </span>&#123;</span><br><span class="line">    Method[] methods = aClass.getMethods();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (Method method : methods) &#123;</span><br><span class="line">        <span class="keyword">if</span> (isGetter(method)) System.out.println(<span class="string">"getter: "</span> + method);</span><br><span class="line">        <span class="keyword">if</span> (isSetter(method)) System.out.println(<span class="string">"setter: "</span> + method);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isGetter</span><span class="params">(Method method)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!method.getName().startsWith(<span class="string">"get"</span>)) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (method.getParameterTypes().length != <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">void</span>.class.equals(method.getReturnType())) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSetter</span><span class="params">(Method method)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!method.getName().startsWith(<span class="string">"set"</span>)) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (method.getParameterTypes().length != <span class="number">1</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">public static void printGettersSetters(Class aClass) {
+    Method[] methods = aClass.getMethods();
+
+    for (Method method : methods) {
+        if (isGetter(method)) System.out.println("getter: " + method);
+        if (isSetter(method)) System.out.println("setter: " + method);
+    }
+}
+
+public static boolean isGetter(Method method) {
+    if (!method.getName().startsWith("get")) return false;
+    if (method.getParameterTypes().length != 0) return false;
+    if (void.class.equals(method.getReturnType())) return false;
+    return true;
+}
+
+public static boolean isSetter(Method method) {
+    if (!method.getName().startsWith("set")) return false;
+    if (method.getParameterTypes().length != 1) return false;
+    return true;
+}</code></pre>
 <p>变量</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Field[] fields = aClass.getFields(); <span class="comment">// 公有的(public)的所有变量集合，包括从父类继承来的字段</span></span><br><span class="line">Field field = aClass.getField(<span class="string">"someField"</span>); <span class="comment">// 名为 someField 的成员变量</span></span><br><span class="line"></span><br><span class="line">Field[] fields = aClass.getDeclaredFields(); <span class="comment">// 获取本类所有的字段，包括private，但是不能获取继承来的字段</span></span><br><span class="line">Field field = aClass.getDeclaredField(<span class="string">"someField"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量名称</span></span><br><span class="line">String fieldName = field.getName();</span><br><span class="line"></span><br><span class="line">Object fieldType = field.getType(); <span class="comment">// 变量的类型</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取或者设置变量的值</span></span><br><span class="line">MyObject objectInstance = <span class="keyword">new</span> MyObject(); <span class="comment">// objetInstance 是拥有指定变量的类的实例</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// field.setAccessible(true);</span></span><br><span class="line">Object value = (Object) field.get(objectInstance);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果变量是静态变量的话(public static)可以传入 null 而不用传递拥有该变量的类的实例</span></span><br><span class="line">field.set(objetInstance, value);</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">Field[] fields = aClass.getFields(); // 公有的(public)的所有变量集合，包括从父类继承来的字段
+Field field = aClass.getField("someField"); // 名为 someField 的成员变量
+
+Field[] fields = aClass.getDeclaredFields(); // 获取本类所有的字段，包括private，但是不能获取继承来的字段
+Field field = aClass.getDeclaredField("someField");
+
+// 变量名称
+String fieldName = field.getName();
+
+Object fieldType = field.getType(); // 变量的类型
+
+// 获取或者设置变量的值
+MyObject objectInstance = new MyObject(); // objetInstance 是拥有指定变量的类的实例
+
+// field.setAccessible(true);
+Object value = (Object) field.get(objectInstance);
+
+// 如果变量是静态变量的话(public static)可以传入 null 而不用传递拥有该变量的类的实例
+field.set(objetInstance, value);</code></pre>
 <p>注解</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Annotation[] annotations = aClass.getAnnotations();</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">Annotation<span class="token punctuation">[</span><span class="token punctuation">]</span> annotations <span class="token operator">=</span> aClass<span class="token punctuation">.</span><span class="token function">getAnnotations</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p>反射机制通过 java.lang.reflect.Array 类创建数组。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建 int 类型的数组，数组空间3</span></span><br><span class="line"><span class="keyword">int</span>[] intArray = (<span class="keyword">int</span>[]) Array.newInstance(<span class="keyword">int</span>.class, <span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 创建 int 类型的数组，数组空间3</span>
+<span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> intArray <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> Array<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p>访问一个数组</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Array.set(intArray, <span class="number">0</span>, <span class="number">123</span>);</span><br><span class="line">Array.set(intArray, <span class="number">1</span>, <span class="number">456</span>);</span><br><span class="line">Array.set(intArray, <span class="number">2</span>, <span class="number">789</span>);</span><br><span class="line"></span><br><span class="line">System.out.println(<span class="string">"intArray[0] = "</span> + Array.get(intArray, <span class="number">0</span>)); <span class="comment">// intArray[0] = 123</span></span><br><span class="line">System.out.println(<span class="string">"intArray[1] = "</span> + Array.get(intArray, <span class="number">1</span>));</span><br><span class="line">System.out.println(<span class="string">"intArray[2] = "</span> + Array.get(intArray, <span class="number">2</span>));</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> temp[] = &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;;</span><br><span class="line">    <span class="keyword">int</span> newTemp[] = (<span class="keyword">int</span>[]) arrayInc(temp, <span class="number">5</span>); <span class="comment">// 重新开辟空间5</span></span><br><span class="line">    print(newTemp);</span><br><span class="line">    System.out.println(<span class="string">"\n---"</span>);</span><br><span class="line">    String t[] = &#123; <span class="string">"cnm"</span>, <span class="string">"mdzz"</span>, <span class="string">"heheda"</span> &#125;;</span><br><span class="line">    String nt[] = (String[]) arrayInc(t, <span class="number">8</span>);</span><br><span class="line">    print(nt);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">arrayInc</span><span class="params">(Object obj, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    Class&lt;?&gt; c = obj.getClass();</span><br><span class="line">    Class&lt;?&gt; arr = c.getComponentType();</span><br><span class="line">    Object newO = Array.newInstance(arr, len); <span class="comment">// 开辟新的大小</span></span><br><span class="line">    <span class="keyword">int</span> co = Array.getLength(obj);</span><br><span class="line">    System.arraycopy(obj, <span class="number">0</span>, newO, <span class="number">0</span>, co); <span class="comment">// 拷贝内容</span></span><br><span class="line">    <span class="keyword">return</span> newO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    Class&lt;?&gt; c = obj.getClass();</span><br><span class="line">    <span class="keyword">if</span> (!c.isArray())</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    Class&lt;?&gt; arr = c.getComponentType();</span><br><span class="line">    System.out.println(arr.getName() + <span class="string">"数组的长度："</span> + Array.getLength(obj));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; Array.getLength(obj); i++) &#123;</span><br><span class="line">        System.out.print(Array.get(obj, i) + <span class="string">"、"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Work</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; T[] newInstance(Class&lt;T&gt; componentType, <span class="keyword">int</span> length) &#123;</span><br><span class="line">        <span class="keyword">return</span> (T[]) Array.newInstance(componentType, length);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        String[] a = Work.newInstance(String.class, <span class="number">10</span>);</span><br><span class="line">        a[<span class="number">5</span>] = <span class="string">"mdzz"</span>;</span><br><span class="line">        <span class="keyword">int</span>[][] b = Work.newInstance(<span class="keyword">int</span>[].class, <span class="number">5</span>); <span class="comment">// 二维数组</span></span><br><span class="line"></span><br><span class="line">        b[<span class="number">1</span>] = <span class="keyword">new</span> <span class="keyword">int</span>[] &#123; <span class="number">23</span>, <span class="number">12</span> &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 三维数组是数组元素是二维数组的一维数组</span></span><br><span class="line">        Object arr = Array.newInstance(String.class, <span class="number">3</span>, <span class="number">4</span>, <span class="number">10</span>);</span><br><span class="line">        <span class="comment">// 获取arr数组中index为2的元素，二维数组</span></span><br><span class="line">        Object arrObj = Array.get(arr, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 二维数组的数组元素是一维数组</span></span><br><span class="line">        Array.set(arrObj, <span class="number">2</span>, <span class="keyword">new</span> String[] &#123; <span class="string">"cnm"</span>, <span class="string">"mdzz"</span> &#125;);</span><br><span class="line">        <span class="comment">// 获取arrObj数组中index为3的元素，一维数组</span></span><br><span class="line">        Object anArr = Array.get(arrObj, <span class="number">3</span>);</span><br><span class="line">        Array.set(anArr, <span class="number">8</span>, <span class="string">"heheda"</span>);</span><br><span class="line">        <span class="comment">// 将arr强制类型转换为三维数组</span></span><br><span class="line">        String[][][] cast = (String[][][]) arr;</span><br><span class="line">        <span class="comment">// 获取cast三维数组中指定元素的值</span></span><br><span class="line">        System.out.println(cast[<span class="number">2</span>][<span class="number">3</span>][<span class="number">8</span>]);</span><br><span class="line">        System.out.println(cast[<span class="number">2</span>][<span class="number">2</span>][<span class="number">0</span>]);</span><br><span class="line">        System.out.println(cast[<span class="number">2</span>][<span class="number">2</span>][<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">Array.set(intArray, 0, 123);
+Array.set(intArray, 1, 456);
+Array.set(intArray, 2, 789);
+
+System.out.println("intArray[0] = " + Array.get(intArray, 0)); // intArray[0] = 123
+System.out.println("intArray[1] = " + Array.get(intArray, 1));
+System.out.println("intArray[2] = " + Array.get(intArray, 2));</code></pre>
+<pre class=" language-Java"><code class="language-Java">public static void main(String args[]) throws Exception {
+    int temp[] = { 1, 2, 3 };
+    int newTemp[] = (int[]) arrayInc(temp, 5); // 重新开辟空间5
+    print(newTemp);
+    System.out.println("\n---");
+    String t[] = { "cnm", "mdzz", "heheda" };
+    String nt[] = (String[]) arrayInc(t, 8);
+    print(nt);
+}
+
+public static Object arrayInc(Object obj, int len) {
+    Class<?> c = obj.getClass();
+    Class<?> arr = c.getComponentType();
+    Object newO = Array.newInstance(arr, len); // 开辟新的大小
+    int co = Array.getLength(obj);
+    System.arraycopy(obj, 0, newO, 0, co); // 拷贝内容
+    return newO;
+}
+
+public static void print(Object obj) {
+    Class<?> c = obj.getClass();
+    if (!c.isArray())
+        return;
+    Class<?> arr = c.getComponentType();
+    System.out.println(arr.getName() + "数组的长度：" + Array.getLength(obj));
+    for (int i = 0; i < Array.getLength(obj); i++) {
+        System.out.print(Array.get(obj, i) + "、");
+    }
+}</code></pre>
+<pre class=" language-Java"><code class="language-Java">public class Work {
+
+    public static <T> T[] newInstance(Class<T> componentType, int length) {
+        return (T[]) Array.newInstance(componentType, length);
+    }
+
+    public static void main(String[] args) {
+
+        String[] a = Work.newInstance(String.class, 10);
+        a[5] = "mdzz";
+        int[][] b = Work.newInstance(int[].class, 5); // 二维数组
+
+        b[1] = new int[] { 23, 12 };
+
+        // 三维数组是数组元素是二维数组的一维数组
+        Object arr = Array.newInstance(String.class, 3, 4, 10);
+        // 获取arr数组中index为2的元素，二维数组
+        Object arrObj = Array.get(arr, 2);
+
+        // 二维数组的数组元素是一维数组
+        Array.set(arrObj, 2, new String[] { "cnm", "mdzz" });
+        // 获取arrObj数组中index为3的元素，一维数组
+        Object anArr = Array.get(arrObj, 3);
+        Array.set(anArr, 8, "heheda");
+        // 将arr强制类型转换为三维数组
+        String[][][] cast = (String[][][]) arr;
+        // 获取cast三维数组中指定元素的值
+        System.out.println(cast[2][3][8]);
+        System.out.println(cast[2][2][0]);
+        System.out.println(cast[2][2][1]);
+    }
+}</code></pre>
 <p>不通过反射获取数组的Class对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class stringArrayClass = String[].class;</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">Class stringArrayClass = String[].class;</code></pre>
 <p>Class.forName()方法获取Class对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// I 代表 int 类型，[ 代表数组，适用于原生数据类型</span></span><br><span class="line">Class intArray = Class.forName(<span class="string">"[I"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 普通对象类型的数组，[L 右边是类名</span></span><br><span class="line">Class stringArrayClass = Class.forName(<span class="string">"[Ljava.lang.String;"</span>);</span><br></pre></td></tr></table></figure>
-<p>不能通过Class.forName()方法获取原生数据类型的Class对象<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ClassNotFoundException</span></span><br><span class="line">Class intClass1 = Class.forName(<span class="string">"I"</span>);</span><br><span class="line">Class intClass2 = Class.forName(<span class="string">"int"</span>);</span><br></pre></td></tr></table></figure></p>
+<pre class=" language-Java"><code class="language-Java">// I 代表 int 类型，[ 代表数组，适用于原生数据类型
+Class intArray = Class.forName("[I");
+
+// 普通对象类型的数组，[L 右边是类名
+Class stringArrayClass = Class.forName("[Ljava.lang.String;");</code></pre>
+<p>不能通过Class.forName()方法获取原生数据类型的Class对象</p>
+<pre class=" language-Java"><code class="language-Java">// ClassNotFoundException
+Class intClass1 = Class.forName("I");
+Class intClass2 = Class.forName("int");</code></pre>
 <p>获取普通对象以及原生对象的Class对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Class <span class="title">getClass</span><span class="params">(String className)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="string">"int"</span>.equals(className)) <span class="keyword">return</span> <span class="keyword">int</span>.class;</span><br><span class="line">    <span class="keyword">if</span>(<span class="string">"long"</span>.equals(className)) <span class="keyword">return</span> <span class="keyword">long</span>.class;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">return</span> Class.forName(className);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">public Class getClass(String className) {
+    if("int".equals(className)) return int.class;
+    if("long".equals(className)) return long.class;
+    // ...
+    return Class.forName(className);
+}</code></pre>
 <p>一旦获取了类型的Class对象，便可以获取到它的数组的Class对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Class theClass = getClass(theClassName);</span><br><span class="line"><span class="comment">// 创建一个空数组，然后通过空数组来获取数组的 Class 对象</span></span><br><span class="line">Class stringArrayClass = Array.newInstance(theClass, <span class="number">0</span>).getClass();</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取指定类型的指定数组的Class对象</span></span><br><span class="line">Class stringArrayClass = Array.newInstance(String.class, <span class="number">0</span>).getClass();</span><br><span class="line">System.out.println(<span class="string">"is array: "</span> + stringArrayClass.isArray());</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">String[] strings = <span class="keyword">new</span> String[<span class="number">3</span>];</span><br><span class="line">Class stringArrayClass = strings.getClass();</span><br><span class="line"><span class="comment">// 获取这个数组的成员类型</span></span><br><span class="line">Class stringArrayComponentType = stringArrayClass.getComponentType();</span><br><span class="line">System.out.println(stringArrayComponentType);</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">Class theClass = getClass(theClassName);
+// 创建一个空数组，然后通过空数组来获取数组的 Class 对象
+Class stringArrayClass = Array.newInstance(theClass, 0).getClass();</code></pre>
+<pre class=" language-Java"><code class="language-Java">// 获取指定类型的指定数组的Class对象
+Class stringArrayClass = Array.newInstance(String.class, 0).getClass();
+System.out.println("is array: " + stringArrayClass.isArray());</code></pre>
+<pre class=" language-Java"><code class="language-Java">String[] strings = new String[3];
+Class stringArrayClass = strings.getClass();
+// 获取这个数组的成员类型
+Class stringArrayComponentType = stringArrayClass.getComponentType();
+System.out.println(stringArrayComponentType);</code></pre>
 <hr>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Service1</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doService1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Service2</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doService2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-Java"><code class="language-Java">public class Service1 {
+    public void doService1() {
+    }
+}</code></pre>
+<pre class=" language-Java"><code class="language-Java">public class Service2 {
+    public void doService2() {
+    }
+}</code></pre>
 <p>从第一个业务方法切换到第二个业务方法，使用非反射必须修改代码，重新编译运行</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Service1().doService1();</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">new</span> <span class="token class-name">Service1</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">doService1</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p>使用反射</p>
 <p>src/spring.txt：存放类名称，要调用的方法名。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">class=reflection.Service1</span><br><span class="line">method=doService1</span><br></pre></td></tr></table></figure>
-<p>切换方法时，不需要修改代码或重新编译，只要修改配置文件spring.txt，再运行。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从spring.txt中获取类名称和方法名称</span></span><br><span class="line">File springConfigFile = <span class="keyword">new</span> File(<span class="string">"D:\\src\\spring.txt"</span>);</span><br><span class="line">Properties springConfig = <span class="keyword">new</span> Properties();</span><br><span class="line">springConfig.load(<span class="keyword">new</span> FileInputStream(springConfigFile));</span><br><span class="line">String className = (String) springConfig.get(<span class="string">"class"</span>);</span><br><span class="line">String methodName = (String) springConfig.get(<span class="string">"method"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 根据类名称创建类对象</span></span><br><span class="line">Class clazz = Class.forName(className);</span><br><span class="line"><span class="comment">// 根据方面名称，获取方法</span></span><br><span class="line">Method m = clazz.getMethod(methodName);</span><br><span class="line"><span class="comment">// 获取构造器</span></span><br><span class="line">Constructor c = clazz.getConstructor();</span><br><span class="line"><span class="comment">// 根据构造器，实例化出对象</span></span><br><span class="line">Object service = c.newInstance();</span><br><span class="line"><span class="comment">// 调用对象的指定方法</span></span><br><span class="line">m.invoke(service);</span><br></pre></td></tr></table></figure>
+<pre><code>class=reflection.Service1
+method=doService1</code></pre><p>切换方法时，不需要修改代码或重新编译，只要修改配置文件spring.txt，再运行。</p>
+<pre class=" language-Java"><code class="language-Java">// 从spring.txt中获取类名称和方法名称
+File springConfigFile = new File("D:\\src\\spring.txt");
+Properties springConfig = new Properties();
+springConfig.load(new FileInputStream(springConfigFile));
+String className = (String) springConfig.get("class");
+String methodName = (String) springConfig.get("method");
+
+// 根据类名称创建类对象
+Class clazz = Class.forName(className);
+// 根据方面名称，获取方法
+Method m = clazz.getMethod(methodName);
+// 获取构造器
+Constructor c = clazz.getConstructor();
+// 根据构造器，实例化出对象
+Object service = c.newInstance();
+// 调用对象的指定方法
+m.invoke(service);</code></pre>
 <p>Spring通过工厂和反射将Bean放到容器中。</p>
 <p>通过解析xml文件，获取用户配置的Bean，通过反射将Bean放到集合中，对外提供getBean()方法。</p>
 
@@ -173,26 +395,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

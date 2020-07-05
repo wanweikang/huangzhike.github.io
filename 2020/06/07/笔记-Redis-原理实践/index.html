@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-Redis-原理实践 | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-Redis-原理实践">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-Redis-原理实践 | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-Redis-原理实践"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -105,7 +101,12 @@
 <p>Redis所有的数据结构都是以唯一的Key字符串作为名称，然后通过这个唯一值来获取相应的Value数据。</p>
 <p>不同类型的数据结构的差异在于Value的结构不一样。</p>
 <h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><p>Redis的字符串叫SDS（Simple Dynamic String），是个带长度的动态字节数组，类似ArrayList，预分配冗余空间，减少内存的频繁分配。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> SDS&lt;T&gt; &#123;</span><br><span class="line">    T capacity; <span class="comment">// 数组容量</span></span><br><span class="line">    T len; <span class="comment">// 数组长度</span></span><br><span class="line">    byte flags; <span class="comment">// 特殊标识位</span></span><br><span class="line">    byte[] content; <span class="comment">// 数组内容</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-c"><code class="language-c"><span class="token keyword">struct</span> SDS<span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token punctuation">{</span>
+    T capacity<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 数组容量</span>
+    T len<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 数组长度</span>
+    byte flags<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 特殊标识位</span>
+    byte<span class="token punctuation">[</span><span class="token punctuation">]</span> content<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 数组内容</span>
+<span class="token punctuation">}</span></code></pre>
 <h4 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h4><p>Redis的列表List相当于LinkedList，它是链表而不是数组。</p>
 <p>List的插入和删除非常快，时间复杂度为O(1)，但是索引定位很慢，时间复杂度为O(n)。</p>
 <p>单纯的链表比较占空间（指针）以及内存的碎片化，Redis使用了称为快速链表QuickList的结构。</p>
@@ -204,7 +205,56 @@
 <p>缺点是要记录时间窗口内所有的行为记录，如果这个量很大，比如60s内操作不得超过100w次这样，则不适合。</p>
 <hr>
 <p>漏斗(funnel)限流：漏洞的容量有限，剩余空间代表着当前行为可以持续进行的数量，流水速率代表着系统允许该行为的最大频率。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FunnelRateLimiter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Funnel</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> capacity;</span><br><span class="line">        <span class="keyword">float</span> leakingRate;</span><br><span class="line">        <span class="keyword">int</span> leftQuota;</span><br><span class="line">        <span class="keyword">long</span> leakingTs;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Funnel</span><span class="params">(<span class="keyword">int</span> capacity, <span class="keyword">float</span> leakingRate)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">            <span class="keyword">this</span>.leakingRate = leakingRate;</span><br><span class="line">            <span class="keyword">this</span>.leftQuota = capacity;</span><br><span class="line">            <span class="keyword">this</span>.leakingTs = System.currentTimeMillis();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">makeSpace</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">long</span> nowTs = System.currentTimeMillis();</span><br><span class="line">            <span class="keyword">long</span> deltaTs = nowTs - leakingTs;</span><br><span class="line">            <span class="keyword">int</span> deltaQuota = (<span class="keyword">int</span>) (deltaTs * leakingRate);</span><br><span class="line">            <span class="keyword">if</span> (deltaQuota &lt; <span class="number">0</span>) &#123; <span class="comment">// 间隔时间太长，整数数字过大溢出</span></span><br><span class="line">                <span class="keyword">this</span>.leftQuota = capacity;</span><br><span class="line">                <span class="keyword">this</span>.leakingTs = nowTs;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (deltaQuota &lt; <span class="number">1</span>) &#123; <span class="comment">// 腾出空间太小，最小单位是 1</span></span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">this</span>.leftQuota += deltaQuota;</span><br><span class="line">            <span class="keyword">this</span>.leakingTs = nowTs;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.leftQuota &gt; <span class="keyword">this</span>.capacity) &#123;</span><br><span class="line">                <span class="keyword">this</span>.leftQuota = <span class="keyword">this</span>.capacity;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">boolean</span> <span class="title">watering</span><span class="params">(<span class="keyword">int</span> quota)</span> </span>&#123;</span><br><span class="line">            makeSpace();</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.leftQuota &gt;= quota) &#123;</span><br><span class="line">                <span class="keyword">this</span>.leftQuota -= quota;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, Funnel&gt; funnels = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isActionAllowed</span><span class="params">(String userId, String actionKey, <span class="keyword">int</span> capacity, <span class="keyword">float</span> leakingRate)</span> </span>&#123;</span><br><span class="line">        String key = String.format(<span class="string">"%s:%s"</span>, userId, actionKey);</span><br><span class="line">        Funnel funnel = funnels.get(key);</span><br><span class="line">        <span class="keyword">if</span> (funnel == <span class="keyword">null</span>) &#123;</span><br><span class="line">            funnel = <span class="keyword">new</span> Funnel(capacity, leakingRate);</span><br><span class="line">            funnels.put(key, funnel);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> funnel.watering(<span class="number">1</span>); <span class="comment">// 需要 1 个 quota</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FunnelRateLimiter</span> <span class="token punctuation">{</span>
+    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Funnel</span> <span class="token punctuation">{</span>
+        <span class="token keyword">int</span> capacity<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> leakingRate<span class="token punctuation">;</span>
+        <span class="token keyword">int</span> leftQuota<span class="token punctuation">;</span>
+        <span class="token keyword">long</span> leakingTs<span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token function">Funnel</span><span class="token punctuation">(</span><span class="token keyword">int</span> capacity<span class="token punctuation">,</span> <span class="token keyword">float</span> leakingRate<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>capacity <span class="token operator">=</span> capacity<span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>leakingRate <span class="token operator">=</span> leakingRate<span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>leftQuota <span class="token operator">=</span> capacity<span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>leakingTs <span class="token operator">=</span> System<span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">void</span> <span class="token function">makeSpace</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">long</span> nowTs <span class="token operator">=</span> System<span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">long</span> deltaTs <span class="token operator">=</span> nowTs <span class="token operator">-</span> leakingTs<span class="token punctuation">;</span>
+            <span class="token keyword">int</span> deltaQuota <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>deltaTs <span class="token operator">*</span> leakingRate<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>deltaQuota <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">// 间隔时间太长，整数数字过大溢出</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>leftQuota <span class="token operator">=</span> capacity<span class="token punctuation">;</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>leakingTs <span class="token operator">=</span> nowTs<span class="token punctuation">;</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>deltaQuota <span class="token operator">&lt;</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">// 腾出空间太小，最小单位是 1</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>leftQuota <span class="token operator">+=</span> deltaQuota<span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>leakingTs <span class="token operator">=</span> nowTs<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>leftQuota <span class="token operator">></span> <span class="token keyword">this</span><span class="token punctuation">.</span>capacity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>leftQuota <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>capacity<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">boolean</span> <span class="token function">watering</span><span class="token punctuation">(</span><span class="token keyword">int</span> quota<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">makeSpace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>leftQuota <span class="token operator">>=</span> quota<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>leftQuota <span class="token operator">-=</span> quota<span class="token punctuation">;</span>
+                <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">private</span> Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Funnel<span class="token operator">></span> funnels <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isActionAllowed</span><span class="token punctuation">(</span>String userId<span class="token punctuation">,</span> String actionKey<span class="token punctuation">,</span> <span class="token keyword">int</span> capacity<span class="token punctuation">,</span> <span class="token keyword">float</span> leakingRate<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        String key <span class="token operator">=</span> String<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"%s:%s"</span><span class="token punctuation">,</span> userId<span class="token punctuation">,</span> actionKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Funnel funnel <span class="token operator">=</span> funnels<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>funnel <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            funnel <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Funnel</span><span class="token punctuation">(</span>capacity<span class="token punctuation">,</span> leakingRate<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            funnels<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> funnel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> funnel<span class="token punctuation">.</span><span class="token function">watering</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 需要 1 个 quota</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
 <p>每次灌水（处理请求）前都会触发漏水，根据过去时间及流水的速率，给漏斗腾出空间。</p>
 <p>Funnel对象占据的空间大小不再和行为的频率成正比，是一个常量。</p>
 <p>可以将Funnel对象的内容按字段存储到Redis的Hash结构中，灌水的时候将Hash结构的字段取出来进行逻辑运算后，再将新值回填到Hash结构中就完成了一次行为频度的检测。</p>
@@ -239,7 +289,31 @@
 <li><p>单次返回的结果是空的并不意味着遍历结束，而要看返回的游标值是否为零；</p>
 </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ScanKeyJob</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">(String key)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scan</span><span class="params">(String pattern, <span class="keyword">int</span> limit, ScanKeyJob scanKeyJob)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> (Jedis jedis = jedisPool.getResource()) &#123;</span><br><span class="line">        <span class="comment">// 游标初始为0</span></span><br><span class="line">        String cursor = ScanParams.SCAN_POINTER_START;</span><br><span class="line">        ScanParams scanParams = <span class="keyword">new</span> ScanParams().match(pattern).count(limit);</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            ScanResult&lt;String&gt; scanResult = jedis.scan(cursor, scanParams);</span><br><span class="line">            <span class="comment">// 下次的游标</span></span><br><span class="line">            cursor = scanResult.getStringCursor();</span><br><span class="line">            List&lt;String&gt; list = scanResult.getResult();</span><br><span class="line">            <span class="keyword">if</span> (list != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (String s : list) &#123;</span><br><span class="line">                    scanKeyJob.run(s);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 0 也是结束</span></span><br><span class="line">        <span class="keyword">while</span> (!cursor.equals(ScanParams.SCAN_POINTER_START));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@FunctionalInterface</span>
+    <span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ScanKeyJob</span> <span class="token punctuation">{</span>
+        <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span>String key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">scan</span><span class="token punctuation">(</span>String pattern<span class="token punctuation">,</span> <span class="token keyword">int</span> limit<span class="token punctuation">,</span> ScanKeyJob scanKeyJob<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">(</span>Jedis jedis <span class="token operator">=</span> jedisPool<span class="token punctuation">.</span><span class="token function">getResource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 游标初始为0</span>
+            String cursor <span class="token operator">=</span> ScanParams<span class="token punctuation">.</span>SCAN_POINTER_START<span class="token punctuation">;</span>
+            ScanParams scanParams <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ScanParams</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span>pattern<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">count</span><span class="token punctuation">(</span>limit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">do</span> <span class="token punctuation">{</span>
+                ScanResult<span class="token operator">&lt;</span>String<span class="token operator">></span> scanResult <span class="token operator">=</span> jedis<span class="token punctuation">.</span><span class="token function">scan</span><span class="token punctuation">(</span>cursor<span class="token punctuation">,</span> scanParams<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 下次的游标</span>
+                cursor <span class="token operator">=</span> scanResult<span class="token punctuation">.</span><span class="token function">getStringCursor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                List<span class="token operator">&lt;</span>String<span class="token operator">></span> list <span class="token operator">=</span> scanResult<span class="token punctuation">.</span><span class="token function">getResult</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>list <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">for</span> <span class="token punctuation">(</span>String s <span class="token operator">:</span> list<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        scanKeyJob<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 0 也是结束</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span>cursor<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>ScanParams<span class="token punctuation">.</span>SCAN_POINTER_START<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>假设limit是1000，返回的结果可能只有10个，因为limit不是限定返回结果的数量，而是限定服务器单次遍历的字典槽位数量。</p>
 <p>如果将limit设置为10，可能返回结果是空的，但是游标值不为零，意味着遍历还没结束。</p>
 <p>Redis中所有的key都存储在一个字典中，scan指令返回的游标就是数组的位置索引，称为槽(slot)。</p>
@@ -549,26 +623,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

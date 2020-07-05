@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-Tomcat-Response-Blocking | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-Tomcat-Response-Blocking">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-Tomcat-Response-Blocking | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-Tomcat-Response-Blocking"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -100,38 +96,214 @@
 				
 				<div class="article-content">
 				<p>SocketWrapperBase#write</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">boolean</span> block, ByteBuffer from)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (from == <span class="keyword">null</span> || from.remaining() == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (block) &#123;</span><br><span class="line">        <span class="comment">// 阻塞写</span></span><br><span class="line">        writeBlocking(from);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 非阻塞写</span></span><br><span class="line">        writeNonBlocking(from);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">write</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> block<span class="token punctuation">,</span> ByteBuffer from<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>from <span class="token operator">==</span> null <span class="token operator">||</span> from<span class="token punctuation">.</span><span class="token function">remaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>block<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 阻塞写</span>
+            <span class="token function">writeBlocking</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 非阻塞写</span>
+            <span class="token function">writeNonBlocking</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <hr>
 <p>SocketWrapperBase#writeBlocking</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">writeBlocking</span><span class="params">(ByteBuffer from)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// 写缓冲没被写</span></span><br><span class="line">    <span class="keyword">if</span> (socketBufferHandler.isWriteBufferEmpty()) &#123;</span><br><span class="line">        <span class="comment">// 直接写到SocketChannel，还有剩余，再写到写缓冲</span></span><br><span class="line">        <span class="comment">// TODO Shouldn't smaller writes be buffered anyway?</span></span><br><span class="line">        writeBlockingDirect(from);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 写缓冲被写过了，已经有数据存在，需要追加到后面</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 配置切换写缓冲为写模式</span></span><br><span class="line">        socketBufferHandler.configureWriteBufferForWrite();</span><br><span class="line">        <span class="comment">// 尽可能写入到Socket关联的写缓冲</span></span><br><span class="line">        transfer(from, socketBufferHandler.getWriteBuffer());</span><br><span class="line">        <span class="comment">// 如果写缓冲写满了</span></span><br><span class="line">        <span class="keyword">if</span> (!socketBufferHandler.isWriteBufferWritable()) &#123;</span><br><span class="line">            <span class="comment">// 将写缓冲切换到读模式，把写缓冲直接阻塞写到SocketChannel</span></span><br><span class="line">            doWrite(<span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">// 直接把源缓冲剩余未读字节写到SocketChannel，还有剩余，写到Socket关联的写缓冲</span></span><br><span class="line">            writeBlockingDirect(from);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">writeBlocking</span><span class="token punctuation">(</span>ByteBuffer from<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 写缓冲没被写</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>socketBufferHandler<span class="token punctuation">.</span><span class="token function">isWriteBufferEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 直接写到SocketChannel，还有剩余，再写到写缓冲</span>
+            <span class="token comment" spellcheck="true">// TODO Shouldn't smaller writes be buffered anyway?</span>
+            <span class="token function">writeBlockingDirect</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 写缓冲被写过了，已经有数据存在，需要追加到后面</span>
+        <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 配置切换写缓冲为写模式</span>
+            socketBufferHandler<span class="token punctuation">.</span><span class="token function">configureWriteBufferForWrite</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 尽可能写入到Socket关联的写缓冲</span>
+            <span class="token function">transfer</span><span class="token punctuation">(</span>from<span class="token punctuation">,</span> socketBufferHandler<span class="token punctuation">.</span><span class="token function">getWriteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 如果写缓冲写满了</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>socketBufferHandler<span class="token punctuation">.</span><span class="token function">isWriteBufferWritable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 将写缓冲切换到读模式，把写缓冲直接阻塞写到SocketChannel</span>
+                <span class="token function">doWrite</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 直接把源缓冲剩余未读字节写到SocketChannel，还有剩余，写到Socket关联的写缓冲</span>
+                <span class="token function">writeBlockingDirect</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>SocketBufferHandler#isWriteBufferEmpty</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isWriteBufferEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 如果写缓冲设被为写模式</span></span><br><span class="line">    <span class="keyword">if</span> (writeBufferConfiguredForWrite) &#123;</span><br><span class="line">        <span class="comment">// 没有被写过</span></span><br><span class="line">        <span class="keyword">return</span> writeBuffer.position() == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果写缓冲设被为读模式</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 已经被读完</span></span><br><span class="line">        <span class="keyword">return</span> writeBuffer.remaining() == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isWriteBufferEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 如果写缓冲设被为写模式</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>writeBufferConfiguredForWrite<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 没有被写过</span>
+            <span class="token keyword">return</span> writeBuffer<span class="token punctuation">.</span><span class="token function">position</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 如果写缓冲设被为读模式</span>
+        <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 已经被读完</span>
+            <span class="token keyword">return</span> writeBuffer<span class="token punctuation">.</span><span class="token function">remaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>SocketWrapperBase#writeBlockingDirect</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">writeBlockingDirect</span><span class="params">(ByteBuffer from)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// The socket write buffer capacity is socket.appWriteBufSize</span></span><br><span class="line">    <span class="comment">// TODO This only matters when using TLS. For non-TLS connections it should be possible to write the ByteBuffer in a single write</span></span><br><span class="line">    <span class="comment">// 写缓冲的容量</span></span><br><span class="line">    <span class="keyword">int</span> limit = socketBufferHandler.getWriteBuffer().capacity();</span><br><span class="line">    <span class="comment">// 先保存源缓冲的limit</span></span><br><span class="line">    <span class="keyword">int</span> fromLimit = from.limit();</span><br><span class="line">    <span class="comment">// 循环处理，直到源缓冲可读大小小于写缓冲的容量</span></span><br><span class="line">    <span class="keyword">while</span> (from.remaining() &gt;= limit) &#123;</span><br><span class="line">        <span class="comment">// 设置源缓冲的读limit，避免写缓冲溢出</span></span><br><span class="line">        from.limit(from.position() + limit);</span><br><span class="line">        <span class="comment">// 直接阻塞写到SocketChannel，不经过写缓冲</span></span><br><span class="line">        doWrite(<span class="keyword">true</span>, from);</span><br><span class="line">        <span class="comment">// 设回源缓冲的limit</span></span><br><span class="line">        from.limit(fromLimit);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果源缓冲还有未读字节</span></span><br><span class="line">    <span class="keyword">if</span> (from.remaining() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 配置写缓冲准备写</span></span><br><span class="line">        socketBufferHandler.configureWriteBufferForWrite();</span><br><span class="line">        <span class="comment">// 尽可能写入到Socket关联的写缓冲</span></span><br><span class="line">        transfer(from, socketBufferHandler.getWriteBuffer());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">writeBlockingDirect</span><span class="token punctuation">(</span>ByteBuffer from<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// The socket write buffer capacity is socket.appWriteBufSize</span>
+        <span class="token comment" spellcheck="true">// TODO This only matters when using TLS. For non-TLS connections it should be possible to write the ByteBuffer in a single write</span>
+        <span class="token comment" spellcheck="true">// 写缓冲的容量</span>
+        <span class="token keyword">int</span> limit <span class="token operator">=</span> socketBufferHandler<span class="token punctuation">.</span><span class="token function">getWriteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 先保存源缓冲的limit</span>
+        <span class="token keyword">int</span> fromLimit <span class="token operator">=</span> from<span class="token punctuation">.</span><span class="token function">limit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 循环处理，直到源缓冲可读大小小于写缓冲的容量</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>from<span class="token punctuation">.</span><span class="token function">remaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">>=</span> limit<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 设置源缓冲的读limit，避免写缓冲溢出</span>
+            from<span class="token punctuation">.</span><span class="token function">limit</span><span class="token punctuation">(</span>from<span class="token punctuation">.</span><span class="token function">position</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> limit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 直接阻塞写到SocketChannel，不经过写缓冲</span>
+            <span class="token function">doWrite</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">,</span> from<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 设回源缓冲的limit</span>
+            from<span class="token punctuation">.</span><span class="token function">limit</span><span class="token punctuation">(</span>fromLimit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 如果源缓冲还有未读字节</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>from<span class="token punctuation">.</span><span class="token function">remaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 配置写缓冲准备写</span>
+            socketBufferHandler<span class="token punctuation">.</span><span class="token function">configureWriteBufferForWrite</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 尽可能写入到Socket关联的写缓冲</span>
+            <span class="token function">transfer</span><span class="token punctuation">(</span>from<span class="token punctuation">,</span> socketBufferHandler<span class="token punctuation">.</span><span class="token function">getWriteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>SocketBufferHandler#configureWriteBufferForWrite</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureWriteBufferForWrite</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    setWriteBufferConfiguredForWrite(<span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">configureWriteBufferForWrite</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">setWriteBufferConfiguredForWrite</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>SocketBufferHandler#setWriteBufferConfiguredForWrite</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setWriteBufferConfiguredForWrite</span><span class="params">(<span class="keyword">boolean</span> writeBufferConfiguredForWrite)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 如果已经处于要配置的状态就什么也不干</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.writeBufferConfiguredForWrite != writeBufferConfiguredForWrite) &#123;</span><br><span class="line">        <span class="comment">// 配置准备要写</span></span><br><span class="line">        <span class="keyword">if</span> (writeBufferConfiguredForWrite) &#123;</span><br><span class="line">            <span class="comment">// Switching to write</span></span><br><span class="line">            <span class="keyword">int</span> remaining = writeBuffer.remaining();</span><br><span class="line">            <span class="keyword">if</span> (remaining == <span class="number">0</span>) &#123;</span><br><span class="line">                writeBuffer.clear();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                writeBuffer.compact();</span><br><span class="line">                writeBuffer.position(remaining);</span><br><span class="line">                writeBuffer.limit(writeBuffer.capacity());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 配置准备要读</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// Switching to read</span></span><br><span class="line">            writeBuffer.flip();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 设置状态</span></span><br><span class="line">        <span class="keyword">this</span>.writeBufferConfiguredForWrite = writeBufferConfiguredForWrite;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">setWriteBufferConfiguredForWrite</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> writeBufferConfiguredForWrite<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 如果已经处于要配置的状态就什么也不干</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>writeBufferConfiguredForWrite <span class="token operator">!=</span> writeBufferConfiguredForWrite<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 配置准备要写</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>writeBufferConfiguredForWrite<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// Switching to write</span>
+                <span class="token keyword">int</span> remaining <span class="token operator">=</span> writeBuffer<span class="token punctuation">.</span><span class="token function">remaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>remaining <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    writeBuffer<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    writeBuffer<span class="token punctuation">.</span><span class="token function">compact</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    writeBuffer<span class="token punctuation">.</span><span class="token function">position</span><span class="token punctuation">(</span>remaining<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    writeBuffer<span class="token punctuation">.</span><span class="token function">limit</span><span class="token punctuation">(</span>writeBuffer<span class="token punctuation">.</span><span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 配置准备要读</span>
+            <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// Switching to read</span>
+                writeBuffer<span class="token punctuation">.</span><span class="token function">flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 设置状态</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>writeBufferConfiguredForWrite <span class="token operator">=</span> writeBufferConfiguredForWrite<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>SocketWrapperBase#transfer</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">transfer</span><span class="params">(ByteBuffer from, ByteBuffer to)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 源缓冲可读大小和目的缓冲可写大小，取最小值，避免溢出</span></span><br><span class="line">    <span class="keyword">int</span> max = Math.min(from.remaining(), to.remaining());</span><br><span class="line">    <span class="keyword">if</span> (max &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> fromLimit = from.limit();</span><br><span class="line">        <span class="comment">// 设置源缓冲读的limit，避免目的缓冲溢出</span></span><br><span class="line">        from.limit(from.position() + max);</span><br><span class="line">        <span class="comment">// 写入目的缓冲</span></span><br><span class="line">        to.put(from);</span><br><span class="line">        <span class="comment">// 恢复源缓冲原本limit</span></span><br><span class="line">        from.limit(fromLimit);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回写的字节数</span></span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">transfer</span><span class="token punctuation">(</span>ByteBuffer from<span class="token punctuation">,</span> ByteBuffer to<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 源缓冲可读大小和目的缓冲可写大小，取最小值，避免溢出</span>
+        <span class="token keyword">int</span> max <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>from<span class="token punctuation">.</span><span class="token function">remaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> to<span class="token punctuation">.</span><span class="token function">remaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>max <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">int</span> fromLimit <span class="token operator">=</span> from<span class="token punctuation">.</span><span class="token function">limit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 设置源缓冲读的limit，避免目的缓冲溢出</span>
+            from<span class="token punctuation">.</span><span class="token function">limit</span><span class="token punctuation">(</span>from<span class="token punctuation">.</span><span class="token function">position</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> max<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 写入目的缓冲</span>
+            to<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 恢复源缓冲原本limit</span>
+            from<span class="token punctuation">.</span><span class="token function">limit</span><span class="token punctuation">(</span>fromLimit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 返回写的字节数</span>
+        <span class="token keyword">return</span> max<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>SocketBufferHandler#isWriteBufferWritable</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isWriteBufferWritable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 如果写缓冲设被为写模式</span></span><br><span class="line">    <span class="keyword">if</span> (writeBufferConfiguredForWrite) &#123;</span><br><span class="line">        <span class="comment">// 可写</span></span><br><span class="line">        <span class="keyword">return</span> writeBuffer.hasRemaining();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果写缓冲设被为读模式</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 已读完</span></span><br><span class="line">        <span class="keyword">return</span> writeBuffer.remaining() == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isWriteBufferWritable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 如果写缓冲设被为写模式</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>writeBufferConfiguredForWrite<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 可写</span>
+            <span class="token keyword">return</span> writeBuffer<span class="token punctuation">.</span><span class="token function">hasRemaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 如果写缓冲设被为读模式</span>
+        <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 已读完</span>
+            <span class="token keyword">return</span> writeBuffer<span class="token punctuation">.</span><span class="token function">remaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>SocketWrapperBase#doWrite</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doWrite</span><span class="params">(<span class="keyword">boolean</span> block)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// 将Socket关联的写缓冲切换到读模式</span></span><br><span class="line">    socketBufferHandler.configureWriteBufferForRead();</span><br><span class="line">    <span class="comment">// 把写缓冲的数据写到SocketChannel</span></span><br><span class="line">    <span class="comment">// NioEndpoint$NioSocketWrapper#doWrite</span></span><br><span class="line">    doWrite(block, socketBufferHandler.getWriteBuffer());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">doWrite</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> block<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 将Socket关联的写缓冲切换到读模式</span>
+        socketBufferHandler<span class="token punctuation">.</span><span class="token function">configureWriteBufferForRead</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 把写缓冲的数据写到SocketChannel</span>
+        <span class="token comment" spellcheck="true">// NioEndpoint$NioSocketWrapper#doWrite</span>
+        <span class="token function">doWrite</span><span class="token punctuation">(</span>block<span class="token punctuation">,</span> socketBufferHandler<span class="token punctuation">.</span><span class="token function">getWriteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>SocketBufferHandler#configureWriteBufferForRead</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureWriteBufferForRead</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    setWriteBufferConfiguredForWrite(<span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">configureWriteBufferForRead</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">setWriteBufferConfiguredForWrite</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>总结：</p>
 <p>阻塞式写，如果Socket关联的写缓冲没有可读数据，则跳过写缓冲，直接向SocketChannel写入数据，不管当前SocketChannel是否可用，这个过程是阻塞的。</p>
 <p>每次阻塞写的字节是写缓冲的容量，如果阻塞写还有剩余，写入到写缓冲，下次write或flush时清空。</p>
 <p>如果Socket关联的写缓冲已经有数据，为了数据连续性，必须把数据追加到写缓冲后面，如果写缓冲满了，阻塞写到SocketChannel，清空写缓冲后，再重复上面的步骤。</p>
 <hr>
 <p>SocketWrapperBase#flush</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">flush</span><span class="params">(<span class="keyword">boolean</span> block)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (block) &#123;</span><br><span class="line">        <span class="comment">// A blocking flush will always empty the buffer.</span></span><br><span class="line">        flushBlocking();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        result = flushNonBlocking();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">flush</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> block<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token keyword">boolean</span> result <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>block<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// A blocking flush will always empty the buffer.</span>
+            <span class="token function">flushBlocking</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            result <span class="token operator">=</span> <span class="token function">flushNonBlocking</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <hr>
 <p>SocketWrapperBase#flushBlocking</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">flushBlocking</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// 先把写缓冲的数据阻塞式写到SocketChannel</span></span><br><span class="line">    doWrite(<span class="keyword">true</span>);</span><br><span class="line">    <span class="comment">// 如果SocketWrapper的非阻塞写缓冲不为空，在之前非阻塞写时放入</span></span><br><span class="line">    <span class="keyword">if</span> (!nonBlockingWriteBuffer.isEmpty()) &#123;</span><br><span class="line">        <span class="comment">// 阻塞写到SocketChannel</span></span><br><span class="line">        nonBlockingWriteBuffer.write(<span class="keyword">this</span>, <span class="keyword">true</span>);</span><br><span class="line">        <span class="comment">// 写缓冲不为空</span></span><br><span class="line">        <span class="keyword">if</span> (!socketBufferHandler.isWriteBufferEmpty()) &#123;</span><br><span class="line">            <span class="comment">// 把写缓冲的数据阻塞式写到SocketChannel</span></span><br><span class="line">            doWrite(<span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">flushBlocking</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 先把写缓冲的数据阻塞式写到SocketChannel</span>
+        <span class="token function">doWrite</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 如果SocketWrapper的非阻塞写缓冲不为空，在之前非阻塞写时放入</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>nonBlockingWriteBuffer<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 阻塞写到SocketChannel</span>
+            nonBlockingWriteBuffer<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 写缓冲不为空</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>socketBufferHandler<span class="token punctuation">.</span><span class="token function">isWriteBufferEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 把写缓冲的数据阻塞式写到SocketChannel</span>
+                <span class="token function">doWrite</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+    <span class="token punctuation">}</span></code></pre>
 <p>WriteBuffer#write</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">write</span><span class="params">(SocketWrapperBase&lt;?&gt; socketWrapper, <span class="keyword">boolean</span> blocking)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Iterator&lt;ByteBufferHolder&gt; bufIter = buffers.iterator();</span><br><span class="line">    <span class="keyword">boolean</span> dataLeft = <span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">// 遍历链表</span></span><br><span class="line">    <span class="keyword">while</span> (!dataLeft &amp;&amp; bufIter.hasNext()) &#123;</span><br><span class="line">        ByteBufferHolder buffer = bufIter.next();</span><br><span class="line">        <span class="comment">// 切换到读模式</span></span><br><span class="line">        buffer.flip();</span><br><span class="line">        <span class="comment">// 阻塞</span></span><br><span class="line">        <span class="keyword">if</span> (blocking) &#123;</span><br><span class="line">            <span class="comment">// 阻塞写到SocketChannel</span></span><br><span class="line">            socketWrapper.writeBlocking(buffer.getBuf());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 非阻塞</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 非阻塞写到SocketChannel，或者写到写缓冲</span></span><br><span class="line">            socketWrapper.writeNonBlockingInternal(buffer.getBuf());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 全部读完</span></span><br><span class="line">        <span class="keyword">if</span> (buffer.getBuf().remaining() == <span class="number">0</span>) &#123;</span><br><span class="line">            bufIter.remove();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 还有剩余</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            dataLeft = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回是否清空了非阻塞写缓冲</span></span><br><span class="line">    <span class="keyword">return</span> dataLeft;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">boolean</span> <span class="token function">write</span><span class="token punctuation">(</span>SocketWrapperBase<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> socketWrapper<span class="token punctuation">,</span> <span class="token keyword">boolean</span> blocking<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        Iterator<span class="token operator">&lt;</span>ByteBufferHolder<span class="token operator">></span> bufIter <span class="token operator">=</span> buffers<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">boolean</span> dataLeft <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 遍历链表</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span>dataLeft <span class="token operator">&amp;&amp;</span> bufIter<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            ByteBufferHolder buffer <span class="token operator">=</span> bufIter<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 切换到读模式</span>
+            buffer<span class="token punctuation">.</span><span class="token function">flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 阻塞</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>blocking<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 阻塞写到SocketChannel</span>
+                socketWrapper<span class="token punctuation">.</span><span class="token function">writeBlocking</span><span class="token punctuation">(</span>buffer<span class="token punctuation">.</span><span class="token function">getBuf</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 非阻塞</span>
+            <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 非阻塞写到SocketChannel，或者写到写缓冲</span>
+                socketWrapper<span class="token punctuation">.</span><span class="token function">writeNonBlockingInternal</span><span class="token punctuation">(</span>buffer<span class="token punctuation">.</span><span class="token function">getBuf</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 全部读完</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>buffer<span class="token punctuation">.</span><span class="token function">getBuf</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">remaining</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                bufIter<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 还有剩余</span>
+            <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                dataLeft <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 返回是否清空了非阻塞写缓冲</span>
+        <span class="token keyword">return</span> dataLeft<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>总结：</p>
 <p>阻塞式刷，先阻塞式把写缓冲的数据写到SocketChannel，清空写缓冲后，如果非阻塞写缓冲有数据，则遍历非阻塞写缓冲，将暂存的数据阻塞写入SocketChannel。</p>
 <p>非阻塞写缓冲的数据是在非阻塞写失败时加入的，是一个双向阻塞链表结构。</p>
@@ -154,26 +326,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

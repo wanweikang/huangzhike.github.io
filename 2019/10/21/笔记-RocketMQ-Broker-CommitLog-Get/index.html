@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-RocketMQ-Broker-CommitLog-Get | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-RocketMQ-Broker-CommitLog-Get">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-RocketMQ-Broker-CommitLog-Get | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-RocketMQ-Broker-CommitLog-Get"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -100,7 +96,182 @@
 				
 				<div class="article-content">
 				<p>DefaultMessageStore#getMessage</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> GetMessageResult <span class="title">getMessage</span><span class="params">(<span class="keyword">final</span> String group, <span class="keyword">final</span> String topic, <span class="keyword">final</span> <span class="keyword">int</span> queueId, <span class="keyword">final</span> <span class="keyword">long</span> offset, <span class="keyword">final</span> <span class="keyword">int</span> maxMsgNums, <span class="keyword">final</span> MessageFilter messageFilter)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 已关闭</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.shutdown) &#123;</span><br><span class="line">    	<span class="comment">// 直接返回</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 不可读</span></span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.runningFlags.isReadable()) &#123;</span><br><span class="line">    	<span class="comment">// 直接返回</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">long</span> beginTime = <span class="keyword">this</span>.getSystemClock().now();</span><br><span class="line">    GetMessageStatus status = GetMessageStatus.NO_MESSAGE_IN_QUEUE;</span><br><span class="line">    <span class="keyword">long</span> nextBeginOffset = offset;</span><br><span class="line">    <span class="keyword">long</span> minOffset = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">long</span> maxOffset = <span class="number">0</span>;</span><br><span class="line">    GetMessageResult getResult = <span class="keyword">new</span> GetMessageResult();</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">long</span> maxOffsetPy = <span class="keyword">this</span>.commitLog.getMaxOffset();</span><br><span class="line">    <span class="comment">// 通过Topic和QueueId获取对应的ConsumeQueue</span></span><br><span class="line">    ConsumeQueue consumeQueue = findConsumeQueue(topic, queueId);</span><br><span class="line">    <span class="keyword">if</span> (consumeQueue != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// ConsumeQueue的最小偏移，即消息在队列的最小位置，MinLogicOffset / CQ_STORE_UNIT_SIZE</span></span><br><span class="line">        minOffset = consumeQueue.getMinOffsetInQueue();</span><br><span class="line">        <span class="comment">// ConsumeQueue的最大偏移，即消息在队列的最大位置，MaxOffset / CQ_STORE_UNIT_SIZE</span></span><br><span class="line">        maxOffset = consumeQueue.getMaxOffsetInQueue();</span><br><span class="line">        <span class="comment">// ConsumeQueue中无消息</span></span><br><span class="line">        <span class="keyword">if</span> (maxOffset == <span class="number">0</span>) &#123;</span><br><span class="line">            status = GetMessageStatus.NO_MESSAGE_IN_QUEUE;</span><br><span class="line">            <span class="comment">// 纠正下次拉取的起始偏移为0</span></span><br><span class="line">            nextBeginOffset = nextOffsetCorrection(offset, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 拉取的消息偏移小于队列的最小偏移</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (offset &lt; minOffset) &#123;</span><br><span class="line">            status = GetMessageStatus.OFFSET_TOO_SMALL;</span><br><span class="line">            <span class="comment">// 纠正下次拉取的起始偏移为minOffset</span></span><br><span class="line">            nextBeginOffset = nextOffsetCorrection(offset, minOffset);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 超出一个，注意这里的偏移类似索引，起始为0</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (offset == maxOffset) &#123;</span><br><span class="line">            status = GetMessageStatus.OFFSET_OVERFLOW_ONE;</span><br><span class="line">            nextBeginOffset = nextOffsetCorrection(offset, offset);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 超出最大偏移一个以上</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (offset &gt; maxOffset) &#123;</span><br><span class="line">            status = GetMessageStatus.OFFSET_OVERFLOW_BADLY;</span><br><span class="line">            <span class="comment">// 如果最小偏移为0</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="number">0</span> == minOffset) &#123;</span><br><span class="line">                <span class="comment">// 纠正下次拉取的起始偏移为minOffset</span></span><br><span class="line">                nextBeginOffset = nextOffsetCorrection(offset, minOffset);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 否则纠正下次拉取的起始偏移为maxOffset</span></span><br><span class="line">                nextBeginOffset = nextOffsetCorrection(offset, maxOffset);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 偏移合法</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 根据偏移获取MappedFile的缓冲段</span></span><br><span class="line">            SelectMappedBufferResult bufferConsumeQueue = consumeQueue.getIndexBuffer(offset);</span><br><span class="line">            <span class="keyword">if</span> (bufferConsumeQueue != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    status = GetMessageStatus.NO_MATCHED_MESSAGE;</span><br><span class="line">                    <span class="keyword">long</span> nextPhyFileStartOffset = Long.MIN_VALUE;</span><br><span class="line">                    <span class="keyword">long</span> maxPhyOffsetPulling = <span class="number">0</span>;</span><br><span class="line">                    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">                    <span class="comment">// 最大过滤消息字节数，ConsumeQueue中一个单元大小是20</span></span><br><span class="line">                    <span class="comment">// 拉取到的消息，可能不满足过滤条件，数量可能过少</span></span><br><span class="line">                    <span class="keyword">final</span> <span class="keyword">int</span> maxFilterMessageCount = Math.max(<span class="number">16000</span>, maxMsgNums * ConsumeQueue.CQ_STORE_UNIT_SIZE);</span><br><span class="line">                    <span class="comment">//</span></span><br><span class="line">                    <span class="keyword">final</span> <span class="keyword">boolean</span> diskFallRecorded = <span class="keyword">this</span>.messageStoreConfig.isDiskFallRecorded();</span><br><span class="line">                    ConsumeQueueExt.CqExtUnit cqExtUnit = <span class="keyword">new</span> ConsumeQueueExt.CqExtUnit();</span><br><span class="line">                    <span class="comment">// 遍历MappedFile的缓冲，每次遍历单位为一个消息单元大小，直到过滤限制</span></span><br><span class="line">                    <span class="keyword">for</span> (; i &lt; bufferConsumeQueue.getSize() &amp;&amp; i &lt; maxFilterMessageCount; i += ConsumeQueue.CQ_STORE_UNIT_SIZE) &#123;</span><br><span class="line">                        <span class="comment">// 消息在CommitLog的偏移，8字节</span></span><br><span class="line">                        <span class="keyword">long</span> offsetPy = bufferConsumeQueue.getByteBuffer().getLong();</span><br><span class="line">                        <span class="comment">// 消息大小，4字节</span></span><br><span class="line">                        <span class="keyword">int</span> sizePy = bufferConsumeQueue.getByteBuffer().getInt();</span><br><span class="line">                        <span class="comment">// TagsCode，8字节</span></span><br><span class="line">                        <span class="keyword">long</span> tagsCode = bufferConsumeQueue.getByteBuffer().getLong();</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 当前拉取的单元对应的消息在CommitLog的偏移</span></span><br><span class="line">                        maxPhyOffsetPulling = offsetPy;</span><br><span class="line">                        <span class="comment">// 说明切换到了下一个CommitLog，nextPhyFileStartOffset是下一个CommitLog的起始偏移</span></span><br><span class="line">                        <span class="keyword">if</span> (nextPhyFileStartOffset != Long.MIN_VALUE) &#123;</span><br><span class="line">                            <span class="comment">// 跳过ConsumeQueue中不在该CommitLog的消息</span></span><br><span class="line">                            <span class="keyword">if</span> (offsetPy &lt; nextPhyFileStartOffset)</span><br><span class="line">                                <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="comment">// 判断是否从磁盘获取数据，超过内存大小</span></span><br><span class="line">                        <span class="keyword">boolean</span> isInDisk = checkInDiskByCommitOffset(offsetPy, maxOffsetPy);</span><br><span class="line">                        <span class="comment">// 如果本次消息拉取达到上限</span></span><br><span class="line">                        <span class="keyword">if</span> (<span class="keyword">this</span>.isTheBatchFull(sizePy, maxMsgNums, getResult.getBufferTotalSize(), getResult.getMessageCount(), isInDisk)) &#123;</span><br><span class="line">                            <span class="comment">// 不再拉取</span></span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">boolean</span> extRet = <span class="keyword">false</span>, isTagsCodeLegal = <span class="keyword">true</span>;</span><br><span class="line">                        <span class="keyword">if</span> (consumeQueue.isExtAddr(tagsCode)) &#123;</span><br><span class="line">                        	<span class="comment">// ...</span></span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="comment">// 根据TagCode过滤消息</span></span><br><span class="line">                        <span class="keyword">if</span> (messageFilter != <span class="keyword">null</span> &amp;&amp; !messageFilter.isMatchedByConsumeQueue(isTagsCodeLegal ? tagsCode : <span class="keyword">null</span>, extRet ? cqExtUnit : <span class="keyword">null</span>)) &#123;</span><br><span class="line">                            <span class="keyword">if</span> (getResult.getBufferTotalSize() == <span class="number">0</span>) &#123;</span><br><span class="line">                                status = GetMessageStatus.NO_MATCHED_MESSAGE;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="comment">// 跳过</span></span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="comment">// 根据消息在CommitLog的偏移和消息大小，从CommitLog获取消息</span></span><br><span class="line">                        SelectMappedBufferResult selectResult = <span class="keyword">this</span>.commitLog.getMessage(offsetPy, sizePy);</span><br><span class="line">                        <span class="comment">// ConsumeQueue有，但CommitLog没找到，可能是文件被删除？</span></span><br><span class="line">                        <span class="keyword">if</span> (<span class="keyword">null</span> == selectResult) &#123;</span><br><span class="line">                            <span class="comment">// 之前的循环没找到消息</span></span><br><span class="line">                            <span class="keyword">if</span> (getResult.getBufferTotalSize() == <span class="number">0</span>) &#123;</span><br><span class="line">                                <span class="comment">// 消息正在被删除</span></span><br><span class="line">                                status = GetMessageStatus.MESSAGE_WAS_REMOVING;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="comment">// 跳过该文件，切换到下一个CommitLog文件继续，返回下一个CommitLog的起始偏移</span></span><br><span class="line">                            nextPhyFileStartOffset = <span class="keyword">this</span>.commitLog.rollNextFile(offsetPy);</span><br><span class="line">                            <span class="comment">// 跳过</span></span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="comment">// 再次过滤</span></span><br><span class="line">                        <span class="keyword">if</span> (messageFilter != <span class="keyword">null</span> &amp;&amp; !messageFilter.isMatchedByCommitLog(selectResult.getByteBuffer().slice(), <span class="keyword">null</span>)) &#123;</span><br><span class="line">                            <span class="keyword">if</span> (getResult.getBufferTotalSize() == <span class="number">0</span>) &#123;</span><br><span class="line">                                status = GetMessageStatus.NO_MATCHED_MESSAGE;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="comment">// release...</span></span><br><span class="line">                            selectResult.release();</span><br><span class="line">                            <span class="keyword">continue</span>;</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">this</span>.storeStatsService.getGetMessageTransferedMsgCount().incrementAndGet();</span><br><span class="line">                        <span class="comment">// 把消息加入拉取结果</span></span><br><span class="line">                        getResult.addMessage(selectResult);</span><br><span class="line">                        status = GetMessageStatus.FOUND;</span><br><span class="line">                        <span class="comment">// 每次循环结束后重置</span></span><br><span class="line">                        nextPhyFileStartOffset = Long.MIN_VALUE;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">// ...</span></span><br><span class="line">                    <span class="comment">// 更新下次拉取消息在ConsumeQueue的索引</span></span><br><span class="line">                    <span class="comment">// 本次拉取的起始索引 + 本次拉取的最后一条消息的相对位置</span></span><br><span class="line">                    nextBeginOffset = offset + (i / ConsumeQueue.CQ_STORE_UNIT_SIZE);</span><br><span class="line">                    <span class="comment">// CommitLog的最大物理偏移 - 当前正在拉取的消息在CommitLog的物理偏移 = 未拉取的物理偏移</span></span><br><span class="line">                    <span class="keyword">long</span> diff = maxOffsetPy - maxPhyOffsetPulling;</span><br><span class="line">                    <span class="comment">// 40%的物理内存，PageCache的消息不能超过这个大小？</span></span><br><span class="line">                    <span class="keyword">long</span> memory = (<span class="keyword">long</span>) (StoreUtil.TOTAL_PHYSICAL_MEMORY_SIZE * (<span class="keyword">this</span>.messageStoreConfig.getAccessMessageInMemoryMaxRatio() / <span class="number">100.0</span>));</span><br><span class="line">                    <span class="comment">// 说明当前拉取的消息超过了内存限制，推荐从Slave拉取，Master接收Producer消息，Slave处理Consumer消费请求，Master和Slave读写分离</span></span><br><span class="line">                    getResult.setSuggestPullingFromSlave(diff &gt; memory);</span><br><span class="line">                    <span class="comment">/*</span></span><br><span class="line"><span class="comment">                     * 集群模式下，消费进度保存在Master内存，定期持久化</span></span><br><span class="line"><span class="comment">                     * Master和Slave间消费进度通过Slave的计划任务主动拉取同步</span></span><br><span class="line"><span class="comment">                     * 不管是从Master或Slave拉取消息，从PullMessageProcessor看到，只有Master才会保存Consumer消费进度</span></span><br><span class="line"><span class="comment">                     * 假如Master宕机，则Slave负责消息拉取，Master恢复时，Consumer拉取消息时也会更新消费进度，所以消费进度会同步</span></span><br><span class="line"><span class="comment">                     */</span></span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    bufferConsumeQueue.release();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// ConsumeQueue没找到对应偏移的数据</span></span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">            	<span class="comment">// ...</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 没找到Topic和QueueId对应的ConsumeQueue</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">    	<span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// 拉取状态</span></span><br><span class="line">    getResult.setStatus(status);</span><br><span class="line">    <span class="comment">// 下次拉取的消息在ConsumeQueue的起始索引</span></span><br><span class="line">    getResult.setNextBeginOffset(nextBeginOffset);</span><br><span class="line">    <span class="comment">// 该ConsumeQueue最后一个消息的索引</span></span><br><span class="line">    getResult.setMaxOffset(maxOffset);</span><br><span class="line">    <span class="comment">// 该ConsumeQueue第一个消息的索引</span></span><br><span class="line">    getResult.setMinOffset(minOffset);</span><br><span class="line">    <span class="keyword">return</span> getResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> GetMessageResult <span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token keyword">final</span> String group<span class="token punctuation">,</span> <span class="token keyword">final</span> String topic<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">int</span> queueId<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">long</span> offset<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">int</span> maxMsgNums<span class="token punctuation">,</span> <span class="token keyword">final</span> MessageFilter messageFilter<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 已关闭</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>shutdown<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 直接返回</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 不可读</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>runningFlags<span class="token punctuation">.</span><span class="token function">isReadable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 直接返回</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">long</span> beginTime <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getSystemClock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        GetMessageStatus status <span class="token operator">=</span> GetMessageStatus<span class="token punctuation">.</span>NO_MESSAGE_IN_QUEUE<span class="token punctuation">;</span>
+        <span class="token keyword">long</span> nextBeginOffset <span class="token operator">=</span> offset<span class="token punctuation">;</span>
+        <span class="token keyword">long</span> minOffset <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">long</span> maxOffset <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        GetMessageResult getResult <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GetMessageResult</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">final</span> <span class="token keyword">long</span> maxOffsetPy <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>commitLog<span class="token punctuation">.</span><span class="token function">getMaxOffset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 通过Topic和QueueId获取对应的ConsumeQueue</span>
+        ConsumeQueue consumeQueue <span class="token operator">=</span> <span class="token function">findConsumeQueue</span><span class="token punctuation">(</span>topic<span class="token punctuation">,</span> queueId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>consumeQueue <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ConsumeQueue的最小偏移，即消息在队列的最小位置，MinLogicOffset / CQ_STORE_UNIT_SIZE</span>
+            minOffset <span class="token operator">=</span> consumeQueue<span class="token punctuation">.</span><span class="token function">getMinOffsetInQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ConsumeQueue的最大偏移，即消息在队列的最大位置，MaxOffset / CQ_STORE_UNIT_SIZE</span>
+            maxOffset <span class="token operator">=</span> consumeQueue<span class="token punctuation">.</span><span class="token function">getMaxOffsetInQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ConsumeQueue中无消息</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>maxOffset <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                status <span class="token operator">=</span> GetMessageStatus<span class="token punctuation">.</span>NO_MESSAGE_IN_QUEUE<span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 纠正下次拉取的起始偏移为0</span>
+                nextBeginOffset <span class="token operator">=</span> <span class="token function">nextOffsetCorrection</span><span class="token punctuation">(</span>offset<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 拉取的消息偏移小于队列的最小偏移</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>offset <span class="token operator">&lt;</span> minOffset<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                status <span class="token operator">=</span> GetMessageStatus<span class="token punctuation">.</span>OFFSET_TOO_SMALL<span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 纠正下次拉取的起始偏移为minOffset</span>
+                nextBeginOffset <span class="token operator">=</span> <span class="token function">nextOffsetCorrection</span><span class="token punctuation">(</span>offset<span class="token punctuation">,</span> minOffset<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 超出一个，注意这里的偏移类似索引，起始为0</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>offset <span class="token operator">==</span> maxOffset<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                status <span class="token operator">=</span> GetMessageStatus<span class="token punctuation">.</span>OFFSET_OVERFLOW_ONE<span class="token punctuation">;</span>
+                nextBeginOffset <span class="token operator">=</span> <span class="token function">nextOffsetCorrection</span><span class="token punctuation">(</span>offset<span class="token punctuation">,</span> offset<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 超出最大偏移一个以上</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>offset <span class="token operator">></span> maxOffset<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                status <span class="token operator">=</span> GetMessageStatus<span class="token punctuation">.</span>OFFSET_OVERFLOW_BADLY<span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 如果最小偏移为0</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">0</span> <span class="token operator">==</span> minOffset<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// 纠正下次拉取的起始偏移为minOffset</span>
+                    nextBeginOffset <span class="token operator">=</span> <span class="token function">nextOffsetCorrection</span><span class="token punctuation">(</span>offset<span class="token punctuation">,</span> minOffset<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// 否则纠正下次拉取的起始偏移为maxOffset</span>
+                    nextBeginOffset <span class="token operator">=</span> <span class="token function">nextOffsetCorrection</span><span class="token punctuation">(</span>offset<span class="token punctuation">,</span> maxOffset<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 偏移合法</span>
+            <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 根据偏移获取MappedFile的缓冲段</span>
+                SelectMappedBufferResult bufferConsumeQueue <span class="token operator">=</span> consumeQueue<span class="token punctuation">.</span><span class="token function">getIndexBuffer</span><span class="token punctuation">(</span>offset<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>bufferConsumeQueue <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                        status <span class="token operator">=</span> GetMessageStatus<span class="token punctuation">.</span>NO_MATCHED_MESSAGE<span class="token punctuation">;</span>
+                        <span class="token keyword">long</span> nextPhyFileStartOffset <span class="token operator">=</span> Long<span class="token punctuation">.</span>MIN_VALUE<span class="token punctuation">;</span>
+                        <span class="token keyword">long</span> maxPhyOffsetPulling <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                        <span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">// 最大过滤消息字节数，ConsumeQueue中一个单元大小是20</span>
+                        <span class="token comment" spellcheck="true">// 拉取到的消息，可能不满足过滤条件，数量可能过少</span>
+                        <span class="token keyword">final</span> <span class="token keyword">int</span> maxFilterMessageCount <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">16000</span><span class="token punctuation">,</span> maxMsgNums <span class="token operator">*</span> ConsumeQueue<span class="token punctuation">.</span>CQ_STORE_UNIT_SIZE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">//</span>
+                        <span class="token keyword">final</span> <span class="token keyword">boolean</span> diskFallRecorded <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>messageStoreConfig<span class="token punctuation">.</span><span class="token function">isDiskFallRecorded</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        ConsumeQueueExt<span class="token punctuation">.</span>CqExtUnit cqExtUnit <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConsumeQueueExt<span class="token punctuation">.</span>CqExtUnit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">// 遍历MappedFile的缓冲，每次遍历单位为一个消息单元大小，直到过滤限制</span>
+                        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> bufferConsumeQueue<span class="token punctuation">.</span><span class="token function">getSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> i <span class="token operator">&lt;</span> maxFilterMessageCount<span class="token punctuation">;</span> i <span class="token operator">+=</span> ConsumeQueue<span class="token punctuation">.</span>CQ_STORE_UNIT_SIZE<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">// 消息在CommitLog的偏移，8字节</span>
+                            <span class="token keyword">long</span> offsetPy <span class="token operator">=</span> bufferConsumeQueue<span class="token punctuation">.</span><span class="token function">getByteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token comment" spellcheck="true">// 消息大小，4字节</span>
+                            <span class="token keyword">int</span> sizePy <span class="token operator">=</span> bufferConsumeQueue<span class="token punctuation">.</span><span class="token function">getByteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token comment" spellcheck="true">// TagsCode，8字节</span>
+                            <span class="token keyword">long</span> tagsCode <span class="token operator">=</span> bufferConsumeQueue<span class="token punctuation">.</span><span class="token function">getByteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getLong</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                            <span class="token comment" spellcheck="true">// 当前拉取的单元对应的消息在CommitLog的偏移</span>
+                            maxPhyOffsetPulling <span class="token operator">=</span> offsetPy<span class="token punctuation">;</span>
+                            <span class="token comment" spellcheck="true">// 说明切换到了下一个CommitLog，nextPhyFileStartOffset是下一个CommitLog的起始偏移</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span>nextPhyFileStartOffset <span class="token operator">!=</span> Long<span class="token punctuation">.</span>MIN_VALUE<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token comment" spellcheck="true">// 跳过ConsumeQueue中不在该CommitLog的消息</span>
+                                <span class="token keyword">if</span> <span class="token punctuation">(</span>offsetPy <span class="token operator">&lt;</span> nextPhyFileStartOffset<span class="token punctuation">)</span>
+                                    <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+                            <span class="token comment" spellcheck="true">// 判断是否从磁盘获取数据，超过内存大小</span>
+                            <span class="token keyword">boolean</span> isInDisk <span class="token operator">=</span> <span class="token function">checkInDiskByCommitOffset</span><span class="token punctuation">(</span>offsetPy<span class="token punctuation">,</span> maxOffsetPy<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token comment" spellcheck="true">// 如果本次消息拉取达到上限</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">isTheBatchFull</span><span class="token punctuation">(</span>sizePy<span class="token punctuation">,</span> maxMsgNums<span class="token punctuation">,</span> getResult<span class="token punctuation">.</span><span class="token function">getBufferTotalSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> getResult<span class="token punctuation">.</span><span class="token function">getMessageCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> isInDisk<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token comment" spellcheck="true">// 不再拉取</span>
+                                <span class="token keyword">break</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+                            <span class="token keyword">boolean</span> extRet <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">,</span> isTagsCodeLegal <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span>consumeQueue<span class="token punctuation">.</span><span class="token function">isExtAddr</span><span class="token punctuation">(</span>tagsCode<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token comment" spellcheck="true">// ...</span>
+                            <span class="token punctuation">}</span>
+                            <span class="token comment" spellcheck="true">// 根据TagCode过滤消息</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span>messageFilter <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>messageFilter<span class="token punctuation">.</span><span class="token function">isMatchedByConsumeQueue</span><span class="token punctuation">(</span>isTagsCodeLegal <span class="token operator">?</span> tagsCode <span class="token operator">:</span> null<span class="token punctuation">,</span> extRet <span class="token operator">?</span> cqExtUnit <span class="token operator">:</span> null<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token keyword">if</span> <span class="token punctuation">(</span>getResult<span class="token punctuation">.</span><span class="token function">getBufferTotalSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                    status <span class="token operator">=</span> GetMessageStatus<span class="token punctuation">.</span>NO_MATCHED_MESSAGE<span class="token punctuation">;</span>
+                                <span class="token punctuation">}</span>
+                                <span class="token comment" spellcheck="true">// 跳过</span>
+                                <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+                            <span class="token comment" spellcheck="true">// 根据消息在CommitLog的偏移和消息大小，从CommitLog获取消息</span>
+                            SelectMappedBufferResult selectResult <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>commitLog<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span>offsetPy<span class="token punctuation">,</span> sizePy<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token comment" spellcheck="true">// ConsumeQueue有，但CommitLog没找到，可能是文件被删除？</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span>null <span class="token operator">==</span> selectResult<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token comment" spellcheck="true">// 之前的循环没找到消息</span>
+                                <span class="token keyword">if</span> <span class="token punctuation">(</span>getResult<span class="token punctuation">.</span><span class="token function">getBufferTotalSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                    <span class="token comment" spellcheck="true">// 消息正在被删除</span>
+                                    status <span class="token operator">=</span> GetMessageStatus<span class="token punctuation">.</span>MESSAGE_WAS_REMOVING<span class="token punctuation">;</span>
+                                <span class="token punctuation">}</span>
+                                <span class="token comment" spellcheck="true">// 跳过该文件，切换到下一个CommitLog文件继续，返回下一个CommitLog的起始偏移</span>
+                                nextPhyFileStartOffset <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>commitLog<span class="token punctuation">.</span><span class="token function">rollNextFile</span><span class="token punctuation">(</span>offsetPy<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                <span class="token comment" spellcheck="true">// 跳过</span>
+                                <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+                            <span class="token comment" spellcheck="true">// 再次过滤</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span>messageFilter <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>messageFilter<span class="token punctuation">.</span><span class="token function">isMatchedByCommitLog</span><span class="token punctuation">(</span>selectResult<span class="token punctuation">.</span><span class="token function">getByteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token keyword">if</span> <span class="token punctuation">(</span>getResult<span class="token punctuation">.</span><span class="token function">getBufferTotalSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                    status <span class="token operator">=</span> GetMessageStatus<span class="token punctuation">.</span>NO_MATCHED_MESSAGE<span class="token punctuation">;</span>
+                                <span class="token punctuation">}</span>
+                                <span class="token comment" spellcheck="true">// release...</span>
+                                selectResult<span class="token punctuation">.</span><span class="token function">release</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                                <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+
+                            <span class="token keyword">this</span><span class="token punctuation">.</span>storeStatsService<span class="token punctuation">.</span><span class="token function">getGetMessageTransferedMsgCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">incrementAndGet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token comment" spellcheck="true">// 把消息加入拉取结果</span>
+                            getResult<span class="token punctuation">.</span><span class="token function">addMessage</span><span class="token punctuation">(</span>selectResult<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            status <span class="token operator">=</span> GetMessageStatus<span class="token punctuation">.</span>FOUND<span class="token punctuation">;</span>
+                            <span class="token comment" spellcheck="true">// 每次循环结束后重置</span>
+                            nextPhyFileStartOffset <span class="token operator">=</span> Long<span class="token punctuation">.</span>MIN_VALUE<span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                        <span class="token comment" spellcheck="true">// ...</span>
+                        <span class="token comment" spellcheck="true">// 更新下次拉取消息在ConsumeQueue的索引</span>
+                        <span class="token comment" spellcheck="true">// 本次拉取的起始索引 + 本次拉取的最后一条消息的相对位置</span>
+                        nextBeginOffset <span class="token operator">=</span> offset <span class="token operator">+</span> <span class="token punctuation">(</span>i <span class="token operator">/</span> ConsumeQueue<span class="token punctuation">.</span>CQ_STORE_UNIT_SIZE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">// CommitLog的最大物理偏移 - 当前正在拉取的消息在CommitLog的物理偏移 = 未拉取的物理偏移</span>
+                        <span class="token keyword">long</span> diff <span class="token operator">=</span> maxOffsetPy <span class="token operator">-</span> maxPhyOffsetPulling<span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">// 40%的物理内存，PageCache的消息不能超过这个大小？</span>
+                        <span class="token keyword">long</span> memory <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">long</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>StoreUtil<span class="token punctuation">.</span>TOTAL_PHYSICAL_MEMORY_SIZE <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>messageStoreConfig<span class="token punctuation">.</span><span class="token function">getAccessMessageInMemoryMaxRatio</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">100.0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">// 说明当前拉取的消息超过了内存限制，推荐从Slave拉取，Master接收Producer消息，Slave处理Consumer消费请求，Master和Slave读写分离</span>
+                        getResult<span class="token punctuation">.</span><span class="token function">setSuggestPullingFromSlave</span><span class="token punctuation">(</span>diff <span class="token operator">></span> memory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">/*
+                         * 集群模式下，消费进度保存在Master内存，定期持久化
+                         * Master和Slave间消费进度通过Slave的计划任务主动拉取同步
+                         * 不管是从Master或Slave拉取消息，从PullMessageProcessor看到，只有Master才会保存Consumer消费进度
+                         * 假如Master宕机，则Slave负责消息拉取，Master恢复时，Consumer拉取消息时也会更新消费进度，所以消费进度会同步
+                         */</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                        bufferConsumeQueue<span class="token punctuation">.</span><span class="token function">release</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">// ConsumeQueue没找到对应偏移的数据</span>
+                <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// ...</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 没找到Topic和QueueId对应的ConsumeQueue</span>
+        <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token comment" spellcheck="true">// 拉取状态</span>
+        getResult<span class="token punctuation">.</span><span class="token function">setStatus</span><span class="token punctuation">(</span>status<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 下次拉取的消息在ConsumeQueue的起始索引</span>
+        getResult<span class="token punctuation">.</span><span class="token function">setNextBeginOffset</span><span class="token punctuation">(</span>nextBeginOffset<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 该ConsumeQueue最后一个消息的索引</span>
+        getResult<span class="token punctuation">.</span><span class="token function">setMaxOffset</span><span class="token punctuation">(</span>maxOffset<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 该ConsumeQueue第一个消息的索引</span>
+        getResult<span class="token punctuation">.</span><span class="token function">setMinOffset</span><span class="token punctuation">(</span>minOffset<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> getResult<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 
 				</div>
 				<!-- about -->
@@ -119,26 +290,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-Spring Framework-Transaction | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-Spring Framework-Transaction">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-Spring Framework-Transaction | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-Spring Framework-Transaction"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -104,19 +100,289 @@
 <p>Xml方式略，参考<code>TxNamespaceHandler</code>。</p>
 <p>SpringBoot：</p>
 <p>DataSourceTransactionManagerAutoConfiguration</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span>(proxyBeanMethods = <span class="keyword">false</span>)</span><br><span class="line"><span class="meta">@ConditionalOnClass</span>(&#123;JdbcTemplate.class, PlatformTransactionManager.class&#125;)</span><br><span class="line"><span class="meta">@AutoConfigureOrder</span>(Ordered.LOWEST_PRECEDENCE)</span><br><span class="line"><span class="meta">@EnableConfigurationProperties</span>(DataSourceProperties.class) <span class="comment">// spring.datasource</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceTransactionManagerAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Configuration</span>(proxyBeanMethods = <span class="keyword">false</span>)</span><br><span class="line">    <span class="meta">@ConditionalOnSingleCandidate</span>(DataSource.class) <span class="comment">// 容器中只有一个DataSource的Bean，或者这个DataSource的Bean是首选Bean</span></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceTransactionManagerConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 注册DataSourceTransactionManager</span></span><br><span class="line"><span class="comment">         * DataSourceTransactionManager实现了PlatformTransactionManager接口</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="meta">@ConditionalOnMissingBean</span>(PlatformTransactionManager.class) <span class="comment">// 不存在PlatformTransactionManager的Bean时（避免覆盖）</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> DataSourceTransactionManager <span class="title">transactionManager</span><span class="params">(DataSource dataSource, ObjectProvider&lt;TransactionManagerCustomizers&gt; transactionManagerCustomizers)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// 注入DataSource</span></span><br><span class="line">            DataSourceTransactionManager transactionManager = <span class="keyword">new</span> DataSourceTransactionManager(dataSource);</span><br><span class="line">            <span class="comment">// 注入TransactionManagerCustomizers，进行自定义</span></span><br><span class="line">            transactionManagerCustomizers.ifAvailable((customizers) -&gt; customizers.customize(transactionManager));</span><br><span class="line">            <span class="keyword">return</span> transactionManager;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span><span class="token punctuation">(</span>proxyBeanMethods <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@ConditionalOnClass</span><span class="token punctuation">(</span><span class="token punctuation">{</span>JdbcTemplate<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> PlatformTransactionManager<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@AutoConfigureOrder</span><span class="token punctuation">(</span>Ordered<span class="token punctuation">.</span>LOWEST_PRECEDENCE<span class="token punctuation">)</span>
+<span class="token annotation punctuation">@EnableConfigurationProperties</span><span class="token punctuation">(</span>DataSourceProperties<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// spring.datasource</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DataSourceTransactionManagerAutoConfiguration</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Configuration</span><span class="token punctuation">(</span>proxyBeanMethods <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@ConditionalOnSingleCandidate</span><span class="token punctuation">(</span>DataSource<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 容器中只有一个DataSource的Bean，或者这个DataSource的Bean是首选Bean</span>
+    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">DataSourceTransactionManagerConfiguration</span> <span class="token punctuation">{</span>
+
+        <span class="token comment" spellcheck="true">/**
+         * 注册DataSourceTransactionManager
+         * DataSourceTransactionManager实现了PlatformTransactionManager接口
+         */</span>
+        <span class="token annotation punctuation">@Bean</span>
+        <span class="token annotation punctuation">@ConditionalOnMissingBean</span><span class="token punctuation">(</span>PlatformTransactionManager<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 不存在PlatformTransactionManager的Bean时（避免覆盖）</span>
+        <span class="token keyword">public</span> DataSourceTransactionManager <span class="token function">transactionManager</span><span class="token punctuation">(</span>DataSource dataSource<span class="token punctuation">,</span> ObjectProvider<span class="token operator">&lt;</span>TransactionManagerCustomizers<span class="token operator">></span> transactionManagerCustomizers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 注入DataSource</span>
+            DataSourceTransactionManager transactionManager <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DataSourceTransactionManager</span><span class="token punctuation">(</span>dataSource<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 注入TransactionManagerCustomizers，进行自定义</span>
+            transactionManagerCustomizers<span class="token punctuation">.</span><span class="token function">ifAvailable</span><span class="token punctuation">(</span><span class="token punctuation">(</span>customizers<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> customizers<span class="token punctuation">.</span><span class="token function">customize</span><span class="token punctuation">(</span>transactionManager<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> transactionManager<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span></code></pre>
 <p>TransactionAutoConfiguration</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span>(proxyBeanMethods = <span class="keyword">false</span>)</span><br><span class="line"><span class="meta">@ConditionalOnClass</span>(PlatformTransactionManager.class)</span><br><span class="line"><span class="meta">@AutoConfigureAfter</span>(&#123;</span><br><span class="line">        <span class="comment">// JtaAutoConfiguration.class,</span></span><br><span class="line">        <span class="comment">// HibernateJpaAutoConfiguration.class,</span></span><br><span class="line">        DataSourceTransactionManagerAutoConfiguration.class, <span class="comment">// 在DataSourceTransactionManager之后</span></span><br><span class="line">        <span class="comment">// Neo4jDataAutoConfiguration.class</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="meta">@EnableConfigurationProperties</span>(TransactionProperties.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TransactionAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 包装PlatformTransactionManagerCustomizer，对PlatformTransactionManager作自定义处理</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConditionalOnMissingBean</span> <span class="comment">// 不存在时</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TransactionManagerCustomizers <span class="title">platformTransactionManagerCustomizers</span><span class="params">(ObjectProvider&lt;PlatformTransactionManagerCustomizer&lt;?&gt;&gt; customizers)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> TransactionManagerCustomizers(customizers.orderedStream().collect(Collectors.toList()));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Configuration</span>(proxyBeanMethods = <span class="keyword">false</span>)</span><br><span class="line">    <span class="meta">@ConditionalOnSingleCandidate</span>(PlatformTransactionManager.class) <span class="comment">// 存在一个PlatformTransactionManager的Bean</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">TransactionTemplateConfiguration</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 注册TransactionTemplate：用于编程式事务</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> TransactionTemplate <span class="title">transactionTemplate</span><span class="params">(PlatformTransactionManager transactionManager)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> TransactionTemplate(transactionManager);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Configuration</span>(proxyBeanMethods = <span class="keyword">false</span>)</span><br><span class="line">    <span class="meta">@ConditionalOnBean</span>(PlatformTransactionManager.class)</span><br><span class="line">    <span class="meta">@ConditionalOnMissingBean</span>(AbstractTransactionManagementConfiguration.class)</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">EnableTransactionManagementConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Configuration</span>(proxyBeanMethods = <span class="keyword">false</span>)</span><br><span class="line">        <span class="meta">@EnableTransactionManagement</span>(proxyTargetClass = <span class="keyword">false</span>) <span class="comment">// @EnableTransactionManagement</span></span><br><span class="line">        <span class="meta">@ConditionalOnProperty</span>(prefix = <span class="string">"spring.aop"</span>, name = <span class="string">"proxy-target-class"</span>, havingValue = <span class="string">"false"</span>, matchIfMissing = <span class="keyword">false</span>)</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">JdkDynamicAutoProxyConfiguration</span> </span>&#123;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * 引入EnableTransactionManagement</span></span><br><span class="line"><span class="comment">             * EnableTransactionManagement引入TransactionManagementConfigurationSelector</span></span><br><span class="line"><span class="comment">             * TransactionManagementConfigurationSelector根据AdviceMode是PROXY还是ASPECTJ导入不同的配置</span></span><br><span class="line"><span class="comment">             * 默认PROXY模式，引入AutoProxyRegistrar和ProxyTransactionManagementConfiguration</span></span><br><span class="line"><span class="comment">             * AutoProxyRegistrar：</span></span><br><span class="line"><span class="comment">             *      注册InfrastructureAdvisorAutoProxyCreator</span></span><br><span class="line"><span class="comment">             *          InfrastructureAdvisorAutoProxyCreator实现了InstantiationAwareBeanPostProcessor接口，拦截Bean并寻找合适的Advisor，创建代理</span></span><br><span class="line"><span class="comment">             *          InfrastructureAdvisorAutoProxyCreator</span></span><br><span class="line"><span class="comment">             *          -&gt; AbstractAdvisorAutoProxyCreator</span></span><br><span class="line"><span class="comment">             *          -&gt; AbstractAutoProxyCreator</span></span><br><span class="line"><span class="comment">             *          -&gt; SmartInstantiationAwareBeanPostProcessor</span></span><br><span class="line"><span class="comment">             *          -&gt; InstantiationAwareBeanPostProcessor</span></span><br><span class="line"><span class="comment">             * ProxyTransactionManagementConfiguration：</span></span><br><span class="line"><span class="comment">             *      注册BeanFactoryTransactionAttributeSourceAdvisor：Advisor</span></span><br><span class="line"><span class="comment">             *      注册AnnotationTransactionAttributeSource：匹配规则，处理@Transactional注解</span></span><br><span class="line"><span class="comment">             *      注册TransactionInterceptor：事务拦截器</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Configuration</span>(proxyBeanMethods = <span class="keyword">false</span>)</span><br><span class="line">        <span class="meta">@EnableTransactionManagement</span>(proxyTargetClass = <span class="keyword">true</span>)</span><br><span class="line">        <span class="meta">@ConditionalOnProperty</span>(prefix = <span class="string">"spring.aop"</span>, name = <span class="string">"proxy-target-class"</span>, havingValue = <span class="string">"true"</span>, matchIfMissing = <span class="keyword">true</span>)</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">CglibAutoProxyConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span><span class="token punctuation">(</span>proxyBeanMethods <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@ConditionalOnClass</span><span class="token punctuation">(</span>PlatformTransactionManager<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@AutoConfigureAfter</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// JtaAutoConfiguration.class,</span>
+        <span class="token comment" spellcheck="true">// HibernateJpaAutoConfiguration.class,</span>
+        DataSourceTransactionManagerAutoConfiguration<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token comment" spellcheck="true">// 在DataSourceTransactionManager之后</span>
+        <span class="token comment" spellcheck="true">// Neo4jDataAutoConfiguration.class</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@EnableConfigurationProperties</span><span class="token punctuation">(</span>TransactionProperties<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TransactionAutoConfiguration</span> <span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 包装PlatformTransactionManagerCustomizer，对PlatformTransactionManager作自定义处理
+     */</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token annotation punctuation">@ConditionalOnMissingBean</span> <span class="token comment" spellcheck="true">// 不存在时</span>
+    <span class="token keyword">public</span> TransactionManagerCustomizers <span class="token function">platformTransactionManagerCustomizers</span><span class="token punctuation">(</span>ObjectProvider<span class="token operator">&lt;</span>PlatformTransactionManagerCustomizer<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">>></span> customizers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">TransactionManagerCustomizers</span><span class="token punctuation">(</span>customizers<span class="token punctuation">.</span><span class="token function">orderedStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>Collectors<span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+    <span class="token annotation punctuation">@Configuration</span><span class="token punctuation">(</span>proxyBeanMethods <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@ConditionalOnSingleCandidate</span><span class="token punctuation">(</span>PlatformTransactionManager<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 存在一个PlatformTransactionManager的Bean</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">TransactionTemplateConfiguration</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">/**
+         * 注册TransactionTemplate：用于编程式事务
+         */</span>
+        <span class="token annotation punctuation">@Bean</span>
+        <span class="token annotation punctuation">@ConditionalOnMissingBean</span>
+        <span class="token keyword">public</span> TransactionTemplate <span class="token function">transactionTemplate</span><span class="token punctuation">(</span>PlatformTransactionManager transactionManager<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">TransactionTemplate</span><span class="token punctuation">(</span>transactionManager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Configuration</span><span class="token punctuation">(</span>proxyBeanMethods <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@ConditionalOnBean</span><span class="token punctuation">(</span>PlatformTransactionManager<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@ConditionalOnMissingBean</span><span class="token punctuation">(</span>AbstractTransactionManagementConfiguration<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">EnableTransactionManagementConfiguration</span> <span class="token punctuation">{</span>
+
+        <span class="token annotation punctuation">@Configuration</span><span class="token punctuation">(</span>proxyBeanMethods <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+        <span class="token annotation punctuation">@EnableTransactionManagement</span><span class="token punctuation">(</span>proxyTargetClass <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// @EnableTransactionManagement</span>
+        <span class="token annotation punctuation">@ConditionalOnProperty</span><span class="token punctuation">(</span>prefix <span class="token operator">=</span> <span class="token string">"spring.aop"</span><span class="token punctuation">,</span> name <span class="token operator">=</span> <span class="token string">"proxy-target-class"</span><span class="token punctuation">,</span> havingValue <span class="token operator">=</span> <span class="token string">"false"</span><span class="token punctuation">,</span> matchIfMissing <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+        <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">JdkDynamicAutoProxyConfiguration</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">/*
+             * 引入EnableTransactionManagement
+             * EnableTransactionManagement引入TransactionManagementConfigurationSelector
+             * TransactionManagementConfigurationSelector根据AdviceMode是PROXY还是ASPECTJ导入不同的配置
+             * 默认PROXY模式，引入AutoProxyRegistrar和ProxyTransactionManagementConfiguration
+             * AutoProxyRegistrar：
+             *      注册InfrastructureAdvisorAutoProxyCreator
+             *          InfrastructureAdvisorAutoProxyCreator实现了InstantiationAwareBeanPostProcessor接口，拦截Bean并寻找合适的Advisor，创建代理
+             *          InfrastructureAdvisorAutoProxyCreator
+             *          -> AbstractAdvisorAutoProxyCreator
+             *          -> AbstractAutoProxyCreator
+             *          -> SmartInstantiationAwareBeanPostProcessor
+             *          -> InstantiationAwareBeanPostProcessor
+             * ProxyTransactionManagementConfiguration：
+             *      注册BeanFactoryTransactionAttributeSourceAdvisor：Advisor
+             *      注册AnnotationTransactionAttributeSource：匹配规则，处理@Transactional注解
+             *      注册TransactionInterceptor：事务拦截器
+             */</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token annotation punctuation">@Configuration</span><span class="token punctuation">(</span>proxyBeanMethods <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+        <span class="token annotation punctuation">@EnableTransactionManagement</span><span class="token punctuation">(</span>proxyTargetClass <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
+        <span class="token annotation punctuation">@ConditionalOnProperty</span><span class="token punctuation">(</span>prefix <span class="token operator">=</span> <span class="token string">"spring.aop"</span><span class="token punctuation">,</span> name <span class="token operator">=</span> <span class="token string">"proxy-target-class"</span><span class="token punctuation">,</span> havingValue <span class="token operator">=</span> <span class="token string">"true"</span><span class="token punctuation">,</span> matchIfMissing <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
+        <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">CglibAutoProxyConfiguration</span> <span class="token punctuation">{</span>
+
+        <span class="token punctuation">}</span>
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span></code></pre>
 <p>ProxyTransactionManagementConfiguration</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyTransactionManagementConfiguration</span> <span class="keyword">extends</span> <span class="title">AbstractTransactionManagementConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span>(name = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME)</span><br><span class="line">    <span class="meta">@Role</span>(BeanDefinition.ROLE_INFRASTRUCTURE)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> BeanFactoryTransactionAttributeSourceAdvisor <span class="title">transactionAdvisor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Advisor</span></span><br><span class="line">        BeanFactoryTransactionAttributeSourceAdvisor advisor = <span class="keyword">new</span> BeanFactoryTransactionAttributeSourceAdvisor();</span><br><span class="line">        <span class="comment">// 注入匹配规则</span></span><br><span class="line">        advisor.setTransactionAttributeSource(transactionAttributeSource());</span><br><span class="line">        <span class="comment">// 注入增强器</span></span><br><span class="line">        advisor.setAdvice(transactionInterceptor());</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.enableTx != <span class="keyword">null</span>) &#123;</span><br><span class="line">            advisor.setOrder(<span class="keyword">this</span>.enableTx.&lt;Integer&gt;getNumber(<span class="string">"order"</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> advisor;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 匹配规则</span></span><br><span class="line"><span class="comment">     * 处理<span class="doctag">@org</span>.springframework.transaction.annotation.Transactional，<span class="doctag">@javax</span>.transaction.Transactional等</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Role</span>(BeanDefinition.ROLE_INFRASTRUCTURE)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> TransactionAttributeSource <span class="title">transactionAttributeSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> AnnotationTransactionAttributeSource();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 增强器</span></span><br><span class="line"><span class="comment">     * 拦截事务</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Role</span>(BeanDefinition.ROLE_INFRASTRUCTURE)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> TransactionInterceptor <span class="title">transactionInterceptor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        TransactionInterceptor interceptor = <span class="keyword">new</span> TransactionInterceptor();</span><br><span class="line">        <span class="comment">// 注入匹配规则</span></span><br><span class="line">        interceptor.setTransactionAttributeSource(transactionAttributeSource());</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.txManager != <span class="keyword">null</span>) &#123;</span><br><span class="line">            interceptor.setTransactionManager(<span class="keyword">this</span>.txManager);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> interceptor;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ProxyTransactionManagementConfiguration</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractTransactionManagementConfiguration</span> <span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">/**
+     *
+     */</span>
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> TransactionManagementConfigUtils<span class="token punctuation">.</span>TRANSACTION_ADVISOR_BEAN_NAME<span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@Role</span><span class="token punctuation">(</span>BeanDefinition<span class="token punctuation">.</span>ROLE_INFRASTRUCTURE<span class="token punctuation">)</span>
+    <span class="token keyword">public</span> BeanFactoryTransactionAttributeSourceAdvisor <span class="token function">transactionAdvisor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Advisor</span>
+        BeanFactoryTransactionAttributeSourceAdvisor advisor <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeanFactoryTransactionAttributeSourceAdvisor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 注入匹配规则</span>
+        advisor<span class="token punctuation">.</span><span class="token function">setTransactionAttributeSource</span><span class="token punctuation">(</span><span class="token function">transactionAttributeSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 注入增强器</span>
+        advisor<span class="token punctuation">.</span><span class="token function">setAdvice</span><span class="token punctuation">(</span><span class="token function">transactionInterceptor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>enableTx <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            advisor<span class="token punctuation">.</span><span class="token function">setOrder</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>enableTx<span class="token punctuation">.</span>&lt;Integer<span class="token operator">></span><span class="token function">getNumber</span><span class="token punctuation">(</span><span class="token string">"order"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> advisor<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 匹配规则
+     * 处理@org.springframework.transaction.annotation.Transactional，@javax.transaction.Transactional等
+     */</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token annotation punctuation">@Role</span><span class="token punctuation">(</span>BeanDefinition<span class="token punctuation">.</span>ROLE_INFRASTRUCTURE<span class="token punctuation">)</span>
+    <span class="token keyword">public</span> TransactionAttributeSource <span class="token function">transactionAttributeSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AnnotationTransactionAttributeSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 增强器
+     * 拦截事务
+     */</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token annotation punctuation">@Role</span><span class="token punctuation">(</span>BeanDefinition<span class="token punctuation">.</span>ROLE_INFRASTRUCTURE<span class="token punctuation">)</span>
+    <span class="token keyword">public</span> TransactionInterceptor <span class="token function">transactionInterceptor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        TransactionInterceptor interceptor <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TransactionInterceptor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 注入匹配规则</span>
+        interceptor<span class="token punctuation">.</span><span class="token function">setTransactionAttributeSource</span><span class="token punctuation">(</span><span class="token function">transactionAttributeSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>txManager <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            interceptor<span class="token punctuation">.</span><span class="token function">setTransactionManager</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>txManager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> interceptor<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span></code></pre>
 <p>BeanFactoryTransactionAttributeSourceAdvisor</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"serial"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BeanFactoryTransactionAttributeSourceAdvisor</span> <span class="keyword">extends</span> <span class="title">AbstractBeanFactoryPointcutAdvisor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="keyword">private</span> TransactionAttributeSource transactionAttributeSource;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> TransactionAttributeSourcePointcut pointcut = <span class="keyword">new</span> TransactionAttributeSourcePointcut() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="meta">@Nullable</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> TransactionAttributeSource <span class="title">getTransactionAttributeSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> transactionAttributeSource;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTransactionAttributeSource</span><span class="params">(TransactionAttributeSource transactionAttributeSource)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.transactionAttributeSource = transactionAttributeSource;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setClassFilter</span><span class="params">(ClassFilter classFilter)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.pointcut.setClassFilter(classFilter);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Pointcut <span class="title">getPointcut</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.pointcut;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"serial"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BeanFactoryTransactionAttributeSourceAdvisor</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractBeanFactoryPointcutAdvisor</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Nullable</span>
+    <span class="token keyword">private</span> TransactionAttributeSource transactionAttributeSource<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> TransactionAttributeSourcePointcut pointcut <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TransactionAttributeSourcePointcut</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token annotation punctuation">@Nullable</span>
+        <span class="token keyword">protected</span> TransactionAttributeSource <span class="token function">getTransactionAttributeSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> transactionAttributeSource<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setTransactionAttributeSource</span><span class="token punctuation">(</span>TransactionAttributeSource transactionAttributeSource<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>transactionAttributeSource <span class="token operator">=</span> transactionAttributeSource<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setClassFilter</span><span class="token punctuation">(</span>ClassFilter classFilter<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>pointcut<span class="token punctuation">.</span><span class="token function">setClassFilter</span><span class="token punctuation">(</span>classFilter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> Pointcut <span class="token function">getPointcut</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>pointcut<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span></code></pre>
 <p>TransactionInterceptor#invoke</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(MethodInvocation invocation)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 被代理类</span></span><br><span class="line">    Class&lt;?&gt; targetClass = (invocation.getThis() != <span class="keyword">null</span> ? AopUtils.getTargetClass(invocation.getThis()) : <span class="keyword">null</span>);</span><br><span class="line">    <span class="comment">// Adapt to TransactionAspectSupport's invokeWithinTransaction...</span></span><br><span class="line">    <span class="keyword">return</span> invokeWithinTransaction(invocation.getMethod(), targetClass,</span><br><span class="line">            <span class="comment">// 实现类为ReflectiveMethodInvocation</span></span><br><span class="line">            invocation::proceed);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
+    <span class="token annotation punctuation">@Nullable</span>
+    <span class="token keyword">public</span> Object <span class="token function">invoke</span><span class="token punctuation">(</span>MethodInvocation invocation<span class="token punctuation">)</span> <span class="token keyword">throws</span> Throwable <span class="token punctuation">{</span>
+
+        <span class="token comment" spellcheck="true">// 被代理类</span>
+        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> targetClass <span class="token operator">=</span> <span class="token punctuation">(</span>invocation<span class="token punctuation">.</span><span class="token function">getThis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null <span class="token operator">?</span> AopUtils<span class="token punctuation">.</span><span class="token function">getTargetClass</span><span class="token punctuation">(</span>invocation<span class="token punctuation">.</span><span class="token function">getThis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">:</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// Adapt to TransactionAspectSupport's invokeWithinTransaction...</span>
+        <span class="token keyword">return</span> <span class="token function">invokeWithinTransaction</span><span class="token punctuation">(</span>invocation<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> targetClass<span class="token punctuation">,</span>
+                <span class="token comment" spellcheck="true">// 实现类为ReflectiveMethodInvocation</span>
+                invocation<span class="token operator">:</span><span class="token operator">:</span>proceed<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>TransactionAspectSupport#invokeWithinTransaction</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">invokeWithinTransaction</span><span class="params">(Method method, @Nullable Class&lt;?&gt; targetClass, <span class="keyword">final</span> InvocationCallback invocation)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.reactiveAdapterRegistry != <span class="keyword">null</span>) &#123;</span><br><span class="line">        ReactiveAdapter adapter = <span class="keyword">this</span>.reactiveAdapterRegistry.getAdapter(method.getReturnType());</span><br><span class="line">        <span class="keyword">if</span> (adapter != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> ReactiveTransactionSupport(adapter).invokeWithinTransaction(method, targetClass, invocation);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * AnnotationTransactionAttributeSource</span></span><br><span class="line"><span class="comment">     * 对每个符合条件的方法，都有缓存该方法的事务属性TransactionAttribute，包括传播机制、隔离级别等</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    TransactionAttributeSource tas = getTransactionAttributeSource();</span><br><span class="line">    <span class="comment">// 获取该方法的事务属性</span></span><br><span class="line">    <span class="keyword">final</span> TransactionAttribute txAttr = (tas != <span class="keyword">null</span> ? tas.getTransactionAttribute(method, targetClass) : <span class="keyword">null</span>);</span><br><span class="line">    <span class="comment">// 查找容器中的PlatformTransactionManager，事务拦截器，这里是DataSourceTransactionManager</span></span><br><span class="line">    <span class="keyword">final</span> PlatformTransactionManager tm = determineTransactionManager(txAttr);</span><br><span class="line">    <span class="comment">// 获取被代理的类方法名称</span></span><br><span class="line">    <span class="keyword">final</span> String joinpointIdentification = methodIdentification(method, targetClass, txAttr);</span><br><span class="line">    <span class="comment">// 声明式事务</span></span><br><span class="line">    <span class="keyword">if</span> (txAttr == <span class="keyword">null</span> || !(tm <span class="keyword">instanceof</span> CallbackPreferringPlatformTransactionManager)) &#123;</span><br><span class="line">        <span class="comment">// 根据需要创建事务</span></span><br><span class="line">        TransactionInfo txInfo = createTransactionIfNecessary(tm, txAttr, joinpointIdentification);</span><br><span class="line">        Object retVal;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// do it</span></span><br><span class="line">            retVal = invocation.proceedWithInvocation();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">            <span class="comment">// 回滚事务</span></span><br><span class="line">            completeTransactionAfterThrowing(txInfo, ex);</span><br><span class="line">            <span class="keyword">throw</span> ex;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 清理事务状态</span></span><br><span class="line">            cleanupTransactionInfo(txInfo);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (vavrPresent &amp;&amp; VavrDelegate.isVavrTry(retVal)) &#123;</span><br><span class="line">            <span class="comment">// Set rollback-only in case of Vavr failure matching our rollback rules...</span></span><br><span class="line">            TransactionStatus status = txInfo.getTransactionStatus();</span><br><span class="line">            <span class="keyword">if</span> (status != <span class="keyword">null</span> &amp;&amp; txAttr != <span class="keyword">null</span>) &#123;</span><br><span class="line">                retVal = VavrDelegate.evaluateTryFailure(retVal, txAttr, status);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 执行成功，提交事务</span></span><br><span class="line">        commitTransactionAfterReturning(txInfo);</span><br><span class="line">        <span class="keyword">return</span> retVal;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 编程式事务</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Nullable</span>
+    <span class="token keyword">protected</span> Object <span class="token function">invokeWithinTransaction</span><span class="token punctuation">(</span>Method method<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> targetClass<span class="token punctuation">,</span> <span class="token keyword">final</span> InvocationCallback invocation<span class="token punctuation">)</span> <span class="token keyword">throws</span> Throwable <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>reactiveAdapterRegistry <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            ReactiveAdapter adapter <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>reactiveAdapterRegistry<span class="token punctuation">.</span><span class="token function">getAdapter</span><span class="token punctuation">(</span>method<span class="token punctuation">.</span><span class="token function">getReturnType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>adapter <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ReactiveTransactionSupport</span><span class="token punctuation">(</span>adapter<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">invokeWithinTransaction</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> targetClass<span class="token punctuation">,</span> invocation<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">/*
+         * AnnotationTransactionAttributeSource
+         * 对每个符合条件的方法，都有缓存该方法的事务属性TransactionAttribute，包括传播机制、隔离级别等
+         */</span>
+        TransactionAttributeSource tas <span class="token operator">=</span> <span class="token function">getTransactionAttributeSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 获取该方法的事务属性</span>
+        <span class="token keyword">final</span> TransactionAttribute txAttr <span class="token operator">=</span> <span class="token punctuation">(</span>tas <span class="token operator">!=</span> null <span class="token operator">?</span> tas<span class="token punctuation">.</span><span class="token function">getTransactionAttribute</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> targetClass<span class="token punctuation">)</span> <span class="token operator">:</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 查找容器中的PlatformTransactionManager，事务拦截器，这里是DataSourceTransactionManager</span>
+        <span class="token keyword">final</span> PlatformTransactionManager tm <span class="token operator">=</span> <span class="token function">determineTransactionManager</span><span class="token punctuation">(</span>txAttr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 获取被代理的类方法名称</span>
+        <span class="token keyword">final</span> String joinpointIdentification <span class="token operator">=</span> <span class="token function">methodIdentification</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> targetClass<span class="token punctuation">,</span> txAttr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 声明式事务</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>txAttr <span class="token operator">==</span> null <span class="token operator">||</span> <span class="token operator">!</span><span class="token punctuation">(</span>tm <span class="token keyword">instanceof</span> <span class="token class-name">CallbackPreferringPlatformTransactionManager</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 根据需要创建事务</span>
+            TransactionInfo txInfo <span class="token operator">=</span> <span class="token function">createTransactionIfNecessary</span><span class="token punctuation">(</span>tm<span class="token punctuation">,</span> txAttr<span class="token punctuation">,</span> joinpointIdentification<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            Object retVal<span class="token punctuation">;</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// do it</span>
+                retVal <span class="token operator">=</span> invocation<span class="token punctuation">.</span><span class="token function">proceedWithInvocation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 回滚事务</span>
+                <span class="token function">completeTransactionAfterThrowing</span><span class="token punctuation">(</span>txInfo<span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 清理事务状态</span>
+                <span class="token function">cleanupTransactionInfo</span><span class="token punctuation">(</span>txInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>vavrPresent <span class="token operator">&amp;&amp;</span> VavrDelegate<span class="token punctuation">.</span><span class="token function">isVavrTry</span><span class="token punctuation">(</span>retVal<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// Set rollback-only in case of Vavr failure matching our rollback rules...</span>
+                TransactionStatus status <span class="token operator">=</span> txInfo<span class="token punctuation">.</span><span class="token function">getTransactionStatus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>status <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> txAttr <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    retVal <span class="token operator">=</span> VavrDelegate<span class="token punctuation">.</span><span class="token function">evaluateTryFailure</span><span class="token punctuation">(</span>retVal<span class="token punctuation">,</span> txAttr<span class="token punctuation">,</span> status<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 执行成功，提交事务</span>
+            <span class="token function">commitTransactionAfterReturning</span><span class="token punctuation">(</span>txInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> retVal<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 编程式事务</span>
+        <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>AbstractFallbackTransactionAttributeSource#AbstractFallbackTransactionAttributeSource</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> TransactionAttribute <span class="title">computeTransactionAttribute</span><span class="params">(Method method, @Nullable Class&lt;?&gt; targetClass)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 非public方法不允许事务</span></span><br><span class="line">    <span class="keyword">if</span> (allowPublicMethodsOnly() &amp;&amp; !Modifier.isPublic(method.getModifiers())) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 从CGLIB代理对象（子类）上的一个方法，找到真实对象（父类）上对应的方法，或者原本返回</span></span><br><span class="line">    Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 先找方法上的事务注解</span></span><br><span class="line"><span class="comment">     * 通过TransactionAnnotationParser解析不同的事务注解</span></span><br><span class="line"><span class="comment">     * @javax.transaction.Transactional或@org.springframework.transaction.annotation.Transactional或别的</span></span><br><span class="line"><span class="comment">     * 包装信息为TransactionAttribute类型返回</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    TransactionAttribute txAttr = findTransactionAttribute(specificMethod);</span><br><span class="line">    <span class="keyword">if</span> (txAttr != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> txAttr;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 方法上没有，就从类上找</span></span><br><span class="line">    txAttr = findTransactionAttribute(specificMethod.getDeclaringClass());</span><br><span class="line">    <span class="keyword">if</span> (txAttr != <span class="keyword">null</span> &amp;&amp; ClassUtils.isUserLevelMethod(method)) &#123;</span><br><span class="line">        <span class="keyword">return</span> txAttr;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 说明子类重写了方法</span></span><br><span class="line">    <span class="keyword">if</span> (specificMethod != method) &#123;</span><br><span class="line">        <span class="comment">// 找父类的方法</span></span><br><span class="line">        txAttr = findTransactionAttribute(method);</span><br><span class="line">        <span class="keyword">if</span> (txAttr != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> txAttr;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 从最初的类上找（声明方法的类）</span></span><br><span class="line">        txAttr = findTransactionAttribute(method.getDeclaringClass());</span><br><span class="line">        <span class="keyword">if</span> (txAttr != <span class="keyword">null</span> &amp;&amp; ClassUtils.isUserLevelMethod(method)) &#123;</span><br><span class="line">            <span class="keyword">return</span> txAttr;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Nullable</span>
+    <span class="token keyword">protected</span> TransactionAttribute <span class="token function">computeTransactionAttribute</span><span class="token punctuation">(</span>Method method<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> targetClass<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 非public方法不允许事务</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">allowPublicMethodsOnly</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>Modifier<span class="token punctuation">.</span><span class="token function">isPublic</span><span class="token punctuation">(</span>method<span class="token punctuation">.</span><span class="token function">getModifiers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 从CGLIB代理对象（子类）上的一个方法，找到真实对象（父类）上对应的方法，或者原本返回</span>
+        Method specificMethod <span class="token operator">=</span> AopUtils<span class="token punctuation">.</span><span class="token function">getMostSpecificMethod</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> targetClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">/*
+         * 先找方法上的事务注解
+         * 通过TransactionAnnotationParser解析不同的事务注解
+         * @javax.transaction.Transactional或@org.springframework.transaction.annotation.Transactional或别的
+         * 包装信息为TransactionAttribute类型返回
+         */</span>
+        TransactionAttribute txAttr <span class="token operator">=</span> <span class="token function">findTransactionAttribute</span><span class="token punctuation">(</span>specificMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>txAttr <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> txAttr<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 方法上没有，就从类上找</span>
+        txAttr <span class="token operator">=</span> <span class="token function">findTransactionAttribute</span><span class="token punctuation">(</span>specificMethod<span class="token punctuation">.</span><span class="token function">getDeclaringClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>txAttr <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> ClassUtils<span class="token punctuation">.</span><span class="token function">isUserLevelMethod</span><span class="token punctuation">(</span>method<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> txAttr<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 说明子类重写了方法</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>specificMethod <span class="token operator">!=</span> method<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 找父类的方法</span>
+            txAttr <span class="token operator">=</span> <span class="token function">findTransactionAttribute</span><span class="token punctuation">(</span>method<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>txAttr <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> txAttr<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 从最初的类上找（声明方法的类）</span>
+            txAttr <span class="token operator">=</span> <span class="token function">findTransactionAttribute</span><span class="token punctuation">(</span>method<span class="token punctuation">.</span><span class="token function">getDeclaringClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>txAttr <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> ClassUtils<span class="token punctuation">.</span><span class="token function">isUserLevelMethod</span><span class="token punctuation">(</span>method<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> txAttr<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <hr>
 <p>事务的一些注意事项：</p>
 <p>参考了这篇文章：<a href="https://blog.csdn.net/bntX2jSQfEHy7/article/details/79040349" target="_blank" rel="noopener">https://blog.csdn.net/bntX2jSQfEHy7/article/details/79040349</a> ，文章不错，就是标题太。。。我还以为在看微信传销号呢。。。</p>
@@ -125,10 +391,36 @@
 <p>假设某类有方法A和方法B，方法A没有@Transactional注解，方法B有@Transactional注解，方法A内部调用了方法B，此时事务不会生效。</p>
 <p>因为AOP生成的代理对象，不会拦截方法A，所以直接调用了原本实例的方法A，方法A直接调用了自身的方法B，完全没走AOP的拦截，所以事务不会生效。</p>
 <p>假设某类有方法A和方法B，都有@Transactional注解，方法A内部调用了方法B，此时方法B的事务是跟随着方法A的。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// jdbc... 假设没有异常</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        B(); <span class="comment">// 事务无效，不会回滚</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">B</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// jdbc...</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Transactional</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">A</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// jdbc... 假设没有异常</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token function">B</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 事务无效，不会回滚</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Transactional</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">B</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// jdbc...</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>原因还是一样，方法A内部调用的方法B是直接调用实例对象的方法，没有被拦截。</p>
 <p>解决方法： <code>@EnableAspectJAutoProxy(exposeProxy = true)</code></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// jdbc...</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ((Xxx) AopContext.currentProxy()).B();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">B</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// jdbc...</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Transactional</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">A</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// jdbc...</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token punctuation">(</span><span class="token punctuation">(</span>Xxx<span class="token punctuation">)</span> AopContext<span class="token punctuation">.</span><span class="token function">currentProxy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">B</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Transactional</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">B</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// jdbc...</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>@Transactional注解只被应用到public方法上，否则将被忽略，也不会抛异常。</p>
 <p>同样的道理，只有外部调用时，才走AOP的拦截，而内部的相互调用是不会被拦截的，为了避免这一点，所以不支持非public方法。</p>
 
@@ -149,26 +441,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

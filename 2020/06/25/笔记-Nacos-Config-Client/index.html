@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-Nacos-Config-Client | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-Nacos-Config-Client">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-Nacos-Config-Client | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-Nacos-Config-Client"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -102,24 +98,217 @@
 				<p>发布配置，略。</p>
 <hr>
 <p>NacosConfigService#getConfigInner</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">getConfigInner</span><span class="params">(String tenant, String dataId, String group, <span class="keyword">long</span> timeoutMs)</span> <span class="keyword">throws</span> NacosException </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// 优先使用本地配置</span></span><br><span class="line">    <span class="comment">// 如果本地有Failover文件的话，就从文件读取返回</span></span><br><span class="line">    String content = LocalConfigInfoProcessor.getFailover(agent.getName(), dataId, group, tenant);</span><br><span class="line">    <span class="keyword">if</span> (content != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">return</span> content;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 从服务器获取返回</span></span><br><span class="line">        String[] ct = worker.getServerConfig(dataId, group, tenant, timeoutMs);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">return</span> content;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NacosException ioe) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 否则尝试从本地的Snapshot文件读取返回</span></span><br><span class="line">    content = LocalConfigInfoProcessor.getSnapshot(agent.getName(), dataId, group, tenant);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">return</span> content;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> String <span class="token function">getConfigInner</span><span class="token punctuation">(</span>String tenant<span class="token punctuation">,</span> String dataId<span class="token punctuation">,</span> String group<span class="token punctuation">,</span> <span class="token keyword">long</span> timeoutMs<span class="token punctuation">)</span> <span class="token keyword">throws</span> NacosException <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token comment" spellcheck="true">// 优先使用本地配置</span>
+        <span class="token comment" spellcheck="true">// 如果本地有Failover文件的话，就从文件读取返回</span>
+        String content <span class="token operator">=</span> LocalConfigInfoProcessor<span class="token punctuation">.</span><span class="token function">getFailover</span><span class="token punctuation">(</span>agent<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> dataId<span class="token punctuation">,</span> group<span class="token punctuation">,</span> tenant<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>content <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token keyword">return</span> content<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 从服务器获取返回</span>
+            String<span class="token punctuation">[</span><span class="token punctuation">]</span> ct <span class="token operator">=</span> worker<span class="token punctuation">.</span><span class="token function">getServerConfig</span><span class="token punctuation">(</span>dataId<span class="token punctuation">,</span> group<span class="token punctuation">,</span> tenant<span class="token punctuation">,</span> timeoutMs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token keyword">return</span> content<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">NacosException</span> ioe<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 否则尝试从本地的Snapshot文件读取返回</span>
+        content <span class="token operator">=</span> LocalConfigInfoProcessor<span class="token punctuation">.</span><span class="token function">getSnapshot</span><span class="token punctuation">(</span>agent<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> dataId<span class="token punctuation">,</span> group<span class="token punctuation">,</span> tenant<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token keyword">return</span> content<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>客户端有缓存，那就不是严格的CP了，但是可用性必须要保证。</p>
 <p>ClientWorker#getServerConfig</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String[] getServerConfig(String dataId, String group, String tenant, <span class="keyword">long</span> readTimeout)</span><br><span class="line">    <span class="keyword">throws</span> NacosException &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    HttpResult result = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="comment">// 从服务器获取配置</span></span><br><span class="line">        result = agent.httpGet(Constants.CONFIG_CONTROLLER_PATH, <span class="keyword">null</span>, params, agent.getEncode(), readTimeout);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">switch</span> (result.code) &#123;</span><br><span class="line">        <span class="keyword">case</span> HttpURLConnection.HTTP_OK:</span><br><span class="line">            <span class="comment">// 持久化快照</span></span><br><span class="line">            LocalConfigInfoProcessor.saveSnapshot(agent.getName(), dataId, group, tenant, result.content);</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            <span class="keyword">return</span> ct;</span><br><span class="line">        <span class="keyword">case</span> HttpURLConnection.HTTP_NOT_FOUND:</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">case</span> HttpURLConnection.HTTP_CONFLICT: &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> HttpURLConnection.HTTP_FORBIDDEN: &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">default</span>: &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">getServerConfig</span><span class="token punctuation">(</span>String dataId<span class="token punctuation">,</span> String group<span class="token punctuation">,</span> String tenant<span class="token punctuation">,</span> <span class="token keyword">long</span> readTimeout<span class="token punctuation">)</span>
+        <span class="token keyword">throws</span> NacosException <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+        HttpResult result <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token comment" spellcheck="true">// 从服务器获取配置</span>
+            result <span class="token operator">=</span> agent<span class="token punctuation">.</span><span class="token function">httpGet</span><span class="token punctuation">(</span>Constants<span class="token punctuation">.</span>CONFIG_CONTROLLER_PATH<span class="token punctuation">,</span> null<span class="token punctuation">,</span> params<span class="token punctuation">,</span> agent<span class="token punctuation">.</span><span class="token function">getEncode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> readTimeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span>code<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">case</span> HttpURLConnection<span class="token punctuation">.</span>HTTP_OK<span class="token operator">:</span>
+                <span class="token comment" spellcheck="true">// 持久化快照</span>
+                LocalConfigInfoProcessor<span class="token punctuation">.</span><span class="token function">saveSnapshot</span><span class="token punctuation">(</span>agent<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> dataId<span class="token punctuation">,</span> group<span class="token punctuation">,</span> tenant<span class="token punctuation">,</span> result<span class="token punctuation">.</span>content<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+                <span class="token keyword">return</span> ct<span class="token punctuation">;</span>
+            <span class="token keyword">case</span> HttpURLConnection<span class="token punctuation">.</span>HTTP_NOT_FOUND<span class="token operator">:</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token keyword">case</span> HttpURLConnection<span class="token punctuation">.</span>HTTP_CONFLICT<span class="token operator">:</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">case</span> HttpURLConnection<span class="token punctuation">.</span>HTTP_FORBIDDEN<span class="token operator">:</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">default</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>ServerHttpAgent#httpGet</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> HttpResult <span class="title">httpGet</span><span class="params">(String path, List&lt;String&gt; headers, List&lt;String&gt; paramValues, String encoding,</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">long</span> readTimeoutMs)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">long</span> endTime = System.currentTimeMillis() + readTimeoutMs;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> isSSL = <span class="keyword">false</span>;</span><br><span class="line">    injectSecurityInfo(paramValues);</span><br><span class="line">    String currentServerAddr = serverListMgr.getCurrentServerAddr();</span><br><span class="line">    <span class="keyword">int</span> maxRetry = <span class="keyword">this</span>.maxRetry;</span><br><span class="line">    <span class="comment">// 循环重试至超时或者到达上限</span></span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            List&lt;String&gt; newHeaders = getSpasHeaders(paramValues);</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            HttpResult result = HttpSimpleClient.httpGet(</span><br><span class="line">                getUrl(currentServerAddr, path), newHeaders, paramValues, encoding,</span><br><span class="line">                readTimeoutMs, isSSL);</span><br><span class="line">            <span class="keyword">if</span> (result.code == HttpURLConnection.HTTP_INTERNAL_ERROR</span><br><span class="line">                || result.code == HttpURLConnection.HTTP_BAD_GATEWAY</span><br><span class="line">                || result.code == HttpURLConnection.HTTP_UNAVAILABLE) &#123;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// Update the currently available server addr</span></span><br><span class="line">                serverListMgr.updateCurrentServerAddr(currentServerAddr);</span><br><span class="line">                <span class="keyword">return</span> result;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ConnectException ce) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (SocketTimeoutException stoe) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (serverListMgr.getIterator().hasNext()) &#123;</span><br><span class="line">            <span class="comment">// 换一个Server重试</span></span><br><span class="line">            currentServerAddr = serverListMgr.getIterator().next();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            maxRetry--;</span><br><span class="line">            <span class="keyword">if</span> (maxRetry &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125;</span><br><span class="line">            serverListMgr.refreshCurrentServerAddr();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (System.currentTimeMillis() &lt;= endTime);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> HttpResult <span class="token function">httpGet</span><span class="token punctuation">(</span>String path<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> headers<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>String<span class="token operator">></span> paramValues<span class="token punctuation">,</span> String encoding<span class="token punctuation">,</span>
+                              <span class="token keyword">long</span> readTimeoutMs<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> <span class="token keyword">long</span> endTime <span class="token operator">=</span> System<span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> readTimeoutMs<span class="token punctuation">;</span>
+        <span class="token keyword">final</span> <span class="token keyword">boolean</span> isSSL <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token function">injectSecurityInfo</span><span class="token punctuation">(</span>paramValues<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String currentServerAddr <span class="token operator">=</span> serverListMgr<span class="token punctuation">.</span><span class="token function">getCurrentServerAddr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> maxRetry <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>maxRetry<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 循环重试至超时或者到达上限</span>
+        <span class="token keyword">do</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                List<span class="token operator">&lt;</span>String<span class="token operator">></span> newHeaders <span class="token operator">=</span> <span class="token function">getSpasHeaders</span><span class="token punctuation">(</span>paramValues<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+                HttpResult result <span class="token operator">=</span> HttpSimpleClient<span class="token punctuation">.</span><span class="token function">httpGet</span><span class="token punctuation">(</span>
+                    <span class="token function">getUrl</span><span class="token punctuation">(</span>currentServerAddr<span class="token punctuation">,</span> path<span class="token punctuation">)</span><span class="token punctuation">,</span> newHeaders<span class="token punctuation">,</span> paramValues<span class="token punctuation">,</span> encoding<span class="token punctuation">,</span>
+                    readTimeoutMs<span class="token punctuation">,</span> isSSL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span>code <span class="token operator">==</span> HttpURLConnection<span class="token punctuation">.</span>HTTP_INTERNAL_ERROR
+                    <span class="token operator">||</span> result<span class="token punctuation">.</span>code <span class="token operator">==</span> HttpURLConnection<span class="token punctuation">.</span>HTTP_BAD_GATEWAY
+                    <span class="token operator">||</span> result<span class="token punctuation">.</span>code <span class="token operator">==</span> HttpURLConnection<span class="token punctuation">.</span>HTTP_UNAVAILABLE<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// Update the currently available server addr</span>
+                    serverListMgr<span class="token punctuation">.</span><span class="token function">updateCurrentServerAddr</span><span class="token punctuation">(</span>currentServerAddr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ConnectException</span> ce<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">SocketTimeoutException</span> stoe<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> ioe<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>serverListMgr<span class="token punctuation">.</span><span class="token function">getIterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 换一个Server重试</span>
+                currentServerAddr <span class="token operator">=</span> serverListMgr<span class="token punctuation">.</span><span class="token function">getIterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                maxRetry<span class="token operator">--</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>maxRetry <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// ...</span>
+                <span class="token punctuation">}</span>
+                serverListMgr<span class="token punctuation">.</span><span class="token function">refreshCurrentServerAddr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span>System<span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;=</span> endTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+    <span class="token punctuation">}</span></code></pre>
 <hr>
 <p>ServerListManager</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ServerListManager</span><span class="params">(Properties properties)</span> <span class="keyword">throws</span> NacosException </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="comment">// 如果手动配置了Server列表</span></span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isNotEmpty(serverAddrsStr)) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 否则认为配置了Endpoint，将定期从地址服务器获取Server列表</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token function">ServerListManager</span><span class="token punctuation">(</span>Properties properties<span class="token punctuation">)</span> <span class="token keyword">throws</span> NacosException <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token comment" spellcheck="true">// 如果手动配置了Server列表</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>serverAddrsStr<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 否则认为配置了Endpoint，将定期从地址服务器获取Server列表</span>
+        <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <hr>
 <p>ClientWorker#addTenantListeners</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addTenantListeners</span><span class="params">(String dataId, String group, List&lt;? extends Listener&gt; listeners)</span> <span class="keyword">throws</span> NacosException </span>&#123;</span><br><span class="line">    group = null2defaultGroup(group);</span><br><span class="line">    String tenant = agent.getTenant();</span><br><span class="line">    CacheData cache = addCacheDataIfAbsent(dataId, group, tenant);</span><br><span class="line">    <span class="comment">// 注册监听器回调</span></span><br><span class="line">    <span class="keyword">for</span> (Listener listener : listeners) &#123;</span><br><span class="line">        cache.addListener(listener);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addTenantListeners</span><span class="token punctuation">(</span>String dataId<span class="token punctuation">,</span> String group<span class="token punctuation">,</span> List<span class="token operator">&lt;</span><span class="token operator">?</span> <span class="token keyword">extends</span> <span class="token class-name">Listener</span><span class="token operator">></span> listeners<span class="token punctuation">)</span> <span class="token keyword">throws</span> NacosException <span class="token punctuation">{</span>
+        group <span class="token operator">=</span> <span class="token function">null2defaultGroup</span><span class="token punctuation">(</span>group<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String tenant <span class="token operator">=</span> agent<span class="token punctuation">.</span><span class="token function">getTenant</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CacheData cache <span class="token operator">=</span> <span class="token function">addCacheDataIfAbsent</span><span class="token punctuation">(</span>dataId<span class="token punctuation">,</span> group<span class="token punctuation">,</span> tenant<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 注册监听器回调</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span>Listener listener <span class="token operator">:</span> listeners<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            cache<span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span>listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>ClientWorker#addCacheDataIfAbsent</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> CacheData <span class="title">addCacheDataIfAbsent</span><span class="params">(String dataId, String group, String tenant)</span> <span class="keyword">throws</span> NacosException </span>&#123;</span><br><span class="line">    CacheData cache = getCache(dataId, group, tenant);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != cache) &#123;</span><br><span class="line">        <span class="keyword">return</span> cache;</span><br><span class="line">    &#125;</span><br><span class="line">    String key = GroupKey.getKeyTenant(dataId, group, tenant);</span><br><span class="line">    <span class="comment">// 双重检查加锁</span></span><br><span class="line">    <span class="keyword">synchronized</span> (cacheMap) &#123;</span><br><span class="line">        CacheData cacheFromMap = getCache(dataId, group, tenant);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != cacheFromMap) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            cache = <span class="keyword">new</span> CacheData(configFilterChainManager, agent.getName(), dataId, group, tenant);</span><br><span class="line">            <span class="keyword">if</span> (enableRemoteSyncConfig) &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Map&lt;String, CacheData&gt; copy = <span class="keyword">new</span> HashMap&lt;String, CacheData&gt;(<span class="keyword">this</span>.cacheMap.get());</span><br><span class="line">        copy.put(key, cache);</span><br><span class="line">        cacheMap.set(copy);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">return</span> cache;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> CacheData <span class="token function">addCacheDataIfAbsent</span><span class="token punctuation">(</span>String dataId<span class="token punctuation">,</span> String group<span class="token punctuation">,</span> String tenant<span class="token punctuation">)</span> <span class="token keyword">throws</span> NacosException <span class="token punctuation">{</span>
+        CacheData cache <span class="token operator">=</span> <span class="token function">getCache</span><span class="token punctuation">(</span>dataId<span class="token punctuation">,</span> group<span class="token punctuation">,</span> tenant<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>null <span class="token operator">!=</span> cache<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> cache<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        String key <span class="token operator">=</span> GroupKey<span class="token punctuation">.</span><span class="token function">getKeyTenant</span><span class="token punctuation">(</span>dataId<span class="token punctuation">,</span> group<span class="token punctuation">,</span> tenant<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 双重检查加锁</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>cacheMap<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            CacheData cacheFromMap <span class="token operator">=</span> <span class="token function">getCache</span><span class="token punctuation">(</span>dataId<span class="token punctuation">,</span> group<span class="token punctuation">,</span> tenant<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>null <span class="token operator">!=</span> cacheFromMap<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                cache <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CacheData</span><span class="token punctuation">(</span>configFilterChainManager<span class="token punctuation">,</span> agent<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> dataId<span class="token punctuation">,</span> group<span class="token punctuation">,</span> tenant<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>enableRemoteSyncConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// ...</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> CacheData<span class="token operator">></span> copy <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token operator">&lt;</span>String<span class="token punctuation">,</span> CacheData<span class="token operator">></span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>cacheMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            copy<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> cache<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            cacheMap<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>copy<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>ClientWorker#checkConfigInfo</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">checkConfigInfo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Dispatch taskes.</span></span><br><span class="line">    <span class="keyword">int</span> listenerSize = cacheMap.get().size();</span><br><span class="line">    <span class="comment">// Round up the longingTaskCount.</span></span><br><span class="line">    <span class="keyword">int</span> longingTaskCount = (<span class="keyword">int</span>) Math.ceil(listenerSize / ParamUtil.getPerTaskConfigSize());</span><br><span class="line">    <span class="comment">// 需要增加长轮询任务</span></span><br><span class="line">    <span class="keyword">if</span> (longingTaskCount &gt; currentLongingTaskCount) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = (<span class="keyword">int</span>) currentLongingTaskCount; i &lt; longingTaskCount; i++) &#123;</span><br><span class="line">            <span class="comment">// The task list is no order.So it maybe has issues when changing.</span></span><br><span class="line">            executorService.execute(<span class="keyword">new</span> LongPollingRunnable(i));</span><br><span class="line">        &#125;</span><br><span class="line">        currentLongingTaskCount = longingTaskCount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">checkConfigInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Dispatch taskes.</span>
+        <span class="token keyword">int</span> listenerSize <span class="token operator">=</span> cacheMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// Round up the longingTaskCount.</span>
+        <span class="token keyword">int</span> longingTaskCount <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> Math<span class="token punctuation">.</span><span class="token function">ceil</span><span class="token punctuation">(</span>listenerSize <span class="token operator">/</span> ParamUtil<span class="token punctuation">.</span><span class="token function">getPerTaskConfigSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 需要增加长轮询任务</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>longingTaskCount <span class="token operator">></span> currentLongingTaskCount<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> currentLongingTaskCount<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> longingTaskCount<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// The task list is no order.So it maybe has issues when changing.</span>
+                executorService<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">LongPollingRunnable</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            currentLongingTaskCount <span class="token operator">=</span> longingTaskCount<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <p>ClientWorker$LongPollingRunnable#run</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    List&lt;CacheData&gt; cacheDatas = <span class="keyword">new</span> ArrayList&lt;CacheData&gt;();</span><br><span class="line">    List&lt;String&gt; inInitializingCacheList = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (CacheData cacheData : cacheMap.get().values()) &#123;</span><br><span class="line">            <span class="comment">// 匹配自己的任务Id就加入</span></span><br><span class="line">            <span class="keyword">if</span> (cacheData.getTaskId() == taskId) &#123;</span><br><span class="line">                cacheDatas.add(cacheData);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 再次更新一遍</span></span><br><span class="line">                    checkLocalConfig(cacheData);</span><br><span class="line">                    <span class="comment">// ...</span></span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    <span class="comment">// ...</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 向服务端长轮询，返回发生变化的Key</span></span><br><span class="line">        List&lt;String&gt; changedGroupKeys = checkUpdateDataIds(cacheDatas, inInitializingCacheList);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="comment">// 遍历</span></span><br><span class="line">        <span class="keyword">for</span> (String groupKey : changedGroupKeys) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 从Server更新</span></span><br><span class="line">                String[] ct = getServerConfig(dataId, group, tenant, <span class="number">3000L</span>);</span><br><span class="line">                CacheData cache = cacheMap.get().get(GroupKey.getKeyTenant(dataId, group, tenant));</span><br><span class="line">                cache.setContent(ct[<span class="number">0</span>]);</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (NacosException ioe) &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (CacheData cacheData : cacheDatas) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">        inInitializingCacheList.clear();</span><br><span class="line">        <span class="comment">// 立即执行下一次长轮询</span></span><br><span class="line">        executorService.execute(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">        <span class="comment">// 发生了异常就延迟执行</span></span><br><span class="line">        executorService.schedule(<span class="keyword">this</span>, taskPenaltyTime, TimeUnit.MILLISECONDS);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-java"><code class="language-java">        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            List<span class="token operator">&lt;</span>CacheData<span class="token operator">></span> cacheDatas <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span>CacheData<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            List<span class="token operator">&lt;</span>String<span class="token operator">></span> inInitializingCacheList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span>String<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span>CacheData cacheData <span class="token operator">:</span> cacheMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// 匹配自己的任务Id就加入</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>cacheData<span class="token punctuation">.</span><span class="token function">getTaskId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> taskId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        cacheDatas<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>cacheData<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">// 再次更新一遍</span>
+                            <span class="token function">checkLocalConfig</span><span class="token punctuation">(</span>cacheData<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token comment" spellcheck="true">// ...</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">// ...</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">// 向服务端长轮询，返回发生变化的Key</span>
+                List<span class="token operator">&lt;</span>String<span class="token operator">></span> changedGroupKeys <span class="token operator">=</span> <span class="token function">checkUpdateDataIds</span><span class="token punctuation">(</span>cacheDatas<span class="token punctuation">,</span> inInitializingCacheList<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+                <span class="token comment" spellcheck="true">// 遍历</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span>String groupKey <span class="token operator">:</span> changedGroupKeys<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// ...</span>
+                    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                        <span class="token comment" spellcheck="true">// 从Server更新</span>
+                        String<span class="token punctuation">[</span><span class="token punctuation">]</span> ct <span class="token operator">=</span> <span class="token function">getServerConfig</span><span class="token punctuation">(</span>dataId<span class="token punctuation">,</span> group<span class="token punctuation">,</span> tenant<span class="token punctuation">,</span> 3000L<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        CacheData cache <span class="token operator">=</span> cacheMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>GroupKey<span class="token punctuation">.</span><span class="token function">getKeyTenant</span><span class="token punctuation">(</span>dataId<span class="token punctuation">,</span> group<span class="token punctuation">,</span> tenant<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        cache<span class="token punctuation">.</span><span class="token function">setContent</span><span class="token punctuation">(</span>ct<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">// ...</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">NacosException</span> ioe<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token comment" spellcheck="true">// ...</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span>CacheData cacheData <span class="token operator">:</span> cacheDatas<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// ...</span>
+                <span class="token punctuation">}</span>
+                inInitializingCacheList<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 立即执行下一次长轮询</span>
+                executorService<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 发生了异常就延迟执行</span>
+                executorService<span class="token punctuation">.</span><span class="token function">schedule</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> taskPenaltyTime<span class="token punctuation">,</span> TimeUnit<span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span></code></pre>
 
 				</div>
 				<!-- about -->
@@ -138,26 +327,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>

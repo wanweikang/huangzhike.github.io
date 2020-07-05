@@ -1,0 +1,510 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-SOFA-Tracer | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-SOFA-Tracer"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
+
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">学而时习之</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-SOFA-Tracer</h2>
+				
+				<div>
+					<div class="post-time">2020-07-04</div>
+				</div>
+				
+				<div class="article-content">
+				<p>版本2.4.7。</p>
+<p>SOFATracer是基于OpenTracing规范的分布式链路跟踪系统，核心理念是通过一个全局的TraceId将分布在各个服务节点上的同一次请求串联起来。</p>
+<p>通过统一的TraceId将调用链路中的各种网络调用情况以日志的方式记录下来，同时也提供远程汇报到Zipkin进行可视化展示。</p>
+<p>详情参考<a href="https://www.sofastack.tech/projects/sofa-tracer/overview/" target="_blank" rel="noopener">SOFATracer官方文档</a>。</p>
+<hr>
+<p>Dapper方案分为数据收集、存储和分析。</p>
+<p>记录一个请求中各模块的调用信息，并通过一个处理集群把所有机器上的日志增量地收集到集群中，将同一个请求的日志串联，可视化显示调用情况。</p>
+<p>一个调用过程构成一棵调用树，Tracer树中的每个节点表示链路调用中的一个模块或系统。</p>
+<p>通过一个全局唯一的TraceId来标识一个请求调用链。</p>
+<p>TraceId由集群中第一个处理请求的系统产生，并在分布式调用下通过网络传递到下一个被请求系统。</p>
+<p>TraceId保证全局唯一，SOFATracer的生成规则参考了淘宝的鹰眼：服务器IP + 时间戳 + 自增序列 + 当前进程号。</p>
+<p>Span表示一个系统RPC的调用（子树），包含：</p>
+<ul>
+<li><p>Start：发起调用；</p>
+</li>
+<li><p>Cleint Send(cs)：客户端发送请求；</p>
+</li>
+<li><p>Server Recv(sr)：服务端收到请求；</p>
+</li>
+<li><p>Server Send(ss)：服务端发送响应；</p>
+</li>
+<li><p>Client Recv(cr)：客户端收到服务端响应；</p>
+</li>
+<li><p>End：整个链路完成；</p>
+</li>
+</ul>
+<p>一次RPC调用称为Span，并产生一个SpanId，ClientSpan的SpanId和ServerSpan的SpanId是同一个，因为都在一个RPC调用中。</p>
+<p>每个Span包含SpanId（当前模块的）和ParentSpanId（上一个调用模块），通过这两个信息定位一个Span在调用链的位置。</p>
+<p>在SOFATracer中分为ClientSpan和ServerSpan。</p>
+<p>ClientSpan：从客户端发送请求给服务端，到接受到服务端响应的过程。</p>
+<p>ServerSpan：服务端收到客户端请求到发送响应给客户端的过程。</p>
+<p>如果A系统在处理一个请求的过程中依次调用了B，C，D三个系统，这三次调用的的SpanId分别是：0.1，0.2，0.3。</p>
+<p>如果C系统继续调用了E，F两个系统，那么这两次调用的SpanId分别是：0.2.1，0.2.2。</p>
+<p>在SOFATracer中，SpanId中已经包含了调用链上下文关系，包含ParentSpanId。</p>
+<hr>
+<p>采样率：</p>
+<p>如果将每条埋点数据都刷新到磁盘上，性能会降低；如果采样率太低，可能会导致统计数据不准确。</p>
+<p>SOFATracer使用RingBuffer的数据结构，设置一个1024的槽位存储每个链路调用的埋点数据。</p>
+<p>RingBuffer可以看做是一个圆形数组，从槽位0开始一直到1023，然后从头开始，放在原来槽位的数据将被覆盖。</p>
+<p>当数据写入的速度远远大于消费处理速度，环上的数据在未被处理时就被覆盖，自动调整采样率，并发性越高，采样率就越低。</p>
+<hr>
+<p>异步日志刷盘：</p>
+<p>基于Disruptor，异步将RingBuffer的数据刷新到磁盘。</p>
+<p>当RingBuffer写入新数据时会唤醒处理线程，并将当前存入数据的槽位设置为可用槽位。</p>
+<p>处理线程从睡眠点醒来后，从原来处理位置往下获取数据并处理，直到所处理数据槽位大于可用槽位，则阻塞等待。</p>
+<p>SOFATracer提供日志打印类型：即摘要日志和统计日志。</p>
+<p>摘要日志：每一次调用均会落地磁盘的日志。</p>
+<p>统计日志：每隔一定时间间隔进行统计输出的日志。</p>
+<hr>
+<p>Four Golden Signals：</p>
+<p>Google针对大量分布式监控的经验总结，4个黄金指标可以在服务级别帮助衡量用户体验、服务中断、业务影响等层面的问题。</p>
+<p>主要关注以下四种类型的指标：吞吐量，响应时间，错误率以及饱和度。</p>
+<p>对于服务级别，通常使用前三个指标进行度量。</p>
+<hr>
+<p>埋点数据传透：</p>
+<p>各模块部署后独立收集埋点日志，这些调用链日志通过TraceId串联在一起。</p>
+<p>埋点数据如TraceId及SpanId需要透传给下游模块。</p>
+<p>数据传输一般有两种：</p>
+<ol>
+<li><p>带内透传：在原来的RPC调用请求中加入埋点数据透传给下游；</p>
+</li>
+<li><p>带外传播：单独传播，不影响原调用数据和网络。</p>
+</li>
+</ol>
+<hr>
+<p>异步场景：</p>
+<p>一个服务可能会起多个线程同时调用其他不同的模块。</p>
+<p>SOFATracer提供了SofaTracerCallable类，自动将链路调用的上下文信息透传给 SofaTracerCallable。</p>
+<p>异步RPC调用，每次调用不等返回就继续发起下一次调用，此时当前线程中应该提前清理Context，不会等到Callback之后，否则会有冲突。</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th align="center">框架</th>
+<th align="center">埋点方式</th>
+<th align="center">收集和存储方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Dapper</td>
+<td align="center">在公共组件埋点</td>
+<td align="center">后台进程拉取数据</td>
+</tr>
+<tr>
+<td align="center">鹰眼</td>
+<td align="center">在公共组件埋点</td>
+<td align="center">Agent收集日志</td>
+</tr>
+<tr>
+<td align="center">CAT</td>
+<td align="center">业务代码埋点</td>
+<td align="center">Agent收集日志</td>
+</tr>
+<tr>
+<td align="center">Zipkin</td>
+<td align="center">拦截请求</td>
+<td align="center">HTTP将发送数据至Zipkin服务</td>
+</tr>
+<tr>
+<td align="center">Skywalking</td>
+<td align="center">Java探针</td>
+<td align="center">Agent收集日志</td>
+</tr>
+</tbody></table>
+<hr>
+<p>SOFATracer是基于Springboot进行自动配置的。</p>
+<p>FlexibleTracer对应的是手动进行代码埋点和使用<code>@Tracer</code>注解埋点的类型。</p>
+<p>SofaTracerMethodInvocationProcessor#proceedProxyMethodWithTracerAnnotation</p>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> Object <span class="token function">proceedProxyMethodWithTracerAnnotation</span><span class="token punctuation">(</span>MethodInvocation invocation<span class="token punctuation">,</span> Tracer tracerSpan<span class="token punctuation">)</span> <span class="token keyword">throws</span> Throwable <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>tracer <span class="token keyword">instanceof</span> <span class="token class-name">FlexibleTracer</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                String operationName <span class="token operator">=</span> tracerSpan<span class="token punctuation">.</span><span class="token function">operateName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">isBlank</span><span class="token punctuation">(</span>operationName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    operationName <span class="token operator">=</span> invocation<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">// 执行前</span>
+                SofaTracerSpan sofaTracerSpan <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>FlexibleTracer<span class="token punctuation">)</span> tracer<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">beforeInvoke</span><span class="token punctuation">(</span>operationName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                sofaTracerSpan<span class="token punctuation">.</span><span class="token function">setTag</span><span class="token punctuation">(</span>CommonSpanTags<span class="token punctuation">.</span>METHOD<span class="token punctuation">,</span> invocation<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>invocation<span class="token punctuation">.</span><span class="token function">getArguments</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> invocation<span class="token punctuation">.</span><span class="token function">getArguments</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    StringBuilder stringBuilder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">for</span> <span class="token punctuation">(</span>Object obj <span class="token operator">:</span> invocation<span class="token punctuation">.</span><span class="token function">getArguments</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        stringBuilder<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>obj<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">";"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    sofaTracerSpan<span class="token punctuation">.</span><span class="token function">setTag</span><span class="token punctuation">(</span><span class="token string">"param.types"</span><span class="token punctuation">,</span> stringBuilder<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> stringBuilder<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">// 执行</span>
+                <span class="token keyword">return</span> invocation<span class="token punctuation">.</span><span class="token function">proceed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token punctuation">(</span><span class="token punctuation">(</span>FlexibleTracer<span class="token punctuation">)</span> tracer<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">afterInvoke</span><span class="token punctuation">(</span>t<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">throw</span> t<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 执行完</span>
+                <span class="token punctuation">(</span><span class="token punctuation">(</span>FlexibleTracer<span class="token punctuation">)</span> tracer<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">afterInvoke</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> invocation<span class="token punctuation">.</span><span class="token function">proceed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>手动埋点示例：</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 注入 tracer</span>
+<span class="token annotation punctuation">@Autowired</span>
+Tracer tracer<span class="token punctuation">;</span>
+
+<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">testManual</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// beforeInvoke 开始</span>
+        SofaTracerSpan sofaTracerSpan <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>FlexibleTracer<span class="token punctuation">)</span> tracer<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">beforeInvoke</span><span class="token punctuation">(</span><span class="token string">"testManual"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        sofaTracerSpan<span class="token punctuation">.</span><span class="token function">setTag</span><span class="token punctuation">(</span><span class="token string">"manualKey"</span><span class="token punctuation">,</span> <span class="token string">"glmapper"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// do your biz</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 异常结束</span>
+        <span class="token punctuation">(</span><span class="token punctuation">(</span>FlexibleTracer<span class="token punctuation">)</span> tracer<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">afterInvoke</span><span class="token punctuation">(</span>t<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 正常结束</span>
+        <span class="token punctuation">(</span><span class="token punctuation">(</span>FlexibleTracer<span class="token punctuation">)</span> tracer<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">afterInvoke</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>@Tracer埋点示例：</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 在 hello 方法上使用 @Tracer 注解进行埋点</span>
+<span class="token annotation punctuation">@Tracer</span>
+<span class="token keyword">public</span> String <span class="token function">hello</span><span class="token punctuation">(</span>String word<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 自定义 tag 数据</span>
+    SpanTags<span class="token punctuation">.</span><span class="token function">putTags</span><span class="token punctuation">(</span><span class="token string">"author"</span><span class="token punctuation">,</span> <span class="token string">"glmapper"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 失效</span>
+    <span class="token function">helloInner</span><span class="token punctuation">(</span>word<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token string">"glmapper : hello "</span> <span class="token operator">+</span> word<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 在 hello 方法上使用 @Tracer 注解进行埋点</span>
+<span class="token annotation punctuation">@Tracer</span>
+<span class="token keyword">private</span> String <span class="token function">helloInner</span><span class="token punctuation">(</span>String word<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token string">"glmapper : hello "</span> <span class="token operator">+</span> word<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>@Tracer</code>基于Spring Aop，上面<code>helloInner</code>方法不会使用代理对象，而是<code>this</code>，会导致<code>helloInner</code>的注解埋点失效。</p>
+<p>可以使用手动埋点弥补。</p>
+<hr>
+<p>OpenFeign埋点接入：</p>
+<p>SofaTracerHystrixConcurrencyStrategy#wrapCallable</p>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token operator">&lt;</span>T<span class="token operator">></span> Callable<span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token function">wrapCallable</span><span class="token punctuation">(</span>Callable<span class="token operator">&lt;</span>T<span class="token operator">></span> callable<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>callable <span class="token keyword">instanceof</span> <span class="token class-name">SofaTracerCallable</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> callable<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 包装Callable，传递异步上下文</span>
+        Callable<span class="token operator">&lt;</span>T<span class="token operator">></span> wrappedCallable <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>delegate <span class="token operator">!=</span> null <span class="token operator">?</span> <span class="token keyword">this</span><span class="token punctuation">.</span>delegate<span class="token punctuation">.</span><span class="token function">wrapCallable</span><span class="token punctuation">(</span>callable<span class="token punctuation">)</span> <span class="token operator">:</span> callable<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>wrappedCallable <span class="token keyword">instanceof</span> <span class="token class-name">SofaTracerCallable</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> wrappedCallable<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">SofaTracerCallable</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span>wrappedCallable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>SofaTracerHystrixFeignBuilder#client</p>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">static</span> Client <span class="token function">client</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 返回包装代理后的FeignClient对象</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">SofaTracerFeignClient</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Client<span class="token punctuation">.</span>Default</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>FeignTracerRequestInterceptor#apply</p>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">apply</span><span class="token punctuation">(</span>RequestTemplate template<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        SofaTracerSpan currentSpan <span class="token operator">=</span> SofaTraceContextHolder<span class="token punctuation">.</span><span class="token function">getSofaTraceContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getCurrentSpan</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>currentSpan <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            SofaTracerSpanContext spanContext <span class="token operator">=</span> currentSpan<span class="token punctuation">.</span><span class="token function">getSofaTracerSpanContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 通过请求头传递Tracing Context</span>
+            template<span class="token punctuation">.</span><span class="token function">header</span><span class="token punctuation">(</span>TRACE_ID_KEY_HEAD<span class="token punctuation">,</span> <span class="token function">encodedValue</span><span class="token punctuation">(</span>spanContext<span class="token punctuation">.</span><span class="token function">getTraceId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            template<span class="token punctuation">.</span><span class="token function">header</span><span class="token punctuation">(</span>SPAN_ID_KEY_HEAD<span class="token punctuation">,</span> <span class="token function">encodedValue</span><span class="token punctuation">(</span>spanContext<span class="token punctuation">.</span><span class="token function">getSpanId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            template<span class="token punctuation">.</span><span class="token function">header</span><span class="token punctuation">(</span>PARENT_SPAN_ID_KEY_HEAD<span class="token punctuation">,</span> <span class="token function">encodedValue</span><span class="token punctuation">(</span>spanContext<span class="token punctuation">.</span><span class="token function">getParentId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            template<span class="token punctuation">.</span><span class="token function">header</span><span class="token punctuation">(</span>SPAN_ID_KEY_HEAD<span class="token punctuation">,</span> <span class="token function">encodedValue</span><span class="token punctuation">(</span>spanContext<span class="token punctuation">.</span><span class="token function">getSpanId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            template<span class="token punctuation">.</span><span class="token function">header</span><span class="token punctuation">(</span>SAMPLED_KEY_HEAD<span class="token punctuation">,</span> <span class="token function">encodedValue</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>spanContext<span class="token punctuation">.</span><span class="token function">isSampled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//System Baggage items</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span>Map<span class="token punctuation">.</span>Entry<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> String<span class="token operator">></span> entry <span class="token operator">:</span> spanContext<span class="token punctuation">.</span><span class="token function">getSysBaggage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">//Business Baggage items</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span>Map<span class="token punctuation">.</span>Entry<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> String<span class="token operator">></span> entry <span class="token operator">:</span> spanContext<span class="token punctuation">.</span><span class="token function">getBizBaggage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>SpringMVC埋点接入：</p>
+<p>SpringMvcSofaTracerFilter#doFilter</p>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">doFilter</span><span class="token punctuation">(</span>ServletRequest servletRequest<span class="token punctuation">,</span> ServletResponse servletResponse<span class="token punctuation">,</span> FilterChain filterChain<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+        SofaTracerSpan springMvcSpan <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            HttpServletRequest request <span class="token operator">=</span> <span class="token punctuation">(</span>HttpServletRequest<span class="token punctuation">)</span> servletRequest<span class="token punctuation">;</span>
+            HttpServletResponse response <span class="token operator">=</span> <span class="token punctuation">(</span>HttpServletResponse<span class="token punctuation">)</span> servletResponse<span class="token punctuation">;</span>
+            SofaTracerSpanContext spanContext <span class="token operator">=</span> <span class="token function">getSpanContextFromRequest</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// sr</span>
+            springMvcSpan <span class="token operator">=</span> springMvcTracer<span class="token punctuation">.</span><span class="token function">serverReceive</span><span class="token punctuation">(</span>spanContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token comment" spellcheck="true">// wrapper</span>
+            ResponseWrapper responseWrapper <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ResponseWrapper</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// filter begin</span>
+            filterChain<span class="token punctuation">.</span><span class="token function">doFilter</span><span class="token punctuation">(</span>servletRequest<span class="token punctuation">,</span> responseWrapper<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// filter end</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>springMvcSpan <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// ...</span>
+                <span class="token comment" spellcheck="true">//ss</span>
+                springMvcTracer<span class="token punctuation">.</span><span class="token function">serverSend</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>httpStatus<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
+<hr>
+<p>FlexibleTracer#beforeInvoke</p>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> SofaTracerSpan <span class="token function">beforeInvoke</span><span class="token punctuation">(</span>String operationName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        SofaTraceContext sofaTraceContext <span class="token operator">=</span> SofaTraceContextHolder<span class="token punctuation">.</span><span class="token function">getSofaTraceContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 从线程本地变量取出Trace上下文，有点类似方法的调用栈</span>
+        SofaTracerSpan serverSpan <span class="token operator">=</span> sofaTraceContext<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        SofaTracerSpan methodSpan <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 本次方法调用Span是上一级调用Span的孩子，即CHILD_OF，还有一种是FOLLOWS_FROM，说明是平级的调用</span>
+            methodSpan <span class="token operator">=</span> <span class="token punctuation">(</span>SofaTracerSpan<span class="token punctuation">)</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">buildSpan</span><span class="token punctuation">(</span>operationName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">asChildOf</span><span class="token punctuation">(</span>serverSpan<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 缓存上一级Span</span>
+            <span class="token comment" spellcheck="true">// Need to actively cache your own serverSpan, because: asChildOf is concerned about spanContext</span>
+            methodSpan<span class="token punctuation">.</span><span class="token function">setParentSofaTracerSpan</span><span class="token punctuation">(</span>serverSpan<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> throwable<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>methodSpan <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// get appName</span>
+                String appName <span class="token operator">=</span> SofaTracerConfiguration<span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span>SofaTracerConfiguration<span class="token punctuation">.</span>TRACER_APPNAME_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                methodSpan<span class="token punctuation">.</span><span class="token function">setTag</span><span class="token punctuation">(</span>CommonSpanTags<span class="token punctuation">.</span>LOCAL_APP<span class="token punctuation">,</span> appName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                methodSpan<span class="token punctuation">.</span><span class="token function">setTag</span><span class="token punctuation">(</span>CommonSpanTags<span class="token punctuation">.</span>METHOD<span class="token punctuation">,</span> operationName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// all as client</span>
+                methodSpan<span class="token punctuation">.</span><span class="token function">setTag</span><span class="token punctuation">(</span>Tags<span class="token punctuation">.</span>SPAN_KIND<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> Tags<span class="token punctuation">.</span>SPAN_KIND_CLIENT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                methodSpan<span class="token punctuation">.</span><span class="token function">setTag</span><span class="token punctuation">(</span>CommonSpanTags<span class="token punctuation">.</span>CURRENT_THREAD_NAME<span class="token punctuation">,</span> Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                methodSpan<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>LogData<span class="token punctuation">.</span>CLIENT_SEND_EVENT_VALUE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 设置线程上下文</span>
+                sofaTraceContext<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>methodSpan<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> methodSpan<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>SofaTracer$SofaTracerSpanBuilder#start</p>
+<pre class=" language-java"><code class="language-java">        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">public</span> Span <span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            SofaTracerSpanContext sofaTracerSpanContext<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 说明本Span不是顶级的Span</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>references <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>references<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">//Parent context exist</span>
+                sofaTracerSpanContext <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">createChildContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// Root Span</span>
+            <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">//Start with new root span context</span>
+                sofaTracerSpanContext <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">createRootSpanContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">long</span> begin <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>startTime <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token keyword">this</span><span class="token punctuation">.</span>startTime <span class="token operator">:</span> System<span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            SofaTracerSpan sofaTracerSpan <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SofaTracerSpan</span><span class="token punctuation">(</span>SofaTracer<span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">,</span> begin<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>references<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>operationName<span class="token punctuation">,</span> sofaTracerSpanContext<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>tags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 计算本段Span是否采样</span>
+            <span class="token comment" spellcheck="true">// calculate isSampled，but do not change parent's sampler behaviour</span>
+            <span class="token keyword">boolean</span> isSampled <span class="token operator">=</span> <span class="token function">calculateSampler</span><span class="token punctuation">(</span>sofaTracerSpan<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            sofaTracerSpanContext<span class="token punctuation">.</span><span class="token function">setSampled</span><span class="token punctuation">(</span>isSampled<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> sofaTracerSpan<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span></code></pre>
+<p>SofaTracer$SofaTracerSpanBuilder#createChildContext</p>
+<pre class=" language-java"><code class="language-java">        <span class="token keyword">private</span> SofaTracerSpanContext <span class="token function">createChildContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            SofaTracerSpanContext preferredReference <span class="token operator">=</span> <span class="token function">preferredReference</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            SofaTracerSpanContext sofaTracerSpanContext <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SofaTracerSpanContext</span><span class="token punctuation">(</span>
+                    <span class="token comment" spellcheck="true">// TraceId</span>
+                    preferredReference<span class="token punctuation">.</span><span class="token function">getTraceId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    <span class="token comment" spellcheck="true">// 生成本段Span：ParentSpanId + . + Increment</span>
+                    preferredReference<span class="token punctuation">.</span><span class="token function">nextChildContextId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    <span class="token comment" spellcheck="true">// ParentSpanId</span>
+                    preferredReference<span class="token punctuation">.</span><span class="token function">getSpanId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                    <span class="token comment" spellcheck="true">// 是否采样</span>
+                    preferredReference<span class="token punctuation">.</span><span class="token function">isSampled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            sofaTracerSpanContext<span class="token punctuation">.</span><span class="token function">addBizBaggage</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">createChildBaggage</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            sofaTracerSpanContext<span class="token punctuation">.</span><span class="token function">addSysBaggage</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">createChildBaggage</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> sofaTracerSpanContext<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span></code></pre>
+<p>SofaTracer$SofaTracerSpanBuilder#createRootSpanContext</p>
+<pre class=" language-java"><code class="language-java">        <span class="token keyword">private</span> SofaTracerSpanContext <span class="token function">createRootSpanContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//generate traceId</span>
+            String traceId <span class="token operator">=</span> TraceIdGenerator<span class="token punctuation">.</span><span class="token function">generate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">SofaTracerSpanContext</span><span class="token punctuation">(</span>traceId<span class="token punctuation">,</span> ROOT_SPAN_ID<span class="token punctuation">,</span> StringUtils<span class="token punctuation">.</span>EMPTY_STRING<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span></code></pre>
+<p>FlexibleTracer#afterInvoke</p>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">afterInvoke</span><span class="token punctuation">(</span>String error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        SofaTraceContext sofaTraceContext <span class="token operator">=</span> SofaTraceContextHolder<span class="token punctuation">.</span><span class="token function">getSofaTraceContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        SofaTracerSpan clientSpan <span class="token operator">=</span> sofaTraceContext<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token comment" spellcheck="true">// finish client span</span>
+        clientSpan<span class="token punctuation">.</span><span class="token function">finish</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// restore parent span</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>clientSpan<span class="token punctuation">.</span><span class="token function">getParentSofaTracerSpan</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 调用完后恢复线程上下文为上级Span</span>
+            <span class="token comment" spellcheck="true">// 模拟方法的调用栈，方法调用入栈，调用完出栈，最里的方法是最先调用完的，处于栈顶</span>
+            sofaTraceContext<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>clientSpan<span class="token punctuation">.</span><span class="token function">getParentSofaTracerSpan</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>SofaTracerSpan#finish</p>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">finish</span><span class="token punctuation">(</span><span class="token keyword">long</span> endTime<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setEndTime</span><span class="token punctuation">(</span>endTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//Key record:report span</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>sofaTracer<span class="token punctuation">.</span><span class="token function">reportSpan</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        SpanExtensionFactory<span class="token punctuation">.</span><span class="token function">logStoppedSpan</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>FlexibleTracer#reportSpan</p>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">reportSpan</span><span class="token punctuation">(</span>SofaTracerSpan span<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token comment" spellcheck="true">// 配置了采样器 &amp;&amp; 当前Span是根Span</span>
+        <span class="token comment" spellcheck="true">// sampler is support &amp;  current span is root span</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getSampler</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> span<span class="token punctuation">.</span><span class="token function">getParentSofaTracerSpan</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 由采样器决定是否采样，其实是对一个随机的位数组取模轮询</span>
+            span<span class="token punctuation">.</span><span class="token function">getSofaTracerSpanContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setSampled</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getSampler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">sample</span><span class="token punctuation">(</span>span<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isSampled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 触发回调，这里会上报给Zipkin</span>
+        <span class="token comment" spellcheck="true">//invoke listener</span>
+        <span class="token function">invokeReportListeners</span><span class="token punctuation">(</span>span<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>reporter <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 写入日志</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>reporter<span class="token punctuation">.</span><span class="token function">report</span><span class="token punctuation">(</span>span<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// ...</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
+</body>
+</html>

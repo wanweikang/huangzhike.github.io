@@ -1,58 +1,54 @@
 <!DOCTYPE HTML>
 <html>
-	<head><meta name="generator" content="Hexo 3.9.0">
-		<meta charset="utf-8">
-		<script src="/js/highlight.js"></script>
-				<script>hljs.initHighlightingOnLoad();var timeStart = new Date();</script>
-		
-		<title>[笔记]-MySQL-执行计划 | 学而时习之</title>
-		
-		<meta name="author" content="Huangzhike">
-		
-		
-		<meta name="description" content="K.I.S.S">
-		
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<meta property="og:title" content="[笔记]-MySQL-执行计划">
-		
-		<meta property="og:site_name" content="学而时习之">
-		
-		
-		<!-- favicon -->
-		<link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
- 
+    <head>
+        <meta charset="utf-8">
+        <script>
+            var timeStart = new Date();
+        </script>
+        
+        <title>[笔记]-MySQL-执行计划 | 学而时习之</title>
+        
+        <meta name="author" content="Huangzhike">
+        
+        
+        <meta name="description" content="K.I.S.S">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        
+        <meta property="og:title" content="[笔记]-MySQL-执行计划"/>
+        
+        <meta property="og:site_name" content="学而时习之"/>
+        
+        
+        <!-- favicon -->
+        <link rel="icon" type="image/ico" href="/ok.ico" sizes="32x32">
+        <meta name="msapplication-TileColor" content="#009688">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+        <meta name="theme-color" content="#009688">
+        <!-- favicon end -->
+        <!-- <link href="//ok.ico" rel="icon"> -->
+        
+        <!-- toc -->
+        <!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
+        <!-- material design -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
+        <!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
+        <!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+        <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+        
+        <!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
+    <meta name="generator" content="Hexo 4.2.1"></head>
 
-
-		<meta name="msapplication-TileColor" content="#009688">
-		<meta name="msapplication-TileImage" content="/mstile-144x144.ico">
-		<meta name="theme-color" content="#009688">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic"> 
-
-		<!-- favicon end -->
-		<!-- <link href="//ok.ico" rel="icon"> -->
-		
-		<!-- toc -->
-		<!-- <link rel="stylesheet" href="/libs/tocify/jquery.tocify.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs/css/bootstrap.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" media="screen" type="text/css">-->
-		<!-- material design -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/ripples.min.css" media="screen" type="text/css"> -->
-		<!-- <link rel="stylesheet" href="/libs/bs-material/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap-material/0.3.0/css/material.min.css" media="screen" type="text/css"> -->
-		<!--<link rel="stylesheet" href="/css/highlight.light.css" media="screen" type="text/css">-->
-		<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-		 
-		 
-		<!-- <script src="//apps.bdimg.com/libs/jquery/2.0.3/jquery.min.js"></script>-->
-		<!-- <script>window.jQuery || document.write('<script src="/libs/jquery-3.1.1.slim.min.js" type="text/javascript"><\/script>')</script>-->
-	</head>
-</html>
 <body>
-	<nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -74,7 +70,7 @@
 				</li>
 				
 				<li>
-					<a href="https://github.com/huangzhike" title="">
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
 						<i class="fa fa-github"></i>GitHub
 					</a>
 				</li>
@@ -84,8 +80,8 @@
 	</div>
 </nav>
 
-	<div class="container" >
-		<div class="row">
+    <div class="container" >
+        <div class="row">
 	
 		<div class="col-md-9 center-content">
 			
@@ -122,24 +118,22 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center"><code>&lt;derived2&gt;</code></td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center"><code>&lt;derived2&gt;</code></td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">DERIVED</td>
-<td style="text-align:center">film</td>
+<td align="center">2</td>
+<td align="center">DERIVED</td>
+<td align="center">film</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>当FROM子句有子查询的时候，table列是<code>&lt;derivedN&gt;</code>的形式，其中N是子查询的id，这是向前引用，指向EXPLAIN的下面一行。</p>
 <p>MySQL引入了物化，用于子查询（如在IN/NOT IN子查询及FROM子查询）优化。</p>
 <p>在SQL执行过程中，第一次需要子查询结果时执行子查询并将子查询的结果保存为临时表，后续对子查询结果集的访问将直接通过临时表获得。</p>
@@ -150,85 +144,86 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">NULL</td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center">NULL</td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">UNION</td>
-<td style="text-align:center">NULL</td>
+<td align="center">2</td>
+<td align="center">UNION</td>
+<td align="center">NULL</td>
 </tr>
 <tr>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">UNION RESULT</td>
-<td style="text-align:center"><code>&lt;union1,2&gt;</code></td>
+<td align="center">NULL</td>
+<td align="center">UNION RESULT</td>
+<td align="center"><code>&lt;union1,2&gt;</code></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>当有UNION时，UNION RESULT的table列包含了参与UNION的id列表，这是向后引用。</p>
 <p>UNION结果总是放在一个匿名临时表中，在这里名为<code>&lt;union1, 2&gt;</code>，表明这个临时表是为了合并两个查询结果集而创建的。</p>
 <p>跟UNION对比，UNION ALL无需为最终结果去重，所以不会产生临时表。</p>
 <p>一个栗子：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXPLAIN</span></span><br><span class="line"><span class="keyword">SELECT</span> actor_id, ( <span class="keyword">SELECT</span> <span class="number">1</span> <span class="keyword">FROM</span> film_actor <span class="keyword">WHERE</span> film_actor.actor_id = der_1.actor_id <span class="keyword">LIMIT</span> <span class="number">1</span> )</span><br><span class="line"><span class="keyword">FROM</span> ( <span class="keyword">SELECT</span> actor_id <span class="keyword">FROM</span> actor <span class="keyword">LIMIT</span> <span class="number">5</span> ) <span class="keyword">AS</span> der_1 </span><br><span class="line"><span class="keyword">UNION</span> ALL</span><br><span class="line"><span class="keyword">SELECT</span> film_id, ( <span class="keyword">SELECT</span> @var1 <span class="keyword">FROM</span> rental <span class="keyword">LIMIT</span> <span class="number">1</span> )</span><br><span class="line"><span class="keyword">FROM</span> ( <span class="keyword">SELECT</span> film_id, ( <span class="keyword">SELECT</span> <span class="number">1</span> <span class="keyword">FROM</span> <span class="keyword">store</span> <span class="keyword">LIMIT</span> <span class="number">1</span> ) <span class="keyword">FROM</span> film <span class="keyword">LIMIT</span> <span class="number">5</span> ) <span class="keyword">AS</span> der_2；</span><br></pre></td></tr></table></figure>
+<pre class=" language-SQL"><code class="language-SQL">EXPLAIN
+SELECT actor_id, ( SELECT 1 FROM film_actor WHERE film_actor.actor_id = der_1.actor_id LIMIT 1 )
+FROM ( SELECT actor_id FROM actor LIMIT 5 ) AS der_1 
+UNION ALL
+SELECT film_id, ( SELECT @var1 FROM rental LIMIT 1 )
+FROM ( SELECT film_id, ( SELECT 1 FROM store LIMIT 1 ) FROM film LIMIT 5 ) AS der_2；</code></pre>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center"><code>&lt;derived3&gt;</code></td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center"><code>&lt;derived3&gt;</code></td>
 </tr>
 <tr>
-<td style="text-align:center">3</td>
-<td style="text-align:center">DERIVED</td>
-<td style="text-align:center">actor</td>
+<td align="center">3</td>
+<td align="center">DERIVED</td>
+<td align="center">actor</td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">DEPENDENT SUBQUERY</td>
-<td style="text-align:center">film_actor</td>
+<td align="center">2</td>
+<td align="center">DEPENDENT SUBQUERY</td>
+<td align="center">film_actor</td>
 </tr>
 <tr>
-<td style="text-align:center">4</td>
-<td style="text-align:center">UNION</td>
-<td style="text-align:center"><code>&lt;derived6&gt;</code></td>
+<td align="center">4</td>
+<td align="center">UNION</td>
+<td align="center"><code>&lt;derived6&gt;</code></td>
 </tr>
 <tr>
-<td style="text-align:center">6</td>
-<td style="text-align:center">DERIVED</td>
-<td style="text-align:center">film</td>
+<td align="center">6</td>
+<td align="center">DERIVED</td>
+<td align="center">film</td>
 </tr>
 <tr>
-<td style="text-align:center">7</td>
-<td style="text-align:center">SUBQUERY</td>
-<td style="text-align:center">store</td>
+<td align="center">7</td>
+<td align="center">SUBQUERY</td>
+<td align="center">store</td>
 </tr>
 <tr>
-<td style="text-align:center">5</td>
-<td style="text-align:center">UNCACHEABLE SUBQUERY</td>
-<td style="text-align:center">rental</td>
+<td align="center">5</td>
+<td align="center">UNCACHEABLE SUBQUERY</td>
+<td align="center">rental</td>
 </tr>
 <tr>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">UNION RESULT</td>
-<td style="text-align:center"><code>&lt;union1,4&gt;</code></td>
+<td align="center">NULL</td>
+<td align="center">UNION RESULT</td>
+<td align="center"><code>&lt;union1,4&gt;</code></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>第1行向前引用了der_1，这个査询被标记为<code>&lt;derived3&gt;</code>。</p>
 <p>第2行，它的id是3，因为它是査询中第3个SELECT的一部分，归为DERIVED类型是因为它嵌套在FROM子句中的子査询内部。</p>
 <p>第3行的id为2，它在具有更高id的行后面，暗示后面再执行，它被归为DEPENDENT SUBQUERY，意味着其结果依赖于外层査询。</p>
@@ -272,12 +267,14 @@
 <hr>
 <p>连接：将表的一行与另一个行匹配并产生结果。</p>
 <p>将一个表的每一行与另一个表的每一行得到全部组合的连接，称为笛卡尔积。</p>
-<p>假设有3个表分别有100、200、300行，这种连接可能会返回100<em> 200 </em> 300 = 6000000行。</p>
+<p>假设有3个表分别有100、200、300行，这种连接可能会返回100* 200 * 300 = 6000000行。</p>
 <p>连接主要有三种：外连接、内连接、交叉连接。</p>
 <p>外连接分为三种：左外连接(LEFT OUTER JOIN或LEFT JOIN)、右外连接(RIGHT OUTER JOIN或RIGHT JOIN)、全外连接(FULL OUTER JOIN或FULL JOIN)。</p>
 <p>MySQL暂不支持全外连接，但是可以使用UNION和UNION ALL模拟。</p>
 <p>内连接(INNER JOIN)：结合两个表中相同的字段，返回关联字段相符的记录。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> t1 <span class="keyword">INNER</span> <span class="keyword">JOIN</span> t2 <span class="keyword">ON</span> t1.c1 = t2.c2;</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> t1 <span class="keyword">INNER</span> <span class="keyword">JOIN</span> t2 <span class="keyword">WHERE</span> t1.c1 = t2.c2;</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> t1 <span class="keyword">INNER</span> <span class="keyword">JOIN</span> t2 <span class="keyword">USING</span>(x); <span class="comment">-- 要求x列必须同名</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> t1 <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> t2 <span class="token keyword">ON</span> t1<span class="token number">.c1</span> <span class="token operator">=</span> t2<span class="token number">.c2</span><span class="token punctuation">;</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> t1 <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> t2 <span class="token keyword">WHERE</span> t1<span class="token number">.c1</span> <span class="token operator">=</span> t2<span class="token number">.c2</span><span class="token punctuation">;</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> t1 <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> t2 <span class="token keyword">USING</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">-- 要求x列必须同名</span></code></pre>
 <p>交叉连接：CROSS JOIN，笛卡尔积在SQL中的实现。</p>
 <hr>
 <p>Join匹配原理</p>
@@ -318,116 +315,110 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
-<th style="text-align:center">type</th>
-<th style="text-align:center">key</th>
-<th style="text-align:center">ref</th>
-<th style="text-align:center">rows</th>
-<th style="text-align:center">Extra</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">t1</td>
-<td style="text-align:center">ALL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">1000</td>
-<td style="text-align:center"></td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">t1</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">1000</td>
+<td align="center"></td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">t2</td>
-<td style="text-align:center">ALL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">1000</td>
-<td style="text-align:center">Using where; Using join buffer</td>
+<td align="center">2</td>
+<td align="center">SIMPLE</td>
+<td align="center">t2</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">1000</td>
+<td align="center">Using where; Using join buffer</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>全表扫描，对于t1表的每一行，扫描t2表的每一行进行匹配，1000 * 1000种组合（当然这里使用了JOIN BUFFER）。</p>
 <p>假设t2的列c2有一个索引：</p>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
-<th style="text-align:center">type</th>
-<th style="text-align:center">key</th>
-<th style="text-align:center">ref</th>
-<th style="text-align:center">rows</th>
-<th style="text-align:center">Extra</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">t1</td>
-<td style="text-align:center">ALL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">1000</td>
-<td style="text-align:center"></td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">t1</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">1000</td>
+<td align="center"></td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">t2</td>
-<td style="text-align:center">ref</td>
-<td style="text-align:center">c2</td>
-<td style="text-align:center">t1.c1</td>
-<td style="text-align:center">10</td>
-<td style="text-align:center">Using where; Using index</td>
+<td align="center">2</td>
+<td align="center">SIMPLE</td>
+<td align="center">t2</td>
+<td align="center">ref</td>
+<td align="center">c2</td>
+<td align="center">t1.c1</td>
+<td align="center">10</td>
+<td align="center">Using where; Using index</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>可以通过t1.c1的引用完成t2表的索引查找，并且估计对于t1表里的每行，在t2表只需要检查10行即可。1000 * 10种组合。</p>
 <p>实际上如果运行ANALYZE TABLE t1, t2; 这个命令，再次执行EXPLAIN命令，可以获得更精确的rows估算值，这里第二行的rows会变成1，说明估计对于t1表里的每行，在t2表只有一行匹配。</p>
 <p>假设t2的列c2有一个索引，t1的列c1有一个索引：</p>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
-<th style="text-align:center">type</th>
-<th style="text-align:center">key</th>
-<th style="text-align:center">ref</th>
-<th style="text-align:center">rows</th>
-<th style="text-align:center">Extra</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">t1</td>
-<td style="text-align:center">index</td>
-<td style="text-align:center">c1</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">1000</td>
-<td style="text-align:center">Using index</td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">t1</td>
+<td align="center">index</td>
+<td align="center">c1</td>
+<td align="center">NULL</td>
+<td align="center">1000</td>
+<td align="center">Using index</td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">t2</td>
-<td style="text-align:center">ref</td>
-<td style="text-align:center">c2</td>
-<td style="text-align:center">t1.c1</td>
-<td style="text-align:center">10</td>
-<td style="text-align:center">Using where; Using index</td>
+<td align="center">2</td>
+<td align="center">SIMPLE</td>
+<td align="center">t2</td>
+<td align="center">ref</td>
+<td align="center">c2</td>
+<td align="center">t1.c1</td>
+<td align="center">10</td>
+<td align="center">Using where; Using index</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>只需扫描索引即可。</p>
 <hr>
 <p>Join优化原则</p>
@@ -470,21 +461,19 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:center">table</th>
-<th style="text-align:center">Extra</th>
+<th align="center">table</th>
+<th align="center">Extra</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">film</td>
-<td style="text-align:center">Using index; Using temparory; Using filesort</td>
+<tbody><tr>
+<td align="center">film</td>
+<td align="center">Using index; Using temparory; Using filesort</td>
 </tr>
 <tr>
-<td style="text-align:center">film_actor</td>
-<td style="text-align:center">Using index</td>
+<td align="center">film_actor</td>
+<td align="center">Using index</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>优化器可能重新定义关联表的顺序，执行顺序不一定按查询指定的顺序执行。</p>
 <p><code>EXPLAIN SELECT ... FROM film INNER JOIN film_actor USING(film_id) INNER JOIN actor USING(actor_id);</code></p>
 <p>表面上看，应该是从film表开始，根据film_actor的索引film_id查找对应的actor_id，再根据actor的主键找到对应的记录。</p>
@@ -492,94 +481,92 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
-<th style="text-align:center">type</th>
-<th style="text-align:center">key</th>
-<th style="text-align:center">ref</th>
-<th style="text-align:center">rows</th>
-<th style="text-align:center">Extra</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">actor</td>
-<td style="text-align:center">ALL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">200</td>
-<td style="text-align:center"></td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">actor</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">200</td>
+<td align="center"></td>
 </tr>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">film_actor</td>
-<td style="text-align:center">ref</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">actor.actor_id</td>
-<td style="text-align:center">1</td>
-<td style="text-align:center">Using index</td>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film_actor</td>
+<td align="center">ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">actor.actor_id</td>
+<td align="center">1</td>
+<td align="center">Using index</td>
 </tr>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">film</td>
-<td style="text-align:center">eq_ref</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">film_actor.film_id</td>
-<td style="text-align:center">1</td>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">film_actor.film_id</td>
+<td align="center">1</td>
+<td align="center"></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p><code>EXPLAIN STRAIGHT_JOIN SELECT ... FROM film INNER JOIN film_actor USING(film_id) INNER JOIN actor USING(actor_id);</code></p>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
-<th style="text-align:center">type</th>
-<th style="text-align:center">key</th>
-<th style="text-align:center">ref</th>
-<th style="text-align:center">rows</th>
-<th style="text-align:center">Extra</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">film</td>
-<td style="text-align:center">ALL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">951</td>
-<td style="text-align:center"></td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">951</td>
+<td align="center"></td>
 </tr>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">film_actor</td>
-<td style="text-align:center">ref</td>
-<td style="text-align:center">idx_film_id</td>
-<td style="text-align:center">film.film_id</td>
-<td style="text-align:center">1</td>
-<td style="text-align:center">Using index</td>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film_actor</td>
+<td align="center">ref</td>
+<td align="center">idx_film_id</td>
+<td align="center">film.film_id</td>
+<td align="center">1</td>
+<td align="center">Using index</td>
 </tr>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">actor</td>
-<td style="text-align:center">eq_ref</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">film_actor.actor_id</td>
-<td style="text-align:center">1</td>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">actor</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">film_actor.actor_id</td>
+<td align="center">1</td>
+<td align="center"></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>两种关联顺序下，明显倒转后，第一个关联表只需扫描较少的行数，而第二和第三个关联都是根据索引查询，速度都很快。</p>
 <p>在嵌套查询下，优化后的查询成本会更低。</p>
 <p>MySQL的文件排序，数量小则在内存进行快速排序，数量大则使用磁盘，分块排序后合并，统一称为filesort。</p>
@@ -593,38 +580,37 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
-<th style="text-align:center">type</th>
-<th style="text-align:center">key</th>
-<th style="text-align:center">ref</th>
-<th style="text-align:center">rows</th>
-<th style="text-align:center">Extra</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">film</td>
-<td style="text-align:center">ALL</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center">film</td>
+<td align="center">ALL</td>
+<td align="center">PRIMARY</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">DEPENDENT SUBQUERY</td>
-<td style="text-align:center">film_actor</td>
-<td style="text-align:center">eq_ref</td>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
+<td align="center">1</td>
+<td align="center">DEPENDENT SUBQUERY</td>
+<td align="center">film_actor</td>
+<td align="center">eq_ref</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>如果外层表film非常大，性能会非常糟糕。</p>
 <p>改写：<code>SELECT film.* FROM film INNER JOIN film_actor USING(film_id) WHERE actor_id = 1;</code>。</p>
 <hr>
@@ -632,38 +618,37 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
-<th style="text-align:center">type</th>
-<th style="text-align:center">key</th>
-<th style="text-align:center">ref</th>
-<th style="text-align:center">rows</th>
-<th style="text-align:center">Extra</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">film</td>
-<td style="text-align:center">const</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">const</td>
-<td style="text-align:center">1</td>
-<td style="text-align:center"></td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film</td>
+<td align="center">const</td>
+<td align="center">PRIMARY</td>
+<td align="center">const</td>
+<td align="center">1</td>
+<td align="center"></td>
 </tr>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">film_actor</td>
-<td style="text-align:center">ref</td>
-<td style="text-align:center">idx_film_id</td>
-<td style="text-align:center">const</td>
-<td style="text-align:center">10</td>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film_actor</td>
+<td align="center">ref</td>
+<td align="center">idx_film_id</td>
+<td align="center">const</td>
+<td align="center">10</td>
+<td align="center"></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>第一步查film表，因为有主键索引film_id，所以会知道只会返回一行数据。</p>
 <p>第二步，将film_id当做一个已知的值处理，所以两个表的访问类型都是const。</p>
 <p>语义上，IN(xx, xx, xx)完全等同于多个OR条件的子句，但是MySQL会将IN中的数据进行排序，再通过二分查找来确定列表的值是否满足条件，当IN中的数据量较大时，速度会更快。</p>
@@ -678,7 +663,16 @@
 <p>强制索引：<code>SELECT ... FROM ... FORCE INDEX(&#39;index_name&#39;) WHERE ...</code>。</p>
 <p>忽略索引：<code>IGNORE INDEX</code>。</p>
 <hr>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(7)  <span class="keyword">SELECT</span></span><br><span class="line">(<span class="number">8</span>)  <span class="keyword">DISTINCT</span> &lt;select_list&gt;</span><br><span class="line">(<span class="number">1</span>)  <span class="keyword">FROM</span> &lt;left_table&gt;</span><br><span class="line">(<span class="number">3</span>)  &lt;join_type&gt; <span class="keyword">JOIN</span> &lt;right_table&gt;</span><br><span class="line">(<span class="number">2</span>)  <span class="keyword">ON</span> &lt;join_condition&gt;</span><br><span class="line">(<span class="number">4</span>)  <span class="keyword">WHERE</span> &lt;where_condition&gt;</span><br><span class="line">(<span class="number">5</span>)  <span class="keyword">GROUP</span> <span class="keyword">BY</span> &lt;group_by_list&gt;</span><br><span class="line">(<span class="number">6</span>)  <span class="keyword">HAVING</span> &lt;having_condition&gt;</span><br><span class="line">(<span class="number">9</span>)  <span class="keyword">ORDER</span> <span class="keyword">BY</span> &lt;order_by_condition&gt;</span><br><span class="line">(<span class="number">10</span>) <span class="keyword">LIMIT</span> &lt;limit_number&gt;</span><br></pre></td></tr></table></figure>
+<pre class=" language-sql"><code class="language-sql"><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span>  <span class="token keyword">SELECT</span>
+<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>  <span class="token keyword">DISTINCT</span> <span class="token operator">&lt;</span>select_list<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>  <span class="token keyword">FROM</span> <span class="token operator">&lt;</span>left_table<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>  <span class="token operator">&lt;</span>join_type<span class="token operator">></span> <span class="token keyword">JOIN</span> <span class="token operator">&lt;</span>right_table<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>  <span class="token keyword">ON</span> <span class="token operator">&lt;</span>join_condition<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span>  <span class="token keyword">WHERE</span> <span class="token operator">&lt;</span>where_condition<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>  <span class="token keyword">GROUP</span> <span class="token keyword">BY</span> <span class="token operator">&lt;</span>group_by_list<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span>  <span class="token keyword">HAVING</span> <span class="token operator">&lt;</span>having_condition<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">9</span><span class="token punctuation">)</span>  <span class="token keyword">ORDER</span> <span class="token keyword">BY</span> <span class="token operator">&lt;</span>order_by_condition<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token keyword">LIMIT</span> <span class="token operator">&lt;</span>limit_number<span class="token operator">></span></code></pre>
 <p>执行顺序：</p>
 <p>FROM：对FROM的左边和右边的表计算笛卡尔积。产生虚表VT1。</p>
 <p>ON：对虚表VT1进行ON筛选，产生虚表VT2，把符合条件的存在VT2。</p>
@@ -749,63 +743,88 @@
 <p>遍历的ROWS越少，速度越快。</p>
 <hr>
 <p><a href="https://tech.meituan.com/2014/06/30/mysql-index.html" target="_blank" rel="noopener">来自美团的技术分享</a>：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">   <span class="keyword">distinct</span> cert.emp_id </span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">   cm_log cl </span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">   (</span><br><span class="line">      <span class="keyword">select</span></span><br><span class="line">         emp.id <span class="keyword">as</span> emp_id,</span><br><span class="line">         emp_cert.id <span class="keyword">as</span> cert_id </span><br><span class="line">      <span class="keyword">from</span></span><br><span class="line">         employee emp </span><br><span class="line">      <span class="keyword">left</span> <span class="keyword">join</span></span><br><span class="line">         emp_certificate emp_cert </span><br><span class="line">            <span class="keyword">on</span> emp.id = emp_cert.emp_id </span><br><span class="line">      <span class="keyword">where</span></span><br><span class="line">         emp.is_deleted = <span class="number">0</span></span><br><span class="line">   ) cert </span><br><span class="line">      <span class="keyword">on</span> (</span><br><span class="line">         cl.ref_table = <span class="string">'Employee'</span> </span><br><span class="line">         <span class="keyword">and</span> cl.ref_oid = cert.emp_id</span><br><span class="line">      ) </span><br><span class="line">      <span class="keyword">or</span> (</span><br><span class="line">         cl.ref_table = <span class="string">'EmpCertificate'</span> </span><br><span class="line">         <span class="keyword">and</span> cl.ref_oid = cert.cert_id</span><br><span class="line">      ) </span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">   cl.last_upd_date &gt;= <span class="string">'2013-11-07 15:03:00'</span> </span><br><span class="line">   <span class="keyword">and</span> cl.last_upd_date &lt;= <span class="string">'2013-11-08 16:00:00'</span>;</span><br></pre></td></tr></table></figure>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
+   <span class="token keyword">distinct</span> cert<span class="token punctuation">.</span>emp_id 
+<span class="token keyword">from</span>
+   cm_log cl 
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+   <span class="token punctuation">(</span>
+      <span class="token keyword">select</span>
+         emp<span class="token punctuation">.</span>id <span class="token keyword">as</span> emp_id<span class="token punctuation">,</span>
+         emp_cert<span class="token punctuation">.</span>id <span class="token keyword">as</span> cert_id 
+      <span class="token keyword">from</span>
+         employee emp 
+      <span class="token keyword">left</span> <span class="token keyword">join</span>
+         emp_certificate emp_cert 
+            <span class="token keyword">on</span> emp<span class="token punctuation">.</span>id <span class="token operator">=</span> emp_cert<span class="token punctuation">.</span>emp_id 
+      <span class="token keyword">where</span>
+         emp<span class="token punctuation">.</span>is_deleted <span class="token operator">=</span> <span class="token number">0</span>
+   <span class="token punctuation">)</span> cert 
+      <span class="token keyword">on</span> <span class="token punctuation">(</span>
+         cl<span class="token punctuation">.</span>ref_table <span class="token operator">=</span> <span class="token string">'Employee'</span> 
+         <span class="token operator">and</span> cl<span class="token punctuation">.</span>ref_oid <span class="token operator">=</span> cert<span class="token punctuation">.</span>emp_id
+      <span class="token punctuation">)</span> 
+      <span class="token operator">or</span> <span class="token punctuation">(</span>
+         cl<span class="token punctuation">.</span>ref_table <span class="token operator">=</span> <span class="token string">'EmpCertificate'</span> 
+         <span class="token operator">and</span> cl<span class="token punctuation">.</span>ref_oid <span class="token operator">=</span> cert<span class="token punctuation">.</span>cert_id
+      <span class="token punctuation">)</span> 
+<span class="token keyword">where</span>
+   cl<span class="token punctuation">.</span>last_upd_date <span class="token operator">>=</span> <span class="token string">'2013-11-07 15:03:00'</span> 
+   <span class="token operator">and</span> cl<span class="token punctuation">.</span>last_upd_date <span class="token operator">&lt;=</span> <span class="token string">'2013-11-08 16:00:00'</span><span class="token punctuation">;</span></code></pre>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
-<th style="text-align:center">type</th>
-<th style="text-align:center">key</th>
-<th style="text-align:center">ref</th>
-<th style="text-align:center">rows</th>
-<th style="text-align:center">Extra</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">cl</td>
-<td style="text-align:center">range</td>
-<td style="text-align:center">idx_last_upd_date</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">379</td>
-<td style="text-align:center">Using where; Using temporary</td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center">cl</td>
+<td align="center">range</td>
+<td align="center">idx_last_upd_date</td>
+<td align="center">NULL</td>
+<td align="center">379</td>
+<td align="center">Using where; Using temporary</td>
 </tr>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center"><code>&lt;derived2&gt;</code></td>
-<td style="text-align:center">ALL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">63727</td>
-<td style="text-align:center">Using where; Using join buffer</td>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center"><code>&lt;derived2&gt;</code></td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">63727</td>
+<td align="center">Using where; Using join buffer</td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">DERIVED</td>
-<td style="text-align:center">emp</td>
-<td style="text-align:center">ALL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">13317</td>
-<td style="text-align:center">Using where</td>
+<td align="center">2</td>
+<td align="center">DERIVED</td>
+<td align="center">emp</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">13317</td>
+<td align="center">Using where</td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">DERIVED</td>
-<td style="text-align:center">emp_cert</td>
-<td style="text-align:center">ref</td>
-<td style="text-align:center">emp_certificate_empid</td>
-<td style="text-align:center">meituanorg.emp.id</td>
-<td style="text-align:center">1</td>
-<td style="text-align:center">Using index</td>
+<td align="center">2</td>
+<td align="center">DERIVED</td>
+<td align="center">emp_cert</td>
+<td align="center">ref</td>
+<td align="center">emp_certificate_empid</td>
+<td align="center">meituanorg.emp.id</td>
+<td align="center">1</td>
+<td align="center">Using index</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>首先根据idx_last_upd_date索引扫描cm_log表获得379条记录；</p>
 <p>然后查表扫描了63727条记录，分为两部分，derived表示构造表，一个语句形成的结果集，后面的数字表示语句的ID。</p>
 <p>derived2表示的是ID = 2的查询构造了虚拟表，并且返回了63727条记录。</p>
@@ -817,161 +836,254 @@
 <p>可以拆成两部分，并用union连接起来，这里用union，而不用union all是因为原语句有“distinct”来得到唯一的记录，而union恰好具备了这种功能。</p>
 <p>如果原语句中没有distinct不需要去重，我们就可以直接使用union all了，因为使用union需要去重的动作，会影响SQL性能。</p>
 <p>优化过的语句如下：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    emp.id </span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    cm_log cl </span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">    employee emp </span><br><span class="line">        <span class="keyword">on</span> cl.ref_table = <span class="string">'Employee'</span> </span><br><span class="line">        <span class="keyword">and</span> cl.ref_oid = emp.id  </span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">    cl.last_upd_date &gt;= <span class="string">'2013-11-07 15:03:00'</span> </span><br><span class="line">    <span class="keyword">and</span> cl.last_upd_date&lt;= <span class="string">'2013-11-08 16:00:00'</span> </span><br><span class="line">    <span class="keyword">and</span> emp.is_deleted = <span class="number">0</span>  </span><br><span class="line"><span class="keyword">union</span></span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">    emp.id </span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    cm_log cl </span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">    emp_certificate ec </span><br><span class="line">        <span class="keyword">on</span> cl.ref_table = <span class="string">'EmpCertificate'</span> </span><br><span class="line">        <span class="keyword">and</span> cl.ref_oid = ec.id </span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">    employee emp </span><br><span class="line">        <span class="keyword">on</span> emp.id = ec.emp_id  </span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">    cl.last_upd_date &gt;= <span class="string">'2013-11-07 15:03:00'</span> </span><br><span class="line">    <span class="keyword">and</span> cl.last_upd_date &lt;= <span class="string">'2013-11-08 16:00:00'</span> </span><br><span class="line">    <span class="keyword">and</span> emp.is_deleted = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
+    emp<span class="token punctuation">.</span>id 
+<span class="token keyword">from</span>
+    cm_log cl 
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    employee emp 
+        <span class="token keyword">on</span> cl<span class="token punctuation">.</span>ref_table <span class="token operator">=</span> <span class="token string">'Employee'</span> 
+        <span class="token operator">and</span> cl<span class="token punctuation">.</span>ref_oid <span class="token operator">=</span> emp<span class="token punctuation">.</span>id  
+<span class="token keyword">where</span>
+    cl<span class="token punctuation">.</span>last_upd_date <span class="token operator">>=</span> <span class="token string">'2013-11-07 15:03:00'</span> 
+    <span class="token operator">and</span> cl<span class="token punctuation">.</span>last_upd_date<span class="token operator">&lt;=</span> <span class="token string">'2013-11-08 16:00:00'</span> 
+    <span class="token operator">and</span> emp<span class="token punctuation">.</span>is_deleted <span class="token operator">=</span> <span class="token number">0</span>  
+<span class="token keyword">union</span>
+<span class="token keyword">select</span>
+    emp<span class="token punctuation">.</span>id 
+<span class="token keyword">from</span>
+    cm_log cl 
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    emp_certificate <span class="token number">ec</span> 
+        <span class="token keyword">on</span> cl<span class="token punctuation">.</span>ref_table <span class="token operator">=</span> <span class="token string">'EmpCertificate'</span> 
+        <span class="token operator">and</span> cl<span class="token punctuation">.</span>ref_oid <span class="token operator">=</span> <span class="token number">ec</span><span class="token punctuation">.</span>id 
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    employee emp 
+        <span class="token keyword">on</span> emp<span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">ec</span><span class="token punctuation">.</span>emp_id  
+<span class="token keyword">where</span>
+    cl<span class="token punctuation">.</span>last_upd_date <span class="token operator">>=</span> <span class="token string">'2013-11-07 15:03:00'</span> 
+    <span class="token operator">and</span> cl<span class="token punctuation">.</span>last_upd_date <span class="token operator">&lt;=</span> <span class="token string">'2013-11-08 16:00:00'</span> 
+    <span class="token operator">and</span> emp<span class="token punctuation">.</span>is_deleted <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span></code></pre>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
-<th style="text-align:center">type</th>
-<th style="text-align:center">key</th>
-<th style="text-align:center">ref</th>
-<th style="text-align:center">rows</th>
-<th style="text-align:center">Extra</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">cl</td>
-<td style="text-align:center">range</td>
-<td style="text-align:center">idx_last_upd_date</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">379</td>
-<td style="text-align:center">Using where</td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center">cl</td>
+<td align="center">range</td>
+<td align="center">idx_last_upd_date</td>
+<td align="center">NULL</td>
+<td align="center">379</td>
+<td align="center">Using where</td>
 </tr>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">emp</td>
-<td style="text-align:center">eq_ref</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">meituanorg.cl.ref_oid</td>
-<td style="text-align:center">1</td>
-<td style="text-align:center">Using where</td>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center">emp</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">meituanorg.cl.ref_oid</td>
+<td align="center">1</td>
+<td align="center">Using where</td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">UNION</td>
-<td style="text-align:center">cl</td>
-<td style="text-align:center">range</td>
-<td style="text-align:center">idx_last_upd_date</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">379</td>
-<td style="text-align:center">Using where</td>
+<td align="center">2</td>
+<td align="center">UNION</td>
+<td align="center">cl</td>
+<td align="center">range</td>
+<td align="center">idx_last_upd_date</td>
+<td align="center">NULL</td>
+<td align="center">379</td>
+<td align="center">Using where</td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">UNION</td>
-<td style="text-align:center">ec</td>
-<td style="text-align:center">eq_ref</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">meituanorg.cl.ref_oid</td>
-<td style="text-align:center">1</td>
-<td style="text-align:center"></td>
+<td align="center">2</td>
+<td align="center">UNION</td>
+<td align="center">ec</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">meituanorg.cl.ref_oid</td>
+<td align="center">1</td>
+<td align="center"></td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">UNION</td>
-<td style="text-align:center">emp</td>
-<td style="text-align:center">eq_ref</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">meituanorg.ec.emp_id</td>
-<td style="text-align:center">1</td>
-<td style="text-align:center">Using where</td>
+<td align="center">2</td>
+<td align="center">UNION</td>
+<td align="center">emp</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">meituanorg.ec.emp_id</td>
+<td align="center">1</td>
+<td align="center">Using where</td>
 </tr>
 <tr>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">UNION RESULT</td>
-<td style="text-align:center"><code>&lt;union1,2&gt;</code></td>
-<td style="text-align:center">ALL</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">NULL.emp.id</td>
-<td style="text-align:center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">UNION RESULT</td>
+<td align="center"><code>&lt;union1,2&gt;</code></td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL.emp.id</td>
+<td align="center">NULL</td>
+<td align="center"></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <hr>
 <p>一般认为区分度越高的列，越容易锁定更少的记录，但在一些特殊的情况下，这是有局限性的。</p>
 <p>无法优化的语句：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    c.id,</span><br><span class="line">    c.name,</span><br><span class="line">    c.position,</span><br><span class="line">    c.sex,</span><br><span class="line">    from_unixtime(c.created_time) <span class="keyword">as</span> created_time,</span><br><span class="line">    from_unixtime(c.last_modified) <span class="keyword">as</span> last_modified,</span><br><span class="line">    c.last_modified_user_id  </span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    contact c  </span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">    contact_branch cb </span><br><span class="line">        <span class="keyword">on</span> c.id = cb.contact_id  </span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">    branch_user bu </span><br><span class="line">       <span class="keyword">on</span> cb.branch_id = bu.branch_id </span><br><span class="line">       <span class="keyword">and</span> bu.status <span class="keyword">in</span> (<span class="number">1</span>, <span class="number">2</span>)  </span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">    org_emp_info oei </span><br><span class="line">        <span class="keyword">on</span> oei.data_id = bu.user_id </span><br><span class="line">        <span class="keyword">and</span> oei.node_left &gt;= <span class="number">2875</span> </span><br><span class="line">        <span class="keyword">and</span> oei.node_right &lt;= <span class="number">10802</span> </span><br><span class="line">        <span class="keyword">and</span> oei.org_category = - <span class="number">1</span> </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span></span><br><span class="line">    c.created_time <span class="keyword">desc</span> <span class="keyword">limit</span> <span class="number">0</span>, <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>id<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>name<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>position<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>sex<span class="token punctuation">,</span>
+    from_unixtime<span class="token punctuation">(</span><span class="token number">c</span><span class="token punctuation">.</span>created_time<span class="token punctuation">)</span> <span class="token keyword">as</span> created_time<span class="token punctuation">,</span>
+    from_unixtime<span class="token punctuation">(</span><span class="token number">c</span><span class="token punctuation">.</span>last_modified<span class="token punctuation">)</span> <span class="token keyword">as</span> last_modified<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>last_modified_user_id  
+<span class="token keyword">from</span>
+    contact <span class="token number">c</span>  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    contact_branch <span class="token number">cb</span> 
+        <span class="token keyword">on</span> <span class="token number">c</span><span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">cb</span><span class="token punctuation">.</span>contact_id  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    branch_user bu 
+       <span class="token keyword">on</span> <span class="token number">cb</span><span class="token punctuation">.</span>branch_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>branch_id 
+       <span class="token operator">and</span> bu<span class="token punctuation">.</span><span class="token keyword">status</span> <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    org_emp_info oei 
+        <span class="token keyword">on</span> oei<span class="token punctuation">.</span>data_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>user_id 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_left <span class="token operator">>=</span> <span class="token number">2875</span> 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_right <span class="token operator">&lt;=</span> <span class="token number">10802</span> 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>org_category <span class="token operator">=</span> <span class="token operator">-</span> <span class="token number">1</span> 
+<span class="token keyword">order</span> <span class="token keyword">by</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>created_time <span class="token keyword">desc</span> <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">;</span></code></pre>
 <p>返回10条记录用了13秒。</p>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">id</th>
-<th style="text-align:center">select_type</th>
-<th style="text-align:center">table</th>
-<th style="text-align:center">type</th>
-<th style="text-align:center">key</th>
-<th style="text-align:center">ref</th>
-<th style="text-align:center">rows</th>
-<th style="text-align:center">Extra</th>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">oei</td>
-<td style="text-align:center">ref</td>
-<td style="text-align:center">idx_category_left_right</td>
-<td style="text-align:center">const</td>
-<td style="text-align:center">8849</td>
-<td style="text-align:center">Using where; Using temporary; Using filesort</td>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">oei</td>
+<td align="center">ref</td>
+<td align="center">idx_category_left_right</td>
+<td align="center">const</td>
+<td align="center">8849</td>
+<td align="center">Using where; Using temporary; Using filesort</td>
 </tr>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">bu</td>
-<td style="text-align:center">ref</td>
-<td style="text-align:center">idx_userid_status</td>
-<td style="text-align:center">meituancrm.oei.data_id</td>
-<td style="text-align:center">76</td>
-<td style="text-align:center">Using where; Using index</td>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">bu</td>
+<td align="center">ref</td>
+<td align="center">idx_userid_status</td>
+<td align="center">meituancrm.oei.data_id</td>
+<td align="center">76</td>
+<td align="center">Using where; Using index</td>
 </tr>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">cb</td>
-<td style="text-align:center">ref</td>
-<td style="text-align:center">idx_branch_id</td>
-<td style="text-align:center">meituancrm.bu.branch_id</td>
-<td style="text-align:center">1</td>
-<td style="text-align:center"></td>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">cb</td>
+<td align="center">ref</td>
+<td align="center">idx_branch_id</td>
+<td align="center">meituancrm.bu.branch_id</td>
+<td align="center">1</td>
+<td align="center"></td>
 </tr>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">SIMPLE</td>
-<td style="text-align:center">c</td>
-<td style="text-align:center">eq_ref</td>
-<td style="text-align:center">PRIMARY</td>
-<td style="text-align:center">meituancrm.cb.contact_id</td>
-<td style="text-align:center">1</td>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">c</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">meituancrm.cb.contact_id</td>
+<td align="center">1</td>
+<td align="center"></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>先查org_emp_info表扫描8849记录，再用索引idx_userid_status关联branch_user表，再用索引idx_branch_id关联contact_branch表，最后主键关联contact表。</p>
 <p>返回的行都非常少，会不会是排序量太大？于是简化SQL，看看到底用了多少记录来排序。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    <span class="keyword">count</span>(*)</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    contact c  </span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">    contact_branch cb </span><br><span class="line">        <span class="keyword">on</span> c.id = cb.contact_id  </span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">    branch_user bu </span><br><span class="line">        <span class="keyword">on</span> cb.branch_id = bu.branch_id </span><br><span class="line">        <span class="keyword">and</span> bu.status <span class="keyword">in</span> (<span class="number">1</span>, <span class="number">2</span>)  </span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">    org_emp_info oei </span><br><span class="line">        <span class="keyword">on</span> oei.data_id = bu.user_id </span><br><span class="line">        <span class="keyword">and</span> oei.node_left &gt;= <span class="number">2875</span> </span><br><span class="line">        <span class="keyword">and</span> oei.node_right &lt;= <span class="number">10802</span> </span><br><span class="line">        <span class="keyword">and</span> oei.org_category = - <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
+    <span class="token function">count</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span>
+<span class="token keyword">from</span>
+    contact <span class="token number">c</span>  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    contact_branch <span class="token number">cb</span> 
+        <span class="token keyword">on</span> <span class="token number">c</span><span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">cb</span><span class="token punctuation">.</span>contact_id  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    branch_user bu 
+        <span class="token keyword">on</span> <span class="token number">cb</span><span class="token punctuation">.</span>branch_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>branch_id 
+        <span class="token operator">and</span> bu<span class="token punctuation">.</span><span class="token keyword">status</span> <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    org_emp_info oei 
+        <span class="token keyword">on</span> oei<span class="token punctuation">.</span>data_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>user_id 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_left <span class="token operator">>=</span> <span class="token number">2875</span> 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_right <span class="token operator">&lt;=</span> <span class="token number">10802</span> 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>org_category <span class="token operator">=</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span></code></pre>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">count(*)</th>
+<th align="center">count(*)</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">778878</td>
+<tbody><tr>
+<td align="center">778878</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>发现排序之前居然锁定了778878条记录，如果针对70万的结果集排序，将是灾难性的。</p>
 <p>那能不能换个思路，先根据contact的created_time排序，再来join？</p>
 <p>于是改造成下面的语句，也可以用straight_join来优化：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    c.id,</span><br><span class="line">    c.name,</span><br><span class="line">    c.position,</span><br><span class="line">    c.sex,</span><br><span class="line">    from_unixtime(c.created_time) <span class="keyword">as</span> created_time,</span><br><span class="line">    from_unixtime(c.last_modified) <span class="keyword">as</span> last_modified,</span><br><span class="line">    c.last_modified_user_id   </span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    contact c  </span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">    <span class="keyword">exists</span> (</span><br><span class="line">        <span class="keyword">select</span></span><br><span class="line">            <span class="number">1</span> </span><br><span class="line">        <span class="keyword">from</span></span><br><span class="line">            contact_branch cb </span><br><span class="line">        <span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">            branch_user bu</span><br><span class="line">                <span class="keyword">on</span>  cb.branch_id = bu.branch_id </span><br><span class="line">                <span class="keyword">and</span> bu.status <span class="keyword">in</span> (<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">inner</span> <span class="keyword">join</span></span><br><span class="line">            org_emp_info oei</span><br><span class="line">                <span class="keyword">on</span>  oei.data_id = bu.user_id  </span><br><span class="line">                <span class="keyword">and</span> oei.node_left &gt;= <span class="number">2875</span> </span><br><span class="line">                <span class="keyword">and</span> oei.node_right &lt;= <span class="number">10802</span></span><br><span class="line">                <span class="keyword">and</span> oei.org_category = - <span class="number">1</span> </span><br><span class="line">        <span class="keyword">where</span></span><br><span class="line">            c.id = cb.contact_id</span><br><span class="line">    ) </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span></span><br><span class="line">    c.created_time <span class="keyword">desc</span> <span class="keyword">limit</span> <span class="number">0</span>, <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>id<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>name<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>position<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>sex<span class="token punctuation">,</span>
+    from_unixtime<span class="token punctuation">(</span><span class="token number">c</span><span class="token punctuation">.</span>created_time<span class="token punctuation">)</span> <span class="token keyword">as</span> created_time<span class="token punctuation">,</span>
+    from_unixtime<span class="token punctuation">(</span><span class="token number">c</span><span class="token punctuation">.</span>last_modified<span class="token punctuation">)</span> <span class="token keyword">as</span> last_modified<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>last_modified_user_id   
+<span class="token keyword">from</span>
+    contact <span class="token number">c</span>  
+<span class="token keyword">where</span>
+    <span class="token keyword">exists</span> <span class="token punctuation">(</span>
+        <span class="token keyword">select</span>
+            <span class="token number">1</span> 
+        <span class="token keyword">from</span>
+            contact_branch <span class="token number">cb</span> 
+        <span class="token keyword">inner</span> <span class="token keyword">join</span>
+            branch_user bu
+                <span class="token keyword">on</span>  <span class="token number">cb</span><span class="token punctuation">.</span>branch_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>branch_id 
+                <span class="token operator">and</span> bu<span class="token punctuation">.</span><span class="token keyword">status</span> <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+        <span class="token keyword">inner</span> <span class="token keyword">join</span>
+            org_emp_info oei
+                <span class="token keyword">on</span>  oei<span class="token punctuation">.</span>data_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>user_id  
+                <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_left <span class="token operator">>=</span> <span class="token number">2875</span> 
+                <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_right <span class="token operator">&lt;=</span> <span class="token number">10802</span>
+                <span class="token operator">and</span> oei<span class="token punctuation">.</span>org_category <span class="token operator">=</span> <span class="token operator">-</span> <span class="token number">1</span> 
+        <span class="token keyword">where</span>
+            <span class="token number">c</span><span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">cb</span><span class="token punctuation">.</span>contact_id
+    <span class="token punctuation">)</span> 
+<span class="token keyword">order</span> <span class="token keyword">by</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>created_time <span class="token keyword">desc</span> <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">;</span></code></pre>
 <p>结果在1ms内，但前面的分析中漏了一个细节，先排序再join和先join再排序理论上开销是一样的，为何差别这么多是因为有一个limit。</p>
 <p>大致执行过程是：先按索引排序得到前10条记录，然后再去join过滤，当发现匹配结果不够10条的时候，再次取10条，再次join。</p>
 <p>显然在内层的数据非常多的时候，极端情况，内层一条数据都不匹配，还要每次取10条去匹配，几乎遍历了这个数据表。</p>
@@ -994,26 +1106,34 @@
 	</div>
 
 
-		<footer>
-			 
+        <footer>
+             
 <a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
 
-		</footer>
-	</div>
-	<!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-
-	<script>var timeEnd = new Date();console.log('耗时：' + (timeEnd - timeStart));</script>
-	<!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
-	<!-- material design -->
-	<!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
-	<!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
-	<!-- toc -->
-	<!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
-	<!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
-	<!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
-	<!-- <script src="/js/main.js"></script> -->
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+    <!-- <script>(typeof $().modal == 'function')|| document.write('<script src="/libs/bs/js/bootstrap.min.js" type="text/javascript"><\/script>')</script>-->
+    <!-- material design -->
+    <!-- <script src="/libs/bs-material/js/ripples.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/ripples.min.js"></script> -->
+    <!-- <script src="/libs/bs-material/js/material.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap-material/0.3.0/js/material.min.js"></script>-->
+    <!-- toc -->
+    <!-- <script src="/libs/tocify/jquery-ui.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> -->
+    <!-- <script src="/libs/tocify/jquery.tocify.custom.js"></script> -->
+    <!-- <script src="/js/main.js"></script> -->
+    <script src="/js/prism.js"></script>
 </body>
 </html>
