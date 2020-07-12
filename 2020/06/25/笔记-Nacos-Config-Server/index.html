@@ -6,19 +6,26 @@
             var timeStart = new Date();
         </script>
         
-        <title>[笔记]-Nacos-Config-Server | 学而时习之</title>
+        <title>[笔记]-Nacos-Config-Server | 🌑🌒🌓🌔🌕🌖🌗🌘</title>
         
-        <meta name="author" content="Huangzhike">
+        <meta name="author" content="huangzhike">
         
         
-        <meta name="description" content="K.I.S.S">
+        <meta name="description" content="Config模块挺多中文注释的，我倒是很欢迎啦。
+但是作者肯定没打开P3C代码规范检查插件。
+这换行，血压飙升，太丑了。
+又Tab又空格，我。。。
+把头伸过来，我给你加个Buff。
+
+NacosConfigConfiguration#transferToLeader
+    @Conditional">
         
         
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         
         <meta property="og:title" content="[笔记]-Nacos-Config-Server"/>
         
-        <meta property="og:site_name" content="学而时习之"/>
+        <meta property="og:site_name" content="🌑🌒🌓🌔🌕🌖🌗🌘"/>
         
         
         <!-- favicon -->
@@ -57,7 +64,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/">学而时习之</a>
+			<a class="navbar-brand" title="下一句是：客有可人期不来。小时候，喜欢靠在阳台上，一边吹风，一边看书，喜欢读书吗，骚年？" href="/">书当快意读易尽</a>
            
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
@@ -524,6 +531,9 @@
                 <span class="token comment" spellcheck="true">// ...</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span></code></pre>
+<p>之所以不使用主动的长连接推送，我的看法是这样服务端需要维护太多状态，逻辑比较复杂，不仅需要维护和客户端的长连接，心跳，还需要对发的消息进行确认和重传，非常麻烦。</p>
+<p>而使用客户端的长轮询，其实是把状态交给了客户端维护，服务端的逻辑就简单了很多，而且方便服务端的扩展。</p>
+<p>像某些消息队列比如某卡，某火箭，也是使用了长轮询的方式。</p>
 <p>完。</p>
 
 				</div>
