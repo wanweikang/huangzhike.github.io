@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-Seata-TCC | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="一个分布式的全局事务，由若干分支事务组成，分支事务满足两阶段提交的模型要求，每个分支事务都具备自己的：
+
+一阶段，Prepare：
+由事务发起方调用Try接口进行资源预留。
+
+
+二阶段，Commit或Rollback：
+如果所有参与者的Try接口都成功了，TM会提交事务，并调用每个参与者的Confi">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-Seata-TCC" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Seata-TCC</h2>
+				
+				<div>
+					<div class="post-time">2020-07-26</div>
+				</div>
+				
+				<div class="article-content">
+				<p>一个分布式的全局事务，由若干分支事务组成，分支事务满足两阶段提交的模型要求，每个分支事务都具备自己的：</p>
+<ul>
+<li>一阶段，Prepare：<ul>
+<li>由事务发起方调用Try接口进行资源预留。</li>
+</ul>
+</li>
+<li>二阶段，Commit或Rollback：<ul>
+<li>如果所有参与者的Try接口都成功了，TM会提交事务，并调用每个参与者的Confirm接口真正提交业务操作，否则调用每个参与者的Cancel接口回滚事务。</li>
+</ul>
+</li>
+</ul>
+<p>TCC（Try-Confirm-Cancel）实际上是服务化的两阶段提交协议，用户根据自己的业务场景实现Try、Confirm和Cancel三个操作，要求Try成功Confirm一定要能成功。</p>
+<p>AT模式基于支持本地ACID事务的关系型数据库：</p>
+<ul>
+<li>一阶段Prepare：在本地事务中提交业务数据更新和相应回滚日志记录。</li>
+<li>二阶段Commit：马上成功结束，自动异步批量清理回滚日志。</li>
+<li>二阶段Rollback：通过回滚日志，自动进行补偿操作，完成数据回滚。</li>
+</ul>
+<p>TCC模式不依赖于底层数据资源的事务支持：</p>
+<ul>
+<li>一阶段Prepare：调用自定义的Prepare逻辑。</li>
+<li>二阶段Commit：调用自定义的Commit逻辑。</li>
+<li>二阶段Rollback：调用自定义的Rollback逻辑。</li>
+</ul>
+<p>相对于AT模式，TCC模式对业务代码有侵入性，但TCC模式无AT模式的全局行锁，性能会比AT模式高。</p>
+<hr>
+<ul>
+<li>并发控制</li>
+</ul>
+<p>将锁的粒度降到最低，提高分布式事务的并发性。</p>
+<p>以A账户扣款为例，账户A上有100元，事务T1要扣除30元，事务T2要扣除30元，出现并发。</p>
+<p>一阶段Try操作中，分布式事务T1和T2分别冻结资金，相互之间无干扰；</p>
+<p>二阶段，无论T1是提交还是回滚，都不会对T2产生影响，T1和T2在同一笔业务数据上并行执行。</p>
+<ul>
+<li>允许空回滚：</li>
+</ul>
+<p>Cancel接口需要允许空回滚。</p>
+<p>TM在一阶段调用Try接口，发生丢包导致网络超时，触发TM调用Cancel接口回滚，RM执行Cancel时发现没有对应的事务XID或主键时，需要返回回滚成功，称为空回滚。</p>
+<p>让TM认为已回滚，否则会不断重试。</p>
+<ul>
+<li>防悬挂控制：</li>
+</ul>
+<p>TM在一阶段调用Try接口，发生网络拥堵导致网络超时，触发TM调用Cancel接口回滚，RM最终又收到了Try接口调用，但是Cancel比Try先到。</p>
+<p>理论上TCP会处理包乱序的问题，但是如果框架重连的话，应用层没有感知，或者连接不是基于TCP，大概是这个原因？</p>
+<p>二阶段Cancel请求比一阶段Try请求先执行。</p>
+<p>因为允许空回滚，回滚会返回成功，TM认为事务已回滚成功，则此时的Try接口不应该执行，否则可能产生不一致。</p>
+<p>如果执行了，将不会再收到二阶段的Confirm或者Cancel，造成服务悬挂。</p>
+<p>所以Cancel空回滚返回成功前，先记录该条事务XID或业务主键，标识这条记录已经回滚过，同时拒绝执行空回滚之后Try请求。</p>
+<ul>
+<li>幂等控制：</li>
+</ul>
+<p>幂等指的是，对同一个系统，同样的条件，一次请求和重复的多次请求对系统资源的影响是一样的。</p>
+<p>网络数据包重传，网络抖动或拥堵导致超时重试，异常事务的补偿执行，都可能导致TCC服务的Try、Confirm或Cancel操作被重复执行。</p>
+<p>需要考虑幂等控制，Try、Confirm、Cancel 执行一次和执行多次的业务结果是一样的。</p>
+<p>通常可以用事务XID或业务主键判重来控制。</p>
+<hr>
+<p>TCC模式下，不需要RM代理数据源，因为这个补偿在二阶段应用层实现了，和AT模式的代码还是有很多共用的地方，不重复贴了，大概流程如下：</p>
+<p>TM作为事务发起者，向TC请求开始事务，获得XID，在服务链路传播上下文。</p>
+<p>分支事务执行前先向TC注册分支，对于TCC模式，注册分支是无锁的。</p>
+<p>事务发起者通过接口异常感知到分支事务是否成功，由TM向TC发起全局提交或回滚请求。</p>
+<p>TC向分支事务的RM发起提交或回滚请求，最终所有分支事务一起提交或回滚。</p>
+<p>这里有个隔离级别的问题，和AT模式一样，其实在一阶段就已经提交了，所以对于全局来说，隔离级别应该是读未提交。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>
