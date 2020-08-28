@@ -1,0 +1,334 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[扑街]-记一次生产事故 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="没想到我也会有写这篇文章的一天，不知道怎么形容此刻的心情。
+
+背景：
+公司周年庆，要搞一个助力返现活动，就是一个人可以发起一场助力，然后转发给别人，别人可以帮你助力，你就会收到一笔钱。
+这个需求的目的是为了拉新用户，是比较赶的（哪次不赶呢），主要的要求是这样的：
+
+用户可以发起一场自己的助力活动；
+">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[扑街]-记一次生产事故" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[扑街]-记一次生产事故</h2>
+				
+				<div>
+					<div class="post-time">2020-08-28</div>
+				</div>
+				
+				<div class="article-content">
+				<p>没想到我也会有写这篇文章的一天，不知道怎么形容此刻的心情。</p>
+<hr>
+<p>背景：</p>
+<p>公司周年庆，要搞一个助力返现活动，就是一个人可以发起一场助力，然后转发给别人，别人可以帮你助力，你就会收到一笔钱。</p>
+<p>这个需求的目的是为了拉新用户，是比较赶的（哪次不赶呢），主要的要求是这样的：</p>
+<ul>
+<li>用户可以发起一场自己的助力活动；</li>
+<li>每邀请一位新用户助力，可以得X元（新用户指的是在活动期间注册，并且没有参与过助力活动）；</li>
+<li>每邀请一位老用户助力，可以得X元；</li>
+<li>每累计邀请X名新用户助力，可以得X元；</li>
+<li>每位用户现金奖励上限为X元；</li>
+<li>每场助力活动只允许老用户助力X次；</li>
+<li>每位用户在一个助力活动中只能助力一次；</li>
+<li>每位用户单日助力上限为X次；</li>
+</ul>
+<p>于是数据库会加两张表，结构大概是：</p>
+<ul>
+<li><p>助力活动表activity：</p>
+<ul>
+<li>activity_id：主键；</li>
+<li>starter_uid：发起人用户Id；</li>
+<li>gain_amount：已经获得的金额；</li>
+<li>limit_amount：最大获得的金额限制；</li>
+<li>status：完成状态；</li>
+<li>new_user_count：新用户助力次数；</li>
+<li>old_user_count：老用户助力次数；</li>
+</ul>
+</li>
+<li><p>助力活动记录表record：</p>
+<ul>
+<li>record_id：主键；</li>
+<li>activity_id：所属的助力活动Id；</li>
+<li>starter_uid：所属的助力活动发起人用户Id；</li>
+<li>relayer_uid：助力人的用户Id；</li>
+<li>relay_amount：助力金额；</li>
+<li>new_user：助力人是否是新用户；</li>
+<li>type：该项助力是否是累积邀请奖励；</li>
+<li>drawn：是否已打款；</li>
+</ul>
+</li>
+</ul>
+<p>于是服务层的代码逻辑大概是：</p>
+<pre class=" language-java"><code class="language-java">BEGIN TRANSACTION<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 先锁定该行助力，串行，后面会有两处可能的更新的地方</span>
+SELECT <span class="token operator">*</span> FROM activity WHERE activity_id <span class="token operator">=</span> x FOR UPDATE<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 判断这场助力活动下该用户是否已经助力过，不允许重复</span>
+SELECT <span class="token operator">*</span> FROM record WHERE relayer_uid <span class="token operator">=</span> x AND activity_id <span class="token operator">=</span> x<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 判断该用户是否有助力行为，用于区分新老用户</span>
+SELECT <span class="token operator">*</span> FROM record WHERE relayer_uid <span class="token operator">=</span> x<span class="token punctuation">;</span>
+
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// Redis的incr指令自增，记录该用户当天的助力次数，判断有无超出限制...</span>
+
+    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，必须保证不大于该行activity的limit_amount-gain_amount</span>
+
+    <span class="token comment" spellcheck="true">// INSERT INTO record ...;</span>
+
+    <span class="token comment" spellcheck="true">// UPDATE activity  SET </span>
+    <span class="token comment" spellcheck="true">// gain_amount = CASE WHEN gain_amount + #{relay_amount} >= limit_amount THEN limit_amount ELSE  gain_amount + #{relay_amount} END ,</span>
+    <span class="token comment" spellcheck="true">// status = CASE WHEN gain_amount >= limit_amount THEN 1 ELSE 0 END, old_user_relay_count = ... , new_user_relay_count = ...</span>
+    <span class="token comment" spellcheck="true">// WHERE activity_id = #{activity_id} and limit_amount > gain_amount;</span>
+
+    <span class="token comment" spellcheck="true">// 检查更新成功后，RPC调用内部服务的打款接口</span>
+
+    <span class="token comment" spellcheck="true">// 如果该用户是新用户，查询该助力下的新用户助力次数，取模，每X个新用户助力还有额外的奖励</span>
+    <span class="token comment" spellcheck="true">// SELECT COUNT(*) FROM record WHERE action_id = xxx AND new_user = xxx;</span>
+
+    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，必须保证不大于该行activity的limit_amount-gain_amount</span>
+
+    <span class="token comment" spellcheck="true">// INSERT INTO record ...;</span>
+
+    <span class="token comment" spellcheck="true">// UPDATE activity  SET </span>
+    <span class="token comment" spellcheck="true">// gain_amount = CASE WHEN gain_amount + #{relay_amount} >= limit_amount THEN limit_amount ELSE  gain_amount + #{relay_amount} END ,</span>
+    <span class="token comment" spellcheck="true">// status = CASE WHEN gain_amount >= limit_amount THEN 1 ELSE 0 END, old_user_relay_count = ... , new_user_relay_count = ...</span>
+    <span class="token comment" spellcheck="true">// WHERE activity_id = #{activity_id} and limit_amount > gain_amount;</span>
+
+    <span class="token comment" spellcheck="true">// 检查更新成功后，RPC调用内部服务的打款接口</span>
+
+<span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 回滚Redis的该用户当天的助力次数，Redis的decr指令自减</span>
+    <span class="token comment" spellcheck="true">// 上抛异常，令事务回滚</span>
+<span class="token punctuation">}</span>
+
+COMMIT<span class="token punctuation">;</span></code></pre>
+<p>看出问题了么？你大概会说，在一个很火爆的活动中，加事务和<code>SELECT ... FOR UPDATE</code>，是很危险的，事务可能会拖太长，但是，实际上一个助力活动下的竞争不会太激烈，而这里通过主键<code>SELECT ... FOR UPDATE</code>只会锁定该行记录，快速提交快速释放，不会有太大问题，我本地压测的结果也是这样的。</p>
+<p>项目上线几个小时后，突然收到告警，说是聚合层的CPU负载飙到了300%，开始没太在意，后来有同事说，钱包服务的负载很高（就是打款的RPC服务），我马上警觉，不会吧。。。</p>
+<p>一问，钱包服务提供的打款接口是依赖外部的微信接口的，并且微信有限流，但是助力和打款是同步的。</p>
+<p>我特么。。。</p>
+<p>然后一查，基本上RPC调用链路基本都阻塞到助力那里了，因为有大量的打款请求阻塞，结果就是，工作线程池大概要满了吧。。。</p>
+<p>然后发现，OpenFeign的RPC超时时间设置是一个极大的数字（大概是为了避免导表的接口时间太长超时吧，为什么不是异步导表呢！），所以没有超时熔断。</p>
+<p>而且助力接口居然没加限流！好吧，是我的锅，当时想的是应该没关系吧。。。</p>
+<p>我特么。。。</p>
+<p>算了，和同事讨论了一会，先紧急拉个hotfix分支加上限流，然后修改助力逻辑，最重要的是打款必须改成异步的（调用居然接近1s，但是这个只能在生产环境测试），两种解决方式，一种是通过消息队列异步通信，另一种是通过定时任务异步打款，因为这种方式是最快并且改动最小的，所以最终决定使用定时任务的方式。</p>
+<p>修改后的助力逻辑是这样的，还加了一个全局的每日最大打款额度需求：</p>
+<p>首先去掉事务了，不需要100%的一致性。</p>
+<pre class=" language-java"><code class="language-java">SELECT <span class="token operator">*</span> FROM activity WHERE activity_id <span class="token operator">=</span> x<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 从Redis获取该用户的助力次数，判断是否为新用户</span>
+
+<span class="token comment" spellcheck="true">// 在Redis中incr记录该用户当天的助力次数，incr记录该用户在该助力下的助力次数</span>
+
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 检查该用户当天的助力次数，抛异常</span>
+
+    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，不大于该行activity的limit_amount-gain_amount</span>
+
+    <span class="token comment" spellcheck="true">// 先在Redis中incrBy累积记录全局的打款金额，检查大于限制则抛异常，因为需要转为整数，所以都乘了100</span>
+
+    <span class="token comment" spellcheck="true">// 如果不是新用户，先在Redis中incr累积记录该助力下的老用户助力次数，检查大于限制则抛异常</span>
+
+    <span class="token comment" spellcheck="true">// 先在Redis中setnx记录该用户在该助力下的记录，存在则抛异常</span>
+
+    <span class="token comment" spellcheck="true">// 尝试更新activity表，成功则插入一条record，否则回滚Redis记录并抛异常</span>
+    <span class="token comment" spellcheck="true">// UPDATE activity SET </span>
+    <span class="token comment" spellcheck="true">// gain_amount = gain_amount + #{relay_amount},</span>
+    <span class="token comment" spellcheck="true">// status = CASE WHEN gain_amount >= limit_amount THEN 1 ELSE 0 END, </span>
+    <span class="token comment" spellcheck="true">// old_user_relay_count = ... , new_user_relay_count = ...</span>
+    <span class="token comment" spellcheck="true">// WHERE activity_id = #{activity_id} and limit_amount >= gain_amount + #{relay_amount}</span>
+    <span class="token comment" spellcheck="true">// AND #{oldUserLimit} >= old_user_relay_count + 1</span>
+
+    <span class="token comment" spellcheck="true">// 如果更新成功，插入一条record</span>
+    <span class="token comment" spellcheck="true">// INSERT INTO record ...;</span>
+
+    <span class="token comment" spellcheck="true">// 否则如果更新失败，回滚Redis计数并抛异常</span>
+    <span class="token comment" spellcheck="true">// 在Redis中decrBy回滚记录全局的打款金额</span>
+    <span class="token comment" spellcheck="true">// 如果不是新用户，在Redis中decr回滚该助力下的老用户助力次数</span>
+    <span class="token comment" spellcheck="true">// 在Redis中del回滚该用户在该助力下的记录</span>
+    <span class="token comment" spellcheck="true">// 抛异常</span>
+
+    <span class="token comment" spellcheck="true">// 如果是新用户，先在Redis中incr记录该助力下的新用户助力次数，如果取模没有余数，则进行额外的奖励</span>
+    <span class="token comment" spellcheck="true">// SELECT * FROM activity WHERE activity_id = x;</span>
+    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，不大于该行activity的limit_amount-gain_amount</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 先在Redis中incrBy累积记录全局的打款金额，检查大于限制则抛异常，因为需要转为整数，所以都乘了100</span>
+
+        <span class="token comment" spellcheck="true">// 尝试更新activity表，成功则插入一条record，否则回滚Redis记录并抛异常</span>
+        <span class="token comment" spellcheck="true">// UPDATE activity SET </span>
+        <span class="token comment" spellcheck="true">// gain_amount = gain_amount + #{relay_amount},</span>
+        <span class="token comment" spellcheck="true">// status = CASE WHEN gain_amount >= limit_amount THEN 1 ELSE 0 END, </span>
+        <span class="token comment" spellcheck="true">// old_user_relay_count = ... , new_user_relay_count = ...</span>
+        <span class="token comment" spellcheck="true">// WHERE activity_id = #{activity_id} and limit_amount >= gain_amount + #{relay_amount}</span>
+        <span class="token comment" spellcheck="true">// AND #{oldUserLimit} >= old_user_relay_count + 1</span>
+
+        <span class="token comment" spellcheck="true">// 如果更新成功，插入一条record</span>
+        <span class="token comment" spellcheck="true">// INSERT INTO record ...;</span>
+
+        <span class="token comment" spellcheck="true">// 否则如果更新失败，回滚Redis计数并抛异常</span>
+        <span class="token comment" spellcheck="true">// 在Redis中decrBy回滚记录全局的打款金额</span>
+        <span class="token comment" spellcheck="true">// 抛异常</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 忽略</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 回滚Redis的该用户当天的助力次数，Redis的decr指令自减</span>
+    <span class="token comment" spellcheck="true">// 抛异常</span>
+<span class="token punctuation">}</span></code></pre>
+<p>修改后的方式使用Redis拦截了一层流量，还用来进行条件判断，使得直接落到数据库的流量少了很多。</p>
+<p>并且使用了类似CAS的乐观更新机制，原子性由数据库的锁保证，将并发下的重试逻辑交给了用户。</p>
+<p>而异步打款的定时任务逻辑大概是：</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 先根据标记位canSubmit判断是否能继续提交任务，否则直接返回</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>canSubmit<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 先从数据库中取出一批未打款的记录</span>
+<span class="token comment" spellcheck="true">// SELECT * FROM record WHERE draw = 0 LIMIT #{batchSize}</span>
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span>Record record <span class="token operator">:</span> recordList<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        EXECUTOR_SERVICE<span class="token punctuation">.</span><span class="token function">submit</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 先尝试更新该项为已打款，成功则继续进行，失败则跳过</span>
+                <span class="token comment" spellcheck="true">//  UPDATE `record SET draw = 1 WHERE record_id = #{recordId} and draw = 0;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// PRC调用打款接口</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// 打款失败尝试回滚</span>
+                    <span class="token comment" spellcheck="true">//  UPDATE record SET draw = 0 WHERE record_id = #{recordId} and draw = 1;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 如果线程池的工作队列数量在限制内，那么可以继续提交</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>ThreadPoolExecutor<span class="token punctuation">)</span> EXECUTOR_SERVICE<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> MAX_LIMIT<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                canSubmit <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        canSubmit <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 线程池拒绝，不能继续提交</span>
+        canSubmit <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>也是类似抢锁的逻辑，抢到锁（更新成功）才能打款。</p>
+<p>发布到生产环境，貌似没啥问题。</p>
+<p>你以为这就完事了？我忘了加重试次数限制了。。。</p>
+<p>你以为这又完事了？我特么。。。算了，心好累，不写了。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>
