@@ -110,9 +110,9 @@
 </ul>
 <p>于是数据库会加两张表，结构大概是：</p>
 <ul>
-<li><p>助力活动表activity：</p>
+<li><p>助力活动表action：</p>
 <ul>
-<li>activity_id：主键；</li>
+<li>action_id：主键；</li>
 <li>starter_uid：发起人用户Id；</li>
 <li>gain_amount：已经获得的金额；</li>
 <li>limit_amount：最大获得的金额限制；</li>
@@ -124,7 +124,7 @@
 <li><p>助力活动记录表record：</p>
 <ul>
 <li>record_id：主键；</li>
-<li>activity_id：所属的助力活动Id；</li>
+<li>action_id：所属的助力活动Id；</li>
 <li>starter_uid：所属的助力活动发起人用户Id；</li>
 <li>relayer_uid：助力人的用户Id；</li>
 <li>relay_amount：助力金额；</li>
@@ -138,10 +138,10 @@
 <pre class=" language-java"><code class="language-java">BEGIN TRANSACTION<span class="token punctuation">;</span>
 
 <span class="token comment" spellcheck="true">// 先锁定该行助力，串行，后面会有两处可能的更新的地方</span>
-SELECT <span class="token operator">*</span> FROM activity WHERE activity_id <span class="token operator">=</span> x FOR UPDATE<span class="token punctuation">;</span>
+SELECT <span class="token operator">*</span> FROM action WHERE action_id <span class="token operator">=</span> x FOR UPDATE<span class="token punctuation">;</span>
 
 <span class="token comment" spellcheck="true">// 判断这场助力活动下该用户是否已经助力过，不允许重复</span>
-SELECT <span class="token operator">*</span> FROM record WHERE relayer_uid <span class="token operator">=</span> x AND activity_id <span class="token operator">=</span> x<span class="token punctuation">;</span>
+SELECT <span class="token operator">*</span> FROM record WHERE relayer_uid <span class="token operator">=</span> x AND action_id <span class="token operator">=</span> x<span class="token punctuation">;</span>
 
 <span class="token comment" spellcheck="true">// 判断该用户是否有助力行为，用于区分新老用户</span>
 SELECT <span class="token operator">*</span> FROM record WHERE relayer_uid <span class="token operator">=</span> x<span class="token punctuation">;</span>
@@ -149,28 +149,28 @@ SELECT <span class="token operator">*</span> FROM record WHERE relayer_uid <span
 <span class="token keyword">try</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// Redis的incr指令自增，记录该用户当天的助力次数，判断有无超出限制...</span>
 
-    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，必须保证不大于该行activity的limit_amount-gain_amount</span>
+    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，必须保证不大于该行action的limit_amount-gain_amount</span>
 
     <span class="token comment" spellcheck="true">// INSERT INTO record ...;</span>
 
-    <span class="token comment" spellcheck="true">// UPDATE activity  SET </span>
-    <span class="token comment" spellcheck="true">// gain_amount = CASE WHEN gain_amount + #{relay_amount} >= limit_amount THEN limit_amount ELSE  gain_amount + #{relay_amount} END ,</span>
+    <span class="token comment" spellcheck="true">// UPDATE action SET</span>
+    <span class="token comment" spellcheck="true">// gain_amount = CASE WHEN gain_amount + #{relay_amount} >= limit_amount THEN limit_amount ELSE  gain_amount + #{relay_amount} END,</span>
     <span class="token comment" spellcheck="true">// status = CASE WHEN gain_amount >= limit_amount THEN 1 ELSE 0 END, old_user_relay_count = ... , new_user_relay_count = ...</span>
-    <span class="token comment" spellcheck="true">// WHERE activity_id = #{activity_id} and limit_amount > gain_amount;</span>
+    <span class="token comment" spellcheck="true">// WHERE action_id = #{action_id} and limit_amount > gain_amount;</span>
 
     <span class="token comment" spellcheck="true">// 检查更新成功后，RPC调用内部服务的打款接口</span>
 
     <span class="token comment" spellcheck="true">// 如果该用户是新用户，查询该助力下的新用户助力次数，取模，每X个新用户助力还有额外的奖励</span>
     <span class="token comment" spellcheck="true">// SELECT COUNT(*) FROM record WHERE action_id = xxx AND new_user = xxx;</span>
 
-    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，必须保证不大于该行activity的limit_amount-gain_amount</span>
+    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，必须保证不大于该行action的limit_amount-gain_amount</span>
 
     <span class="token comment" spellcheck="true">// INSERT INTO record ...;</span>
 
-    <span class="token comment" spellcheck="true">// UPDATE activity  SET </span>
-    <span class="token comment" spellcheck="true">// gain_amount = CASE WHEN gain_amount + #{relay_amount} >= limit_amount THEN limit_amount ELSE  gain_amount + #{relay_amount} END ,</span>
+    <span class="token comment" spellcheck="true">// UPDATE action SET </span>
+    <span class="token comment" spellcheck="true">// gain_amount = CASE WHEN gain_amount + #{relay_amount} >= limit_amount THEN limit_amount ELSE  gain_amount + #{relay_amount} END,</span>
     <span class="token comment" spellcheck="true">// status = CASE WHEN gain_amount >= limit_amount THEN 1 ELSE 0 END, old_user_relay_count = ... , new_user_relay_count = ...</span>
-    <span class="token comment" spellcheck="true">// WHERE activity_id = #{activity_id} and limit_amount > gain_amount;</span>
+    <span class="token comment" spellcheck="true">// WHERE action_id = #{action_id} and limit_amount > gain_amount;</span>
 
     <span class="token comment" spellcheck="true">// 检查更新成功后，RPC调用内部服务的打款接口</span>
 
@@ -191,7 +191,7 @@ COMMIT<span class="token punctuation">;</span></code></pre>
 <p>算了，和同事讨论了一会，先紧急拉个hotfix分支加上限流，然后修改助力逻辑，最重要的是打款必须改成异步的（调用居然接近1s，但是这个只能在生产环境测试），两种解决方式，一种是通过消息队列异步通信，另一种是通过定时任务异步打款，因为这种方式是最快并且改动最小的，所以最终决定使用定时任务的方式。</p>
 <p>修改后的助力逻辑是这样的，还加了一个全局的每日最大打款额度需求：</p>
 <p>首先去掉事务了，不需要100%的一致性。</p>
-<pre class=" language-java"><code class="language-java">SELECT <span class="token operator">*</span> FROM activity WHERE activity_id <span class="token operator">=</span> x<span class="token punctuation">;</span>
+<pre class=" language-java"><code class="language-java">SELECT <span class="token operator">*</span> FROM action WHERE action_id <span class="token operator">=</span> x<span class="token punctuation">;</span>
 
 <span class="token comment" spellcheck="true">// 从Redis获取该用户的助力次数，判断是否为新用户</span>
 
@@ -200,7 +200,7 @@ COMMIT<span class="token punctuation">;</span></code></pre>
 <span class="token keyword">try</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// 检查该用户当天的助力次数，抛异常</span>
 
-    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，不大于该行activity的limit_amount-gain_amount</span>
+    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，不大于该行action的limit_amount-gain_amount</span>
 
     <span class="token comment" spellcheck="true">// 先在Redis中incrBy累积记录全局的打款金额，检查大于限制则抛异常，因为需要转为整数，所以都乘了100</span>
 
@@ -208,12 +208,12 @@ COMMIT<span class="token punctuation">;</span></code></pre>
 
     <span class="token comment" spellcheck="true">// 先在Redis中setnx记录该用户在该助力下的记录，存在则抛异常</span>
 
-    <span class="token comment" spellcheck="true">// 尝试更新activity表，成功则插入一条record，否则回滚Redis记录并抛异常</span>
-    <span class="token comment" spellcheck="true">// UPDATE activity SET </span>
+    <span class="token comment" spellcheck="true">// 尝试更新action表，成功则插入一条record，否则回滚Redis记录并抛异常</span>
+    <span class="token comment" spellcheck="true">// UPDATE action SET </span>
     <span class="token comment" spellcheck="true">// gain_amount = gain_amount + #{relay_amount},</span>
     <span class="token comment" spellcheck="true">// status = CASE WHEN gain_amount >= limit_amount THEN 1 ELSE 0 END, </span>
     <span class="token comment" spellcheck="true">// old_user_relay_count = ... , new_user_relay_count = ...</span>
-    <span class="token comment" spellcheck="true">// WHERE activity_id = #{activity_id} and limit_amount >= gain_amount + #{relay_amount}</span>
+    <span class="token comment" spellcheck="true">// WHERE action_id = #{action_id} and limit_amount >= gain_amount + #{relay_amount}</span>
     <span class="token comment" spellcheck="true">// AND #{oldUserLimit} >= old_user_relay_count + 1</span>
 
     <span class="token comment" spellcheck="true">// 如果更新成功，插入一条record</span>
@@ -226,17 +226,17 @@ COMMIT<span class="token punctuation">;</span></code></pre>
     <span class="token comment" spellcheck="true">// 抛异常</span>
 
     <span class="token comment" spellcheck="true">// 如果是新用户，先在Redis中incr记录该助力下的新用户助力次数，如果取模没有余数，则进行额外的奖励</span>
-    <span class="token comment" spellcheck="true">// SELECT * FROM activity WHERE activity_id = x;</span>
-    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，不大于该行activity的limit_amount-gain_amount</span>
+    <span class="token comment" spellcheck="true">// SELECT * FROM action WHERE action_id = x;</span>
+    <span class="token comment" spellcheck="true">// 计算实际的助力金额relay_amount，不大于该行action的limit_amount-gain_amount</span>
     <span class="token keyword">try</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 先在Redis中incrBy累积记录全局的打款金额，检查大于限制则抛异常，因为需要转为整数，所以都乘了100</span>
 
-        <span class="token comment" spellcheck="true">// 尝试更新activity表，成功则插入一条record，否则回滚Redis记录并抛异常</span>
-        <span class="token comment" spellcheck="true">// UPDATE activity SET </span>
+        <span class="token comment" spellcheck="true">// 尝试更新action表，成功则插入一条record，否则回滚Redis记录并抛异常</span>
+        <span class="token comment" spellcheck="true">// UPDATE action SET </span>
         <span class="token comment" spellcheck="true">// gain_amount = gain_amount + #{relay_amount},</span>
         <span class="token comment" spellcheck="true">// status = CASE WHEN gain_amount >= limit_amount THEN 1 ELSE 0 END, </span>
         <span class="token comment" spellcheck="true">// old_user_relay_count = ... , new_user_relay_count = ...</span>
-        <span class="token comment" spellcheck="true">// WHERE activity_id = #{activity_id} and limit_amount >= gain_amount + #{relay_amount}</span>
+        <span class="token comment" spellcheck="true">// WHERE action_id = #{action_id} and limit_amount >= gain_amount + #{relay_amount}</span>
         <span class="token comment" spellcheck="true">// AND #{oldUserLimit} >= old_user_relay_count + 1</span>
 
         <span class="token comment" spellcheck="true">// 如果更新成功，插入一条record</span>
@@ -278,7 +278,7 @@ COMMIT<span class="token punctuation">;</span></code></pre>
                 <span class="token punctuation">}</span>
             <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 如果线程池的工作队列数量在限制内，那么可以继续提交</span>
+            <span class="token comment" spellcheck="true">// 如果线程池的工作队列任务数量在限制内，那么可以继续提交</span>
             <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>ThreadPoolExecutor<span class="token punctuation">)</span> EXECUTOR_SERVICE<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> MAX_LIMIT<span class="token punctuation">)</span> <span class="token punctuation">{</span>
                 canSubmit <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
