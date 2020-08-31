@@ -180,15 +180,14 @@ SELECT <span class="token operator">*</span> FROM record WHERE relayer_uid <span
 <span class="token punctuation">}</span>
 
 COMMIT<span class="token punctuation">;</span></code></pre>
-<p>看出问题了么？你大概会说，在一个很火爆的活动中，加事务和<code>SELECT ... FOR UPDATE</code>，是很危险的，事务可能会拖太长，但是，实际上一个助力活动下的竞争不会太激烈，而这里通过主键<code>SELECT ... FOR UPDATE</code>只会锁定该行记录，快速提交快速释放，不会有太大问题，我本地压测的结果也是这样的。</p>
-<p>项目上线几个小时后，突然收到告警，说是聚合层的CPU负载飙到了300%，开始没太在意，后来有同事说，钱包服务的负载很高（就是打款的RPC服务），我马上警觉，不会吧。。。</p>
+<p>看出问题了么？你大概会说，在一个很火爆的活动中，加事务和<code>SELECT ... FOR UPDATE</code>，事务可能会拖太长，不过实际上一个助力下的竞争不会太激烈，而这里通过主键<code>SELECT ... FOR UPDATE</code>只会锁定该行记录，快速提交快速释放，不会有太大问题，本地压测的结果也是这样的。</p>
+<p>项目上线几个小时后，突然收到告警，CPU负载飙到了300%，开始没太在意，后来有同事说，钱包服务的负载很高（就是打款的RPC服务），我马上警觉，不会吧。。。</p>
 <p>一问，钱包服务提供的打款接口是依赖外部的微信接口的，并且微信有限流，但是助力和打款是同步的。</p>
 <p>我特么。。。</p>
-<p>然后一查，基本上RPC调用链路基本都阻塞到助力那里了，因为有大量的打款请求阻塞，结果就是，工作线程池大概要满了吧。。。</p>
-<p>然后发现，OpenFeign的RPC超时时间设置是一个极大的数字（大概是为了避免导表的接口时间太长超时吧，为什么不是异步导表呢！），所以没有超时熔断。</p>
+<p>然后一查，RPC调用链路基本都阻塞了，然后发现，OpenFeign的超时时间是一个极大的数字（大概是为了避免导表的接口时间太长超时吧），所以。。。</p>
 <p>而且助力接口居然没加限流！好吧，是我的锅，当时想的是应该没关系吧。。。</p>
 <p>我特么。。。</p>
-<p>算了，和同事讨论了一会，先紧急拉个hotfix分支加上限流，然后修改助力逻辑，最重要的是打款必须改成异步的（调用居然接近1s，但是这个只能在生产环境测试），两种解决方式，一种是通过消息队列异步通信，另一种是通过定时任务异步打款，因为这种方式是最快并且改动最小的，所以最终决定使用定时任务的方式。</p>
+<p>算了，和同事讨论了一会，先紧急加上限流，然后修改助力逻辑，最重要的是打款必须改成异步的（调用居然接近1s），两种解决方式，一种是通过消息队列异步通信，另一种是通过定时任务异步打款，因为这种方式是最快并且改动最小的，最终决定使用定时任务的方式。</p>
 <p>修改后的助力逻辑是这样的，还加了一个全局的每日最大打款额度需求：</p>
 <p>首先去掉事务了，不需要100%的一致性。</p>
 <pre class=" language-java"><code class="language-java">SELECT <span class="token operator">*</span> FROM action WHERE action_id <span class="token operator">=</span> x<span class="token punctuation">;</span>
@@ -253,8 +252,7 @@ COMMIT<span class="token punctuation">;</span></code></pre>
     <span class="token comment" spellcheck="true">// 回滚Redis的该用户当天的助力次数，Redis的decr指令自减</span>
     <span class="token comment" spellcheck="true">// 抛异常</span>
 <span class="token punctuation">}</span></code></pre>
-<p>修改后的方式使用Redis拦截了一层流量，还用来进行条件判断，使得直接落到数据库的流量少了很多。</p>
-<p>并且使用了类似CAS的乐观更新机制，原子性由数据库的锁保证，将并发下的重试逻辑交给了用户。</p>
+<p>用Redis拦截了一层流量，使得直接落到数据库的流量少了很多。</p>
 <p>而异步打款的定时任务逻辑大概是：</p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 先根据标记位canSubmit判断是否能继续提交任务，否则直接返回</span>
 <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>canSubmit<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -265,6 +263,9 @@ COMMIT<span class="token punctuation">;</span></code></pre>
 <span class="token comment" spellcheck="true">// SELECT * FROM record WHERE draw = 0 LIMIT #{batchSize}</span>
 
 <span class="token keyword">for</span> <span class="token punctuation">(</span>Record record <span class="token operator">:</span> recordList<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>canSubmit<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
     <span class="token keyword">try</span> <span class="token punctuation">{</span>
         EXECUTOR_SERVICE<span class="token punctuation">.</span><span class="token function">submit</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
             <span class="token keyword">try</span> <span class="token punctuation">{</span>
@@ -289,7 +290,7 @@ COMMIT<span class="token punctuation">;</span></code></pre>
         canSubmit <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-<p>也是类似抢锁的逻辑，抢到锁（更新成功）才能打款。</p>
+<p>类似CAS的抢锁的逻辑，抢到锁（更新成功）才能打款。</p>
 <p>发布到生产环境，貌似没啥问题。</p>
 <p>你以为这就完事了？我忘了加重试次数限制了。。。</p>
 <p>你以为这又完事了？我特么。。。算了，心好累，不写了。</p>
