@@ -1,0 +1,897 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-深入理解Kafka：核心设计与实践原理 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="基于《深入理解Kafka：核心设计与实践原理》朱忠华 著整理的读书笔记，基于2.0.0，目前最新的Release是2.6.0。
+作者也有博客，有兴趣可以看看（NSFW警告）。
+看这本书的目的是了解Kafka基本的设计和思想，太细节的东西有机会再了解吧（估计没有）。
+之前没用过Kafka，感觉和火箭还">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-深入理解Kafka：核心设计与实践原理" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-深入理解Kafka：核心设计与实践原理</h2>
+				
+				<div>
+					<div class="post-time">2020-09-26</div>
+				</div>
+				
+				<div class="article-content">
+				<p>基于<strong><a href="https://book.douban.com/subject/30437872/" target="_blank" rel="noopener">《深入理解Kafka：核心设计与实践原理》朱忠华 著</a></strong>整理的读书笔记，基于2.0.0，目前最新的Release是2.6.0。</p>
+<p>作者也有<a href="https://honeypps.com/about/me/" target="_blank" rel="noopener">博客</a>，有兴趣可以看看（NSFW警告）。</p>
+<p>看这本书的目的是了解Kafka基本的设计和思想，太细节的东西有机会再了解吧（<del>估计没有</del>）。</p>
+<p>之前没用过Kafka，感觉和火箭还是有很多类似的，不过比火箭复杂多了，还引入了ZooKeeper进行分布式协调。</p>
+<p>某些内容不是很确定，可能有理解不对的地方。</p>
+<hr>
+<p>Kafka包括若干Producer、若干Broker、若干Consumer，以及一个ZooKeeper集群。</p>
+<p>主题（Topic）：消息以Topic为单位归类，Producer将消息发送到特定Topic，Consumer订阅Topic并消费。</p>
+<p>分区（Partition）：Topic下分多个分区，消息顺序追加到分区日志文件的尾部，偏移量（Offset）保证消息在分区内的顺序性。</p>
+<p>分区可以分布在不同的Broker上，一个Topic可以跨多个Broker，通过增加分区的数量实现水平扩展。</p>
+<p>消息被发送到Broker前，会根据分区规则选择具体的分区。</p>
+<p>分区引入了多副本（Replica）机制，通过增加副本数量提升容灾能力。</p>
+<p>副本之间是一主多从，只有Leader副本处理读写请求，Follower副本只与Leader副本同步消息。</p>
+<p>副本是对于分区的，副本是特定分区的副本。</p>
+<p>副本分布在不同的Broker上，Leader副本出现故障时，从Follower副本中选举新的Leader副本对外服务。</p>
+<ul>
+<li><p>本地副本（Local Replica）：指对应的Log分配在当前的Broker节点上。</p>
+</li>
+<li><p>远程副本（Remote Replica）：指对应的Log分配在其他的Broker节点上。</p>
+</li>
+</ul>
+<p>一个分区的信息会存在多个Broker上，逻辑上每个Broker上的分区有多个副本，但是只有本地副本才有对应的日志。</p>
+<p>假设Kafka集群中有4个Broker，某个Topic中有3个分区，且副本因子（即副本个数）也为3，每个分区便有1个Leader副本和2个Follower副本。</p>
+<p>LEO（Log End Offset）：标识每个分区中最后一条消息的下一个位置，分区的每个副本都有自己的LEO。</p>
+<p>HW（High Watermark）：高水位，ISR中最小的LEO，Consumer只能拉取到HW之前的消息。</p>
+<p>消息先会被写入分区的Leader副本，等待ISR集合中所有Follower副本都同步完后才认为已提交，之后更新分区的HW，Consumer才可以消费到这条消息。</p>
+<p>分区HW就是Leader副本的HW值。</p>
+<p>LW（Low Watermark）：俗称低水位，代表AR集合中最小的logStartOffset值，日志被清理可能促使LW的增长。</p>
+<p>分区中的所有副本统称为AR（Assigned Replicas）。</p>
+<p>所有与Leader副本保持一定程度同步的副本（包括Leader副本）组成ISR（In-Sync Replicas）。</p>
+<p>判定分区同步状态：当ISR中的Follower副本滞后Leader副本的时间超过指定参数值，判定副本失效，从ISR剔除。</p>
+<p>Follower副本赶上Leader副本的LEO时，则认为该Follower副本已经追赶上Leader副本，此时更新该副本的lastCaughtUpTimeMs。</p>
+<p>不是Follower副本只要拉取Leader副本的数据就会更新lastCaughtUpTimeMs，因为Leader副本的消息流入速度可能大于Follower副本的拉取的速度。</p>
+<p>Leader副本负责维护ISR集合中所有Follower副本的状态，当Follower副本失效时，Leader副本把它从ISR中剔除。</p>
+<p>如果OSR集合中有Follower副本追上了Leader副本，Leader副本会把它从OSR集合转移至ISR集合。</p>
+<p>一般两种情况会导致副本失效：</p>
+<ul>
+<li><p>Follower副本进程卡住，在一段时间内没有向Leader副本发起同步请求，如频繁的Full GC。</p>
+</li>
+<li><p>Follower副本进程同步过慢，如IO开销过大。</p>
+</li>
+</ul>
+<p>Leader副本发生故障时，默认只有在ISR集合中的副本才有资格被选举为新的Leader副本。</p>
+<p>Kafka会开启两个与ISR相关的定时任务。</p>
+<p>定时检查当前时间与副本的lastCaughtUpTimeMs差值是否大于指定参数值，是否需要增减ISR集合，当ISR集合发生变更时，将变更后的记录缓存到isrChangeSet中。</p>
+<p>定时检查isrChangeSet，如果发现有ISR集合的变更记录，那么在ZooKeeper的指定路径下创建一个持久顺序节点，并将isrChangeSet中的信息保存到节点中。</p>
+<p>Kafka控制器添加了一个Watcher，当这个节点中有子节点发生变化时触发，通知控制器更新相关元数据信息井向它管理的Broker节点发送更新元数据的请求。</p>
+<p>分区提供了可伸缩性、水平扩展的功能，多副本提供数据冗余以提高数据可靠性。</p>
+<hr>
+<p>Kafka的复制机制不是完全的同步或异步复制。</p>
+<p>同步复制下，所有Follower副本都复制完，才会被确认为已成功提交，极大地影响了性能。</p>
+<p>异步复制下，Follower副本异步地从Leader副本复制数据，数据只要被Leader副本写入就被认为已经成功提交。</p>
+<p>如果Follower副本还没有复制完，Leader副本突然宕机，则会造成数据丢失。</p>
+<p>Kafka的ISR则权衡了可靠性和性能之间的关系。</p>
+<p>日志同步机制的一个原则是：如果告知客户端已经成功提交了某条消息，即使Leader宕机，也要保证新选举出来的Leader包含这条消息。</p>
+<p>常见的做法是“少数服从多数”，如果有2n + 1个副本，那么在提交之前必须保证有n + 1个副本同步完消息。</p>
+<p>为了保证较高的容错率，必须要有大量的副本，而大量的副本又会在大数据量下性能下降。</p>
+<p>Kafka使用的更像是微软的PacificA算法，位于ISR中的任何副本节点都有资格成为Leader，选举简单、开销低。</p>
+<p>在采用ISR模型和n + 1个副本数的配置下，一个Kafka分区能够容忍最大n个节点失败。</p>
+<p>因为慢的都被踢走了:)。</p>
+<hr>
+<p>Leader副本收到消息，更新本地日志和LEO和HW。</p>
+<p>Follower副本不断向Leader副本发送FETCH请求，收到响应后更新本地日志和LEO和HW。</p>
+<p>Follower副本更新本地HW是在其更新本地LEO之后，取本地LEO与FETCH响应中HW值的较小值，因此Follower副本的HW值不会大于其本地LEO值。</p>
+<p>Leader副本保存了所有副本的LEO，用来确定分区的HW。</p>
+<p>Follower副本发送FETCH请求时，携带了本次的拉取偏移，Leader副本根据此偏移更新该副本的LEO。</p>
+<p>Leader副本的HW值就是分区的HW值，以下情况Kafka会尝试更新Leader副本的HW值：</p>
+<ul>
+<li>副本成为Leader副本时；</li>
+<li>副本被踢出ISR时，执行ISR的缩减；</li>
+<li>向Leader副本写入消息时，更新Leader副本的LEO；</li>
+<li>Leader副本处理FETCH请求时；</li>
+</ul>
+<p>HW值的更新通常需要延迟一轮FETCH才能完成，可能引起的问题包括：分区数据丢失，分区数据不一致。</p>
+<p>数据丢失：</p>
+<p>假设Producer的min.insync.replicas设置为1，并且有两个副本，A是Leader副本。</p>
+<p>消息写入A和B副本的Log，分区HW已被更新，响应写入成功。</p>
+<p>假设此时B，即Follower副本的HW尚未被更新（延迟了一轮），并且此时副本B宕机，重启后B会把LEO调整到HW值，故副本B会做日志截断。</p>
+<p>假设B重启之后给A发FETCH请求，但A此时宕机，那么B成为新的Leader，消息丢失了。</p>
+<p>数据不一致：</p>
+<p>假设Producer的min.insync.replicas设置为1，并且有两个副本，A是Leader副本，B副本被踢出了ISR。</p>
+<p>A的Log写入了1条消息，分区HW更新到1，B的Log没写入消息，B的HW还是0。</p>
+<p>假设A和B同时宕机，然后B先重启成为Leader，分区HW = 0。</p>
+<p>假设此时Producer又发送了消息给B，于是B的Log写入1条消息，分区HW更新到1（就B一个副本，直接更新HW）。</p>
+<p>之后A重启，执行日志截断，发现此时分区HW = 1，而A之前的HW值也是1，故不做调整。</p>
+<p>此时两个副本Log的第一条消息不一致。</p>
+<p>Kafka引入了Leader Epoch。</p>
+<p>Leader端的内存缓存了Leader的Epoch信息，实际上是一对值：（Epoch，Offset）。</p>
+<p>Epoch表示Leader的版本号，而Offset对应于该Epoch版本的Leader写入第一条消息的位移。</p>
+<p>假设有两对值：(0, 0)和(1, 120)，则表示第一个Leader从位移0开始写入消息，共写了120条[0, 119]；而第二个Leader版本号是1，从位移120处开始写入消息。</p>
+<p>Leader维护这个缓存，并定期持久化到CheckPoint文件。</p>
+<p>在恢复的时候使用这些信息而非HW来判断是否需要截断日志。</p>
+<p>当前A为Leader，B为Follower，A中有2条消息m1和m2，B中有1条消息m1。</p>
+<p>假设A和B同时宕机，然后B第一个恢复并成为新的Leader。</p>
+<p>之后B写入消息m3，并将LEO和HW更新至2，此时的Leader Epoch从0增至1。</p>
+<p>接着A恢复成为Follower，并向B发送OffsetsForLeaderEpochRequest请求，此时A的Leader Epoch为0。</p>
+<p>A根据返回的结果截断日志，删除了消息m2，之后A发送FetchRequest至B请求同步数据，最终A和B中都有两条消息m1和m3，HW和LEO都为2，并且Leader Epoch都为1，解决了数据不一致的问题。</p>
+<hr>
+<p>Kafka是主写主读的模型。</p>
+<p>主写从读，也就是读写分离，Kafka不支持主写从读，理论上代码应该是可以支持的。</p>
+<p>主写从读，让从节点分担主节点的负载，但也有两个明显缺点：</p>
+<p>在主从节点数据复制延时的时间窗口内，存在数据一致性问题。</p>
+<p>一个是延时，一个是数据一致性。</p>
+<p>主读从写不能做到完全的负载均衡，比如写压力很大而读压力很小的情况。</p>
+<p>Kafka中可以在主写主读的架构上实现负载均衡（分区），所以没必要支持主写从读。</p>
+<hr>
+<p>Topic和分区都是逻辑上的概念，分区可以有一至多个副本，每个副本对应一个日志文件，每个日志文件对应一至多个日志分段（LogSegment），每个日志分段还可以分为索引文件、日志存储文件和快照文件等。</p>
+<p>可以通过日志文件的根目录来查看集群中各个Broker的分区副本的分配情况，还可以通过ZooKeeper获取。</p>
+<p>创建一个Topic时会在ZooKeeper特定目录下创建一个同名的实节点，记录了该Topic的分区副本分配方案。</p>
+<p>创建Topic时，分区及副本会尽可能均匀地分布到各个Broker上，一个分区的副本不可能同时出现同一个Broker中。</p>
+<p>Leader副本所在的Broker节点叫作分区的Leader节点，Follower副本所在的Broker节点叫作分区的Follower节点。</p>
+<p>当分区的Leader节点发生故障时（原本的节点失效了，导致负载不均衡），Follower节点成为新的Leader节点。</p>
+<p>为了治理负载失衡，Kafka引入了优先副本（Preferred Replica），优先副本是指在AR集合中的第一个副本。</p>
+<p>理想情况下，优先副本就是该分区的Leader副本，那么只要确保所有Topic的优先副本在集群中均匀分布，就保证了所有分区的Leader均衡分布。</p>
+<p>Leader副本的选举由Controller负责。</p>
+<p>当创建分区（创建Topic或增加分区〉或分区上线（分区中原先的Leader副本下线，需要选举一个新的Leader上线）时都需要执行Leader的选举。</p>
+<p>基本思路是按照AR集合中副本的顺序查找第一个存活的副本，并且这个副本在ISR集合中。</p>
+<p>分区的AR集合在分配的时候就被指定，只要不发生重分配，集合内部副本的顺序是不变的，而分区的ISR集合中副本的顺序可能会改变。</p>
+<p>注意这里是根据AR的顺序而不是ISR的顺序进行选举的。</p>
+<p>Kafka默认分区自动平衡，Kafka控制器启动定时任务，轮询所有的Broker节点，计算每个Broker节点的分区不平衡率（非优先副本的Leader数／分区总数）是否超过阈值，超过则自动执行优先副本的选举。</p>
+<p>生产环境中建议关闭，因为执行时机不可控，分区在Leader切换过程中会不可用，建议手动执行分区平衡。</p>
+<p>并且分区及副本的均衡也不能完全确保整体的均衡。</p>
+<p>下线集群中的节点时，希望能够将该节点上的分区副本迁移到其他的节点上。</p>
+<p>新增集群中节点后，只有新创建的Topic分区才被分配到这个节点上，之前的Topic分区并不会自动分配到新节点中。</p>
+<p>分区重分配：控制器为分区添加新副本（增加副本因子），新的副本将从分区的Leader副本复制所有的数据，复制完成之后，控制器将旧副本从副本清单里移除（恢复为原先的副本因子）。</p>
+<p>分区重分配本质：数据复制，先增加新的副本，然后进行数据同步，最后删除旧的副本。</p>
+<hr>
+<p>理论上Topic中的分区数越多，吞吐量就越大，但实际上分区数一直增加可能会引起Kafka进程的崩溃。</p>
+<p>分区数会占用文件描述符，而一个进程所能支配的文件描述符是有限的，“Too many open flies”。</p>
+<p>一般建议将分区数设定为集群中Broker的倍数，假定集群中有3个Broker节点，可以设定分区数为3、6、9等。</p>
+<p>假如，一个3节点的Kafka集群中存在3000个分区，每个分区拥有3个数据副本。</p>
+<p>当一个Broker宕机时，所有1000个分区同时变得不可用。</p>
+<p>假设一个分区恢复时间是5ms，1000个分区的恢复将花费5s，系统不可用时间会明显变长。</p>
+<hr>
+<p>不考虑副本，一个分区对应一个日志（Log）。</p>
+<p>为了防止Log过大，Log分为多个LogSegment，Log对应文件夹，LogSegment对应一个日志文件和两个索引文件等。</p>
+<p>消息顺序写入Log，只有最后一个LogSegment才能写入。</p>
+<p>每个LogSegment中的.log文件都有对应的两个索引文件：偏移量索引.index文件和时间戳索引.timeindex文件。</p>
+<p>每个LogSegment都有一个基准偏移量baseOffset，表示当前LogSegment中第一条消息的偏移（可以理解为下标）。</p>
+<p>偏移量是个64位的长整型，文件根据基准偏移量命名。</p>
+<p>索引文件是稀疏索引，不是每个消息都有对应的索引，而是每写入一定量时才生成。</p>
+<p>稀疏索引是在磁盘空间、内存空间、查找时间之间的折中。</p>
+<p>稀疏索引体积较小，通过MappedByteBuffer映射到内存中，加快索引的查询速度。</p>
+<p>偏移量索引文件中，每个索引项分为两个部分：</p>
+<ul>
+<li><p>relativeOffset：相对偏移量，消息相对于baseOffset的位置偏移量，这么表示的目的是减少空间占用。</p>
+</li>
+<li><p>position：物理地址，消息在分段文件中对应的物理位置。</p>
+</li>
+</ul>
+<p>如果要查找偏移量offset为268的消息（即分区的第268条消息）：</p>
+<p>定位分段文件：</p>
+<p>Kafka使用ConcurrentSkipListMap的跳表来保存日志分段，每个日志分段的baseOffset作为key，以基准偏移量排序，根据二分查找定位到最大的小于offset的日志分段。</p>
+<p>定位消息位置：</p>
+<p>假设日志分段.log的baseOffset为251，那么相对偏移量relativeOffset = 268 - 251 = 17，再在对应的索引文件.index中找到不大于17的索引项，假设为3, 497，那么根据position为497定位到分段文件的具体位置，顺序查找。</p>
+<hr>
+<p>Kafka集群中，一个Broker会被选举为控制器（KafkaController），负责管理整个集群中所有分区和副本。</p>
+<p>Kafka的控制器选举依赖ZooKeeper，在任意时刻，集群中有且仅有一个控制器。</p>
+<p>每个Broker启动时会尝试读取指定节点的BrokerId，如果值不为-1，表示己有其他Broker节点成功竞选为Controller，放弃竞选。</p>
+<p>如果ZooKeeper中不存在该节点，或者这个节点中的数据异常，那么尝试创建该临时（EPHEMERAL）节点，只有创建成功的Broker才会成为Controller。</p>
+<p>每个Broker都会在内存中保存当前Controller的BrokerId。</p>
+<p>ZooKeeper还有一个与Controller有关的持久（PERSISTENT）节点，存放Controller Epoch。</p>
+<p>用于记录Controller发生变更的次数，即当前的Controller是第几代，称为“控制器的纪元”。</p>
+<p>每个和Controller交互的请求都会携带Controller Epoch，如果请求的值小于内存中的值，则认为这个请求是向己过期的Controller所发送的请求，这个请求会被认定为无效。</p>
+<p>如果请求的值大于内存中的值，说明己经有新的Controller当选了。</p>
+<p>当Controller节点的数据发生变化时，每个Broker都更新自身内存中保存的Controller的BrokerId。</p>
+<p>如果Broker在变更前是Controller，在数据变更后自身的Brokerid值与新的Controller的BrokerId不一致，那么就需要退位，注销相应的监听器等。</p>
+<p>Controller由于异常而下线，造成该临时节点自动删除，当Controller节点被删除时，每个Broker都进行选举。</p>
+<p>每台Broker在上线时，都会与ZK建立一个会话，并在指定路径下注册一个临时节点，包含这个Broker的详细信息。</p>
+<p>Controller会监听指定路径下的所有子节点，如果有新的节点出现，代表有新的Broker上线，如果有节点消失，代表有Brroker下线，Kafka利用ZK的Watch机制及临时节点的特性来完成集群Broker的上下线管理。</p>
+<hr>
+<p>当某个分区的Leader副本出现故障时，由Controller为该分区选举新的Leader副本。</p>
+<p>当检测到某个分区的ISR集合发生变化时，由Controller通知所有Broker更新其元数据信息。</p>
+<p>当为某个Topic增加分区数量时，还是由Controller负责分区的重新分配。</p>
+<p>Controller的职责：在ZooKeeper的指定路径注册Handler，处理对应的事件。</p>
+<ul>
+<li><p>监听Topic相关的变化：Topic增减。</p>
+</li>
+<li><p>监听分区相关的变化：分区重分配，ISR集合变更，优先副本的选举。</p>
+</li>
+<li><p>监听Broker相关的变化：Broker增减，集群的元数据。</p>
+</li>
+</ul>
+<p>Controller：</p>
+<ul>
+<li><p>UpdateMetadataRequest：更新元数据请求。一旦Topic分区状态变更，Controller将广播UpdateMetadataRequest给所有Broker。</p>
+</li>
+<li><p>CreateTopics：创建Topic请求。在Zookeeper的指定目录下创建节点，Controller会监听变更，执行创建逻辑。</p>
+</li>
+<li><p>DeleteTopics：删除Topic请求。和CreateTopics类似。</p>
+</li>
+<li><p>分区重分配：在Zookeeper的指定目录下创建节点，Controller会监听变更，按照方案分配分区。</p>
+</li>
+<li><p>优先Leader分配：优先Leader选举可以自动触发和脚本触发。在Zookeeper的指定目录下创建节点写入数据，Controller会监听变更，按照方案分配Leader。</p>
+</li>
+<li><p>分区扩展：即增加Topic分区数。脚本在Zookeeper的指定目录下写入数据，Controller会自动选出Leader并增加分区。</p>
+</li>
+<li><p>新增和下线Broker等同理。</p>
+</li>
+</ul>
+<hr>
+<p>创建Topic：</p>
+<p>在Zookeeper的指定目录下创建对应Topic的持久化节点，并写入分配方案。</p>
+<p>Controller监听指定目录下是否有节点变化，如果有，根据其节点中的数据创建对应的副本。</p>
+<p>对于Topic的删、改、查等都可以通过这种方法实现。</p>
+<hr>
+<p>Broker不保存Consumer的状态，从这个角度来说，Broker是无状态的。</p>
+<p>实际上Broker是有状态的。</p>
+<p>每台Broker在内存中都维护了集群上所有节点和Topic分区的状态信息，即元数据缓存。</p>
+<p>Kafka通过Controller发送更新元数据请求，异步维护一致性的。</p>
+<p>Broker接收到请求便清空当前所有缓存信息，使用UpdateMetadata请求中的数据全量更新。</p>
+<hr>
+<p>ZooKeeper中共有3个角色：Leader、Follower和Observer。</p>
+<p>同一时刻ZooKeeper集群中只有一个Leader，其他的都是Follower和Observer。</p>
+<p>Observer不参与投票，默认情况下ZooKeeper中只有Leader和Follower两个角色。</p>
+<p>旧版本Kafka：</p>
+<p>羊群效应（Herd Effect）：ZooKeeper中一个被监听的节点变化，大量的Watcher通知被发送到客户端，导致在通知期间的其他操作延迟。</p>
+<p>脑裂问题（Split Brain）：Consumer进行再均衡时每个Consumer都与ZooKeeper进行通信，以判断Consumer或Broker变化的情况，可能导致在同一时刻各个Consumer获取的状态不一致。</p>
+<hr>
+<ul>
+<li><p>创建Topic的分区分配：分配分区副本，即在哪个Broker中创建哪些分区的副本。</p>
+</li>
+<li><p>Producer的分区分配：为消息指定其所要发往的分区；</p>
+</li>
+<li><p>Consumer的分区分配：为Consumer指定其可以消费消息的分区；</p>
+</li>
+</ul>
+<hr>
+<p>消费者分区分配策略：</p>
+<ul>
+<li>RangeAssignor</li>
+</ul>
+<p>默认采用RangeAssignor。</p>
+<p>RangeAssignor对每个Topic进行独立的分区分配。</p>
+<p>对于每个Topic，先对分区按照分区ID排序，然后订阅这个Topic的消费组的Consumer再排序，之后尽量均衡的将分区分配给Consumer。</p>
+<p>假如某个Topic下有四个分区P0、P1、P2、P3。</p>
+<p>假如有两个Consumer，C0、C1订阅，那么，分区数量/消费者数量，即4/2=2，每个Consumer分到2个分区，于是P0、P1分配给C0，P2、P3分配给C1。</p>
+<p>假如有三个Consumer，C0、C1、C2订阅，那么，分区数量/消费者数量，即4/3=1，每个Consumer分到1个分区，还剩余一个分给第一个Consumer，于是P0、P1分配给C0，P2分配给C1，P3分配给C2。</p>
+<p>假设有五个Consumer订阅，那么最后一个Consumer不会被分配到分区。</p>
+<p>如果不够平均分配，那么字典序靠前的Consumer会被多分配一个分区。</p>
+<p>缺陷：随着Consumer订阅的Topic的数量的增加，不均衡的问题会越来越严重。</p>
+<ul>
+<li>RoundRobinAssignor</li>
+</ul>
+<p>将消费组内订阅的所有Topic的分区及所有Consumer进行排序后尽量均衡的分配（RangeAssignor是针对单个Topic的分区进行排序分配的）。</p>
+<p>如果消费组内，Consumer订阅的Topic列表是相同的（每个Consumer都订阅了相同的Topic），那么分配结果是尽量均衡的（Consumer之间分配到的分区数的差值不会超过1）。</p>
+<p>如果订阅的Topic列表不同，那么不保证均衡，因为某些Consumer不参与一些Topic的分配。</p>
+<p>假设有两个Topic，每个Topic有四个分区，T0P0、T0P1、T0P2、T0P3、T1P0、T1P1、T1P2、T1P3。</p>
+<p>假设有三个Consumer，C0、C1、C2订阅，那么使用轮询的方式分配，C0会分配到T0P0、T0P3、T1P2，C1会分配到T0P1、T1P0、T1P3，C2会分配到T0P2、T1P1。</p>
+<hr>
+<p>Producer是线程安全的，可以在多个线程中共享单个Producer实例，也可以将Producer实例池化供线程调用。</p>
+<p>消息需要经过拦截器（Interceptor）、序列化器（Serializer）和分区器（Partitioner）后才被发往Broker。</p>
+<p>Producer和Consumer都有拦截器。</p>
+<p>发送消息主要有三种模式：发后即忘（fire-and-forget）、同步（sync）及异步（async）。</p>
+<p>send方法是异步的，返回Future对象使调用方稍后获得发送的结果。</p>
+<p>Producer客户端由两个线程协调运行，分别为主线程和Sender线程。</p>
+<p>在主线程中创建消息，通过拦截器、序列化器和分区器后缓存到消息累加器（RecordAccumulator）中。</p>
+<p>Sender线程从RecordAccumulator中获取消息并发送到Broker。</p>
+<p>RecordAccumulator主要用来缓存消息以便批量发送。</p>
+<p>如果Producer发送消息的速度超过发送到服务器的速度，Producer的send方法要么被阻塞，要么抛出异常。</p>
+<p>请求在从Sender线程发往Broker之前还会保存到InFlightRequests中，缓存已经发出去但还没有收到响应的请求。</p>
+<p>可以用来判断这个Node节点负载较大或网络连接有问题。</p>
+<p>InFlightRequests还可以获得leastLoadedNode，即所有Node中负载最小的那一个，未确认的请求越多则负载越大。</p>
+<p>默认的分区器会根据key的哈希值来计算分区号，如果key为null，那么会以轮询的方式发往Topic内的各个可用分区。</p>
+<p>不改变Topic分区数量的情况下，key与分区之间的映射保持不变。</p>
+<p>Producer一般会发生两种类型的异常：可重试的异常和不可重试的异常。</p>
+<p>可重试异常可以通过重试解决，如NetworkException等。</p>
+<p>不可重试的异常，如RecordTooLargeException，所发送的消息太大，Producer不会重试，直接抛出异常。</p>
+<p>对于可重试的异常，如果配置了retries参数，只要在重试次数内恢复了，就不会抛出异常。</p>
+<p>retries参数的默认值为0。</p>
+<p>Producer将消息追加到指定Topic的某个分区所对应的Leader副本前，需要知道Topic的分区数量，得出目标分区，然后需要知道目标分区的Leader副本所在的Broker节点信息，这都属于元数据。</p>
+<p>bootstrap.servers只需要配置部分Broker节点的地址，客户端可以自己发现其他Broker节点的地址。</p>
+<p>分区数量及Leader副本的分布都会动态变化，客户端也需要动态地更新。</p>
+<hr>
+<p>生产者参数：</p>
+<p>acks：指定分区中必须要有多少个副本收到这条消息，才认为这条消息成功写入，可靠性和吞吐量之间的权衡。</p>
+<ul>
+<li>acks = 1</li>
+</ul>
+<p>默认值，只要分区的Leader副本成功写入，就会收到服务端的成功响应。</p>
+<ul>
+<li>acks = 0</li>
+</ul>
+<p>发送消息之后不需要等待任何响应。</p>
+<ul>
+<li>acks = -1 和 acks = all</li>
+</ul>
+<p>消息发送后，需要等待ISR中的所有副本都成功写入后才能够收到成功响应。</p>
+<p>但不一定可靠，因为ISR中可能只有Leader副本，需要配合min.insync.replicas参数（默认值为1）。</p>
+<p>min.insync.replicas参数指定了ISR集合中最小的副本数，不满足就会抛出异常。</p>
+<p>retries：重试的次数，默认值为0，即在发生异常的时候不进行任何重试。</p>
+<p>如果将acks参数配置为非零值，并且max.inflight.requests.per.connection参数大于1，那么可能出现错序。</p>
+<p>如果第一批消息写入失败，而第二批消息写入成功，那么Producer重发第一批的消息，此时如果第一批次的消息写入成功，那么就出现了错序。</p>
+<hr>
+<p>每个Consumer只属于一个ConsumerGroup。</p>
+<p>消息发布到Topic后，只会对它的每个ConsumerGroup中的一个Consumer可见。</p>
+<p>每个Consumer只能消费所分配到的分区中的消息。</p>
+<p>每个分区只能被一个ConsumerGroup中的一个Consumer所消费。</p>
+<p>如果Consumer数大于分区数，就会有Consumer分配不到分区。</p>
+<p>消息中间件一般有两种投递模式：点对点（P2P, Point to Point）和发布／订阅（Pub/Sub）。</p>
+<p>点对点基于队列，Producer发送消息到队列，Consumer从队列中接收消息。</p>
+<p>发布订阅基于Topic，发布者将消息发布到Topic，消息订阅者从Topic中订阅消息。</p>
+<p>Kafka基于Consumer和ConsumerGroup，同时支持两种消息投递模式。</p>
+<p>同一条消息会被多个ConsumerGroup消费，每个ConsumerGroup只有一个Consumer，实现了广播。</p>
+<p>一个ConsumerGroup有多个Consumer，一条消息只被这个ConsumerGroup的一个Consumer消费，实现了单播。</p>
+<p>subscribe方法订阅Topic具有Consumer自动再均衡的功能，当消费组内的Consumer增加或减少时，分区分配关系会自动调整。</p>
+<p>assign方法订阅分区时，不具备Consumer自动均衡的功能。</p>
+<p>Consumer使用拉（Pull）模式，主动向服务端发起请求拉取消息，消息消费是一个轮询的过程。</p>
+<p>消费位移可以保存在ZooKeeper或内部Topic中，默认内部Topic。</p>
+<p>把将消费位移持久化的动作称为提交，位移提交的时机可能会造成重复消费和消息丢失。</p>
+<p>假设当前拉取的消息集为[x + 2, x + 7]，x + 2是上次提交的消费位移，说明己经完成了x + 2之前的消息的消费，假设当前正在处理的位置为x + 5。</p>
+<p>如果拉取到消息后就提交位移，那么当前消费x + 5时宕机，恢复后，重新拉取的消息从 x + 8 开始的，发生了消息丢失。</p>
+<p>如果位移提交在消费完所有拉取到的消息后，那么当前消费x + 5时宕机，恢复后，重新拉取的消息是从 x + 2 开始的，发生了重复消费。</p>
+<p>Kafka默认自动提交，这个自动提交不是每消费一条消息就提交一次，而是定期提交。</p>
+<p>Consumer每隔5秒会将拉取到的每个分区中最大的消息位移进行提交。</p>
+<p>每次向服务端发起拉取请求前会检查是否可以提交，提交上次轮询的位移。</p>
+<p>自动提交消费位移可能导致重复消费和消息丢失。</p>
+<p>假设刚提交完一次消费位移，然后拉取一批消息，在下次自动提交消费位移之前，Consumer崩溃了，那么又从上次提交的地方重新消费，发生了重复消费（同样适用再均衡的情况）。</p>
+<p>假设拉取线程不断地拉取消息并存入本地缓存，另一个处理线程从缓存中读取消息并处理。</p>
+<p>假设目前进行到了第x + 1次拉取，并提交第x次拉取的位移，但处理线程还在处理第x次拉取的消息。</p>
+<p>如果此时处理线程发生了异常，恢复后会跳过第x次拉取的消息，发生了消息丢失。</p>
+<p>手动提交可以分为同步提交和异步提交。</p>
+<p>Kafka消费端也具备容灾能力。</p>
+<p>再均衡指分区的所属权从一个Consumer转移到另一Consumer，在再均衡期间，消费组内的Consumer不可用，无法消费消息。</p>
+<p>另外，当一个分区被重新分配给另一个Consumer时，Consumer当前的状态也会丢失。</p>
+<p>Consumer消费完某个分区中的一部分消息时还没有提交消费位移就发生了再均衡，分区被分配给了消费组内的另一个Consumer，原来被消费的消息又被重新消费。</p>
+<p>KatkaProducer是线程安全的，KafkaConsumer是非线程安全的。</p>
+<p>KafkaConsumer检测当前是否只有一个线程在操作，若有其他线程正在操作则抛出异常。</p>
+<p>检测方法和通常的锁不同，不会造成阻塞，它仅通过计数标记来检测线程是否发生了并发操作。</p>
+<hr>
+<p>FIND COORDINATOR</p>
+<p>Consumer需要确定它所属的ConsumerGroup对应的GroupCoordinator的Broker。</p>
+<p>每个ConsumerGroup会分配一个Brokers作为消费组的协调者，负责管理ConsumerGroup的状态，Consumer的上下线，Topic的分区变化，协调分区的分配（消费组的再均衡）。</p>
+<p>如下几种情形会触发再均衡：</p>
+<ul>
+<li>有新的Consumer加入消费组。</li>
+<li>有Consumer下线（如长时间GC或网络延迟导致GroupCoordinator未收到心跳）。</li>
+<li>有Consumer主动退出消费组（如客户端取消对Topic的订阅）。</li>
+<li>消费组对应的GroupCoorinator节点发生了变更。</li>
+<li>消费组内所订阅的Topic或者Topic的分区数量发生变化。</li>
+</ul>
+<p>如果没有缓存对应信息，或者网络异常，那么需要向集群中的某个节点发送FindCoordinatorRequest，查找对应的GroupCoordinator。</p>
+<p>JOIN GROUP</p>
+<p>找到ConsumerGroup对应的GroupCoordinator后，需要加入ConsumerGroup。</p>
+<p>Consumer向GroupCoordinator发送JoinGroupRequest，并阻塞等待响应。</p>
+<p>JoinGroupRequest包含了该Consumer订阅的Topic，以及支持的分配策略等等信息。</p>
+<p>GroupCoordinator根据各个Consumer上报的信息，选出被支持最多的分区分配策略，作为当前ConsumerGroup的分配策略。</p>
+<p>GroupCoordinator收集了全部Consumer的JoinGroupRequest后，从中选择一个作为ConsumerGroup的LeaderConsumer。</p>
+<p>如果ConsumerGroup内还没有Leader，那么第一个加入的Consumer即为LeaderConsumer。</p>
+<p>如果LeaderConsumer退出了ConsumerGroup，那么重新选举一个（可以看做随机指定）。</p>
+<p>GroupCoordinator回复JoinGroupResponse给各个Consumer，但只有给LeaderConsumer的响应中包含成员的有效数据。</p>
+<p>SYNC GROUP</p>
+<p>LeaderConsumer根据分区分配策略和其它成员Consumer的订阅信息，实施具体的分区分配。</p>
+<p>LeaderConsumer不是直接和其余的Consumer同步分配方案，而是通过GroupCoordinator转发。</p>
+<p>ConsumerGroup内所有的Consumer都会发送SyncGroupRequest，请求同步分配方案。</p>
+<p>但是只有LeaderConsumer的请求包含内容，然后都接受响应的信息。</p>
+<p>GroupCoordinator收到SyncGroupRequest，根据LeaderConsumer的分配方案，连同整个ConsumerGroup的元数据信息一起存入ConsumerOffsetsTopic中，最后响应给各个Consumer。</p>
+<p>HEARTBEAT</p>
+<p>消费消息之前，Consumer需要确定拉取消息的起始位置。</p>
+<p>Consumer发送OffsetFetchRequest，获取上次提交的消费位移，继续消费。</p>
+<p>Consumer通过向GroupCoordinator发送心跳来维持与ConsumerGroup的从属，以及对分区的所有权。</p>
+<hr>
+<p>事件驱动（Reactor模式）：</p>
+<ul>
+<li>一个Acceptor线程：</li>
+</ul>
+<p>一个Selector，关心ServerSocketChannel的OP_ACCEPT事件，监听新的Socket连接请求，将SocketChannel按RoundRobin方式交给对应的Processor线程处理。</p>
+<ul>
+<li>N个Processor线程：</li>
+</ul>
+<p>每个Processor都有自己的Selector，关心SocketChannel的OP_READ和OP_WRITE事件，处理网络读写，从SocketChannel读取数据，将响应返回给SocketChannel，不参与具体业务逻辑。</p>
+<p>多个Selector可以缓解大量IO事件导致的分发瓶颈。</p>
+<ul>
+<li>M个RequestHandler线程：</li>
+</ul>
+<p>处理Request，调用KafkaApis进行处理，并将Response返回给Processor线程，处理业务IO。</p>
+<ul>
+<li>一个RequestChannel：</li>
+</ul>
+<p>Processor和RequestHandler交换数据的地方，用于解耦。</p>
+<p>包含一个RequestQueue，Processor放入Request，RequestHandler取出Request处理。</p>
+<p>包含N个ResponseQueue，对应N个Processor，RequestHandler将处理完的Response放入，Processor取出处理。</p>
+<hr>
+<p>创建ServerSocketChannel，在Selector上注册OP_ACCEPT事件，Selector监听ServerSocketChannel指定端口的连接请求。</p>
+<p>客户端发起连接，OP_ACCEPT事件就绪，Acceptor处理，为这个连接创建SocketChannel，设置为非阻塞模式。</p>
+<p>Acceptor线程以轮询的方式把SocketChannel转交给对应的Processor线程。</p>
+<p>Processor线程在Selector上注册这个SocketChannel的OP_READ事件，每个Processor都有一个Selector，可以非阻塞地处理多个SocketChannel的读写。</p>
+<p>Processor线程不断轮询Selector，某个SocketChannel可读事件就绪时，Processor线程生成Request，交给RequestChannel的RequestQueue。</p>
+<p>RequestHandler线程从中取出Request，处理后将Response放入对应的ResponseQueue，Processor线程取出响应，当对应的SocketChannel的OP_WRITE事件就绪时，写到SocketChannel。</p>
+<p>上面略过了缓冲和选择键的处理，从响应队列中取出响应时，如果对应的SocketChannel的OP_WRITE事件未就绪，那岂不是会阻塞？</p>
+<p>应该是直接写到缓冲就返回，就绪时再把缓存的数据刷到SocketChannel。</p>
+<hr>
+<p>Kafka的延时操作，如延时生产、延时拉取和延时删除等。</p>
+<p>Leader副本等待ISR集合中的所有副本都确认后，才回复响应。</p>
+<p>延时操作不同于定时操作，定时操作是指在特定时间之后执行的操作，而延时操作可以在超时时间之前完成，所以延时操作能够支持外部事件的触发。</p>
+<p>延时生产的外部事件是所要写入消息的某个分区的HW（高水位）发生增长。</p>
+<p>Follower副本己经拉取到了Leader副本的最新位置，又向Leader副本发送拉取请求，而Leader副本并没有新的消息写入。</p>
+<p>处理拉取请求时，先读取日志文件，如果消息不够，那么创建一个延时拉取操作，以等待拉取到足够数量的消息。</p>
+<ul>
+<li>DelayQueue：</li>
+</ul>
+<p>延迟队列，元素必须实现Delayed接口。</p>
+<p>内部是一个PriorityQueue优先队列，只是个容器，需要其他线程来获取和执行任务。</p>
+<ul>
+<li>Timer：</li>
+</ul>
+<p>核心是一个优先队列（最小二叉堆）和一个任务线程。</p>
+<p>最早需要执行的任务在优先队列的第一个，插入和删除的时间复杂度都是O(logn)。</p>
+<p>Timer只有一个执行线程，不断拿第一个任务的执行时间和当前时间对比。</p>
+<p>如果时间已到，并且任务是周期性任务，那么修改当前任务时间为下次执行的时间，否则将任务从优先队列中移除，最后执行任务。</p>
+<p>如果时间未到，则阻塞等待。</p>
+<p>当数据量大的时候，入堆出堆操作性能不好。</p>
+<p>单线程执行，如果一个任务执行的时间过久会影响下一个任务的执行。</p>
+<p>对异常没有处理，一个任务抛异常会导致之后的任务都无法执行。</p>
+<ul>
+<li>ScheduledThreadPoolExecutor：</li>
+</ul>
+<p>多线程版的Timer，并且对异常做了处理。</p>
+<ul>
+<li>TimingWheel</li>
+</ul>
+<p>用环形数组实现，槽的内部用双向链表存着待执行的任务，添加和删除的链表操作时间复杂度都是O(1)。</p>
+<p>如果1s扫一个槽，那么这个时间轮的精度就是1s。</p>
+<p>即，延迟1.2s的任务和1.5s的任务会被加入到同一个槽中，然后在1秒的时候遍历这个槽中的链表执行任务。</p>
+<p>假如共有8个槽0~7，假设槽的时间单位为1s，要加入一个延时5s的任务，就是 5 % 8 + 1 = 6，即放在第6个槽位，下标为5。</p>
+<p>每秒指针移动一槽，遍历这槽中的双向链表执行任务。</p>
+<p>假设要加入一个50s后执行的任务，常见有两种方式。</p>
+<p>一种是增加轮次的概念，如Netty的HashedWheelTimer。</p>
+<p>50 % 8 + 1 = 3，即放在第3个槽位，下标为2。</p>
+<p>(50 - 1) / 8 = 6，即当循环6轮之后扫到下标2的槽位会触发这个任务。</p>
+<p>一种是通过多层次的时间轮，如时钟，以及Kafka的时间轮算法。</p>
+<p>第一层走了一圈，第二层就走一格，那么这里第二层的一格就是8s，假设第二层也是8个槽，那么第二层走一圈，第三层走一格，那么这里第三层一格就是64s，假设第二层也是8个槽，那么时间轮可以处理最多延迟512s的任务。</p>
+<p>多层次时间轮还有降级的操作，假设一个任务延迟500s执行，刚开始是在第三层，过了436s后，还要64s就会触发，此时它就是个延迟64s的任务，因此它会被降到第二层中。</p>
+<p>再过56s，它就是个延迟8s执行的任务，因此它会再被降级放在第一层中，等待执行。</p>
+<p>降级是为了保证时间精度一致性。</p>
+<p>假设DelayQueue中第一个任务的到期时间为200ms，第二个超时任务为840ms，读取DelayQueue队头只需要O(1)的时间复杂度（但是获取后移除需要O(logn)的复杂度）。</p>
+<p>如果每秒定时推进，那么获取第一个超时任务时执行的200次推进中，有199次属于空推进。</p>
+<p>Kafka是按需创建时间轮，如果任务超出了时间轮的范围，那么再创建一个时间轮，即更高一级的时间轮，以此类推。</p>
+<p>对于每个槽都维护一个过期时间，利用DelayQueue对每个槽的过期时间排序，进行时间推进。</p>
+<p>Kafka的DelayQueue的元素是每个槽，而不是任务，空间换时间，解决空推进。</p>
+<p>每次推进都会把能降级的任务重新插入降级。</p>
+<p>时间轮更适合任务数很大的延时场景。</p>
+<p>Timer和DelayQueue的插入和删除的时间复杂度为O(logn)，TimingWheel可以将插入和删除的时间复杂度降为O(1)。</p>
+<p>用TimingWheel做任务添加和删除操作，用DelayQueue做时间推进工作。</p>
+<hr>
+<p>Kafka中的选举：</p>
+<ul>
+<li>控制器的选举</li>
+</ul>
+<p>KafkaController负责管理整个集群中所有分区和副本的状态，负责选举Leader副本。</p>
+<p>检测到某个分区的ISR集合发生变化时，通知所有Broker更新元数据。</p>
+<p>KafkaController的选举依赖Zookeeper。</p>
+<ul>
+<li>分区Leader的选举</li>
+</ul>
+<p>分区Leader副本的选举由KafkaController负责。</p>
+<p>当创建分区（创建Topic或增加分区）或分区上线（Leader副本下线，此时需要选举一个新的Leader上线）的时候都要执行Leader选举。</p>
+<p>基本思路是按照AR集合中副本的顺序查找第一个存活的副本，并且这个副本在ISR集合中。</p>
+<p>这里是根据AR的顺序而不是ISR的顺序。</p>
+<p>分区的AR集合在分配的时候就被指定，只要不发生重分配，集合内部副本的顺序是不变的，而分区的ISR集合中副本的顺序可能会改变。</p>
+<p>分区进行重分配的时候也需要执行Leader选举。</p>
+<p>也是从重分配的AR列表中找到第一个存活的副本，且这个副本在目前的ISR列表中。</p>
+<ul>
+<li>Consumer相关的选举</li>
+</ul>
+<p>略。</p>
+<hr>
+<p>MQ的消息传输保障有3个层级。</p>
+<ul>
+<li><p>at most once：至多一次。消息可能丢失，但不会重复传输。</p>
+</li>
+<li><p>at least once：最少一次。消息不会丢失，但可能重复传输。</p>
+</li>
+<li><p>exactly once：恰好一次。消息不会丢失，不会重复传输。</p>
+</li>
+</ul>
+<p>Producer发送消息时，一旦消息被成功提交，由于多副本，消息不会丢失。</p>
+<p>如果Producer发送消息遇到了网络问题，无法判断消息是否己经提交，但可以重试，是at least once。</p>
+<p>对Consumer，根据处理消息和提交消费位移的顺序，可能是at least once或at most once。</p>
+<p>Kafka引入了幂等和事务，以此实现exactly once。</p>
+<p>幂等，就是对接口的多次调用所产生的结果和调用一次是一致的，避免Producer在重试时重复写入消息。</p>
+<p>幂等默认关闭，需要Producer客户端开启。</p>
+<p>为了实现Producer幕等，Kafka引入了生产者ID（PID）和序列号（SN）两个概念。</p>
+<p>Producer实例在初始化的时候都会被分配一个PID。</p>
+<p>对于每个PID，消息发送到的每一个分区都有对应的单调递增序列号＜PID，分区＞。</p>
+<p>Broker在内存中为每一对＜PID，分区＞维护一个序列号。</p>
+<p>Broker会验证SN是否连续，不允许跳过，同时忽略之前的SN。</p>
+<p>TransactionCoordinator的ProducerIdManager管理PID信息，本地的PID段用完或新建时，向ZooKeeper申请PID段。</p>
+<p>每个Broker向ZooKeeper申请一个PID段后，会把PID段信息写入节点，当其他Broker申请时，先读此节点，然后选择一个PID段，最后把信息写回节点。</p>
+<p>幂等不能跨多个分区，事务可以弥补这个缺陷。</p>
+<p>事务可以保证Producer对多个分区写入的原子性（要么全部成功，要么全部失败）。</p>
+<p>跨会话的幂等写入：即使中间故障，恢复后依然可以保持幂等性。</p>
+<p>跨会话的事务恢复：如果Producer挂了，启动的下个Producer依然可以保证上一个事务完成（提交或终止）。</p>
+<p>从Consumer的角度，事务不能保证己提交的事务中的所有消息都能够被消费。</p>
+<p>Consumer在消费时可能没有分配到事务的所有分区，也就不能读取事务中的所有消息。</p>
+<p>Consumer有个隔离级别的参数，默认为“read uncommitted”，可以消费到未提交的事务。</p>
+<p>可以设置为“read committed”，在提交事务前，Consumer不可见。</p>
+<p>不过Consumer内部会缓存这些消息，直到Producer提交事务后才能消费。</p>
+<p>如果Producer终止事务，那么将这些缓存的消息丢弃。</p>
+<p>日志文件中除了普通消息，还有一种控制消息（ControlBatch）专门标志一个事务的结束。</p>
+<p>控制消息共有两种类型：COMMIT和ABORT。</p>
+<p>Consumer通过控制消息来判断对应的事务是被提交了还是被中止了，然后结合隔离级别来处理。</p>
+<p>为了实现事务，Kafka引入了事务协调器（TransactionCoordinator），类比一下组协调器（GroupCoordinator）。</p>
+<p>Producer会被指派一个TransactionCoordinator，所有的事务逻辑包括分派PID等都由TransactionCoordinator负责。</p>
+<p>TransactionCoordinator和2PC协议中协调者不太一样，主要为了管理事务相关的状态信息。</p>
+<p>TransactionCoordinator会将事务状态持久化到内部Topic中。</p>
+<p>如果一个事务的TransactionCoordinator宕机，需要转移到其他的机器。</p>
+<p>事务状态信息恢复时从内部Topic恢复数据，容错性是多副本机制，一致性是 min.isr + ack 机制；</p>
+<p>Producer在宕机恢复后能主动终止上次未完成的事务。</p>
+<p>幂等性引入的PID无法解决这个问题，因为每次Producer重启PID都会更新。</p>
+<p>Producer端引入了TransactionalId解决这个问题。</p>
+<p>事务要求Producer开启幕等特性，同时用户必须显式设置唯一的TransactionalId。</p>
+<p>TransactionalId标识一个事务操作，便于这个事务的所有操作都能在一个TransactionCoordinator进行处理。</p>
+<p>为了保证新的Producer启动后具有相同TransactionalId的旧Producer立即失效，每个Producer通过TransactionalId获取PID的同时，还会获取一个单调递增的ProducerEpoch。</p>
+<p>LSO指LastStableOffset，与Kafka的事务有关。</p>
+<p>开启Kafka事务，Producer发送了若干消息，如果没有提交事务，那么事务中的第一条消息的位置标记为firstUnstableOffset。</p>
+<p>对未完成的事务，LSO的值等于事务中第一条消息的位置，对已完成的事务，它的值同HW相同，LSO ≤ HW ≤ LEO。</p>
+<p>LSO会影响Kafka消费滞后量（Kafka Lag，消息堆积量）的计算。</p>
+<p>分区的Lag = HW – ConsumerOffset，其中ConsumerOffset表示当前的消费位移。</p>
+<p>如果消息引入了事务，并且Consumer配置为“read_committed”，Lag = LSO – ConsumerOffset。</p>
+<p>Kafka目前有两个内部Topic，分别保存Consumer的位移信息和事务日志消息。</p>
+<hr>
+<p>高性能实现：</p>
+<ul>
+<li><p>只允许顺序写盘。</p>
+</li>
+<li><p>页缓存<br>页缓存是操作系统实现的磁盘缓存，把磁盘中的数据缓存到内存，减少磁盘I/O。<br>当进程准备读取磁盘时，操作系统先查看待读取的数据所在的页是否在页缓存中，如果存在则直接返回数据。<br>如果没有命中，操作系统会向磁盘发起读取请求并将读取的数据页存入页缓存，再将数据返回给进程。<br>如果进程要将数据写入磁盘，操作系统会检测数据对应的页是否在页缓存中，如果不存在，先在页缓存中添加，最后将数据写入对应的页。<br>消息都是先被写入页缓存，然后由操作系统负责具体的刷盘。</p>
+</li>
+<li><p>零拷贝，对于消息的读写都基于FileChannel；</p>
+</li>
+<li><p>mmap，文件内存映射，对于索引文件的读写基于MapedBuffer；</p>
+</li>
+<li><p>消息批处理；</p>
+</li>
+<li><p>批量压缩；</p>
+</li>
+<li><p>分区并行消费和发送；</p>
+</li>
+</ul>
+<p>补充一下：</p>
+<p>一般情况下，应用程序将文件发送给用户：</p>
+<ul>
+<li><p>从用户态切换到内核态，将文件复制到内核态的内核缓冲。</p>
+</li>
+<li><p>从内核态切换到用户态，将内核缓冲的数据复制到用户态下的缓冲，结束读取。</p>
+</li>
+<li><p>从用户态切换到内核态，将用户态下的缓冲内容复制到内核态下的Socket缓冲，再复制到网卡。</p>
+</li>
+<li><p>结束调用，从内核态切换到用户态。</p>
+</li>
+</ul>
+<p>内核和用户模式的上下文切换（Context Switch）4次，CPU白白复制了2次数据。</p>
+<p>但其实不需要复制到用户态，直接由操作系统完成就好了，不需要经由应用程序。</p>
+<p>零拷贝（Zero Copy）是操作系统层的，减少内核态和用户态之间的上下文切换和数据拷贝，在内核模式下零拷贝。</p>
+<p>对于Linux操作系统，零拷贝依赖于底层的sendfile方法。</p>
+<p>对于Java语言，FileChannal.transferTo方法的底层实现就是sendfile方法。</p>
+<ul>
+<li><p>从用户态切换到内核态，将数据拷贝到内核缓冲，并向Socket缓冲追加数据的文件描述符（仅仅是位置和长度，数据本身没被复制到Socket缓冲），再由DMA引擎直接将数据从内核模式中传递到网卡设备（此过程不需要CPU参与，不占用CPU周期）。</p>
+</li>
+<li><p>从内核态切换到用户态，结束调用。</p>
+</li>
+</ul>
+<p>数据只经历了2次复制，上下文切换也变成了2次。</p>
+<p>mmap是Linux提供的，将一段用户空间内存映射到内核空间，避免在用户态与内核态之间拷贝数据。</p>
+<p>Kafka：消息记录的读写都是基于FileChannel，消息索引的读写基于MapedBuffer。</p>
+<p>RocketMQ：读写基于MapedBuffer，当然可通过修改配置为FileChannel刷盘，据说是避免页缓存的竞争。</p>
+<p>Kafka分区数量过多的话，读写需要在多个Log间来回切换，从全局看应该算随机。</p>
+<p>RocketMQ所有的Topic的消息都在一个Log内，写肯定是顺序的。</p>
+<p>FileChannel是基于磁盘块的（存疑），大数据写入性能较高。</p>
+<p>MapedBuffer对小文件的读取比较好（存疑）。</p>
+<p>Kafka发送消息用了sendfile，效率更高，因为少了一次页缓存到Socket缓冲中的拷贝。</p>
+<p>RocketMQ默认把消息拷贝到堆内缓冲中再发送，也可以不经过堆，通过MapedBuffer发送到Socket缓冲，不是真正的零拷贝。</p>
+<p>缺页中断：要访问的页不在主存，操作系统需要将其调入主存后再访问，此时被内存映射的文件实际是分页交换文件。</p>
+<p>RocketMQ用文件预分配和文件预热（每页写入一个0字节）减少大文件mmap因为缺页中断的性能问题。</p>
+<p>高可用实现：</p>
+<ul>
+<li>多副本。</li>
+</ul>
+<p>高可靠实现：</p>
+<ul>
+<li><p>request.required.acks = -1；</p>
+</li>
+<li><p>replication.factor &gt;= 2；</p>
+</li>
+<li><p>min.insync.replicas &gt;= 2；</p>
+</li>
+<li><p>同步（默认）的发送模式，不会丢失数据。</p>
+<ul>
+<li><p>发送到Leader，ISR全部同步后，Leader宕机，会选举出新的Leader，数据不会丢失。</p>
+</li>
+<li><p>发送到Leader，部分ISR同步后，Leader宕机，Producer端返回异常，如果重发消息，可能会重复。</p>
+</li>
+</ul>
+</li>
+<li><p>消费端手动提交位移，如果消息没有被成功消费，就不能提交所对应的消费位移。</p>
+</li>
+</ul>
+<hr>
+<p>MQ选型要点：</p>
+<p>功能维度：</p>
+<ul>
+<li><p>优先队列：优先级高的消息优先被消费（消息堆积的情况下）。</p>
+</li>
+<li><p>延时队列：Kafka并不原生具备延时队列。<br>延时消息的套路是，不是先投递到要发送的真实Topic中，而是先投递到内部的Topic，这些内部Topic对用户不可见，然后通过一个服务将满足条件的消息再投递到真实的Topic中，最后可见。<br>一般按照不同的延时等级划分，比如设定5s、10s等，消息按延时等级投递到不同等级的Topic中，火箭就是这么做的（其实是可以实现任意精度的延迟的，并且开销可以接受）。<br>对不同延时级别的Topic，有单独的线程来进行消息的拉取，以及单独的队列进行消息的暂存，还有单独的发送线程获取DelayQueue的消息并转发到真实的Topic中。</p>
+</li>
+</ul>
+<ul>
+<li><p>重试队列：消息消费失败可重试。<br>重试队列可以看作一种回退队列，消费端消费消息失败时，为了防止消息丢失而重新将消息回滚到Broker。<br>重试队列一般分成多个重试等级，每个重试等级一般也会设置重新投递延时，重试次数越多投递延时就越大。<br>为每个Topic设置重试队列，消息第一次消费失败入重试队列Q1，Q1的重新投递延时为5s，5s后重新投递。<br>如果消息再次消费失败则入重试队列Q2，Q2的重新投递延时为10s，10s过后再次投递该消息。</p>
+</li>
+<li><p>死信队列：Kafka中无死信的概念。<br>死信可以看作Consumer不能处理，不想处理，不符合处理要求的消息，超过重试次数后，为了消息的可靠性而不随意丢弃，故投递到死信队列中。<br>设置一个Topic作为死信队列，超过投递次数就进入死信队列。<br>重试队列与延时队列有相同的地方，都需要设置延时级别。</p>
+</li>
+</ul>
+<ul>
+<li>消费模式：推和拉模式。</li>
+</ul>
+<ul>
+<li>广播消费：点对点和发布订阅。<br>RabbitMQ是典型的点对点，Kafka是典型的发布订阅模式。<br>RabbitMQ可以通过设置交换器类型来实现发布订阅模式，Kafka也能以点对点的形式消费。</li>
+</ul>
+<ul>
+<li>回溯消费：消息在消费完成之后，还能消费之前被消费的消息。</li>
+</ul>
+<ul>
+<li>消息堆积和持久化：流量削峰得益于其消息堆积能力。<br>消息堆积分内存式堆积和磁盘式堆积。<br>RabbitMQ是典型的内存式堆积，但会将内存中的消息换页到磁盘，或者使用惰性队列将消息直接持久化至磁盘。<br>Linux使用磁盘的一部分作为swap分区，把当前非活跃进程调入swap分区，把内存空出来让给活跃的进程。<br>应当尽量避免这种内存交换。<br>Kafka是典型的磁盘式堆积，所有消息都存储在磁盘中。</li>
+</ul>
+<ul>
+<li><p>消息轨迹：<br>消息轨迹指的是消息从Producer发出，经由Broker存储，再到Consumer消费的整个过程中，各个相关节点的数据汇聚而成的完整链路信息。<br>Producer、Broker、Consumer在处理消息的过程中都会在链路中增加相应的信息，为故障排除提供支持。<br>常见的实现方式是封装客户端，实现埋点逻辑。<br>可以将轨迹信息保存到Kafka的某个Topic中，Producer在将消息发送到用户Topic后（或者Consumer在拉取到消息消费之后）会将轨迹信息发送到轨迹Topic中。</p>
+</li>
+<li><p>消息审计：<br>消息审计是指在消息生产、存储和消费的过程之间对消息个数及延迟的审计，检测是否有数据丢失、重复、端到端的延迟等。<br>主要通过在消息体或在消息头中内嵌消息对应的时间戳或全局的唯一标识来实现。</p>
+</li>
+<li><p>消息过滤：Kafka可以通过客户端的ConsumerInterceptor接口进行消息过滤。</p>
+</li>
+<li><p>多租户：RabbitMQ的vhost。</p>
+</li>
+<li><p>多协议支持：AMQP、MQTT等。</p>
+</li>
+<li><p>跨语言支持：</p>
+</li>
+<li><p>流量控制：针对发送方和接收方速度不匹配的问题。</p>
+</li>
+</ul>
+<ul>
+<li><p>消息顺序性：<br>Kafka支持单分区级别的顺序性。<br>RabbitMQ顺序性需要单线程发送、单线程消费并且不采用延迟队列、优先级队列等，对于发送到队列或者交换器上的消息，不保证顺序。<br>发布到一个通道上的消息，用一个交换器和一个队列以及一个出口通道来传递，那么最终会按照发送的顺序接收到。<br>一旦有多个Consumer从同一个队列中读取消息，消息的处理顺序就没法保证，比如消息被重新放回队列。</p>
+</li>
+<li><p>安全机制：身份认证和权限控制。</p>
+</li>
+</ul>
+<ul>
+<li>消息幂等性：<br>Kafka支持单个Producer单分区单会话的幂等性。<br>RabbitMQ不支持。<br>可能Consumer消费完一条消息之后没有来得及确认消息就发生异常，恢复后又重新消费，这是无法由消息中间件来保证的。<br>如果要保证全局的幂等，那么需要引入外部资源，比如以订单号作为唯一性标识，并且在下游设置一个去重表。</li>
+</ul>
+<ul>
+<li>事务性消息：Kafka和RabbitMQ都支持，两者的事务是指Producer发送消息的事务，要么发送成功，要么发送失败。</li>
+</ul>
+<p>性能维度：消息中间件的性能一般是指其吞吐量。</p>
+<p>可靠性和可用性：</p>
+<p>Kafka采用的是类似PacificA的一致性协议，保证多副本之间的同步，并且支持强一致性语义（通过acks实现）。</p>
+<p>RabbitMQ是通过镜像环形队列实现多副本及强一致性语义的。</p>
+<p>运维管理：申请、审核、监控、告警、管理、容灾、部署等。</p>
+<p>社区力度及生态发展：</p>
+<hr>
+<p>RabbitMQ是用Erlang语言实现的AMQP协议的消息中间件。</p>
+<p>Kafka是由Scala语言开发的一个分布式、多分区、多副本且基于ZooKeeper协调的分布式消息系统。</p>
+<p>它是高吞吐量的分布式发布订阅消息系统，以可水平扩展和高吞吐率而被广泛使用。</p>
+<p>许多开源分布式处理系统如Apache Storm、Spark、Flink等都支持与Kafka集成。</p>
+<hr>
+<p>MQ场景：</p>
+<p>异步解耦，基于发布订阅，对分布式应用进行异步解耦，增加应用的水平扩展能力。</p>
+<p>流量削峰，流量洪流突然来袭时，可以缓冲突发流量，避免下游因突发流量崩溃。</p>
+<p>日志监控，作为重要日志的监控通信管道，将应用日志监控对系统性能影响降到最低。</p>
+<p>消息推送，提供点对点推送，一对多广播式推送的能力。</p>
+<hr>
+<p>原书作者提供的一些面试题：</p>
+<ul>
+<li><p>Kafka的用途有哪些？使用场景如何？</p>
+</li>
+<li><p>Kafka中的ISR、AR又代表什么？ISR的伸缩又指什么？</p>
+</li>
+<li><p>Kafka中的HW、LEO、LSO、LW等分别代表什么？</p>
+</li>
+<li><p>Kafka中是怎么体现消息顺序性的？</p>
+</li>
+<li><p>Kafka中的分区器、序列化器、拦截器？它们之间的处理顺序是什么？</p>
+</li>
+<li><p>KafkaProducer客户端的整体结构是什么样子的？</p>
+</li>
+<li><p>KafkaProducer客户端中使用了几个线程来处理？分别是什么？</p>
+</li>
+<li><p>Kafka的旧版Scala的Consumer客户端的设计有什么缺陷？</p>
+</li>
+<li><p>有哪些情形会造成重复消费？</p>
+</li>
+<li><p>那些情景下会造成消息漏消费？</p>
+</li>
+<li><p>KafkaConsumer是非线程安全的，那么怎么样实现多线程消费？</p>
+</li>
+<li><p>Consumer与消费组之间的关系？</p>
+</li>
+<li><p>使用kafka-topics.sh创建（删除）了一个Topic之后，Kafka背后会执行什么逻辑？</p>
+</li>
+<li><p>Topic的分区数可不可以增加？如果可以怎么增加？如果不可以，为什么？</p>
+</li>
+<li><p>Topic的分区数可不可以减少？如果可以怎么减少？如果不可以，为什么？</p>
+</li>
+<li><p>创建Topic时如何选择合适的分区数？</p>
+</li>
+<li><p>Kafka目前有那些内部Topic，各自的作用又是什么？</p>
+</li>
+<li><p>优先副本是什么？它有什么特殊的作用？</p>
+</li>
+<li><p>Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理?</p>
+</li>
+<li><p>Kafka的日志目录结构?</p>
+</li>
+<li><p>Kafka中有那些索引文件？</p>
+</li>
+<li><p>指定了一个offset，Kafka怎么查找到对应的消息？</p>
+</li>
+<li><p>指定了一个timestamp，Kafka怎么查找到对应的消息？</p>
+</li>
+<li><p>对Kafka的Log Retention的理解？</p>
+</li>
+<li><p>对Kafka的Log Compaction的理解？</p>
+</li>
+<li><p>对Kafka底层存储的理解（页缓存、内核层、块层、设备层）？</p>
+</li>
+<li><p>Kafka的延时操作的原理？</p>
+</li>
+<li><p>Kafka控制器的作用？</p>
+</li>
+<li><p>消费再均衡的原理是什么？（Consumer协调器和消费组协调器）</p>
+</li>
+<li><p>Kafka中的幂等是怎么实现的？</p>
+</li>
+<li><p>Kafka中的事务是怎么实现的？</p>
+</li>
+<li><p>Kafka中有那些地方需要选举？这些地方的选举策略又有哪些？</p>
+</li>
+<li><p>失效副本是指什么？有那些应对措施？</p>
+</li>
+<li><p>多副本下，各个副本中的HW和LEO的演变过程？</p>
+</li>
+<li><p>为什么Kafka不支持读写分离？</p>
+</li>
+<li><p>Kafka在可靠性方面做了哪些改进？（HW, LeaderEpoch）</p>
+</li>
+<li><p>Kafka中怎么实现死信队列和重试队列？</p>
+</li>
+<li><p>Kafka中的延迟队列怎么实现？</p>
+</li>
+<li><p>Kafka中怎么做消息审计？</p>
+</li>
+<li><p>Kafka中怎么做消息轨迹？</p>
+</li>
+<li><p>Kafka中有那些配置参数比较有意思？</p>
+</li>
+<li><p>Kafka有哪些指标需要着重关注？</p>
+</li>
+<li><p>怎么计算Lag？(注意隔离级别的不同)</p>
+</li>
+<li><p>Kafka的那些设计让它有如此高的性能？</p>
+</li>
+<li><p>Kafka有什么优缺点？</p>
+</li>
+<li><p>为什么选择Kafka?</p>
+</li>
+<li><p>怎么样才能确保Kafka极大程度上的可靠性？</p>
+</li>
+</ul>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

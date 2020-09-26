@@ -13,18 +13,18 @@
     
     
     <meta name="description"
-        content="参考1参考2
-06-25补充
+        content="参考1参考2参考3参考4
+
 IO
 
-基于流(Stream oriented)，面向字节流或字符流，顺序地从一个流中读取一个或多个字节，不能随意改变位置，同一个流仅支持读或写；
+基于流(Stream Oriented)，面向字节流或字符流，顺序地从一个流中读取一个或多个字节，不能随意改变位置，同一个流仅支持读或写；
 
-阻塞，比如读取一个文件的内容，线程会被阻塞直到操作完成。
+阻塞，读取一个文件的内容，线程会被阻塞直到操作完成。
 
 
 NIO
 
-基于缓冲区(Buffer oriented)，从">
+基于缓冲区(Buffer Oriented)，从Cha">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -97,52 +97,67 @@ NIO
 				</div>
 				
 				<div class="article-content">
-				<p><a href="https://www.cnblogs.com/fwnboke/p/8529604.html" target="_blank" rel="noopener">参考1</a><br><a href="http://tutorials.jenkov.com/java-nio/index.html" target="_blank" rel="noopener">参考2</a></p>
-<p><strong>06-25补充</strong></p>
+				<p><a href="https://www.cnblogs.com/fwnboke/p/8529604.html" target="_blank" rel="noopener">参考1</a><br><a href="http://tutorials.jenkov.com/java-nio/index.html" target="_blank" rel="noopener">参考2</a><br><a href="https://tech.meituan.com/2016/11/04/nio.html" target="_blank" rel="noopener">参考3</a><br><a href="http://matt33.com/2017/08/06/unix-io/" target="_blank" rel="noopener">参考4</a></p>
+<hr>
 <p>IO</p>
 <ul>
-<li><p>基于流(Stream oriented)，面向字节流或字符流，顺序地从一个流中读取一个或多个字节，不能随意改变位置，同一个流仅支持读或写；</p>
+<li><p>基于流(Stream Oriented)，面向字节流或字符流，顺序地从一个流中读取一个或多个字节，不能随意改变位置，同一个流仅支持读或写；</p>
 </li>
-<li><p>阻塞，比如读取一个文件的内容，线程会被阻塞直到操作完成。</p>
+<li><p>阻塞，读取一个文件的内容，线程会被阻塞直到操作完成。</p>
 </li>
 </ul>
 <p>NIO</p>
 <ul>
-<li><p>基于缓冲区(Buffer oriented)，从Channel中读取数据到Buffer中，或将数据从Buffer中写入到Channel，可以读写任意位置的数据；</p>
+<li><p>基于缓冲区(Buffer Oriented)，从Channel中读取数据到Buffer中，或将数据从Buffer中写入到Channel，可以读写任意位置的数据；</p>
 </li>
-<li><p>非阻塞，比如从网络中读取数据，在非阻塞模式中，如果此时有数据，则读取并返回，如果此时没有数据，则直接返回，不阻塞当前线程（支持非阻塞读写）；</p>
+<li><p>非阻塞，比如从网络中读取数据，在非阻塞模式中，如果此时有数据，则读取并返回，如果此时没有数据，则直接返回，不阻塞当前线程；</p>
 </li>
-<li><p>引入Selector，一个线程可以监听多个Channel的IO事件，当向一个Selector中注册了Channel后，Selector自动select注册的Channel是否有已就绪的IO事件(可读，可写，网络连接完成等)。</p>
+<li><p>引入Selector，一个线程可以监听多个Channel的IO事件，当向一个Selector中注册了Channel后，Selector自动select注册的Channel是否有已就绪的IO事件。</p>
 </li>
 </ul>
+<p>NIO核心：</p>
+<ul>
+<li>Channel</li>
+<li>Buffer</li>
+<li>Selector</li>
+</ul>
+<p>NIO带来了：</p>
+<ul>
+<li>事件驱动模型</li>
+<li>避免多线程</li>
+<li>单线程处理多任务</li>
+<li>非阻塞I/O，I/O读写不再阻塞，而是返回0</li>
+<li>基于Block的传输，通常比基于流的传输更高效</li>
+<li>更高级的IO函数，零拷贝</li>
+<li>IO多路复用大大提高了Java网络应用的可伸缩性和实用性</li>
+</ul>
+<hr>
+<p>对于NIO，Buffer可以使用DirectByteBuffer和HeapByteBuffer。</p>
+<p>使用了DirectByteBuffer，一般可以减少一次系统空间到用户空间的拷贝。</p>
+<p>但DirectByteBuffer创建和销毁的成本更高，更不宜维护，通常会用内存池来提高性能。</p>
+<p>如果数据量比较小，可以考虑使用HeapByteBuffer，反之可以用DirectByteBuffer。</p>
+<hr>
 <ul>
 <li><p>如果要管理同时打开的多个连接，这些连接每次只发送少量数据，如IM服务器，NIO比较合适。</p>
 </li>
 <li><p>如果要维持多个打开的连接到其他主机，如P2P网络，使用单线程管理所有出站连接，可能比较好。</p>
 </li>
 </ul>
-<p>核心：</p>
-<ul>
-<li>Channel</li>
-<li>Buffer</li>
-<li>Selector</li>
-</ul>
 <hr>
 <ul>
-<li><p>同步：如果有多个任务或事件要发生，串行执行；</p>
+<li><p>同步：多个任务或事件要发生，串行执行；</p>
 </li>
-<li><p>异步：如果有多个任务或事件要发生，并行执行，一个事件或任务的执行不会导致整个流程等待。</p>
+<li><p>异步：多个任务或事件要发生，并行执行，一个事件或任务的执行不会导致整个流程等待。</p>
 </li>
-<li><p>阻塞：某个事件或任务在执行过程中，发出一个请求，如果该请求需要的条件不满足，就一直等待至条件满足；</p>
+<li><p>阻塞：事件或任务在执行过程中，发出一个请求，如果请求需要的条件不满足，就一直等待至条件满足；</p>
 </li>
-<li><p>非阻塞：某个事件或任务在执行过程中，发出一个请求，如果该请求需要的条件不满足，立即返回一个标志信息告知条件不满足。</p>
+<li><p>非阻塞：事件或任务在执行过程中，发出一个请求，如果请求需要的条件不满足，立即返回一个标志信息告知条件不满足。</p>
 </li>
 </ul>
-<p>通常IO操作包括：对硬盘的读写、对Socket的读写以及外设的读写。</p>
+<p>通常IO操作包括：对磁盘的读写、对Socket的读写。</p>
 <p>当用户线程发起一个IO请求操作，内核先查看要读取的数据是否就绪。</p>
-<p>对于阻塞IO来说，如果数据没有就绪，则会一直在那等待，直到数据就绪；</p>
+<p>对于阻塞IO来说，如果数据没有就绪，则会一直等待，直到数据就绪；</p>
 <p>对于非阻塞IO来说，如果数据没有就绪，则会返回一个标志信息告知用户线程当前要读的数据没有就绪。</p>
-<p>数据就绪之后，将数据拷贝到用户线程，一个完整的IO读请求操作完成。</p>
 <p>一个完整的IO读请求操作包括两个阶段：</p>
 <ul>
 <li><p>查看数据是否就绪；</p>
@@ -151,25 +166,47 @@ NIO
 </li>
 </ul>
 <p>阻塞（Blocking IO）和非阻塞（Non-Blocking IO）的区别在于第一个阶段，如果数据没有就绪，在查看数据是否就绪的过程中是一直等待，还是直接返回一个标志信息。</p>
-<p>Java中传统的IO都是阻塞IO，比如通过Socket来读数据，调用read()方法之后，如果数据没有就绪，当前线程就会一直阻塞，直到有数据才返回；如果是非阻塞IO的话，当数据没有就绪，read()方法应该返回一个标志信息，告知当前线程数据没有就绪，而不是一直等待。</p>
 <ul>
 <li><p>同步IO：用户线程请求IO操作，如果数据没有就绪，用户线程或者内核不断轮询数据是否就绪，当数据就绪时，再将数据从内核拷贝到用户线程，在IO操作完成之前，该线程会被阻塞；</p>
 </li>
 <li><p>异步IO：用户线程请求IO操作，IO操作的两个阶段都由内核完成，然后发送通知告知用户线程IO操作已经完成，不会导致请求线程被阻塞。</p>
 </li>
 </ul>
-<p>同步IO和异步IO的关键在数据拷贝阶段是由用户线程完成还是内核完成，所以说异步IO必须要操作系统支持。</p>
-<p>阻塞IO和非阻塞IO反映在当用户请求IO操作时，如果数据没有就绪，用户线程是一直等待数据就绪，还是收到一个标志信息。即反映在IO操作的第一个阶段，在查看数据是否就绪时是如何处理的。</p>
+<p>同步IO和异步IO的关键在数据拷贝阶段是由用户线程完成还是内核完成，所以异步IO必须要操作系统支持。</p>
+<p>阻塞IO和非阻塞IO反映在当用户请求IO操作时，如果数据没有就绪，用户线程是一直等待数据就绪，还是收到一个标志信息。</p>
+<p>即反映在IO操作的第一个阶段，在查看数据是否就绪时是如何处理的。</p>
+<hr>
+<p>用户空间与内核空间、内核态与用户态：</p>
+<p>操作系统采用虚拟存储器，对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。</p>
+<p>为了保证用户进程不能直接操作内核，保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。</p>
+<p>针对Linux系统而言（以32位操作系统为例）：</p>
+<p>将最高的1G字节（从虚拟地址 0xC0000000 ~ 0xFFFFFFFF），供内核使用，称为内核空间。</p>
+<p>将较低的3G字节（从虚拟地址 0x00000000 ~ 0xBFFFFFFF），供进程使用，称为用户空间。</p>
+<p>每个进程可以通过系统调用进入内核，因此，内核由系统内的所有进程共享。</p>
+<p>于是从具体进程的角度，每个进程可以拥有4G字节的虚拟空间。</p>
+<p>当一个进程执行系统调用而陷入内核代码中执行时，称进程处于内核运行态（内核态）。</p>
+<p>当进程处于内核态时，执行的内核代码会使用当前进程的内核栈，每个进程都有自己的内核栈。</p>
+<p>当进程在执行用户自己的代码时，则称其处于用户运行态（用户态）。</p>
+<p>当正在执行用户程序而突然被中断程序中断时，此时用户程序也可以象征性地称为处于进程的内核态。</p>
+<p>因为中断处理程序将使用当前进程的内核栈。</p>
+<hr>
+<p>上下文切换</p>
+<p>当一个进程在执行时，CPU的所有寄存器中的值、进程的状态以及堆栈中的内容被称为该进程的上下文。</p>
+<p>当内核需要切换到另一个进程时，它需要保存当前进程的所有状态，即保存当前进程的上下文，以便在再次执行该进程时，以切换时的状态执行下去。</p>
 <hr>
 <p>五种IO模型：阻塞IO、非阻塞IO、多路复用IO、信号驱动IO、异步IO。</p>
 <ul>
 <li>阻塞IO模型</li>
 </ul>
-<p>用户线程发出IO请求后，内核查看数据是否就绪，如果没有就绪就等待数据就绪，而用户线程会处于阻塞状态。当就绪之后，内核将数据拷贝到用户线程，并返回结果给用户线程，用户线程才解除阻塞。</p>
+<p>用户线程发出IO请求后，内核查看数据是否就绪，如果没有就绪就等待数据就绪，用户线程处于阻塞状态。</p>
+<p>当就绪之后，内核将数据拷贝到用户线程，并返回结果给用户线程，用户线程才解除阻塞。</p>
 <pre><code>data = socket.read();</code></pre><ul>
 <li>非阻塞IO模型</li>
 </ul>
-<p>用户线程发出IO请求后，马上就得到一个结果标志。如果数据还没有准备好，它可以再次发出IO请求。一旦内核中的数据准备好了，并且再次收到了用户线程的请求，那就将数据拷贝到用户线程，然后返回。用户线程需要不断轮询内核数据是否就绪，也就是会一直占用CPU。</p>
+<p>用户线程发出IO请求后，马上就得到一个结果标志。</p>
+<p>如果数据还没有准备好，它可以再次发出IO请求。</p>
+<p>一旦内核中的数据准备好了，并且再次收到了用户线程的请求，那就将数据拷贝到用户线程，然后返回。</p>
+<p>用户线程需要不断轮询内核数据是否就绪，也就是会一直占用CPU。</p>
 <pre class=" language-java"><code class="language-java"><span class="token keyword">while</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
     data <span class="token operator">=</span> socket<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">if</span><span class="token punctuation">(</span>data <span class="token operator">!=</span> error<span class="token punctuation">)</span><span class="token punctuation">{</span>
@@ -180,7 +217,11 @@ NIO
 <ul>
 <li>多路复用IO模型</li>
 </ul>
-<p>Java NIO实际上是多路复用IO。<br>有一个线程不断去轮询多个Socket的状态，只有当Socket真正有读写事件时，才真正调用实际的IO读写操作。只需要一个线程就可以管理多个Socket，并且只有在真正有Socket读写事件进行时，才会使用IO资源。Java NIO中，通过Selector#select查询每个通道是否有事件，如果没有则阻塞。在非阻塞IO中，轮询Socket状态是用户线程进行的，在多路复用IO中，是内核进行，效率要高的多。</p>
+<p>NIO实际上是多路复用IO。</p>
+<p>有一个线程不断去轮询多个Socket的状态，只有当Socket真正有读写事件时，才真正调用实际的IO读写操作。</p>
+<p>只需要一个线程就可以管理多个Socket，并且只有在真正有Socket读写事件进行时，才会使用IO资源。</p>
+<p>NIO中，通过Selector#select查询每个通道是否有事件，如果没有则阻塞。</p>
+<p>在非阻塞IO中，轮询Socket状态是用户线程进行的，在多路复用IO中，是内核进行，效率要高的多。</p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">//  事先调用epoll_ctl注册感兴趣的事件到epollfd</span>
 <span class="token keyword">while</span> <span class="token boolean">true</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// 返回触发注册事件的流</span>
@@ -197,13 +238,42 @@ NIO
 <ul>
 <li>异步IO模型</li>
 </ul>
-<p>用户线程发起IO请求后，立刻可以继续其它的事。内核收到异步请求后，立刻返回，不会阻塞用户线程。内核等待数据准备完成，然后将数据拷贝到用户线程，一切完成后，内核给用户线程发送一个信号，通知操作完成。用户线程不需要关心整个IO操作，只要先发起一个请求，当接收内核返回的成功信号就可以直接使用数据。在异步IO模型中，IO操作的两个阶段都不会阻塞用户线程，都是由内核自动完成，在信号驱动模型中，当用户线程接收到信号表示数据已经就绪，然后需要用户线程调用IO函数进行实际的读写操作；而在异步IO模型中，收到信号表示IO操作已经完成，不需要用户线程操作。异步IO需要操作系统的底层支持，Java 7提供了Asynchronous IO。前面四种IO模型都属于同步IO，因为无论是多路复用IO还是信号驱动模型，IO操作的第二个阶段（内核进行数据拷贝）都会引起用户线程阻塞。</p>
+<p>用户线程发起IO请求后，立刻可以继续其它的事。</p>
+<p>内核收到异步请求后，立刻返回，不会阻塞用户线程。</p>
+<p>内核等待数据准备完成，然后将数据拷贝到用户线程，一切完成后，内核给用户线程发送一个信号，通知操作完成。</p>
+<p>用户线程不需要关心整个IO操作，只要先发起一个请求，当接收内核返回的成功信号就可以直接使用数据。</p>
+<p>在异步IO模型中，IO操作的两个阶段都不会阻塞用户线程，都是由内核自动完成。</p>
+<p>在信号驱动模型中，当用户线程接收到信号表示数据已经就绪，然后需要用户线程调用IO函数进行实际的读写操作；</p>
+<p>而在异步IO模型中，收到信号表示IO操作已经完成，不需要用户线程操作。</p>
+<p>异步IO需要操作系统的底层支持，Java7提供了Asynchronous IO。</p>
+<p>前面四种IO模型都属于同步IO，因为无论是多路复用IO还是信号驱动模型，IO操作的第二个阶段（内核进行数据拷贝）都会引起用户线程阻塞。</p>
 <hr>
 <ul>
-<li><p>Reactor模式：先对每个Client注册感兴趣的事件，然后有一个线程专门去轮询每个Client是否有事件发生，当有事件发生时，便顺序处理每个事件，当所有事件处理完之后，便继续下一轮轮询。多路复用IO就是采用Reactor模式。为了提高事件处理速度，可以通过多线程或者线程池的方式来处理事件。</p>
+<li><p>Reactor模式：<br>先对每个Client注册感兴趣的事件，然后有一个线程专门去轮询每个Client是否有事件发生，当有事件发生时，便顺序处理每个事件。<br>当所有事件处理完之后，便继续下一轮轮询。<br>多路复用IO就是采用Reactor模式。<br>为了提高事件处理速度，可以通过多线程或者线程池的方式来处理事件。</p>
 </li>
-<li><p>Proactor模式：当检测到有事件发生时，会新起一个异步操作，然后交由内核线程去处理，当内核线程完成IO操作之后，发送一个通知告知操作已完成。异步IO模型采用的就是Proactor模式。</p>
+<li><p>Proactor模式：<br>当检测到有事件发生时，会新起一个异步操作，然后交由内核线程去处理，当内核线程完成IO操作之后，发送一个通知告知操作已完成。<br>异步IO模型采用的就是Proactor模式。</p>
 </li>
+</ul>
+<hr>
+<p>文件描述符（file descriptor，fd）:</p>
+<p>形式上是一个非负整数，实际上是一个索引值，指向内核为每个进程维护的该进程打开文件的记录表。</p>
+<p>文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。</p>
+<p>当程序打开或创建一个文件时，内核向进程返回一个文件描述符。</p>
+<p>Linux内核将所有的外部设备都当做文件来进行操作，而对一个文件的读写操作会返回一个文件描述符，对Socket的读写也会有相应的描述符。</p>
+<p>描述符就是一个数字，它指向内核中的一个结构体（文件路径、数据区等一些属性）。</p>
+<hr>
+<p>Linux的IO多路复用模型</p>
+<p>IO多路复用通过把多个IO阻塞复用到同一个select的阻塞上，使得在单线程的情况下，可以同时处理多个请求，节省了系统资源。</p>
+<p>一个进程可以监视多个文件描述符，一旦某个文件描述符就绪，能够通知程序进行相应的读写操作。</p>
+<p>select，poll，epoll都是IO多路复用的机制，但本质上都是同步IO。</p>
+<ul>
+<li>select<br>select函数监视的fd分3类，分别是writefds、readfds、和exceptfds。<br>select函数会阻塞，直到有fd就绪，或者超时，函数返回。<br>select函数返回后，通过遍历fdset，来找到就绪的fd。<br>本质是通过设置或者检查存放fd标志位的数据结构，但是单个进程打开的fd是有限制的，能监听端口有限。<br>select仅仅知道有I/O事件发生了，却不知道是哪几个，只能无差别轮询，时间复杂度O(n)。</li>
+</ul>
+<ul>
+<li>poll<br>poll本质上和select没有区别。<br>查询每个fd对应的状态，如果就绪则在等待队列中加入一项并继续遍历。<br>如果遍历完所有fd后没有发现就绪设备，则挂起当前进程，直到就绪或者超时，被唤醒后又要再次遍历fd。<br>这个过程经历了多次无谓的遍历，时间复杂度O(n)。<br>它没有最大连接数的限制，原因是它是基于链表来存储的。<br>还有一个特点是水平触发，如果报告了fd后，没有被处理，下次poll时会再次报告该fd。</li>
+</ul>
+<ul>
+<li>epoll<br>epoll支持水平触发和边缘触发。<br>边缘触发只告诉进程哪些fd变为就绪态，并且只会通知一次。<br>epoll使用事件的就绪通知方式，通过epoll_ctl注册fd，一旦该fd就绪，内核就会采用类似回调机制来激活该fd，epoll_wait便可以收到通知。<br>epoll实际上是事件驱动，时间复杂度O(1)<br>没有最大连接数的限制。<br>epoll对fd的操作有两种模式：LT（level trigger）和ET（edge trigger），默认LT模式。<br>LT模式：当epoll_wait检测到fd事件发生并将此事件通知应用程序，应用可以不立即处理该事件，下次epoll_wait时，会再次响应应用程序并通知此事件。<br>ET模式：当epoll_wait检测到fd事件发生并将此事件通知应用程序，应用必须立即处理该事件，如果不处理，下次epoll_wait时，不会再次响应应用程序并通知此事件。</li>
 </ul>
 
 				</div>
