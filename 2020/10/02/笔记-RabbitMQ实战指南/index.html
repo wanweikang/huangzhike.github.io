@@ -1,0 +1,641 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-RabbitMQ实战指南 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="基于《RabbitMQ实战指南》朱忠华 著整理的读书笔记，基于3.6.x版本，目前最新的Release是3.8.9。
+作者的博客。
+目前公司使用的是RabbitMQ，个人不太喜欢（Erlang，黑盒子）。
+所以得好好了解才行。
+看完感觉RabbitMQ就是挺不智能的，需要运维人工介入的情况比较多，还">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-RabbitMQ实战指南" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-RabbitMQ实战指南</h2>
+				
+				<div>
+					<div class="post-time">2020-10-02</div>
+				</div>
+				
+				<div class="article-content">
+				<p>基于<strong><a href="https://book.douban.com/subject/27591386/" target="_blank" rel="noopener">《RabbitMQ实战指南》朱忠华 著</a></strong>整理的读书笔记，基于3.6.x版本，目前最新的Release是3.8.9。</p>
+<p>作者的<a href="https://honeypps.com/about/me/" target="_blank" rel="noopener">博客</a>。</p>
+<p>目前公司使用的是RabbitMQ，个人不太喜欢（Erlang，黑盒子）。</p>
+<p><del>所以得好好了解才行。</del></p>
+<p>看完感觉RabbitMQ就是挺不智能的，需要运维人工介入的情况比较多，还有重启顺序，简直要吐。</p>
+<p><del>小手一抖，又是一个生产事故。</del></p>
+<p>听说RabbitMQ很稳，金融场景应用比较多，有点疑惑，没发觉比别的MQ稳？</p>
+<p>虽说局域网下网络分区可能性不大，不过发生了的话处理非常麻烦<del>（交给运维了）</del>。</p>
+<p>而且即使是持久化的消息，消费后就会被删除（不管是标记删除还是怎样），怎么做消息回溯？</p>
+<p><del>虽然甲虫和火箭也有可能删除日志。</del></p>
+<p>死信和延迟队列倒是挺方便的。</p>
+<hr>
+<p>高级消息队列协议（Advanced Message Queuing Protocol，AMQP）是为面向消息的中间件设计的应用层协议的一个开放标准。</p>
+<p>RabbitMQ是开源的AMQP实现，服务端用Erlang语言编写，支持多种语言客户端。</p>
+<p>Connection封装了Socket相关逻辑，代表一个TCP连接。</p>
+<p>ConnectionFactory为Connection的制造工厂。</p>
+<p>Channel，信道是建立在Connection上的虚拟连接，每条AMQP指令都是通过信道完成的。</p>
+<p>包括定义Queue、定义Exchange、绑定Queue与Exchange、发布消息等。</p>
+<p>Connection可以用来创建多个Channel实例，但Channel实例不能在线程间共享。</p>
+<hr>
+<p>Exchange</p>
+<p>生产者将消息发送到交换器Exchange，由Exchange将消息路由到一个或多个Queue中（或丢弃，或返回给生产者，mandatory参数）。</p>
+<p>Exchange四种类型：</p>
+<ul>
+<li><p>fanout：把消息路由到所有与它绑定的Queue中。</p>
+</li>
+<li><p>direct：把消息路由到BindingKey与RoutingKey完全匹配的Queue中。</p>
+</li>
+<li><p>topic：把消息路由到BindingKey与RoutingKey匹配规则的Queue中。</p>
+</li>
+<li><p>headers：把消息路由到消息的headers属性匹配的Queue中。</p>
+</li>
+</ul>
+<p>Binding</p>
+<p>通过Binding将Exchange与Queue关联。</p>
+<p>在绑定（Binding）Exchange与Queue同时，一般指定一个BindingKey。</p>
+<p>消费者将消息发送给Exchange时，一般会指定一个RoutingKey。</p>
+<p>当BindingKey与RoutingKey匹配时，消息将会被路由到对应的Queue中。</p>
+<p>Queue</p>
+<p>消息存储在Queue中。</p>
+<p>多个消费者可以订阅同一个Queue，Queue的消息会被轮询分摊给多个消费者，而不是每个消费者都收到所有的消息。</p>
+<p>RabbitMQ不支持队列层面的广播消费。</p>
+<p>官方建议，生产者和消费者都应该尝试创建（声明）队列。</p>
+<hr>
+<p>多租户与权限</p>
+<p>虚拟主机（virtual host），简称vhost。</p>
+<p>vhost是逻辑上独立的，拥有独立的队列、交换器以、绑定关系等，权限控制以vhost为单位。</p>
+<p>vhost是AMQP的基础，客户端连接的时候必须指定vhost，RabbitMQ默认的vhost为“/”。</p>
+<p>Policy是vhost级别的配置，可以配置Federation、镜像、备份交换器、死信等功能。</p>
+<hr>
+<p>RPC</p>
+<p>MQ是基于异步的消息处理，生产者将消息发送到RabbitMQ后不知道消费者处理成功或失败。</p>
+<p>有时候需要一些同步处理，RabbitMQ基于回调队列实现RPC：</p>
+<p>生产者发送消息时，在消息的MessageProperties中设置两个值replyTo和correlationId。</p>
+<ul>
+<li><p>replyTo：回调队列，消费完后将通知发送到这个队列中。</p>
+</li>
+<li><p>correlationId：请求的唯一标识，据此判断消费结果。</p>
+</li>
+</ul>
+<p>消费者处理完消息后，生成一条应答消息到replyTo指定的Queue，同时带上correlationId。</p>
+<p>生产者已订阅replyTo指定的Queue，收到应答消息后，根据correlationId进行处理。</p>
+<hr>
+<p>AMQP协议为消息预定义了一些Message Properties，常用的有：</p>
+<ul>
+<li><p>deliveryMode：消息传递模式，2为持久化，其他为瞬态。</p>
+</li>
+<li><p>contentType：内容类型。</p>
+</li>
+<li><p>replyTo：回调队列。</p>
+</li>
+<li><p>correlationId：关联ID。</p>
+</li>
+</ul>
+<hr>
+<p>RabbitMQ的消费模式支持Push和Pull。</p>
+<ul>
+<li>Push</li>
+</ul>
+<p>对应Basic.Consume，Broker端主动向Client端发送数据。</p>
+<p>RabbitMQ默认按取余的方式将一个队列的消息轮询发送给多个消费者，不管消费者是否消费并确认（Basic.Ack）。</p>
+<p>可能因为消费者处理消息的速度不一样，造成消费者负载不均衡，整体应用吞吐量下降。</p>
+<p>可以通过Channel#basicQos设置prefetchCount，限制Queue每次发送给每个消费者的消息数，处理完后Queue再给该消费者发送消息。</p>
+<p>Channel#basicQos限制信道上的消费者能保持的最大未确认消息的数量。</p>
+<p>RabbitMQ为消费者维护一个计数，每发一条消息则自增，如果达到上限，停止发送。</p>
+<p>消费者确认了某条消息后，RabbitMQ将相应的计数自减，之后才可以继续接收消息，直到再次到达上限。</p>
+<p>类比于TCP/IP中的窗口。</p>
+<p>Basic.Qos对于Pull模式的消费方式无效。</p>
+<ul>
+<li>Pull</li>
+</ul>
+<p>对应Basic.Get，Client端发送Get请求，Broker响应请求，最后Client端发送Ack。</p>
+<p>如果要实现高吞吐量，消费者应使用Basic.Consume。</p>
+<hr>
+<p>消息的顺序性是指消费者消费到的消息和发送者发布消息的顺序是一致的。</p>
+<p>多个生产者的情况下，可以认为消息的顺序性是从入队列后开始。</p>
+<p>不使用任何高级特性，也没有消息丢失之类的异常，并且只有一个消费者的情况下，可以认为RabbitMQ是顺序的。</p>
+<p>生产者的重发消息可能导致乱序。</p>
+<p>多个消费者订阅了同一个队列，并且消费者将消息Basic.Nack或Basic.Reject将消息拒绝，并且开启requeue，消息就可以重新存入队列中，这样无法保证消费的顺序。</p>
+<hr>
+<ul>
+<li>At most once：最多一次。消息可能会丢失，但绝不会重复传输。</li>
+<li>At least once：最少一次。消息绝不会丢失，但可能会重复传输。</li>
+<li>Exactly once：恰好一次。消息肯定会被传输一次且仅传输一次。</li>
+</ul>
+<p>RabbitMQ支持最多一次：生产者随意发送，消费者随意消费，不保证消息不会丢失。</p>
+<p>RabbitMQ支持最少一次：</p>
+<ul>
+<li>生产者需要开启事务或者PublisherConfirm，保证到达RabbitMQ。</li>
+<li>生产者需要使用mandatory参数或备份交换器，确保消息能够从交换器路由到队列。</li>
+<li>消息和队列都需要持久化，确保服务器异常时不会造成消息丢失。</li>
+<li>消费者需要将autoAck设置为false，手动确认己经消费的消息，确保消费端不丢失消息。</li>
+</ul>
+<p>RabbitMQ不支持恰好一次：</p>
+<p>消费者在消费消息后向RabbitMQ发送Basic.Ack，此时网络异常，RabbitMQ没有收到，所以不会将此条消息标记删除，重新建立连接之后，消费者还会消费到这条消息，造成重复消费。</p>
+<p>生产者在使用PublisherConfirm时，发送完一条消息等待RabbitMQ返回确认，此时网络异常，生产者重发，这样就有两条同样的消息。</p>
+<p>RabbitMQ没有去重的机制来保证恰好一次，去重处理一般在业务客户端实现，比如借助Redis或数据库。</p>
+<hr>
+<p>RabbitMQ引入了惰性队列（Lazy Queue），将消息存入磁盘中，在消费时才会被加载到内存，适用于消息堆积。</p>
+<p>队列具备两种模式：default和lazy，lazy模式即为惰性队列。</p>
+<p>可以通过Channel#queueDeclare声明时设置，也可以通过Policy设置。</p>
+<p>惰性队列和普通队列相比，内存开销极小。</p>
+<p>生产者将消息发送到RabbitMQ的时候，消息默认存储在内存中。</p>
+<p>即使是持久化的消息，被写入磁盘的同时也会在内存中驻留一份。</p>
+<p>需要释放内存时，会将内存中的消息换页至磁盘中，同时阻塞队列，无法接收消息。</p>
+<p>当消息堆积时，普通队列会由于内存不足将消息换页至磁盘，性能会比惰性队列下降。</p>
+<p>惰性队列会将接收到的消息直接存入磁盘，不管是是否持久化，减少了内存的消耗，但会增加I/O。</p>
+<p>如果消息是持久化的，那么I/O操作不可避免，所以惰性队列适合和持久化消息一起使用。</p>
+<p>如果惰性队列中存储的是非持久化的消息，内存的使用率会很稳定，但重启后消息一样会丢失。</p>
+<hr>
+<p>消息变成死信的情况：</p>
+<ul>
+<li>消息被拒绝（Basic.Reject或Basic.Nack）并且requeue=false。</li>
+<li>消息TTL过期没被消费。</li>
+<li>队列达到最大长度。</li>
+</ul>
+<p>死信交换器（DLX，Dead-Letter-Exchange）</p>
+<p>消息在一个队列中变成死信后，它被重新发布到另一个Exchange，这个Exchange就是DLX。</p>
+<p>设置队列的属性，当队列中有死信时，自动将消息重新发布到设置的DLX上去，然后被路由到另一个队列，监听这个队列中消息做相应的处理。</p>
+<hr>
+<p>RabbitMQ可以对消息和队列设置过期时间（Time-To-Live，TTL）。</p>
+<p>声明队列时设置队列的属性，队列中所有消息都有相同的TTL。</p>
+<p>发送消息时设置消息的属性，每条消息TTL可以不同。</p>
+<p>如果两种方法同时使用，则以两者之间TTL较小的为准。</p>
+<p>设置队列TTL属性，一旦消息过期，就会从队列中抹去，因为队列中已过期的消息肯定在队列头部，只要定期从队头开始扫描是否有过期消息即可。</p>
+<p>设置消息TTL属性，即使消息过期，不会马上从队列中抹去，因为每条消息的过期时间不同，与其扫描整个队列，不如等到消息即将被消费时再判定过期删除。</p>
+<p>消息在队列的生存时间一旦超过TTL值，就称为dead message。</p>
+<p>如果不设置TTL，表示此消息不会过期。</p>
+<p>如果将TTL设置为0，则表示除非此时可以直接将消息投递到消费者，否则消息会被立即丢弃。</p>
+<hr>
+<p>AMQP协议及RabbitMQ没有直接支持延迟队列，但可以通过TTL和DLX模拟延迟队列的功能。</p>
+<p>死信队列可以看作延迟队列。</p>
+<p>假设需要将消息设置为10s的延迟，生产者通过exchange.normal将消息存储在queue.normal中。</p>
+<p>消费者订阅的并非是queue.normal这个队列，而是queue.dlx死信队列。</p>
+<p>消息从queue.normal中过期之后被存入queue.dlx中，消费者就恰巧消费到了延迟10s的消息。</p>
+<p>延迟队列可以根据延迟长短分为多个等级。</p>
+<hr>
+<p>一个集群中有多个节点，RabbitMQ客户端不是与集群中所有的节点建立连接，而是挑选其中一个节点建立连接。</p>
+<p>负载均衡通常分为软件负载均衡和硬件负载均衡两种。</p>
+<p>主流的方式有在客户端内部实现负载均衡，或者使用HAProxy、LVS等负载均衡软件来实现。</p>
+<p>客户端内部实现负载均衡：</p>
+<ul>
+<li>轮询法：按顺序轮流分配。</li>
+<li>随机法：随机选取。</li>
+<li>源地址哈希法：根据客户端IP地址，通过哈希函数计算值，并对服务器列表大小取模，得到要访问服务器的序号。</li>
+<li>加权轮询法：顺序且按照权重分配。</li>
+<li>加权随机法：随机且按照权重分配。</li>
+<li>最小连接数法：选取其中当前积压连接数最少。</li>
+</ul>
+<hr>
+<p>消息可靠性分析</p>
+<p>根据AMQP协议：</p>
+<ul>
+<li>消息先从生产者到达交换机；</li>
+<li>交换机根据路由规则将消息转发对应的队列；</li>
+<li>消息在队列上存储；</li>
+<li>消费者订阅队列并消费。</li>
+</ul>
+<p>Phase 1</p>
+<p>生产者将消息发出后，默认不会返回任何信息，生产者不知道消息有没有到达Broker。</p>
+<p>两种方式：</p>
+<ul>
+<li>AMQP协议的事务机制；</li>
+<li>将Channel设置成Confirm模式；</li>
+</ul>
+<p>事务和PublisherConfirm机制确保消息到达RabbitMQ的交换器，但如果交换器没有匹配队列，消息也会丢失。</p>
+<p>要确保涉及的交换器有匹配的队列。</p>
+<p>Phase 2</p>
+<p>生产者在Channel#basicPublish时可以设置mandatory参数，当消息不可达目的地时将消息返回给生产者。</p>
+<p>mandatory为true时，交换器无法找到符合条件的队列，会用Basic.Return将消息返回给生产者。</p>
+<p>生产者可以通过Channel#addReturnListener添加ReturnListener实现监听。</p>
+<p>但这种方式会使生产者的代码复杂化。</p>
+<p>可以使用备份交换器（Alternate Exchange），将未被路由的消息存储起来，方便在需要的时候处理。</p>
+<p>备份交换器可以将未能被交换器路由的消息（没有绑定队列或者没有匹配的绑定）存储起来，而不用返回给客户端。</p>
+<p>备胎交换器可以在声明交换器（Channel#exchangeDeclare）的时候添加alternate-exchange参数来实现，也可以通过Policy设置。</p>
+<p>备份交换器和普通的交换器没有区别，为方便使用，建议设置为fanout类型。</p>
+<p>如果备份交换器和mandatory参数一起使用，那么mandatory参数无效。</p>
+<p>Phase 3</p>
+<p>持久化可以提高可靠性，以防在异常情况（重启、关闭、宕机等）下的数据丢失。</p>
+<p>Exchange的持久化：</p>
+<p>Exchange的持久化对消息的可靠性没有影响，但如果Exchange不持久化，服务重启后Exchange将不复存在。</p>
+<p>Channel#exchangeDeclare在声明Exchange的时候设置持久化。</p>
+<p>Queue的持久化：</p>
+<p>Channel#queueDeclare在声明Queue的时候设置持久化。</p>
+<p>如果Queue不设置持久化，服务重启后，Queue将不复存在，消息也不复存在。</p>
+<p>消息的持久化：</p>
+<p>即使队列是持久化，但消息是否为持久化还要看消息的设置，否则服务重启后消息也不复存在。</p>
+<p>Channel#basicPublish发送消息时，设置消息的MessageProperties，持久化。</p>
+<p>可以将所有的消息都设为持久化，但会影响RabbitMQ的性能（随机）。</p>
+<p>持久化消息存入RabbitMQ后，不是同步刷盘（fsync）的，如果这段时间宕机，消息会丢失。</p>
+<p>如果采用了事务或PublisherConfirm机制的话，在消息落盘后返回，可以提高消息的可靠性。</p>
+<p>但是这样也无法避免单机故障且无法修复（比如磁盘损毁）而引起的消息丢失，这里需要引入镜像队列。</p>
+<p>在镜像队列中，如果主节点挂掉，可以自动切换到从节点，保证了高可用，除非整个集群都挂掉。</p>
+<p>Phase 4</p>
+<p>消费者接收到消息后，还没来得及处理就宕机了，也会丢失消息。</p>
+<p>RabbitMQ提供了消息确认机制（Message Acknowledgement）。</p>
+<p>消费者在声明队列时，可以指定autoAck（noAck）参数，关闭自动消息确认，进行手动确认。</p>
+<p>当autoAck为true时，RabbitMQ会自动把发送出去的消息置为确认，然后再删除（实质是先打上删除标记，再删除）。</p>
+<p>当autoAck为false时，RabbitMQ会等待消费者显式地回复Basic.Ack后才从内存（或磁盘）中移去消息。</p>
+<p>当autoAck为false时，RabbitMQ服务端中队列中的消息分成了两个部分：</p>
+<ul>
+<li>等待投递给消费者的消息；</li>
+<li>已经投递给消费者，但还没收到确认的消息。</li>
+</ul>
+<p>如果RabbitMQ一直没有收到消费者的确认，并且消费此消息的消费者已经断开连接，消息会重新入队列，下次投递。</p>
+<p>RabbitMQ不会为未确认的消息设置过期时间，唯一依据是消费该消息的消费者连接是否已经断开。</p>
+<p>如果消息消费失败，也可以调用Basic.Reject或者Basic.Nack来拒绝当前消息。</p>
+<p>如果只是简单的拒绝那么消息会丢失，需要将相应的requeue参数设为true，RabbitMQ会重新将消息存入队列。</p>
+<p>requeue的消息是存入队列头部的，可以快速被发送，如果消费者又不能正确消费而又requeue的话就会死循环。</p>
+<p>建议在无法正确消费消息时不要采用requeue来确保消息可靠性，而是投递到新的队列中，比如设定的死信队列。</p>
+<p>将Channel#basicReject或Channel#basicNack中的requeue设为false，同时启用死信队列。</p>
+<ul>
+<li><p>Basic.Reject：一次只能拒绝一条消息。</p>
+</li>
+<li><p>Basic.Nack：一次可以拒绝N条消息。</p>
+</li>
+</ul>
+<hr>
+<p>事务：只有消息成功被RabbitMQ接收，事务才提交成功，否则可在捕获异常后进行事务回滚，同时可以重发消息。</p>
+<ul>
+<li>客户端发送Tx.Select，将信道置为事务模式；</li>
+<li>Broker回复Tx.Select-Ok，确认己将信道置为事务模式；</li>
+<li>发送完消息之后，客户端发送Tx.Commit提交事务；</li>
+<li>Broker回复Tx.Commit-Ok，确认事务提交。</li>
+</ul>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">try</span> <span class="token punctuation">{</span>
+    channel<span class="token punctuation">.</span><span class="token function">txSelect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    channel<span class="token punctuation">.</span><span class="token function">basicPublish</span><span class="token punctuation">(</span>exchange<span class="token punctuation">,</span> routingKey<span class="token punctuation">,</span> MessageProperties<span class="token punctuation">.</span>PERSISTENT_TEXT_PLAIN<span class="token punctuation">,</span> msg<span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> result <span class="token operator">=</span> <span class="token number">1</span> <span class="token operator">/</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    channel<span class="token punctuation">.</span><span class="token function">txCommit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    channel<span class="token punctuation">.</span><span class="token function">txRollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>事务机制在消息发送之后会使发送端阻塞，等待回应，之后才能继续发送。</p>
+<p>使用事务会降低性能，RabbitMQ提供了更好的方案，即将Channel信道设置成Confirm模式。</p>
+<p>生产者将信道设置成Confirm模式后，所有在该信道上发布的消息都会被指派一个递增的的ID。</p>
+<p>Broker回传给生产者的确认消息中deliver-tag域包含了确认消息的序列号，此外Broker也可以设置multiple域，表示到这个序列号之前的所有消息都已经处理。</p>
+<p>Channel被设置成Confirm模式之后，所有Publish的后续消息都将被ack或被nack一次。</p>
+<p>事务机制和PublisherConfirm机制是互斥的，不能共存。</p>
+<p>如果消息持久化，PublisherConfirm或事务机制对性能有很大的影响。</p>
+<p>两者的存储确认原理相同，对于持久化消息，都需要等待消息确认落盘（fsync）之后才会返回。</p>
+<p>同步等待方式下，PublisherConfirm发送一条消息需要交互的命令是2条：Basic.Publish和Basic.Ack/Basic.Nack，事务机制是3条：Basic.Publish、Tx.Commmit、Tx.Commit-Ok（或Tx.Rollback、Tx.Rollback-Ok）。</p>
+<p>客户端实现生产者Confirm有三种编程方式：普通串行Confirm，批量Confirm，异步回调Confirm。</p>
+<p>对于普通串行Confirm和批量Confirm，Publish消息后，需要调用Channel#waitForConfirms等待服务器端确认，如果服务端返回false或超时时间内未返回，客户端进行消息重传。</p>
+<p>批量Confirm模式的消息重传是将一批的消息全部重发，会带来明显的重复消息，并且当消息经常丢失时，批量Confirm性能是不升反降的。</p>
+<p>异步Confirm模式下，Channel#ConfirmListener调方法只包含deliveryTag（当前Chanel发出的消息序号）。</p>
+<p>需要为每个Channel维护一个未确认的消息序号集合，最好采用有序集合SortedSet存储结构。</p>
+<hr>
+<p>在RabbitMQ中可以使用Firehose来实现消息追踪，记录每一次发送或者消费消息的记录。</p>
+<p>Firehose将生产者投递给RabbitMQ的消息，或者是RabbitMQ投递给消费者的消息按指定格式发送到默认的交换器上。</p>
+<p>这个默认的交换器名称为amq.rabbitmq.trace，它是一个Topic类型的交换器。</p>
+<p>发送到这个交换器上的消息的路由键为publish.{exchangename}和deliver.{queuename}。</p>
+<p>exchangename和queuename为交换器和队列名，分别对应生产者投递到交换器的消息和消费者从队列中获取的消息。</p>
+<hr>
+<p>RabbitMQ使用的内存超过阈值时，就会产生内存告警井阻塞所有生产者的连接。</p>
+<p>当剩余磁盘空间低于阈值时，同样会阻塞生产者，避免因非持久化的消息持续换页耗尽磁盘空间。</p>
+<p>内存和磁盘告警相当于全局的流控（Global Flow Control），一旦触发会阻塞集群中所有的Connection。</p>
+<hr>
+<p>持久层包含两部分：队列索引（rabbit_queue_index）和消息存储（rabbit_msg_store）。</p>
+<ul>
+<li><p>队列索引负责维护队列中落盘消息的信息，包括消息的存储位置、是否己被交付给消费者、是否己被消费者ack等，每个队列对应一个。</p>
+</li>
+<li><p>消息存储以键值对的形式存储消息，被所有队列共享，在每个节点中有且只有一个。</p>
+</li>
+</ul>
+<p>消息存储具体还可以分为msg_store_persistent和msg_store_transient。</p>
+<ul>
+<li><p>msg_store_persistent负责持久化消息的持久化，重启后消息不会丢失。</p>
+</li>
+<li><p>msg_store_transient负责非持久化消息的持久化，重启后消息会丢失。</p>
+</li>
+</ul>
+<p>消息（包括消息体、属性和headers）可以直接存储在队列索引中，也可以保存在消息存储中。</p>
+<p>最佳配置是小消息存储在队列索引中，而大消息存储在消息存储中。</p>
+<p>队列索引中以顺序（文件名从0开始）的.idx段文件来存储，每个段文件中包含固定条记录。</p>
+<p>每个队列索引从磁盘中读取的时候至少要在内存中维护一个段文件。</p>
+<p>消息存储的所有消息都以追加的方式写入，当一个.rdq文件的大小超过指定的限制后，关闭这个文件再创建一个新的。</p>
+<p>消息存储文件名从0开始。</p>
+<p>进行消息的存储时，会在ETS表中记录消息在文件中的位置映射（Index）和文件的相关信息（FileSummary）。</p>
+<p>在读取消息的时候，先根据消息的ID找到对应存储的文件，如果文件存在并且未被锁住，则直接打开文件，从指定位置读取消息的内容。</p>
+<p>如果文件不存在或者被锁住了，则发送请求由消息存储进行处理。</p>
+<p>消息的删除只是从ETS表删除指定消息的相关信息，同时更新消息对应的存储文件的相关信息。</p>
+<p>当一个文件中都是垃圾时可以将这个文件删除。</p>
+<p>当检测到相邻两个文件中的有效数据可以合并在一个文件中，会触发垃圾回收将两个文件合井。</p>
+<hr>
+<p>通常队列由两部分组成：AMQQueue和BackingQueue。</p>
+<ul>
+<li><p>AMQQueue，负责AMQP协议相关的消息处理，即接收生产者发布的消息、向消费者投递消息、处理消息Confirm、Acknowledge等；</p>
+</li>
+<li><p>BackingQueue，提供了相关接口供AMQQueue调用，完成消息的存储以及可能的持久化等。</p>
+</li>
+</ul>
+<p>BackingQueue由5个子队列组成：Q1、Q2、Delta、Q3和Q4。</p>
+<p>如果消息的目的队列是空的，并且有消费者订阅了这个队列，那么消息会直接发送给消费者，不经过队列。</p>
+<p>当消息无法直接投递给消费者时，需要将消息存入队列。</p>
+<p>消息进入队列，不是固定不变的，它会随着系统负载在队列间流动。</p>
+<p>BackingQueue中消息分为4个状态：</p>
+<ul>
+<li>Alpha：消息的内容和消息索引都在RAM中。Q1和Q4的状态。</li>
+<li>Beta：消息的内容保存在DISK上，消息索引保存在RAM中。Q2和Q3的状态。</li>
+<li>Gamma：消息内容保存在DISK上，消息索引在DISK和RAM都有。Q2和Q3的状态。</li>
+<li>Delta：消息内容和索引都在DISK上。Delta的状态。</li>
+</ul>
+<p>从Q1到Q4，基本经历RAM-&gt;DISK-&gt;RAM这样的过程。</p>
+<p>好处是，当队列负载高时，部分消息由磁盘保存，节省内存，当负载降低时，消息又回到内存，被消费者获取。</p>
+<p>引起消息流动主要有两方面因素，一是消费者获取消息，二是由于内存不足引起消息换出到磁盘。</p>
+<p>RabbitMQ会根据消息传输的速度计算当前内存中能够保存的最大消息数量，当内存中的消息数量大于该值时，就会引起消息流动。</p>
+<p>进入队列的消息，一般会按Q1-&gt;Q2-&gt;Delta-&gt;Q3-&gt;Q4的顺序流动，但是不是每条消息都会经历所有的状态。</p>
+<p>在负载正常时，如果消息被消费的速度大于接收新消息的速度，对于不需要保证可靠的消息可能只会有Alpha状态。</p>
+<p>对于持久化的消息，消息内容和索引必须先保存在DISK，一定会进入Gamma状态，Gamma状态只有持久化消息才有。</p>
+<p>持久化的消息，若开启PublishConfirm机制，只有到了Gamma才会确认该消息已经被接受，若消息消费速度足够快，内存也充足，这些消息也不会继续到下一状态。</p>
+<p>在系统负载较高时，消息若不能很快被消费掉，就会进入到很深的队列中去，增加开销，同时处理新消息的能力又会降低，恶性循环。</p>
+<p>三个措施：</p>
+<ul>
+<li>进行流量控制。</li>
+<li>增加prefetch的值，即一次发送多个消息给接收者，加快消息被消费掉的速度。</li>
+<li>采用multiple ack，降低处理ack带来的开销。</li>
+</ul>
+<hr>
+<p>RabbitMQ可以通过3种方式实现分布式部署：集群、Federation和Shovel。</p>
+<p>集群是最为通用的方式。</p>
+<p>集群将多个Broker节点连接起来组成逻辑上独立的单个Broker。</p>
+<p>集群内部借助Erlang进行消息传输，所以集群中的每个节点的Erlang cookie务必保持一致。</p>
+<p>同时集群内部的网络必须是可靠的，RabbitMQ和Erlang的版本也必须一致。</p>
+<p>虚拟主机、交换器、用户、权限等都会自动备份到集群中的各个节点。</p>
+<p>队列可能部署单个节点或被镜像到多个节点中。</p>
+<p>连接到任意节点的客户端能够看到集群中所有的队列，即使该队列不在所连接的节点之上。</p>
+<p>通常使用集群来提高可靠性和吞吐量，不过集群只能部署在局域网内。</p>
+<p>RabbitMQ集群中的所有节点都会备份所有的元数据信息，包括：</p>
+<ul>
+<li>队列元数据：队列名称及属性；</li>
+<li>交换器：交换器名称及属性；</li>
+<li>绑定关系元数据：交换器与队列或者交换器与交换器之间的绑定关系；</li>
+<li>vhost元数据。</li>
+</ul>
+<p>但是不会备份队列和消息（除了镜像队列）。</p>
+<p>集群只会在单个节点上创建队列的进程井包含完整的队列信息（元数据、状态、内容）。</p>
+<p>当集群节点崩溃时，该节点的队列进程和关联的绑定都会消失。</p>
+<p>Federation插件使RabbitMQ在不同的Broker节点之间进行消息传递而无须建立集群。</p>
+<p>让原本发送到某个Broker（或集群）中的交换器（或队列）上的消息能够转发到另一个Broker（或集群）中的交换器（或队列）上，两方的交换器（或队列）看起来是以联邦的形式在运作。</p>
+<p>联邦交换器通过单向点对点的连接进行通信。</p>
+<p>默认情况下，消息只会由Federation连接转发一次，可以允许有复杂的路由拓扑来提高转发次数。</p>
+<p>在Federation连接上，消息可能不会被转发，如果消息到达了联邦交换器之后路由不到合 适的队列，它也不会被再次转发到原来的地方（上游交换器）。</p>
+<p>可以通过Federation连接广域网中的各个RabbitMQ服务器来生产和消费消息。</p>
+<p>Shovel连接各个Broker，概念上与Federation类似，不过Shovel工作在更低一层。</p>
+<p>Federation从一个交换器中转发消息到另一个交换器，Shovel只是简单地从某个Broker上的队列中消费消息，然后转发消息到另一个 Broker上的交换器而已。</p>
+<p>Shovel 也可以在单独的一台服务器上去转发消息，比如将一个 队列中的数据移动到另一个队列中。</p>
+<p>在广域网中使用Shovel比Federation更多的控制。</p>
+<p>Shovel能够可靠、持续地从一个Broker中的队列（源端）拉取数据并转发至另一个Broker中的交换器（目的端）。</p>
+<p>Shovel的主要优势在于：</p>
+<ul>
+<li><p>松耦合（可以使用不同的RabbitMQ和Erlang版本）。</p>
+</li>
+<li><p>支持广域网。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Federation/Shovel</th>
+<th>集群</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>各个Broker节点之间逻缉分离</td>
+<td>逻辑上是个Broker节点</td>
+</tr>
+<tr>
+<td>各个Broker节点之间可以运行不同版本的Erlang和RabbitMQ</td>
+<td>各个Broker节点必须运行相同版本的Erlang和RabbitMQ</td>
+</tr>
+<tr>
+<td>各个Broker节点之间可以在广域网中相连</td>
+<td>各个Broker节点之间必须在可信赖的局域网中相连，通过Erlang内部节点传递消息，但节点间需要有相同的Erlang cookie</td>
+</tr>
+<tr>
+<td>各个Broker节点之间能以任何拓扑逻辑部署，连接可以单向或双向</td>
+<td>所有Broker节点都双向连接所有其他节点</td>
+</tr>
+<tr>
+<td>选择可用性和分区耐受性，即AP</td>
+<td>选择一致性和可用性，CA</td>
+</tr>
+<tr>
+<td>一个Broker中的交换器可以是Federation生成的或者是本地的</td>
+<td>集群中所有Broker节点中的交换器都是一样的</td>
+</tr>
+<tr>
+<td>客户端能看到它所连接的Broker节点上的队列</td>
+<td>客户端连接到集群中的任何Broker节点都可以看到所有的队列</td>
+</tr>
+</tbody></table>
+<hr>
+<p>镜像队列（Mirror Queue）可以将队列镜像到集群中的其他Broker节点之上，如果一个节点失效了，队列能自动地切换到镜像中的另一个节点，保证服务的可用性。</p>
+<p>通常镜像队列都包含一个主节点（Master）和若干个从节点（Slave）。</p>
+<p>如果Master节点失效，资历最老的Slave节点将被提升为新的Master节点。</p>
+<p>根据进入的时间排序，时间最长的节点即为资历最老的节点。</p>
+<p>对于Basic.Publish，消息同时发送到Master和所有Slave上，如果此时Master宕掉了，消息还发送Slave上，当Slave提升为Master的时候消息也不会丢失。</p>
+<p>除了Basic.Publish，所有动作都只向Master发送，然后由Master将命令执行结果广播给Slave。</p>
+<p>如果消费者与Slave建立连接并订阅消费，实质上都是从Master上获取消息（一种说法是由Slave转发，一种说法是会被路由到Master节点，然后建立连接）。</p>
+<p>镜像队列增强了其可用性，但是并没有分摊负载，读写压力都落到了Master上。</p>
+<p>逻辑上可以实现主从读写分离，但没必要，因为这里的Master和Slave是针对队列的，而队列可以均匀地散落在集群的各个Broker节点中以达到负载均衡。</p>
+<p>不推荐在局域网之外搭建RabbitMQ集群，这样会有网络分区的风险。</p>
+<p>客户端程序最好也部署在相同的局域网之内。</p>
+<p>镜像队列支持PublisherConfirm和事务两种机制。</p>
+<p>在事务机制中，只有当前事务在全部镜像队列中执行之后，客户端才会收到Tx.CommitOk。</p>
+<p>在PublisherConfirm机制中，向Publisher进行确认的前提是该消息被全部镜像接受了。</p>
+<p>镜像队列是一个特殊的BackingQueue，内部包裹了一个普通的BackingQueue，在此基础上增加了将消息和ack复制到所有镜像的功能。</p>
+<p>所有对Master的操作都会通过组播（Guaranteed Multicast，GM）的方式同步到各个Slave中。</p>
+<p>GM负责消息的广播，该协议能够保证组播消息的原子性，即保证组中活着的节点要么都收到消息，要么都收不到：</p>
+<p>所有节点形成一个循环链表，每个节点监控自己左右两边的节点，当有节点新增时，相邻的节点保证当前广播的消息会复制到新的节点上，当有节点失效时，相邻的节点会接管，保证本次广播的消息会复制到所有的节点。</p>
+<p>每当节点加入或重新加入（从网络分区中恢复）到这个镜像链路中时，该节点之前队列内容会被全部清空。</p>
+<p>Master节点和Slave节点上的GM形成一个Group，信息记录在mnesia中。</p>
+<p>不同的镜像队列形成不同的Group。</p>
+<p>消息从Master节点的GM发出后，顺着链表传送到所有的节点，最终会收到自己发送的消息，这时Master节点就知道消息已经复制到所有的Slave节点了。</p>
+<p>如果Slave失效了，不需要采取任何行动。</p>
+<p>如果Master失效了：</p>
+<p>最老的Slave被选中为Master，因为最老的Slave与前任Master之间的同步状态应该是最好的。</p>
+<p>但是如果Slave与Master未完全同步，那么前任Master中未被同步的消息将会丢失。</p>
+<p>出于消息可靠性的考虑，新的Master会重新入队所有未应答的消息，此时客户端可能会有重复消息。</p>
+<p>如果客户端连接着Slave，并且Basic.Consume消费时指定了x-cancel-on-ha-failover参数，那么断开时客户端会收到一个通知。</p>
+<p>镜像队列的配置主要是通过Policy完成的。</p>
+<p>ha-mode：镜像队列的模式，有效值为all、exactly、nodes，默认为all。</p>
+<ul>
+<li>all表示在集群中所有的节点上进行镜像。</li>
+<li>exactly表示在指定个数的节点上进行镜像。</li>
+<li>nodes表示在指定节点上进行镜像。</li>
+</ul>
+<p>默认ha-sync-mode=manual，新节点加入已存在的镜像队列时，镜像队列中的消息不会主动同步到新节点，除非显式调用同步命令。</p>
+<p>当调用同步命令后，队列开始阻塞，无法对其进行操作，直到同步完毕。</p>
+<p>当ha-sync-mode=automatic时，新加入节点时会默认同步已知的镜像队列，不建议在生产中操作。</p>
+<p>镜像队列中最后一个停止的节点会是Master，启动顺序必须是Master先启动。</p>
+<p>先启动Slave的话，会等待Master加入集群。</p>
+<hr>
+<p>RabbitMQ集群的网络分区的容错性不高，一般使用Federation或Shovel来解决广域网WAN中的使用问题。</p>
+<p>即使是在局域网LAN环境下，网络分区也不能完全避免，网络设备故障也会导致网络分区。</p>
+<p>当一个集群发生网络分区时，这个集群会分成两部分或更多，各自为政。</p>
+<p>如果集群中配置了镜像队列，这个镜像队列又牵涉多个分区中的节点时，每个网络分区中都会出现一个Master节点。</p>
+<p>RabbitMQ的镜像队列是一种环形的结构，基于网络情况良好的前提下运行的。</p>
+<p>这种一致性数据模型下，如果出现网络异常，整个数据链的性能会大大降低。</p>
+<p>如果节点网络异常，整个链路就会被阻塞，相关服务也会被阻塞，所以需要将异常的节点剥离出分区。</p>
+<p>如果集群中节点所在物理机是多网卡，当某节点网卡发生故障就有可能发生多个分区。</p>
+<p>除了网络异常导致的分区，还有挂起/恢复导致的分区，被挂起的节点观察不到其它节点的消失，但是集群内的其他节点可以，导致的分区并不对称。</p>
+<p>RabbitMQ会将队列、交换机、绑定等信息存储在Erlang的分布式数据库Mnesia中，许多网络分区的一些细节都和Mnesia有关。</p>
+<p>如果一个节点不能在指定时间内连上另一个节点，那么Mnesia认为这个节点已经宕机，就算之后两个节点又重新恢复通信，但是这两个节点都会认为对方已经宕机，Mnesia此时认定发生了网络分区。</p>
+<p>也就是说，当网络连通性恢复时，网络分区的状态还是会保持。</p>
+<p>处理网络分区：</p>
+<ul>
+<li><p>ignore：默认，发生网络分区时，不做任何动作。需要人工介入。</p>
+</li>
+<li><p>pause-minority：观察到节点丢失时，自动检测自身是否处于少数派，自动关闭（偶数情况下可能会关闭所有的节点）。可应用于奇数节点数的集群。</p>
+</li>
+<li><p>pause-if-all-down：集群中的节点不能和任何节点交互时才会关闭自己。可以处理对等分区的情形。</p>
+</li>
+<li><p>autoheal：自动决定一个获胜分区（客户端连接最多，节点数最多），然后重启不在这个分区中的节点。如果集群中有节点处于非运行状态，则会失效。</p>
+</li>
+</ul>
+<p>从网络分区中恢复，首先需要挑选一个信任的分区，这个分区才有决定Mnesia内容的权限，其他分区的改变将不被记录到Mnesia中而直接丢弃。</p>
+<p>停止其他分区的节点，然后启动这些节点，之后重新将这些节点加入到当前信任的分区之中，最后重启信任的分区中所有的节点，以去除告警。</p>
+<p>也可以简单的关闭整个集群的节点，然后再启动每一个节点，这里需要确保启动的第一个节点在信任的分区之中。</p>
+<p>如果挨个重启节点，同样可以处理网络分区，但是会有Mnesia内容权限的归属的严重问题。</p>
+<p>比如有两个分区[node1, node2]和[node3, node4]，其中[node1, node2]为信任分区。</p>
+<p>此时若挨个重启，如先重启node3，在node3节点启动时无法判断其节点的Mnesia内容向[node1, node2]分区靠齐还是向node4节点靠齐。</p>
+<p>如果最终集群中的Mnesia数据是[node3, node4]这个非信任分区，就会造成异常。</p>
+<p>挨个节点重启也有可能会引起二次网络分区。</p>
+<p>挑选信任分区可以按照这几个指标进行：分区中要有DISC节点、分区中的节点数最多、分区中的队列数最多、分区中的客户端连接数最多。</p>
+<p>优先级从前到后。</p>
+<p>队列漂移现象：配置镜像队列的情况下，假设集群中有多个节点，且配置全镜像（ha-mode=all），随着节点的重启，所有的队列的Master都漂移到了前面的节点上，不能很好地实现负载均衡。</p>
+<p>可以重启之前先删除镜像队列的配置，这样能在一定程度上阻止可能所有队列都漂移到一个节点上。</p>
+<p>对于未配置镜像的集群，网络分区发生之后，队列也会伴随着宿主节点而分散在各自的分区中。</p>
+<p>对于消息发送方，可以发送消息，但可能会路由失败，需要配合mandatory等机制保障消息的可靠性。</p>
+<p>对于消息消费方，可能对于己消费消息的ack会失效。</p>
+<p>从网络分区中恢复后，客户端可能会重复消费，要处理好幂等。</p>
+<p>如果集群中配置了镜像队列，网络分区时，情况比较复杂，简单地从3个节点分裂成2个网络分区的情形讨论：</p>
+<p>集群中有nodel1、node2和node3这3个节点，分别在这些节点上创建queue1、queue2和queue3，并配置镜像队列。</p>
+<pre><code>ha-mode : exactly
+ha-param : 2
+ha-sync-mode : automatic</code></pre><pre><code>node1：queue1(master) 
+node2：queue2(master) queue3(slave) 
+node3：queue1(slave) queue3(master) queue2(slave) </code></pre><p>集群模拟分裂成[node1, node3]和[node2]这两个网络分区。</p>
+<p>网络分区之后，[node1, node3]分区中：</p>
+<p>queue1未发生改变；</p>
+<p>queue2由于原宿主节点node2己被剥离当前分区，那么node3提升为Master，同时选择node1作为Slave；</p>
+<p>queue3重新选择node1作为其新的Slave。</p>
+<pre><code>node1：queue1(master) queue2(slave) queue3(slave) 
+node3：queue1(slave) queue2(master) queue3(master) 
+-
+node2：queue2(master) queue3(master) </code></pre><p>对于[node2]分区：<br>queue1：无影响；<br>queue2：还是Master；<br>queue3：Slave升级为Master。</p>
+<p>当三个节点从网络分区中恢复后可能会有数据丢失。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>
