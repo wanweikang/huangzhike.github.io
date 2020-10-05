@@ -1,0 +1,584 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-Elasticsearch | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="好不容易的长假，别人都在外面到处浪，孩子却一个人在房间里敲键盘，都要被自己感动哭了。
+其实孩子只想回家躺尸。
+最近看的东西有点多，必须好好整理一下。
+之前领导想做数据异构，接入ES搜索，好吧，没接触过ES，怎么也得好好调研一下吧。
+虽然对这块不感冒。
+
+
+关系型数据库 -&amp;gt; 表 -&amp;gt; 行">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-Elasticsearch" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Elasticsearch</h2>
+				
+				<div>
+					<div class="post-time">2020-10-05</div>
+				</div>
+				
+				<div class="article-content">
+				<p>好不容易的长假，别人都在外面到处浪，孩子却一个人在房间里敲键盘，都要被自己感动哭了。</p>
+<p><del>其实孩子只想回家躺尸。</del></p>
+<p>最近看的东西有点多，必须好好整理一下。</p>
+<p>之前领导想做数据异构，接入ES搜索，好吧，没接触过ES，怎么也得好好调研一下吧。</p>
+<p><del>虽然对这块不感冒。</del></p>
+<hr>
+<ul>
+<li><p>关系型数据库 -&gt; 表 -&gt; 行 -&gt; 列</p>
+</li>
+<li><p>ES -&gt; 索引(Index) -&gt; 类型(Type) -&gt; 文档(Docment) -&gt; 字段(Field)</p>
+</li>
+</ul>
+<p>ES是面向文档型数据库，一个JSON文档对应关系型数据库的一行，类型(Type)即将废弃，不建议使用。</p>
+<p>常见的索引：</p>
+<p>散列表：可以快速地精确匹配，但不适合范围的查找，因为是无序的，必须遍历一遍。</p>
+<p>有序数组：查询效率高，可以通过二分查找定位，因为是有序的，所以支持区间查询，但插入性能低，必须将后面的数据全部后移。</p>
+<p>平衡二叉树：区间查询效率不高。</p>
+<p>跳表：虽然有序链表不能通过数组下标进行二分查找，但可以通过多级的索引实现二分查找。</p>
+<p>B+树：略，参考InnoDB。</p>
+<p>一般的索引用Id之类的键去查找值对象，但不方便通过某个属性值去查找。</p>
+<p>ES使用倒排索引。</p>
+<p>数据：</p>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">name</th>
+<th align="center">age</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">Dante</td>
+<td align="center">50</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">Nero</td>
+<td align="center">25</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">Virgil</td>
+<td align="center">50</td>
+</tr>
+</tbody></table>
+<p>name：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Term</th>
+<th align="center">Posting List</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Dante</td>
+<td align="center">[1]</td>
+</tr>
+<tr>
+<td align="center">Nero</td>
+<td align="center">[2]</td>
+</tr>
+<tr>
+<td align="center">Virgil</td>
+<td align="center">[3]</td>
+</tr>
+</tbody></table>
+<p>age：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Term</th>
+<th align="center">Posting List</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">25</td>
+<td align="center">[2]</td>
+</tr>
+<tr>
+<td align="center">50</td>
+<td align="center">[1, 3]</td>
+</tr>
+</tbody></table>
+<p>ES为每个Field都建立了一个倒排索引，对于每个Term，都有对应的Posting List，如[1, 3]。</p>
+<p>Posting List是一个int数组，存储了所有符合某个Term的文档Id。</p>
+<p>在Term数量极大的情况下，为了快速定位某个具体的Term，ES引入了Term Dictionary，将所有的Term排序，通过二分法查找。</p>
+<p>但Term Dictionary可能非常大，不能完全加载到内存上，于是又引入了Term Index，就像字典里的索引页一样，A开头的有哪些Term，分别在哪页。</p>
+<p>Term Index包含了Term的前缀与Term Dictionary位置的映射关系。</p>
+<p>通过Term Index快速定位到Term Dictionary的偏移，然后再往后顺序查找。</p>
+<p>Term Index使用的是FST（Finite State Transducers），FST是类似Trie前缀树的结构，对词典中单词前缀和后缀的重复利用，压缩了空间，同时查找是O(1)的，等于所查找的key的长度。</p>
+<p>于是查找就变成了：Term Index -&gt; Term Dictionary -&gt; Posting List -&gt; Data。</p>
+<p>假如只有男女两种性别，每个Posting List可能有百万个文档Id，所以需要对Posting List进行有效的压缩。</p>
+<p>假设有某个Posting List：[1, 3, 4, 7, 10]，那么对应的Bitmap就是：[1, 0, 1, 1, 0, 0, 1, 0, 0, 1]。</p>
+<p>但是，位图占用的内存空间是恒定的，不管实际的元素基数有多少，数据越稀疏，空间越浪费。</p>
+<p>在无数个索引字段下，产生的空间浪费更加会被放大（线性增长）。</p>
+<p>于是引入了Roaring Bitmap。</p>
+<p>ES要求Posting List是有序的，一个好处是方便压缩，即增量编码压缩，将大数变小数，按字节存储。</p>
+<p>基本思路是：将32位的无符号int整数按高低位分两部分（两个short），存储数据时，按数据的高16位找到对应的Container，再将低16位放入Container。</p>
+<p>也就是说，最多可能有2^16 = 65536个桶，即Container，一个Roaring Bitmap就是Container的集合。</p>
+<p>每个Roaring Bitmap都包含一个RoaringArray，RoaringArray核心为三个成员：</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">short</span><span class="token punctuation">[</span><span class="token punctuation">]</span> keys<span class="token punctuation">;</span>
+Container<span class="token punctuation">[</span><span class="token punctuation">]</span> values<span class="token punctuation">;</span>
+<span class="token keyword">int</span> size<span class="token punctuation">;</span></code></pre>
+<p>每个32位的int，高16位会被作为key存储到<code>short[] keys</code>中，低16位则被看做value，存储到<code>Container[] values</code>中的某个Container。</p>
+<p>keys和values通过下标一一对应。</p>
+<p>size标示了当前包含的key-value的数量。</p>
+<p>keys数组保持有序，方便二分查找。</p>
+<p>高16位已经在key标记了，Container只需要处理低16位的数据。</p>
+<p>Container共有3种。</p>
+<ul>
+<li>ArrayContainer</li>
+</ul>
+<p>ArrayContainer是一个可变长度的无符号类型的数组short[]，将16位value直接存储。</p>
+<p>数组保持有序，方便二分查找。</p>
+<p>数组会自动扩容，当基数大于4096时，将当前Container转换为BitmapContainer。</p>
+<p>ArrayContainer没有任何压缩，只适合存储少量数据，占用的空间大小与存储的数据量为线性关系。</p>
+<p>每个short为2字节，存储4096个数据占用8kb。</p>
+<ul>
+<li>BitmapContainer</li>
+</ul>
+<p>BitmapContainer是一个普通位图long[]，数组长度固定为1024，即位图的大小固定为216位（8KB）。</p>
+<p>每个Container处理16位的数据，也就是0~65535，要65536个比特来存储数据，每个比特位1表示有，0表示无。</p>
+<p>long有64位，因此需要1024个long来提供65536个比特。</p>
+<ul>
+<li>RunContainer</li>
+</ul>
+<p>RunContainer是一个变长的无符号的数组short[]，存储用行程长度编码（Run Length Encoding）压缩后的数据。</p>
+<p>整数序列11, 12, 13, 14, 15, 27, 28, 29会被压缩为两个二元组11, 4, 27, 2，表示11后面跟着4个连续递增的值，27后面跟着2个连续递增的值。</p>
+<p>RunContainer的压缩效果不稳定，对连续数据有比较好的压缩效果。</p>
+<p>极端情况：如果所有数据都是连续的，那么只需要4字节；如果所有数据都不连续，那么反而会膨胀成原来的两倍大。</p>
+<p>BitmapContainer只涉及位运算，时间复杂度为O(1)。</p>
+<p>ArrayContainer和RunContainer都需要用二分查找，时间复杂度为O(logN)。</p>
+<p>空间占用方面，BitmapContainer是恒定的，ArrayContainer与基数有关，RunContainer与连续序列数有关。</p>
+<p>ES将Posting List按65535为界限分块，如第一块所包含的文档id范围在0 ~ 65535，第二块的id范围是65536 ~ 131071，以此类推。</p>
+<p>再用&lt;商，余数&gt;的组合表示每组id，保证每组里的id范围都在0~65535内了，还节约了空间。</p>
+<p>如对于[1000, 62101, 131385, 132052, 191173, 196658]：</p>
+<p>根据(N/65536, N%65536)可以转为(0, 1000) (0, 62101) (2, 313) (2, 980) (2, 60101) (3, 50)。</p>
+<p>那么Container数据对应：[1000, 62101] [] [313, 980, 60101] [50]。</p>
+<p>对于多个Field索引的联合查询，可以位图快速做与运算，得到交集。</p>
+<p>ES是基于Lucene的全文检索引擎，对数据分词后保存索引，擅长管理大量的索引数据，不擅长更新数据及关联查询。</p>
+<p>也就是说是为了查询而设计的。</p>
+<p>将文本拆分成独立的Term就是分词。</p>
+<hr>
+<p>行存储（关系型数据库）与列存储（HBase，ES聚合的doc_value）</p>
+<ul>
+<li>行式存储：</li>
+</ul>
+<p>按行row为单位连续存储，如：(name_1, age_1), (name_2, age_2), (name_3, age_3)。</p>
+<p>优点：数据被保存在一起，INSERT/UPDATE容易。</p>
+<p>缺点：查询时即使只涉及某几列，所有数据也都会被读取。</p>
+<ul>
+<li>列式存储：</li>
+</ul>
+<p>按列column为单位连续存储，如：(name_1, name_2, name_3) 和 (age_1, age_2, age_3)。</p>
+<p>优点：查询时只有涉及到的列会被读取，任何列都能作为索引。</p>
+<p>缺点：查询完成时，被查询的列要重新组装，INSERT/UPDATE比较麻烦。</p>
+<p>列存储使用两种编码类型：基于字典和基于值。</p>
+<p>字典编码是把唯一值编入字典，每一个唯一值都匹配一个序号，而序号用于索引字典，通过存储序号来压缩数据。</p>
+<p>如果数据表中存在大量的重复值，那么使用字典编码压缩率高。</p>
+<p>值编码用于整数或小数类型，把Value的范围按照比例缩小或增大，并使用一个指数表示比例。</p>
+<p>如果整数或小数的值分布集中，那么使用基于值编码压缩非常高效。</p>
+<p>列存储仅存储来自单列的值，压缩算法更加高效，因为能够作用于同类型的数据。</p>
+<p>字典表</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">Dante</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">Nero</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">Virgil</td>
+</tr>
+</tbody></table>
+<p>字典表</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">1000</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">20</td>
+</tr>
+</tbody></table>
+<p>表</p>
+<table>
+<thead>
+<tr>
+<th align="center">name</th>
+<th align="center">age</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">1</td>
+</tr>
+</tbody></table>
+<p>步骤：</p>
+<ol>
+<li><p>去字典表里找到字符串对应数字。</p>
+</li>
+<li><p>用数字去列表里匹配，匹配上的位置设为1。</p>
+</li>
+<li><p>把不同列的匹配结果进行位运算得到符合所有条件的记录下标。</p>
+</li>
+<li><p>使用这个下标组装出最终的结果集。</p>
+</li>
+</ol>
+<p>列存储适合与OLAP，数据仓库，数据挖掘等查询密集型应用，不适合用于OLTP，或更新频繁的场合。</p>
+<hr>
+<p>ES底层存储使用Lucene，主要包含行存储（store_filed），列存储（doc_values）和倒排索引(invert_index)。</p>
+<p>大多数场景中，没有必要同时存储这三个部分。</p>
+<pre class=" language-json"><code class="language-json"><span class="token property">"_source"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"enabled"</span><span class="token operator">:</span> <span class="token boolean">false</span>
+<span class="token punctuation">}</span></code></pre>
+<p>行存储中占比最大的是_source字段，它控制doc原始数据的存储。</p>
+<p>写入数据时，ES把文档原始数据的JSON当做一个字符串存储为_source字段。</p>
+<p>查询时，可以通过_source字段拿到当初写入时的整个结构体。</p>
+<p>如果没有取出整个原始结构体的需求，可以在映射中关闭_source字段或者只在_source中存储部分字段，数据查询时仍可通过ES的docvalue_fields获取所有字段的值。</p>
+<p>关闭_source后，update, update_by_query, reindex等接口将无法使用。</p>
+<pre class=" language-json"><code class="language-json"><span class="token property">"doc_values"</span><span class="token operator">:</span> <span class="token boolean">false</span></code></pre>
+<p>控制列存。ES使用列存来支持sorting、aggregations和scripts功能。</p>
+<p>keyword，数组类型采用doc_values结构。</p>
+<pre class=" language-json"><code class="language-json"><span class="token property">"index"</span><span class="token operator">:</span> <span class="token boolean">false</span></code></pre>
+<p>控制倒排索引。默认对于所有字段都开启了倒排索引，用于查询。</p>
+<p>ES使用REST API（HTTP）与服务器进行交互。</p>
+<pre class=" language-json"><code class="language-json">PUT xxx_index
+<span class="token punctuation">{</span>
+  <span class="token property">"mappings"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"doc"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"_source"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"enabled"</span><span class="token operator">:</span> <span class="token boolean">false</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"title"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"text"</span><span class="token punctuation">,</span>
+          <span class="token property">"fields"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"keyword"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+              <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"keyword"</span><span class="token punctuation">,</span>
+              <span class="token property">"ignore_above"</span><span class="token operator">:</span> <span class="token number">100</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"store"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"publish_date"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"date"</span><span class="token punctuation">,</span>
+          <span class="token property">"store"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"author"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"keyword"</span><span class="token punctuation">,</span>
+          <span class="token property">"ignore_above"</span><span class="token operator">:</span> <span class="token number">100</span><span class="token punctuation">,</span> 
+          <span class="token property">"store"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"abstract"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"text"</span><span class="token punctuation">,</span>
+          <span class="token property">"store"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"content"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"text"</span><span class="token punctuation">,</span>
+          <span class="token property">"store"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"url"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"keyword"</span><span class="token punctuation">,</span>
+          <span class="token property">"doc_values"</span><span class="token operator">:</span><span class="token boolean">false</span><span class="token punctuation">,</span> // 该字段不用于聚合和排序操作
+          <span class="token property">"norms"</span><span class="token operator">:</span><span class="token boolean">false</span><span class="token punctuation">,</span>
+          <span class="token property">"ignore_above"</span><span class="token operator">:</span> <span class="token number">100</span><span class="token punctuation">,</span> 
+          <span class="token property">"store"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<hr>
+<p>ES的索引index是存储/索引数据的地方。</p>
+<p>索引可以由单个分片shard组成，但通常由多个分片组成。</p>
+<p>每个分片可以有多个副本，副本分片可以在主分片故障时实现故障转移，还可以增加读取吞吐量。</p>
+<p>默认5个主分片，1个副本。</p>
+<p>每个分片包含多个分段segment，分段即是倒排索引，包含了文档。</p>
+<p>在分片中搜索将依次搜索每个片段，然后将结果合并到该分片的最终结果中。</p>
+<p>写入的文档先写入内存缓冲，定时将该时间段写入的全部数据refresh成一个segment。</p>
+<p>所以默认是每1s生成一个segment。</p>
+<p>segment多了后会merge成更大的segment。</p>
+<p>分段和倒排索引是不变的，写入后永远不会改变。</p>
+<p>好处是无需锁定，不用担心多进程操作更改数据导致数据不一致。</p>
+<p>坏处是更新了词典词库后，老的索引不能生效，必须reindex重建整个索引。</p>
+<p>更新文档时，实际上只是将旧文档标记为已删除，并为新文档编制索引。</p>
+<p>合并时还会清除旧的已删除文档。</p>
+<p>ES数据并发冲突控制基于乐观锁和版本号。</p>
+<p>对文档执行增删改操作，都会对文档的版本号执行自增（删除也是）。</p>
+<p>客户端更新ES时，如果带上了版本号，必须与ES中文档的版本号一致才能成功。</p>
+<p>如果没有带上版本号，首先会读取最新版本号才尝试更新，类似于CAS，可能需要尝试很多次。</p>
+<hr>
+<p>原本的写入步骤：</p>
+<ul>
+<li>新文档先写入内存缓冲。</li>
+<li>定时执行提交，将缓冲写入新的segment，segment写入文件系统缓存FileSystemCache。</li>
+<li>文件系统缓存被fsync刷盘，新segment被打开，接受搜索操作。</li>
+<li>清空内存缓冲，接收新的文档写入。</li>
+</ul>
+<p>实际上ES为保证实时性，会定时对segment缓冲做refresh操作，默认1s刷新到文件系统缓存，使得文档可见。</p>
+<p>所以ES是近实时的搜索引擎。</p>
+<p>新文档先被写到内存的缓冲中，同时会将操作记录在translog之中，translog用于防止ES宕机造成数据丢失。</p>
+<p>当translog过大时会执行提交，translog还可以用于提供实时的CRUD。</p>
+<p>当按ID检索，更新或删除文档时，首先检查translog，然后再尝试从相关段中检索文档。</p>
+<p>当refresh时translog中的操作记录不会被清除，只有当数据从文件系统缓存flush刷盘后会将translog清空。</p>
+<hr>
+<p>Master节点</p>
+<ul>
+<li><p>检测所有其他节点，判断是否有节点已经挂掉。</p>
+</li>
+<li><p>创建或删除索引</p>
+</li>
+<li><p>决定分片在节点之间的分配</p>
+</li>
+</ul>
+<p>主节点尽可能做尽量少的工作，推荐使用一个专门的主节点来控制集群，不处理任何用户请求。</p>
+<p>ES使用Gossip协议管理集群关系，请求可以发送到集群的任意节点，内部会找到需要转发的节点。</p>
+<p>默认使用单播发现，防止节点无意中加入集群。</p>
+<p>Master节点向集群的所有其他节点发起ping，验证节点是否处于活动状态。</p>
+<p>集群每个节点向Master节点发起ping，判断Master节点是否存活，是否需要发起选举。</p>
+<ul>
+<li><p>只有参与选举的主节点数达标才能进行选举，防止脑裂。</p>
+</li>
+<li><p>只有候选主节点的节点才能成为主节点。</p>
+</li>
+<li><p>Id小的节点成为主节点。</p>
+</li>
+</ul>
+<p>有兴趣的可以了解一下Bully算法。</p>
+<hr>
+<p>基本写模型</p>
+<p>写入包括单文档写入和批量bulk写入，以单文档写入流程为例：</p>
+<p>根据键哈希对主分片数量取模，确定对应的主分片。</p>
+<p>将操作转发到对应的主分片，主分片负责验证并执行，然后并行转发到其他副本分片。</p>
+<p>只需要复制到in-sync的副本即可，不需要复制到所有副本。</p>
+<p>in-sync的副本由Master节点维护。</p>
+<p><del>Kafka看了直呼内行。</del></p>
+<p>所有副本成功地执行了操作并响应，然后主分片再响应客户端。</p>
+<p>如果超时还没收到副本的响应（或收到异常响应），主分片会向Master节点请求从同步副本中删除有问题的分片。</p>
+<p>同时Master节点还会指示另一个节点开始构建新的分片副本。</p>
+<p>主分片将操作转发到副本前，会用副本数来验证它仍然是活动的主分片。</p>
+<p>如果由于网络分区（或长GC），那么来自陈旧的主分片的操作将会被副本拒绝。</p>
+<p>主分片收到拒绝响应时，会向Master节点请求更新，后续操作将会路由到新的主分片上。</p>
+<hr>
+<p>基本读模型</p>
+<p>当一个协调节点接到读请求时，转发给相应的分片数据节点，对响应进行整理，并对客户端作出响应。</p>
+<p>对于搜索条件不包含分片字段的请求，需要从多个分片中读取，读请求可以是主分片，也可以是副本分片，默认轮询。</p>
+<p>汇聚各个分片节点返回的数据，然后返回个客户端。</p>
+<p>某些情况下，ES会倾向于快速响应，返回成功的分片数据给客户端，并在响应包中指明哪些分片节点发生了错误。</p>
+<p>默认的搜索方式是QUERY_THEN_FETCH，即先向所有的分片请求，各分片只返回排序和排名相关的信息（不包括文档），然后进行重新排序和排名，然后进行第二步，去相关的分片获取文档。</p>
+<p>这种方式返回的文档与客户端请求的size是相等的。</p>
+<p>还可以指定QUERY_AND_FEATCH，向索引的所有分片都发出查询请求，各分片把文档和计算后的排名信息一起返回。</p>
+<p>这种方式是最快的，因为只需要去分片查询一次。</p>
+<p>但是各个分片返回的结果的数量之和可能是客户端请求的size的分片倍。</p>
+<p>默认的QUERY_THEN_FETCH数据先是在主分片上进行索引后，才转发读请求到副本。</p>
+<p>也就是说，在索引操作完全确认之前，可以通过对主分片发起读请求，读到还没确认的数据（存疑）。</p>
+<p>类似读未提交的脏读。</p>
+<hr>
+<p>ES有4种方法处理数据实体间的关联：</p>
+<ul>
+<li>服务端Join或客户端Join</li>
+</ul>
+<p>适用于第一个实体只有少量的文档记录的情况。</p>
+<ul>
+<li>数据的非规范化</li>
+</ul>
+<p>通俗点就是字段冗余，但是以牺牲索引性能及灵活度为代价的。</p>
+<p>适合一对少量关系，并且冗余的字段很少改变。</p>
+<ul>
+<li>嵌套文档</li>
+</ul>
+<p>Nested Objects将实体关系嵌套组合在单文档内部，牺牲了索引性能（因为文档内任一属性变化都需要重新索引该文档）来换取查询性能。</p>
+<p>可以同时返回关系实体，比较适合于一对少量的关系。</p>
+<ul>
+<li>父子文档</li>
+</ul>
+<p>牺牲了查询性能来换取索引性能，适用于一对多的关系处理。</p>
+<p>一般不建议使用。</p>
+<hr>
+<ul>
+<li>不使用默认的Mapping；</li>
+<li>不要在一个index下创建多个type；</li>
+<li>使用索引别名，业务上根据alias写入、查询，索引重建等可以通过别名切换，对业务透明；</li>
+<li>写入和查询的时候设置routing，避免每次查询都遍历全量分片；</li>
+<li>基于模板+时间+rollover API滚动创建索引，如模板格式为：xxx_index_timestamp；</li>
+<li>string类型，如果不需要分词，设置为keyword；</li>
+<li>选择合理的分词器；</li>
+<li>能bulk批量就不单条写入；</li>
+<li>如果业务没有强需求，建议使用ES自动生成的id；</li>
+<li>禁用wildcard模糊匹配；</li>
+<li>控制返回字段和结果；</li>
+</ul>
+<hr>
+<p>全文检索及相关性评分的场景使用query检索，除此之外使用filter过滤器过滤。</p>
+<p>query会计算数据与查询语句的相关度（不是like这种），查询结果不可缓存。</p>
+<p>filter不涉及分数，适用于精确匹配和范围检索，同时filter可以被缓存（bitset）。</p>
+<p>建议使用query-bool-filter组合取代普通query。</p>
+<p>使用过滤查询，结合使用布尔匹配，可以使用很少的资源将搜索结果范围缩小。</p>
+<p>过滤（filter）的目标是减少必须由评分查询（query）检查的文档数量。</p>
+<hr>
+<p>节点职责明晰：区分路由节点、数据节点、候选主节点。</p>
+<p>路由节点减少了搜索和聚合的压力，因此数据节点上的内存压力略有降低。</p>
+<p>尽量将主节点与数据节点分开，仅负责处理集群管理和状态，避免内存高负载导致长GC，导致主节点从集群中退出。</p>
+<p>合理的堆内存大小配置建议：宿主机内存大小的一半和31GB，两者取最小值。</p>
+<p>之所以ES的堆内存不能超过物理机内存的一半，是因为另一半需要留给文件系统缓存，缓存Lucene的段文件。</p>
+<p>之所以ES的堆内存不能超过31GB（一种说法是26GB），是因为超出这个界限时，对象的指针会变大，浪费内存和CPU性能，导致大堆GC。</p>
+<p>低于这个界限则可以启用zero based Compressed Oops。</p>
+<p>同时建议-Xms和-Xmx设为相同的值，避免在运行过程中再进行内存分配。</p>
+<p>建议关闭交换分区，防止内存swap导致性能下降。</p>
+<p>建议设置最大文件句柄数，因为Lucene使用了大量的文件。</p>
+<hr>
+<p>对于日志系统，通常几个基本要求：</p>
+<ul>
+<li>检索的实时性要求高；</li>
+<li>新鲜数据的查询和统计频率高，检索速度要快；</li>
+<li>历史数据保留得越久越好。</li>
+</ul>
+<p>考虑冷热分离的结构，热节点做数据的写入，保存近期热数据，冷数据定期迁移到冷数据结点。</p>
+<p>存储层面，SSD/硬盘，同时对冷数据（不会再写入），可以定期force_merge加shrink压缩。</p>
+<p>集群层面，建议使用基于时间的索引和分层架构，包含冷热节点。</p>
+<hr>
+<p>ES不支持事务，也不方便复杂的多表关联。</p>
+<p>读写有一定延时，写入的数据，最快1s能被检索到。</p>
+<p>ES有两个版本的慢速日志：索引慢速日志（index slow logs ）和搜索慢速日志（ search slow logs）。</p>
+<p>默认关闭慢速日志。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>
