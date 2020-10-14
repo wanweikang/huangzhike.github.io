@@ -16,9 +16,10 @@
         content="Tomcat Warm-Up
 
 Launcher
-public class Launcher {
-    private static URLStreamHandlerFactory factory = new Launcher.Factory();
-    private static Launc">
+    public Launcher() {
+        Launcher.ExtClassLoader var1;
+        try {
+            // 实例化sun.misc.Launcher$ExtClassLoade">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -94,23 +95,15 @@ public class Launcher {
 				<p>Tomcat Warm-Up</p>
 <hr>
 <p>Launcher</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Launcher</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> URLStreamHandlerFactory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Launcher<span class="token punctuation">.</span>Factory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> Launcher launcher <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Launcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> String bootClassPath <span class="token operator">=</span> System<span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token string">"sun.boot.class.path"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">private</span> ClassLoader loader<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> URLStreamHandler fileHandler<span class="token punctuation">;</span>
-
-    <span class="token keyword">public</span> <span class="token function">Launcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token function">Launcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         Launcher<span class="token punctuation">.</span>ExtClassLoader var1<span class="token punctuation">;</span>
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 实例化sun.misc.Launcher$ExtClassLoader</span>
-            <span class="token comment" spellcheck="true">// 这里没有传入BootstrapClassLoader作为parent参数，因为BootstrapClassLoader是虚拟机的实现，不是Java类，无法在Java代码中获取引用</span>
+            <span class="token comment" spellcheck="true">// 这里没有传入BootstrapClassLoader作为parent参数，因为BootstrapClassLoader是虚拟机的实现，无法在Java代码中获取引用</span>
             var1 <span class="token operator">=</span> Launcher<span class="token punctuation">.</span>ExtClassLoader<span class="token punctuation">.</span><span class="token function">getExtClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> var10<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">InternalError</span><span class="token punctuation">(</span><span class="token string">"Could not create extension class loader"</span><span class="token punctuation">,</span> var10<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
-
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 实例化sun.misc.Launcher$AppClassLoader，parent为sun.misc.Launcher$ExtClassLoader</span>
             <span class="token keyword">this</span><span class="token punctuation">.</span>loader <span class="token operator">=</span> Launcher<span class="token punctuation">.</span>AppClassLoader<span class="token punctuation">.</span><span class="token function">getAppClassLoader</span><span class="token punctuation">(</span>var1<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -119,31 +112,9 @@ public class Launcher {
         <span class="token punctuation">}</span>
         <span class="token comment" spellcheck="true">// 默认设置当前线程的类加载器为sun.misc.Launcher$AppClassLoader</span>
         Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setContextClassLoader</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>loader<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        String var2 <span class="token operator">=</span> System<span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token string">"java.security.manager"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>var2 <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            SecurityManager var3 <span class="token operator">=</span> null<span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token string">""</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>var2<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token string">"default"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>var2<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                    var3 <span class="token operator">=</span> <span class="token punctuation">(</span>SecurityManager<span class="token punctuation">)</span><span class="token keyword">this</span><span class="token punctuation">.</span>loader<span class="token punctuation">.</span><span class="token function">loadClass</span><span class="token punctuation">(</span>var2<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IllegalAccessException</span> var5<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InstantiationException</span> var6<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ClassNotFoundException</span> var7<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ClassCastException</span> var8<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                var3 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SecurityManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>var3 <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">InternalError</span><span class="token punctuation">(</span><span class="token string">"Could not create SecurityManager: "</span> <span class="token operator">+</span> var2<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-
-            System<span class="token punctuation">.</span><span class="token function">setSecurityManager</span><span class="token punctuation">(</span>var3<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>    </code></pre>
-<pre class=" language-java"><code class="language-java">        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// null（由BootstrapClassLoader加载）</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+    <span class="token punctuation">}</span></code></pre>
+<pre class=" language-java"><code class="language-java">        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// null 由BootstrapClassLoader加载</span>
         System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getContextClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// sun.misc.Launcher$AppClassLoader@18b4aac2</span>
         System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>ClassLoader<span class="token punctuation">.</span><span class="token function">getSystemClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// sun.misc.Launcher$AppClassLoader@18b4aac2</span>
         System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>ClassLoader<span class="token punctuation">.</span><span class="token function">getSystemClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getParent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// sun.misc.Launcher$ExtClassLoader@4edde6e5</span>
@@ -171,20 +142,17 @@ ExtClassLoader -&gt; URLClassLoader -&gt; SecureClassLoader -&gt; ClassLoader</c
 <li><p>保证系统的内置类不会被覆盖。</p>
 </li>
 </ul>
+<p>双亲委派模型的好处就是类随着类加载器一起具备了带有优先级的层次关系。</p>
+<p>JDK9引入了模块，虽然维持着三层类加载器和双亲委派的架构，但类加载的委派关系发生了变动。</p>
 <hr>
 <p>避开双亲委托：</p>
 <p>参考了<a href="https://www.jianshu.com/p/a4dc755652ff" target="_blank" rel="noopener">这篇文章</a>。</p>
 <p>双亲委托加载类是单向的，顶层的类加载器，无法访问底层的类加载器所加载的类。</p>
 <p>系统核心类是由BootstrapClassLoader加载的，有些情况是需要由BootstrapClassLoader加载应用类路径下的类，而不是由AppClassLoader来加载。</p>
-<p>比如java.sql.Driver，是一个标准，该接口的实现是由数据库厂商完成，根据SPI加载。</p>
-<p>按照双亲委托，BootstrapClassLoader加载该实现时，由于自己就是顶级的类加载器，但是实现不在自己负责的目录下，所以会抛ClassNotFoundException异常。</p>
+<p>java.sql.Driver，该接口的实现是由数据库厂商完成，根据SPI加载。</p>
+<p>按照双亲委托，BootstrapClassLoader加载该实现时，自己就是顶级的类加载器，但是实现不在自己的目录下，会抛ClassNotFoundException异常。</p>
 <p>解决办法：线程上下文类加载器（Thread Context ClassLoader）。</p>
-<ul>
-<li><p>Thread#getContextClassLoader</p>
-</li>
-<li><p>Thread#setContextClassLoader</p>
-</li>
-</ul>
+<p>使用线程上下文类加载器去加载所需的SPI服务代码，这是父类加载器请求子类加载器完成类加载，违背了双亲委派模型。</p>
 <p>META-INF/services/java.sql.Driver</p>
 <pre><code>com.mysql.jdbc.Driver</code></pre><p>在入口sun.misc.Launcher初始化时，默认设置了当前线程上下文加载器为AppClassLoader。</p>
 <p>ServiceLoader#load</p>
@@ -242,30 +210,10 @@ ExtClassLoader -&gt; URLClassLoader -&gt; SecureClassLoader -&gt; ClassLoader</c
      */</span>
     <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> Class <span class="token class-name">findClass</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// .class文件转字节流数组</span>
         <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> data <span class="token operator">=</span> <span class="token function">classToByte</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">//</span>
         <span class="token keyword">return</span> <span class="token function">defineClass</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> data<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> data<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token comment" spellcheck="true">/**
-     * .class文件转字节流数组
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">classToByte</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        FileInputStream fis<span class="token punctuation">;</span>
-        <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> data <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            File file <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>name <span class="token operator">+</span> <span class="token string">".class"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            fis <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileInputStream</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            ByteArrayOutputStream baos <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ByteArrayOutputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">int</span> ch<span class="token punctuation">;</span>
-            <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>ch <span class="token operator">=</span> fis<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                baos<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            data <span class="token operator">=</span> baos<span class="token punctuation">.</span><span class="token function">toByteArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> data<span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
 <p>ClassLoader#loadClass</p>
@@ -324,7 +272,6 @@ ExtClassLoader -&gt; URLClassLoader -&gt; SecureClassLoader -&gt; ClassLoader</c
                     <span class="token keyword">if</span> <span class="token punctuation">(</span>var2<span class="token punctuation">)</span> <span class="token punctuation">{</span>
                         <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">resolveClass</span><span class="token punctuation">(</span>var5<span class="token punctuation">)</span><span class="token punctuation">;</span>
                     <span class="token punctuation">}</span>
-
                     <span class="token keyword">return</span> var5<span class="token punctuation">;</span>
                 <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
                     <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ClassNotFoundException</span><span class="token punctuation">(</span>var1<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -427,24 +374,15 @@ ExtClassLoader -&gt; URLClassLoader -&gt; SecureClassLoader -&gt; ClassLoader</c
 
     <span class="token annotation punctuation">@CallerSensitive</span>
     <span class="token keyword">public</span> <span class="token keyword">static</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> <span class="token function">forName</span><span class="token punctuation">(</span>String name<span class="token punctuation">,</span> <span class="token keyword">boolean</span> initialize<span class="token punctuation">,</span> ClassLoader loader<span class="token punctuation">)</span> <span class="token keyword">throws</span> ClassNotFoundException <span class="token punctuation">{</span>
-        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> caller <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        SecurityManager sm <span class="token operator">=</span> System<span class="token punctuation">.</span><span class="token function">getSecurityManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>sm <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// Reflective call to get caller class is only needed if a security manager</span>
-            <span class="token comment" spellcheck="true">// is present.  Avoid the overhead of making this call otherwise.</span>
-            caller <span class="token operator">=</span> Reflection<span class="token punctuation">.</span><span class="token function">getCallerClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>sun<span class="token punctuation">.</span>misc<span class="token punctuation">.</span>VM<span class="token punctuation">.</span><span class="token function">isSystemDomainLoader</span><span class="token punctuation">(</span>loader<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                ClassLoader ccl <span class="token operator">=</span> ClassLoader<span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span>caller<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>sun<span class="token punctuation">.</span>misc<span class="token punctuation">.</span>VM<span class="token punctuation">.</span><span class="token function">isSystemDomainLoader</span><span class="token punctuation">(</span>ccl<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    sm<span class="token punctuation">.</span><span class="token function">checkPermission</span><span class="token punctuation">(</span>SecurityConstants<span class="token punctuation">.</span>GET_CLASSLOADER_PERMISSION<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token comment" spellcheck="true">// native方法</span>
         <span class="token keyword">return</span> <span class="token function">forName0</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> initialize<span class="token punctuation">,</span> loader<span class="token punctuation">,</span> caller<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
 <p>ClassLoader#loadClass</p>
 <p>只将.class文件加载到JVM，不初始化类，不执行static内容，只有在实例化时才执行。</p>
+<hr>
+<p>比较两个类是否相等，只有在这两个类是由同一个类加载器加载的前提下才有意义。</p>
+<p>即使这两个类来源于同一个Class文件，被同一个虚拟机加载，只要加载它们的类加载器不同，这两个类就不相等。</p>
 
 				</div>
 				<!-- about -->

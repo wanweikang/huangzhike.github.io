@@ -1,0 +1,520 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-深入理解JAVA虚拟机-GC | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="2020.10.06：重新整理自深入理解Java虚拟机：JVM高级特性与最佳实践（第3版）。
+两年后再看，还是挺有收获的。
+推荐RednaxelaFX的专栏。
+虽然我基本没时间看，毕竟不是专门研究虚拟机的，精力有限。
+
+垃圾收集算法
+
+标记-复制算法（Copying）
+
+常被简称为复制算法。
+将内存">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-深入理解JAVA虚拟机-GC" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-深入理解JAVA虚拟机-GC</h2>
+				
+				<div>
+					<div class="post-time">2018-11-17</div>
+				</div>
+				
+				<div class="article-content">
+				<p>2020.10.06：重新整理自<a href="https://read.douban.com/ebook/128052544/" target="_blank" rel="noopener">深入理解Java虚拟机：JVM高级特性与最佳实践（第3版）</a>。</p>
+<p>两年后再看，还是挺有收获的。</p>
+<p>推荐<a href="https://zhuanlan.zhihu.com/p/25042028" target="_blank" rel="noopener">RednaxelaFX的专栏</a>。</p>
+<p><del>虽然我基本没时间看，毕竟不是专门研究虚拟机的，精力有限。</del></p>
+<hr>
+<p>垃圾收集算法</p>
+<ul>
+<li>标记-复制算法（Copying）</li>
+</ul>
+<p>常被简称为复制算法。</p>
+<p>将内存分为两块，每次只使用其中的一块，当这块的内存用完了，就将还存活着的对象复制到另一块，再把内存清掉。</p>
+<p>效率问题，在对象存活率较高时就要进行较多的复制操作。</p>
+<p>需要额外的空间进行分配担保，应对所有对象都100%存活的极端情况，老年代不能选用这种算法。</p>
+<p>多用于新生代。</p>
+<ul>
+<li>标记-清除算法（Mark-Sweep）</li>
+</ul>
+<p>先标记所有要回收的对象，标记完成后统一清除。</p>
+<p>效率问题，标记和清除要两次；</p>
+<p>空间问题，清除之后会产生内存碎片，可能导致分配大对象时，无法找到足够的连续内存而不得不触发一次GC。</p>
+<p>多用于老年代。</p>
+<ul>
+<li>标记-整理算法（Mark-Compact）</li>
+</ul>
+<p>不直接清理可回收对象，而让所有存活的对象都向一端移动，然后直接清理掉边界外的内存。</p>
+<p>多用于老年代。</p>
+<hr>
+<p>分代收集算法</p>
+<p>分代收集算法建立在三个假说之上：</p>
+<ul>
+<li><p>绝大多数对象都是朝生夕灭的（新生代）。</p>
+</li>
+<li><p>熬过越多次GC的对象就越难以消亡（老年代）。</p>
+</li>
+<li><p>跨代引用占极少数，互相引用的两个对象，应该倾向于同时生存或消亡的。</p>
+</li>
+</ul>
+<p>根据对象存活周期，将堆分为新生代和老年代，分别采用适当的收集算法。</p>
+<p>新生代中，每次GC只有少量存活，复制成本较低，选用复制算法。</p>
+<p>老年代中，对象存活率高、没有额外空间担保，使用“标记-清理”或“标记-整理”算法。</p>
+<p>默认的新生代与老年代的比例为1:2。</p>
+<p>新生代又分为Eden空间、From Survivor空间、To Survivor空间。</p>
+<p>默认Eden和Survivor的大小比例是8∶1，只有一个Survivor空间，即10%的新生代空间是被浪费的。</p>
+<p>对象优先在Eden分配，当Eden区没有足够空间时，发起一次Minor GC。</p>
+<p>GC时，将Eden和Survivor中存活的对象一次性复制到另外一块Survivor上，最后清理掉Eden和Survivor。</p>
+<p>大对象直接进入老年代，因为大对象需要连续内存，典型的是很长的字符串，或元素数量庞大的数组，避免频繁触发GC，在Eden区及两个Survivor区之间来回复制。</p>
+<p>Minor GC前，检查老年代最大可用的连续空间是否大于新生代所有对象总空间，如果成立，这次Minor GC是安全的。</p>
+<p>如果不成立，继续检查老年代最大可用的连续空间是否大于历次晋升到老年代对象的平均大小，如果大于，将冒险进行一次Minor GC。</p>
+<p>否则需要进行一次Full GC。</p>
+<p>极端情况下，新生代中所有对象都存活，需要老年代担保，把Survivor无法容纳的对象直接送入老年代，前提是老年代还有容纳的空间。</p>
+<p>对象的对象头有个年龄计数器，存活过一次GC后会进入Survivor空间，存活过多次GC就进入老年代。</p>
+<p>对象通常在Eden区里诞生，如果经过第一次GC后仍然存活，并且能被Survivor容纳的话，该对象会被移动到Survivor空间中，每熬过一次GC，年龄就自增，当增加到阈值后，就会被晋升到老年代中。</p>
+<p>此外，如果在Survivor空间中相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代。</p>
+<hr>
+<p>部分收集（Partial GC）：</p>
+<ul>
+<li><p>新生代收集（Minor GC/Young GC）：只是新生代的GC。</p>
+</li>
+<li><p>老年代收集（Major GC/Old GC）：只是老年代的GC。目前只有CMS收集器有。</p>
+</li>
+<li><p>混合收集（Mixed GC）：整个新生代以及部分老年代的GC。目前只有G1收集器有。</p>
+</li>
+</ul>
+<p>整堆收集（Full GC）：整个堆和方法区的GC。</p>
+<hr>
+<p>复制算法中，必须“Stop The World”暂停用户线程才能移动存活对象。</p>
+<p>标记-清除算法也需要停顿用户线程来标记、清理可回收对象，只是时间相对短，但会导致空间碎片化，可以通过“分区空闲分配链表”解决，但内存访问是最频繁的操作，会直接影响吞吐量。</p>
+<p>是否移动对象都存在弊端，移动则内存回收时更复杂，不移动则内存分配时更复杂。</p>
+<p>即使不移动对象会使GC效率提升，但内存分配和访问比GC频率要高得多，总吞吐量仍然是下降的。</p>
+<p>关注吞吐量的Parallel Scavenge收集器是基于标记-整理算法的，而关注延迟的CMS收集器则是基于标记-清除算法的，也印证这点。</p>
+<p>还有一种方案，多数时间都采用标记-清除算法，暂时容忍内存碎片，直到影响对象分配时，再采用标记-整理算法收集一次，以获得规整的内存空间。</p>
+<p>基于标记-清除算法的CMS收集器面临空间碎片过多时采用的就是这种办法。</p>
+<hr>
+<p>所有收集器在根节点枚举时都是必须暂停用户线程的，即使是CMS、G1、ZGC等收集器。</p>
+<p>可达性分析耗时最长的查找引用链可以与用户线程并发，但根节点枚举过程中，根节点集合的对象引用关系不能变化。</p>
+<p>JVM中每个线程嵌套的函数栈帧几十上百，如果遍历搜索，可能耗时较长，而且此时是STW的。</p>
+<p>HotSpot采取空间换时间的策略，提前记录GC Roots的位置，GC时可以快速找到。</p>
+<p>用户线程停顿后，不需要检查所有执行上下文和全局的引用位置，通过OopMap直接得到哪些地方存放着对象引用。</p>
+<p>OopMap可以快速准确地完成GC Roots枚举，但导致引用变化（OopMap内容变化）的指令非常多，不可能为每条指令都生成对应的OopMap。</p>
+<p>HotSpot在特定的位置记录了这些信息，称为安全点（Safepoint）。</p>
+<p>比如函数的返回，异常的跳转，循环的跳转等，JVM将记录OopMap。</p>
+<p>用户线程必须执行到达安全点后才能暂停，开始GC。</p>
+<p>安全点既不能太少，让收集器等待过长，也不能太频繁，增大运行时的内存负荷。</p>
+<p>HotSpot使用主动式中断，当GC需要中断线程时，不直接对线程操作，仅仅设置一个标志位，线程执行时会不停地主动轮询这个标志，一旦发现中断标志为真时就在最近的安全点上主动中断挂起。</p>
+<p>JVM的执行过程可以简单理解为不断从DispatchTable取出字节码然后执行该字节码对应的代码。</p>
+<p>对于解释执行字节码状态的线程，可以通过替换DispatchTable，添加安全点的检查代码。</p>
+<p>对于JNI调用的线程，从JNI接口返回时将会主动去检查是否需要挂起自己。</p>
+<p>但对于即时编译的代码，不再通过中间字节码执行，也不会走字节码派遣表。</p>
+<p>HotSpot的主动式中断，在JVM中有一个内存页面，线程会不停地主动轮询，在GC之前，JVM将这个内存页面置为不可读，线程读取时将触发内存访问异常，异常捕获器就能接管线程，将线程挂起。</p>
+<p>但是如果用户线程处于Sleep或Blocked状态，没有分配处理器时间，不能走到安全点，虚拟机也不能等着。</p>
+<p>于是引入安全区域（Safe Region）。</p>
+<p>安全区域确保在某一段代码中，引用关系不会发生变化，在这个区域中任意地方开始GC都是安全的。</p>
+<p>当线程执行到安全区域时，首先标识自己进入了安全区域，GC时就不必去管这些线程了。</p>
+<p>当线程离开安全区域时，检查虚拟机是否已经完成了根节点枚举（或者暂停阶段），完成了就继续执行，否则一直等待，直到收到信号。</p>
+<hr>
+<p>假如要进行新生代的GC，但新生代中的对象可能被老年代引用，不得不在固定的GC Roots外，额外遍历整个老年代，反过来也一样。</p>
+<p>不只是新生代、老年代之间，所有涉及部分收集的收集器，如G1、ZGC，都有跨代引用。</p>
+<p>跨代引用是很少的，不需要扫描整个老年代，只需在新生代上建立一个记忆集（Remembered Set），把老年代划分成若干块，标识出老年代的哪一块存在跨代引用。</p>
+<p>当Minor GC时，只有包含了跨代引用的内存里的对象才会被加入到GC Roots扫描。</p>
+<p>卡表是记忆集的一种实现，将老年代的空间分成若干张卡页。</p>
+<p>卡表数组中的每个元素对应一张卡页，当老年代引用新生代时，将该卡对应的卡表元素标识为1，称为这个元素变脏。</p>
+<p>有其他分代区域中对象引用了本区域对象时，其对应的卡表元素就变脏，变脏发生在引用类型字段赋值时。</p>
+<p>GC时，只要筛选出卡表中变脏的元素，就能得出哪些卡页内存块中包含跨代指针，把它们加入GC Roots中一并扫描。</p>
+<p>通过空间换时间，避免了全堆扫描。</p>
+<hr>
+<p>GC Roots相比整个堆中全部的对象算是极少数，带来的停顿已经是非常短暂且相对固定（不随堆容量而增长）的了。</p>
+<p>从GC Roots继续往下遍历对象图，停顿时间必定与堆容量成正相关：堆越大，对象越多，停顿时间越长。</p>
+<p>引入三色标记推导，把遍历对象图过程中遇到的对象，按照“是否访问过”这个条件标记成三种颜色：</p>
+<ul>
+<li><p>白色：对象尚未被GC访问过。分析开始时，所有对象都是白色的，分析结束后仍然是白色，说明不可达。</p>
+</li>
+<li><p>黑色：对象已经被GC访问过，并且对象的所有引用都已经扫描过。黑色代表已经扫描过，安全存活。</p>
+</li>
+<li><p>灰色：对象已经被GC访问过，但至少存在一个引用还没有被扫描过。</p>
+</li>
+</ul>
+<p>可达性分析的扫描过程，可以看作对象图上一股以灰色为波峰的波纹从黑向白推进的过程。</p>
+<p>用户线程与GC并发情况下，GC在对象图上标记颜色，同时用户线程在修改引用关系，可能出现两种后果。</p>
+<p>一种是把原本消亡的对象错误标记为存活，但可以容忍浮动垃圾的存在。</p>
+<p>另一种是把原本存活的对象错误标记为已消亡。</p>
+<p>解决并发扫描时的对象消失问题，有两种解决方案：增量更新和原始快照。</p>
+<p>增量更新：当黑色对象插入新的指向白色对象的引用关系时，记录这个新插入的引用，并发扫描结束后，再以这些引用为根重新扫描一次。</p>
+<p>已完成扫描确认存活的对象不会再扫描，给它加上新的引用，新的引用的对象也不会被标记为存活。</p>
+<p>CMS是基于增量更新来做并发标记的。</p>
+<p>原始快照：当灰色对象要删除指向白色对象的引用关系时，记录这个要删除的引用，并发扫描结束后，再以这些引用为根重新扫描一次。</p>
+<p>还没完成扫描的对象上的引用的对象可能也没被标记为存活，将它指向别的已完成扫描的对象会导致它没被标记。</p>
+<p>G1则是用原始快照来实现。</p>
+<p>栅栏：当某些语句被执行时，栅栏代码也会被执行，类似AOP切面。</p>
+<p>写栅栏的指令序列开销非常昂贵。</p>
+<p>G1主要在赋值语句中，使用写前栅栏和写后栅栏。</p>
+<p>写前栅栏：即将执行赋值语句时，等式左侧对象将修改引用到另一个对象，那么等式左侧对象原先引用的对象所在分区将因此丧失一个引用，那么要在赋值语句生效之前，记录丧失引用的对象。JVM不会立即维护RSet，而是通过批量处理，在将来RSet更新（见SATB）。</p>
+<p>写后栅栏：执行一段赋值语句后，等式右侧对象获得了引用，那么右侧对象所在分区的RSet也应该更新。同样为了降低开销，写后栅栏发生后，RSet也不会立即更新，同样只是记录此次更新日志，在将来批量处理（见Concurrence Refinement Threads）。</p>
+<hr>
+<ul>
+<li><p>并行（Parallel）：多条GC线程并行工作，但此时用户线程处于等待状态。</p>
+</li>
+<li><p>并发（Concurrent）：指用户线程与GC线程同时执行，但由于GC线程占了部分系统资源，用户线程的吞吐量将受到影响。</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li>Serial</li>
+</ul>
+<p>新生代收集器，基于复制算法。</p>
+<p>单线程GC，暂停用户线程，直到收集结束。</p>
+<ul>
+<li>ParNew</li>
+</ul>
+<p>Serial收集器的多线程版本，新生代收集器，基于复制算法。</p>
+<p>能与CMS收集器配合使用。</p>
+<ul>
+<li>Parallel Scavenge</li>
+</ul>
+<p>新生代收集器，基于标记-复制算法，能够并行收集的多线程收集器。</p>
+<p>CMS尽可能地缩短GC时用户线程的停顿时间，而Parallel Scavenge目标是吞吐量。</p>
+<p>GC停顿时间缩短是牺牲吞吐量换取的，适合用户交互的程序，响应速度能提升用户体验。</p>
+<p>吞吐量就是处理器用于运行用户代码的时间与处理器总消耗时间（用户代码的时间+GC时间）的比值。</p>
+<p>高吞吐量则可以高效率利用CPU时间，尽快完成任务，适合后台运算的任务。</p>
+<p>Parallel Scavenge也称“吞吐量优先收集器”，JDK8下服务模式默认的新生代收集器。</p>
+<ul>
+<li>Serial Old</li>
+</ul>
+<p>Serial收集器的老年代版本，基于标记-整理算法。</p>
+<p>也是CMS收集器的后备算法。</p>
+<ul>
+<li>Parallel Old</li>
+</ul>
+<p>Parallel Scavenge的老年代版本，基于标记-整理算法。</p>
+<p>JDK8下服务模式默认的老年代收集器。</p>
+<hr>
+<p>CMS收集器（Concurrent Mark &amp; Sweep）</p>
+<p>CMS收集器注重响应速度，是以最短GC停顿时间为目标的老年代收集器，基于标记-清除算法，基本实现了GC线程与用户线程并发工作。</p>
+<p>分四个步骤：初始标记（CMS initial mark）、并发标记（CMS concurrent mark）、重新标记（CMS remark）、并发清除（CMS concurrent sweep）。</p>
+<p>其中初始标记、重新标记两个步骤需要STW。</p>
+<p>初始标记仅标记GC Roots能直接关联到的对象，速度很快。</p>
+<p>并发标记是从GC Roots直接关联的对象开始遍历对象图，耗时较长，但用户线程可以与GC线程并发运行。</p>
+<p>重新标记是为了修正并发标记期间，因用户程序而导致标记变动的那部分对象的标记。</p>
+<p>并发清除，清理标记阶段判断为死亡的对象，由于不需要移动存活对象，也可以与用户线程并发。</p>
+<ul>
+<li><code>[CMS-initial-mark]</code>：</li>
+</ul>
+<p>CMS垃圾回收触发的条件：老年代内存达到92%。</p>
+<p>Stop The World，开始初始标记，标记老年代中所有GC Roots直接关联到的对象，耗时短。</p>
+<ul>
+<li><code>[CMS-concurrent-mark-start]</code>：</li>
+</ul>
+<p>GC线程和用户线程并发运行。</p>
+<p>从之前<code>[CMS-initial-mark]</code>标记的对象开始，遍历整个老年代，标记所有存活对象。</p>
+<p>因为和用户线程并发进行，所以不是所有的老年代存活对象都会被标记。</p>
+<p>并发标记时，如果某个对象的引用发生了变化，就在卡表上标记该对象所在的块为脏。</p>
+<p>并发预清理阶段就会重新扫描该块，将该对象引用的对象标识为可达。</p>
+<p>这个卡表貌似是处理增量更新的，而不是处理跨代引用的。</p>
+<ul>
+<li><code>[CMS-concurrent-mark]</code>：</li>
+</ul>
+<p>结束。</p>
+<ul>
+<li><code>[CMS-concurrent-preclean-start]</code>：</li>
+</ul>
+<p>GC线程和用户线程并发运行，并发预清理阶段。</p>
+<p>可能有一些对象从新生代晋升到老年代，或被分配到老年代。</p>
+<p>重新扫描，减少<code>[CMS-remark]</code>阶段的工作，因为<code>[CMS-remark]</code>会STW。</p>
+<ul>
+<li><code>[CMS-concurrent-preclean]</code>：</li>
+</ul>
+<p>结束。</p>
+<ul>
+<li><code>[CMS-concurrent-abortable-preclean-start]</code>：</li>
+</ul>
+<p>GC线程和用户线程并发运行，可中断的并发预清理。</p>
+<p>尽量减少<code>[CMS-remark]</code>阶段的工作，因为<code>[CMS-remark]</code>会STW。</p>
+<p>重复进行，直到达到中断的条件，如重复次数、持续时间等。</p>
+<p>如果此阶段等到了Minor GC，那么<code>[CMS-remark]</code>阶段需要扫描的对象就少了。</p>
+<p>默认如果超过5s，不管有没发生Minor GC，都会直接进入<code>[CMS-remark]</code>。</p>
+<p>可以设置在<code>[CMS-remark]</code>前强制进行一次Minor GC。</p>
+<ul>
+<li><code>[CMS-concurrent-abortable-preclean]</code>：</li>
+</ul>
+<p>结束。</p>
+<ul>
+<li><code>[CMS-remark]</code>：</li>
+</ul>
+<p>Stop The World，完成标记整个老年代所有的存活对象（防止被清理掉），包括在并发标记阶段更改的或者新创建的引用对象。</p>
+<p>因为存在跨代引用，必须扫描新生代，堆中对象的数目影响了此阶段耗时。</p>
+<ul>
+<li><code>[CMS-concurrent-sweep-start]</code>：</li>
+</ul>
+<p>GC线程和用户线程并发运行。</p>
+<p>回收无用的对象。</p>
+<ul>
+<li><code>[CMS-concurrent-sweep]</code>：</li>
+</ul>
+<p>结束。</p>
+<ul>
+<li><code>[CMS-concurrent-reset-start]</code>：</li>
+</ul>
+<p>GC线程和用户线程并发运行。</p>
+<p>重置CMS的数据结构，准备下个CMS周期使用。</p>
+<ul>
+<li><code>[CMS-concurrent-reset]</code>：</li>
+</ul>
+<p>结束。</p>
+<p>CMS尽量让应用程序和GC线程并发、增加可中断的并发预清理阶段、引入卡表等，虽然牺牲了一定吞吐量但获得了更短的停顿时间。</p>
+<p>由于GC阶段用户线程需要运行，因此不能等到老年代快满了再GC，必须预留空间供用户线程使用。</p>
+<p>CMS的启动阈值默认92%。</p>
+<p>阈值太高，老年代无法容纳新对象，就会出现并发失败（Concurrent Mode Failure），不得不启用Serial Old收集器，冻结用户线程，重新进行老年代GC。</p>
+<p>阈值太低，CMS的触发频率升高，性能也会下降。</p>
+<p>CMS基于“标记-清除”算法，GC后会产生空间碎片，可能给大对象分配带来麻烦，提前触发Full GC。</p>
+<p>CMS进行Full GC前，默认会进行内存碎片的整理，还可以设置执行多少次不压缩（不进行碎片整理）的Full GC后，再来一次带压缩（碎片整理）的Full GC。</p>
+<p>触发STW的Full GC的情况：</p>
+<ol>
+<li><p>promotion failed：Young GC时，存活的对象在Survivor区放不下，而此时老年代也放不下。</p>
+</li>
+<li><p>concurrent mode failure：CMS回收垃圾的过程中同时有存活的对象放入老年代，而此时老年代空间不足。</p>
+</li>
+</ol>
+<p>CMS收集器的缺点：</p>
+<p>对多核资源敏感，会占用处理器的计算能力<del>（又想马跑得快，又不想给马吃草）</del>，降低总吞吐量。</p>
+<p>无法处理“浮动垃圾”，有可能出现“Concurrent Mode Failure”进而导致另一次完全STW的Full GC。</p>
+<p>并发标记和并发清理阶段，用户线程不断产生新的垃圾对象，留待下次GC，称为“浮动垃圾”。</p>
+<p>适用场景：重视响应速度，要求系统停顿时间最短。</p>
+<hr>
+<p>G1收集器</p>
+<p>G1收集器前的GC范围都是整个新生代或老年代，而G1将堆化整为零，分为多个大小相等的区域（Region）。</p>
+<p>每个Region同一时刻下，可能是新生代的Eden空间、Survivor空间，或者老年代空间之一。</p>
+<p>Region中还有一类特殊的Humongous区域，专门用来存储大对象，可以当做老年代看待。</p>
+<p>G1收集器跟踪各个Region里面的垃圾的价值大小，维护一个优先列表，根据允许的收集停顿时间，优先回收垃圾最多的Region（Garbage First）。</p>
+<p>基于Region的回收和有优先级的回收方式，保证了G1的收集效率。</p>
+<p>JDK9后，G1是服务端模式下的默认垃圾收集器，而CMS被标记为过时。</p>
+<p><del>我看你就是在为难我胖虎。</del></p>
+<p>G1会维护一个空闲Region的链表，每次回收后的Region都会加入到这个链表中。</p>
+<p>每次都只有一个Region处于被分配的状态，称为Current Region。</p>
+<p>Region有一个指针，top，标记的是Region已分配和未分配的内存分界线，随着新对象的分配不断移动。</p>
+<p>多线程情况下，会有并发问题。</p>
+<p>G1采用和CMS一样的TLAB，为每个用户线程分配一个缓冲，线程分配对象就在这个空间内分配。</p>
+<p>线程耗尽自己的缓冲后，需要分配新的缓冲，此时G1采用CAS处理并发问题。</p>
+<p>过程大概是：记录top值；准备分配；比较top值，一样则更新top值并执行分配，否则重试。</p>
+<p>即使一个线程的缓冲还有剩余，但不够的话，还是会申请新的缓冲，新旧缓冲不一定是连续的，所以会有碎片？</p>
+<p>每个GC线程也可以独占一个本地缓冲区（GCLAB）用来转移对象，每次回收会将对象复制到Suvivor或老年代。</p>
+<p>对于从Eden/Survivor晋升到Survivor/老年代的对象，同样有GC独占的本地缓冲区，称为晋升本地缓冲区（PLAB）。</p>
+<p>Collect Set：G1选择的待回收的Region集合，实现软实时，当然有对应的策略可以配置。</p>
+<p>年轻代收集：堆内存可用空间比较大，只会在年轻代满时，触发年轻代收集。</p>
+<p>混合收集：老年代内存增长，占整堆比到达阈值时，G1开始准备收集老年代空间，在并发标记的时候，识别出高收益的老年代分区，但不会马上开始混合收集，而是等待年轻代收集，在这次STW中，确定收集的CSet。然后在接下来的年轻代收集时触发。</p>
+<p>分代式G1的正常工作流程就是在Young GC与Mixed GC间视切换，定期做全局并发标记。</p>
+<p>正常工作流程中没有Full GC的概念，老年代的收集全靠Mixed GC完成。</p>
+<p>初始标记搭在年轻代GC上执行，全局并发标记时，G1不会混合收集，如果有混合收集进行，也不会启动初始标记。</p>
+<p>根分区扫描：初始标记暂停结束后，年轻代GC也完成的对象复制到Survivor的工作，用户线程恢复，此时为了保证标记算法的正确性，所有新复制到Survivor分区的对象，都要被扫描并标记成根，称为根分区扫描，扫描的Suvivor分区也被称为根分区。</p>
+<p>根分区扫描的目的是扫描Survivor中指向老年代的被初始标记阶段标记的对象。</p>
+<p>因为年轻代总是会被回收，因此G1不维护从年轻代出发的引用涉及的RSet，包括YoungRegion -&gt; YoungRegion/OldRegion。</p>
+<p>所以一个老年代的存活对象，可能只被年轻代的对象引用。</p>
+<p>在一次年轻代GC中，存活的年轻代的对象会被复制到Survivor Region，因此把这些对象作为并发标记阶段扫描老年代的根的一部分。</p>
+<p>根分区扫描必须在下次年轻代GC启动前完成，因为每次GC会导致Survivor Region发生变化。</p>
+<p>G1的的每个Region维护有两个Marking Bitmap，两个TAMS（Top At Mark Start）指针。</p>
+<p>Previous Bitmap：记录上一轮GC的对象存活标记。</p>
+<p>Next Bitmap：记录当前一轮GC的对象存活标记。</p>
+<p>Previous TAMS和Next TAMS两个指针。</p>
+<ul>
+<li>初始标记：</li>
+</ul>
+<p>标记一下GC Roots能直接关联到的对象。</p>
+<p>需要停止用户线程，但耗时很短，而且是Minor GC的时候一起完成的，所以实际没有额外的停顿。</p>
+<p>达到阈值时，G1不会立即发起标记，而是等待别的Region年轻代收集，利用年轻代收集STW的时间，完成初始标记。</p>
+<p>此时nextBitmap是空的。</p>
+<p>让nextTAMS指向top，即该Region未分配区域和已分配区域的分界点。</p>
+<ul>
+<li>并发标记：</li>
+</ul>
+<p>与用户线程并发执行，耗时较长，标记线程也可能会被若干次年轻代GC打断。</p>
+<p>如果堆满前没有完成标记任务，则会触发担保机制，经历一次长时间的串行Full GC。</p>
+<p>多个标记线程并发执行，每个标记线程每次只扫描一个分区，从GC Root开始对堆中对象进行可达性分析，标记出存活对象图。</p>
+<p>可达性分析的过程中，实际上扫描的就是prevTAMS ~ nextTAMS间的对象，完成后nextBitmap就有了对应的存活对象的地址标记了。</p>
+<p>注意因为是和用户线程并发的，所以nextTAMS ~ top间的对象就是此期间新分配的对象，这部分垃圾留给下次GC。</p>
+<p>并发阶段产生的引用修改会被原始快照的写屏障记录下。</p>
+<p>对象图扫描完成后，还要处理一次原始快照（Snapshot At The Beginning）记录的在并发时有引用变动的对象。</p>
+<ul>
+<li>最终标记：</li>
+</ul>
+<p>需要停止用户线程，但耗时很短。</p>
+<p>因为上个阶段并发标记是并发的，处理原始快照（SATB）记录的同时，还会有少量的对象引用被修改。</p>
+<p>于是再处理一次原始快照（SATB）记录的对象，因为很少，所以是短暂的。</p>
+<p>只需要扫描SATB的缓冲，而CMS的Remark需要重新扫描整个年轻代，因而CMS的Remark可能会非常慢。</p>
+<ul>
+<li>筛选回收：</li>
+</ul>
+<p>STW，更新Region的存活统计，把完全没有存活对象的Region直接放到空闲列表中。</p>
+<p>对各个Region的回收价值和成本进行排序，根据用户期望的停顿时间来制定回收计划，不会清除对象。</p>
+<p>可以把决定回收的Region的存活对象复制到空的Region中，再清理掉整个旧Region的全部空间。</p>
+<p>如果涉及移动的存活对象，必须暂停用户线程，由多条收集器线程并行完成（这个会等到下次年轻代GC再执行么？）。</p>
+<p>将nextBitmap和prevBitmap互换，同时重置新的nextBitmap。</p>
+<p>将nextTAMS和prevTAMS互换，同时重置新的nextTAMS。</p>
+<p>总结：</p>
+<p>G1收集器除了并发标记外，其余阶段都是要暂停用户线程的，并非追求低延迟，而是在延迟可控（指定的GC暂停时间）下获得尽可能高的吞吐量，所以是一个全功能收集器。</p>
+<p>与CMS的“Concurrent Mode Failure”会导致Full GC类似，如果内存回收的速度赶不上内存分配的速度，G1也要冻结用户线程，导致长时间Full GC。</p>
+<p>注意不要把MaxGCPauseMillis设得太低，不然G1回收跟不上就导致垃圾堆积，引发Full GC。</p>
+<p>当G1发生转移失败（Evacuation Failure），无法在堆空间中申请新的分区时，便会触发担保机制，执行一次STW式的、单线程的Serial Old GC。</p>
+<p>Full GC会对整堆做标记清除和压缩，最后将只包含存活对象。</p>
+<p>与CMS的“标记-清除”算法不同，G1从整体来看是基于“标记-整理”算法，但从局部（两个Region间）上看又是基于“标记-复制”算法，这两种算法都意味着GC不会产生内存碎片，有利于程序长时间运行，而CMS会产生内存碎片，可能触发更长的Full GC。</p>
+<p>连续空间意味着G1可以不必采用空闲链表的内存分配方式，而可以直接采用Bump-The-Pointer的方式。</p>
+<p>G1的缺点是，运行过程中，无论是为了GC产生的内存占用还是额外执行负载都比CMS高。</p>
+<p>小内存上CMS的表现大概率会优于G1，大内存上G1则能发挥优势，堆容量平衡点通常在6GB至8GB之间。</p>
+<p>G1的Region数量比传统收集器的分代数量要多得多，因此内存占用更多，大约需要堆容量的10%至20%额外内存。</p>
+<p>CMS的卡表只有一份，在新生代中，只处理老年代到新生代的引用，代价就是当CMS发生Old GC时（所有收集器中只有CMS有针对老年代的Old GC），要把整个新生代作为GC Roots来扫描，所以CMS最严重的暂停通常发生在Remark阶段。</p>
+<p>G1的每个Region会记录哪些Region有指向自己的指针，这些指针分别在哪些卡的范围。</p>
+<p>这个RSet其实是一个哈希表，key是别的Region的起始地址，value是一个集合，元素是卡的索引。</p>
+<p><del>太细节的资料我也无法确定。</del></p>
+<p>并发标记阶段，为了保证收集线程与用户线程互不干扰，用户线程改变对象引用关系时，必须保证其不能打破原本的对象图结构。</p>
+<p>CMS采用增量更新实现，而G1则是通过原始快照（SATB，Snapshot At the Beginning）实现的。</p>
+<p>G1为了实现原始快照（SATB），需要用写前屏障来跟踪并发时的指针变化。</p>
+<p>相比起增量更新算法，原始快照搜索能够减少并发标记和重新标记阶段的消耗，避免CMS那样在最终标记阶段停顿时间过长，但是在运行过程中会产生由跟踪引用变化带来的额外负担。</p>
+<p>由于G1对写屏障要比CMS消耗更多的资源，所以CMS的写屏障是直接的同步操作，而G1就不得不把写前屏障和写后屏障中要做的事情都放到队列里，然后再异步处理。</p>
+<p>SATB是指，即在第一个阶段（初始标记）是STW的，会给所有的分区做个快照，后面的扫描都是按照这个快照进行。</p>
+<p>并发标记，是收集线程和应用线程同时进行的，用户线程可能修改引用，因此G1会把这个期间对对象引用的修改都记录下来。</p>
+<hr>
+<p>G1部分我找了挺多资料的，但还是有很多疑问，要不是语焉不详，模糊处理，要不就是各执一词，要不就是看不懂。</p>
+<p>感觉写文章的人自己也没理清楚。</p>
+<p>其实我很讨厌看这种不知道第几手的资料的，但是也没办法，毕竟我看不懂JVM源码。</p>
+<p>留下了杂鱼的泪水。</p>
+<p>可以看看<a href="https://hllvm-group.iteye.com/group/topic/44381" target="_blank" rel="noopener">RednaxelaFX的解释</a>。</p>
+<hr>
+<p>衡量垃圾收集器的三项最重要的指标：内存占用（Footprint）、吞吐量（Throughput）和延迟（Latency）。</p>
+<p>内存占用和吞吐量可以通过提升硬件改善，但延迟不一样。</p>
+<p>CMS和G1分别使用增量更新和原始快照，实现了标记阶段的并发，不会因堆内存变大，要标记的对象变多而导致停顿时间增长。</p>
+<p>CMS使用标记-清除算法，但避免不了空间碎片。G1虽然可以按更小的粒度回收，抑制过长的停顿，但还是要暂停的。</p>
+<p>而Shenandoah和ZGC，几乎整个过程都是并发的，而停顿时间基本是固定的，与堆的容量、堆中对象的数量没有正比例关系。</p>
+<p>这两款收集器，被官方命名为“低延迟垃圾收集器”。</p>
+<hr>
+<p>垃圾回收的两个重要方法：System#gc和Object#finalize。</p>
+<p>新生代过小，会导致GC频繁，同时在老年代中对象很难被回收。</p>
+<p>新生代过大，复制则比较耗时。</p>
+<p>目标是：最小化晋升到老年代的数量，最小化新生代GC的次数和持续时间。</p>
+<p>减少GC：</p>
+<ul>
+<li><p>尽量减少临时对象的使用。临时对象在方法完成后，会被回收。</p>
+</li>
+<li><p>无用的对象显式置为null。</p>
+</li>
+<li><p>尽量使用基本类型，不用包装类型。基本类型变量占用的内存比包装类型少得多。</p>
+</li>
+<li><p>尽量少用静态对象变量。静态变量生命周期比较长，会一直占用内存。</p>
+</li>
+<li><p>避免集中在短时间内创建或删除大量新对象。</p>
+</li>
+</ul>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

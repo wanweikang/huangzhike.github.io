@@ -527,6 +527,9 @@ Container<span class="token punctuation">[</span><span class="token punctuation"
 <p>低于这个界限则可以启用zero based Compressed Oops。</p>
 <p>同时建议-Xms和-Xmx设为相同的值，避免在运行过程中再进行内存分配。</p>
 <p>建议关闭交换分区，防止内存swap导致性能下降。</p>
+<p>swap和GC同时发生会导致GC时间很长，极端的情况下会导致服务崩溃。</p>
+<p>假如GC的时候，堆的部分内容被swap，遍历到这部分的时候就需要交换回内存，同时内存空间不足，又要把堆的另外一部分swap。</p>
+<p>极端情况下会把整个堆分区轮流swap一遍。</p>
 <p>建议设置最大文件句柄数，因为Lucene使用了大量的文件。</p>
 <hr>
 <p>对于日志系统，通常几个基本要求：</p>
