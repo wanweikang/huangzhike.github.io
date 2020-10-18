@@ -1,0 +1,414 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-线上问题定位思路 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="深入理解Java虚拟机：JVM高级特性与最佳实践（第3版）19年底出了第三版了，当年看得也是懵懵懂懂的。
+One Book To Rule Them All.
+虽然这本书还是有很多地方也是模糊处理的。
+还有这本书垃圾回收算法手册：自动内存管理的艺术，加入待看列表。
+
+定位线上问题，如果你使用Arth">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-线上问题定位思路" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-线上问题定位思路</h2>
+				
+				<div>
+					<div class="post-time">2020-10-18</div>
+				</div>
+				
+				<div class="article-content">
+				<p><a href="https://read.douban.com/ebook/128052544/" target="_blank" rel="noopener">深入理解Java虚拟机：JVM高级特性与最佳实践（第3版）</a>19年底出了第三版了，当年看得也是懵懵懂懂的。</p>
+<p><del>One Book To Rule Them All.</del></p>
+<p>虽然这本书还是有很多地方也是模糊处理的。</p>
+<p>还有这本书<a href="https://book.douban.com/subject/26740958/" target="_blank" rel="noopener">垃圾回收算法手册：自动内存管理的艺术</a>，加入待看列表。</p>
+<hr>
+<p>定位线上问题，如果你使用Arthas，应该简单很多。</p>
+<p>Arthas基本原理是JavaAgent，但不是-javaagent那种运行前premain的织入方式，而是动态的Instrument。</p>
+<p>Arthas会通过VirtualMachine#attach连接到JVM进程，和VM建立连接，然后通过VirtualMachine#loadAgent织入。</p>
+<p>之后就可以随意进行增强，重新修改加载class字节码，随意游玩了。</p>
+<p><del>但是，我没用过。</del></p>
+<p>先重启别的机器，保证对外服务，留一台案发现场。</p>
+<hr>
+<p>找出JVM的进程号PID：</p>
+<ul>
+<li>sudo jps -l </li>
+</ul>
+<p>列出运行的虚拟机进程ID和程序名。</p>
+<ul>
+<li>top -c</li>
+</ul>
+<p>类似任务管理器，显示实时的信息。</p>
+<ul>
+<li>ps aux | grep java</li>
+</ul>
+<p>显示进程的快照信息。</p>
+<hr>
+<p>top -Hp 5116</p>
+<p>实时显示该JVM进程下所有的线程情况，查看是否有特别占CPU的线程PID。</p>
+<p>将该进程下占用CPU最高的线程PID转换为16进制得到nid，假设线程的PID为23802，那么就是5cfa。</p>
+<p>printf ‘%x\n’ 23802</p>
+<p>然后在线程堆栈日志中找到对应的堆栈信息。</p>
+<p>sudo -u java jstack -l 5116 | grep 5cfa -A20</p>
+<pre class=" language-log"><code class="language-log">"com.alibaba.nacos.client.Worker.fixed-192.168.0.16_8848-0acd6b67-2809-448a-9c8e-5a57e20c3e5f" #26 daemon prio=5 os_prio=0 tid=0x00007f8104ee2000 nid=0x5cfa runnable [0x00007f80cd2f9000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+        at sun.misc.Unsafe.park(Native Method)
+        - parking to wait for  <0x00000000ca3fb218> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+        at java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(Unknown Source)
+        at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+        at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+
+   Locked ownable synchronizers:
+        - None</code></pre>
+<p>如果最忙绿的线程是一个GC线程，那么可能是GC导致的CPU占用高，当然这里不是。</p>
+<p>当然也可以直接jstack，前提是你可以准确定位到哪个线程。</p>
+<p>jstack -l还可以打印锁信息，查找死锁。</p>
+<hr>
+<p>sudo -u java jstack 5116 &gt; thread_dump.log</p>
+<p>将虚拟机线程栈日志dump到日志文件中，先留着再说。</p>
+<p>需要对比的话可以隔几秒执行一次，再对比变化。</p>
+<p>可以查看线程的调用堆栈，定位线程阻塞的原因，如线程死锁、死循环、请求外部资源导致长时间挂起等。</p>
+<p>线程堆栈中，线程的状态分两种：系统线程状态和JVM线程状态。</p>
+<p>系统线程状态（Native Thread Status）：</p>
+<ul>
+<li><p>deadlock：死锁。</p>
+</li>
+<li><p>runnable：正在运行。</p>
+</li>
+<li><p>blocked：阻塞。</p>
+</li>
+<li><p>waiting on condition：等待资源或某个条件的发生，或者调用了sleep方法。</p>
+</li>
+<li><p>waiting for monitor entry</p>
+</li>
+<li><p>in Object.wait()</p>
+</li>
+</ul>
+<p>Java用Monitor实现线程协作，每个对象有且仅有一个Monitor。</p>
+<p>在”Entry Set”中等待的线程状态是waiting for monitor entry，在”Wait Set”中等待的线程状态是in Object.wait()。</p>
+<p>此时JVM线程的状态通常是java.lang.Thread.State: BLOCKED。</p>
+<ol>
+<li>“Entry Set”</li>
+</ol>
+<p>当线程申请进入synchronized临界区时，它就进入了”Entry Set”队列中，有两种可能：</p>
+<p>Monitor空闲，”Entry Set”里面没有其他等待的线程，本线程即成为Monitor的Owner，执行临界区里的代码，显示为”runnable”。</p>
+<p>Monitor被其他线程拥有，本线程在”Entry Set”队列中等待，显示为”waiting for monity entry”。</p>
+<ol start="2">
+<li>“Wait Set”</li>
+</ol>
+<p>线程获得了Monitor，进入临界区后，如果调用synchronized对象的wait方法，那么放弃Monitor，进入”Wait Set”队列，显示为in Object.wait()。</p>
+<p>只有别的线程在该对象上调用了notify或notifyAll方法，”Wait Set”中的线程才有机会竞争Monitor，但只有一个线程成功，恢复到运行态。</p>
+<p>JVM线程运行状态（JVM Thread Status）：</p>
+<ul>
+<li>NEW</li>
+</ul>
+<p>线程被创建，但尚未启动。</p>
+<ul>
+<li>RUNNABLE</li>
+</ul>
+<p>可运行，可能正在执行，可能在等待CPU的资源。</p>
+<ul>
+<li>BLOCKED</li>
+</ul>
+<p>被阻塞，并且正在等待监视器，以便进入同步的块/方法。</p>
+<p>通常显示为java.lang.Thread.State: BLOCKED (on object monitor)。</p>
+<ul>
+<li>WAITING</li>
+</ul>
+<p>无期限地等待另一个线程唤醒。</p>
+<ol>
+<li>不带超时的Object.wait，显示为java.lang.Thread.State: WAITING (on object monitor)</li>
+<li>不带超时的Thread.join</li>
+<li>LockSupport.park，显示为java.lang.Thread.State: WAITING (parking)</li>
+</ol>
+<ul>
+<li>TIMED_WAITING</li>
+</ul>
+<p>指定了等待时间，等待另一个线程唤醒。</p>
+<ol>
+<li>Thread.sleep</li>
+<li>指定超时的Object.wait</li>
+<li>指定超时的Thread.join</li>
+<li>LockSupport.parkNanos</li>
+<li>LockSupport.parkUntil</li>
+</ol>
+<ul>
+<li>TERMINATED</li>
+</ul>
+<p>终止状态。</p>
+<pre class=" language-log"><code class="language-log">"DB-Processor-0" daemon prio=5 tid=0x003edf98 nid=0xca waiting for monitor entry [0x000000000825f000]
+java.lang.Thread.State: BLOCKED (on object monitor)
+                at beans.ConnectionPool.getConnection(ConnectionPool.java:102)
+                - waiting to lock <0xe0375410> (a beans.ConnectionPool)
+
+"DB-Processor-1" daemon prio=5 tid=0x003edf98 nid=0xca waiting for monitor entry [0x000000000825f020]
+java.lang.Thread.State: BLOCKED (on object monitor)
+                at beans.ConnectionPool.getConnection(ConnectionPool.java:102)
+                - waiting to lock <0xe0375410> (a beans.ConnectionPool)
+
+"DB-Processor-2" daemon prio=5 tid=0x00928248 nid=0x8b waiting for monitor entry [0x000000000825d080]
+java.lang.Thread.State: RUNNABLE
+                at oracle.jdbc.driver.OracleConnection.isClosed(OracleConnection.java:570)
+                - waiting to lock <0xe03ba2e0> (a oracle.jdbc.driver.OracleConnection)
+                at beans.ConnectionPool.getConnection(ConnectionPool.java:112)
+                - locked <0xe0386580> (a java.util.Vector)
+                - locked <0xe0375410> (a beans.ConnectionPool)</code></pre>
+<p>三个线程的状态是都是<code>waiting for monitor entry</code>，说明都在synchronized进入临界区；</p>
+<p>线程0和1的JVM线程的状态是<code>java.lang.Thread.State: BLOCKED (on object monitor)</code>，说明在阻塞等待获取对应的Monitor。</p>
+<p>线程0和1都在<code>waiting to lock &lt;0xe0375410&gt; (a beans.ConnectionPool)</code>，说明等待给0xe0375410这个地址的beans.ConnectionPool对象上锁。</p>
+<p>线程2的JVM线程的状态是<code>java.lang.Thread.State: RUNNABLE</code>，说明获取了Monitor的锁，在执行synchronized内的代码块。</p>
+<p>线程2在<code>locked &lt;0xe0375410&gt; (a beans.ConnectionPool)</code>，说明获取了0xe0375410这个地址的beans.ConnectionPool对象的锁。</p>
+<p>如果是死锁的话，那么可能类似：</p>
+<p>线程A</p>
+<pre class=" language-log"><code class="language-log">- waiting to lock <0x01> (a xxx)
+- locked <0x02> (a yyy)</code></pre>
+<p>线程B</p>
+<pre class=" language-log"><code class="language-log">- waiting to lock <0x02> (a yyy)
+- locked <0x01> (a xxx)</code></pre>
+<p>当然栈日志会有deadlock提示。</p>
+<pre class=" language-log"><code class="language-log">"RMI TCP Connection(idle)" daemon prio=10 tid=0x00007fd50834e800 nid=0x56b2 waiting on condition [0x00007fd4f1a59000]
+java.lang.Thread.State: TIMED_WAITING (parking)
+                at sun.misc.Unsafe.park(Native Method)
+                - parking to wait for  <0x00000000acd84de8> (a java.util.concurrent.SynchronousQueue$TransferStack)
+                at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:198)
+                at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:424)
+                at java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:323)
+                at java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:874)
+                at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:945)
+                at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+                at java.lang.Thread.run(Thread.java:662)</code></pre>
+<p>JVM线程的状态是<code>java.lang.Thread.State: TIMED_WAITING (parking)</code>，说明线程在定时等待。</p>
+<p><code>waiting on condition</code>，结合堆栈中的<code>parking to wait for &lt;0x00000000acd84de8&gt; (a java.util.concurrent.SynchronousQueue$TransferStack)</code>，可知线程要把一个元素放入到SynchronousQueue，等待另一个线程接受，然后将自己唤醒。</p>
+<hr>
+<p>sudo jstat -gcutil 5116</p>
+<p>监控JVM进程的堆GC统计记录，-gc关注容量，-gcutil关注已使用的百分比。</p>
+<p>主要观察GC的次数和时间，是否太频繁，是否存在内存回收问题。</p>
+<p>sudo -u java jstat -gcutil 5116 1000 60</p>
+<p>每隔1000ms打印1次，重复60次，方便对比变化。</p>
+<ul>
+<li>S0：Survivor0</li>
+<li>S1：Survivor1</li>
+<li>E：Eden</li>
+<li>O：Old</li>
+<li>M：Metaspace</li>
+<li>CCS：CompressedClassSpace</li>
+<li>YGC：Young GC，程序运行来共发生Minor GC次数</li>
+<li>YGCT：Young GC Time，耗时，单位秒</li>
+<li>FGC：Full GC，程序运行来共发生Full GC次数</li>
+<li>FGCT：Full GC Time，耗时，单位秒</li>
+<li>GCT：GC Time，所有GC总耗时，单位秒</li>
+</ul>
+<p>一般Full GC会回收大量内存，正常的堆内存曲线应该是呈锯齿形。</p>
+<p>如果Full GC后堆内存几乎没变，可能存在内存泄露。</p>
+<p>如果发现GC有问题，那么需要dump一份内存快照分析，定位问题。</p>
+<hr>
+<p>sudo -u java jmap -dump:live,format=b,file=dump.hprof 5116</p>
+<p>live指明是活着的对象，file指定文件名，在dump:live前会进行Full GC。</p>
+<p>jmap生成堆转储快照，也可以通过HeapDumpOnOutOfMemoryError让虚拟机OOM后自动生成堆转储快照文件。</p>
+<p>之后可以通过Eclipse Memory Analyzer分析内存快照，查找原因，MAT有内存泄露分析，一般不难定位到问题代码。</p>
+<p>MAT可以独立使用，不依赖Eclipse也可以，但是MAT和Eclipse一样又丑又慢，所以推荐使用JProfiler。</p>
+<hr>
+<p>MAT：</p>
+<p>Leak Suspects：内存泄漏分析。</p>
+<p>Histogram：直方图，列出每个类的实例数量，以及占用的内存大小和百分比，方便找到占内存最多的类。</p>
+<p>Dominator Tree：支配树，包含对象实例的引用，以及占用的内存大小和百分比，方便找到占内存最多的对象实例。</p>
+<p>Shallow Heap：对象自身的大小，不包括引用的对象。</p>
+<p>Retained Heap：当前对象的大小 + 当前对象可直接或间接引用的对象的大小总和，即该对象GC后所能回收的大小。</p>
+<hr>
+<p>GC日志需要指定参数开启，不同收集器日志也不一样。</p>
+<p>Minor GC：</p>
+<pre class=" language-log"><code class="language-log">0.080: [GC (Allocation Failure) 0.080: [DefNew: 6815K->280K(9216K), 0.0043690 secs] 6815K->6424K(19456K), 0.0044111 secs] [Times: user=0.00 sys=0.01, real=0.01 secs]</code></pre>
+<p>虚拟机启动以来经过0.080秒，因为Allocation Failure，触发了一次GC，在DefNew区域（名称和收集器相关）。</p>
+<p>[DefNew: GC前该区域使用容量 -&gt; GC后该区域使用容量（该区域总容量），该区域GC时间]。</p>
+<p>GC前堆使用容量 -&gt; GC后堆使用容量（堆总容量），整个GC执行时间。</p>
+<p>[Times: 用户态消耗的CPU时间 内核态消耗的CPU时间，操作经过的CPU时间]。</p>
+<p>Full GC：</p>
+<pre class=" language-log"><code class="language-log">0.088: [Full GC (Allocation Failure) 0.088: [Tenured: 0K->210K(10240K), 0.0009420 secs] 4603K->210K(19456K), [Metaspace: 2630K->2630K(1056768K)], 0.0009700 secs] [Times: user=0.01 sys=0.00, real=0.02 secs]</code></pre>
+<hr>
+<p>CPU使用率高：</p>
+<ul>
+<li><p>序列化和反序列化；</p>
+</li>
+<li><p>代码死循环，占用CPU时间；</p>
+</li>
+</ul>
+<p>比如：while(true) {}，或者竞争激烈的自旋，Thread#yield。</p>
+<ul>
+<li>频繁GC；</li>
+</ul>
+<p>如果访问量很高，内存分配和回收都会很频繁，导致频繁的GC甚至FGC。</p>
+<p>GC线程当然也会消耗CPU资源。</p>
+<p>一般都会避免在短时间内创建大量对象，比如一个超大的响应体，因为在高并发下，GC很容易出问题。</p>
+<ul>
+<li>上下文切换过多</li>
+</ul>
+<p>top命令可以粗略地查看，us代表用户空间占用CPU的百分比，sy代表内核空间占用CPU的百分比。</p>
+<p>sy过高可能是由于线程上下文切换引起的。</p>
+<p>vmstat 1</p>
+<p>每秒打印一次系统的整体情况。</p>
+<p>cs代表了上下文切换（Context Switch）的次数。</p>
+<p>pidstat -w 5</p>
+<p>查看每个进程的详细情况，每5秒打印一次。</p>
+<hr>
+<p>线程阻塞：</p>
+<p>比如Tomcat的工作线程池的线程全部阻塞，那么就无法处理新的请求。</p>
+<p>jstack查看线程状态很容易发现问题。</p>
+<p>可能是下游服务的响应时间太长，但是没有设置超时和熔断。</p>
+<p>或者是数据库大量的慢查询和死锁导致的。</p>
+<hr>
+<p>内存：</p>
+<p>物理内存通常不会遇到问题，free -h。</p>
+<p>划分内存时，通常会给内核留出可用空间，当SWAP和GC同时发生会导致GC时间很长，JVM严重卡顿无响应。</p>
+<p>假如GC的时候，有堆的一部分被SWAP到磁盘，可能就需要再次交换回内存，同时可能又有一部分堆内存因为空间不足被SWAP到磁盘，严重影响性能。</p>
+<p>JVM堆外内存泄露一般是因为大量使用了NIO，比如Netty这种框架。</p>
+<p>FileChannel#transferTo使用原生的PageCache，JVM无法监控，但MappedByteBuffer可以通过JMX监控（mmap）。</p>
+<p>GC问题可以通过jstack初步定位，或者直接查看GC日志，或者通过jmap将堆快照dump出来查看。</p>
+<p>OOM原因很多，比较多的就是一次性从数据库加载了太多行，比如没有where条件（呵呵）。</p>
+<p>GC后仍然无法腾出空间会抛出OOM异常，停止异常的线程，但不会停止JVM。</p>
+<hr>
+<p>总结：</p>
+<p>首先定位消耗CPU的进程，再定位消耗CPU的具体线程，再查看线程栈和GC情况/堆快照。</p>
+<p>先top看CPU，如果CPU比较高，再top -Hp看进程下消耗CPU过高的线程，将线程id转为十六进制，然后jstack看该线程情况。</p>
+<p>如果是用户线程，则查看具体是哪处用户的代码，如果该线程是VMThread，则通过jstat监控GC状况，然后通过jmap将堆快照dump出来用工具定位。</p>
+<p>Full GC频繁，通常CPU使用率会特别高，jstack可以看到主要是GC线程导致的，再用jstat监控GC情况，可以看到FGC次数非常多，并且不断增加。</p>
+<hr>
+<p>磁盘：</p>
+<p>磁盘空间不足，df -h。</p>
+<p>磁盘I/O的问题，iostat。</p>
+<p>I/O读写的来源进程，iotop。</p>
+<hr>
+<p>网络：</p>
+<p>网络问题五花八门，常见的是客户端的读写超时，<del>底层通讯或网卡硬件的问题请联系专业的运维或网络工程师</del>。</p>
+<p>TCP队列溢出：</p>
+<p>两个队列：syn queue（半连接队列）、accept queue（全连接队列）。</p>
+<p>三次握手，server收到client的syn后，放到syns queue，回复syn + ack给client，server收到client的ack，如果这时accept queue没满，就从syn queue取出并放到accept queue中，TCP连接建立完成；否则按tcp_abort_on_overflow指示的执行。</p>
+<p>tcp_abort_on_overflow为0，表示如果三次握手第三步的时候accept queue满了，那么舍弃client发过来的ack。</p>
+<p>tcp_abort_on_overflow为1，表示如果三次握手第三步的时候accept queue满了，那么发送一个rst包给client，重置连接，对应客户端的connection reset by peer。</p>
+<p><del>这种情况请交给运维处理。</del></p>
+<p>TIME_WAIT和CLOSE_WAIT：</p>
+<p>TCP是双工的，连接双方都需要确认自己的一方的连接关闭。</p>
+<p>主动关闭方发送FIN，被动关闭方回复ACK，此方向的连接关闭。</p>
+<p>被动关闭方发送FIN，主动关闭方回复ACK，此方向的连接关闭。</p>
+<p>CLOSE_WAIT是被动关闭方回复ACK和发送FIN的这段时间，理论上是非常短的，一般是没有发送FIN导致的。</p>
+<p><del>这种情况请交给运维处理。</del></p>
+<p>TIME_WAIT是主动关闭方才会进入的，主动关闭方回复被动关闭方ACK后，需要经过2MSL才能关闭，释放端口。</p>
+<p>因为主动关闭方需要确保被动关闭方收到了ACK（2ML内再没收到重发的FIN），同时保证新连接不会收到过期的包。</p>
+<p>服务器一般不会有这个问题，因为通常不会主动关闭连接，除非是爬虫服务器，或者是RPC客户端。</p>
+<p><del>这种情况也请交给运维处理。</del></p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>
