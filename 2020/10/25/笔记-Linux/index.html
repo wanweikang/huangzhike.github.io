@@ -1,0 +1,746 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-Linux | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="记录Linux和操作系统相关的一些零碎知识。
+
+free -h
+              total        used        free      shared  buff/cache   available
+Mem:           3.7G        1.4G       ">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-Linux" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Linux</h2>
+				
+				<div>
+					<div class="post-time">2020-10-25</div>
+				</div>
+				
+				<div class="article-content">
+				<p>记录Linux和操作系统相关的一些零碎知识。</p>
+<hr>
+<p>free -h</p>
+<pre class=" language-log"><code class="language-log">              total        used        free      shared  buff/cache   available
+Mem:           3.7G        1.4G        1.2G        126M        1.1G        1.8G
+Swap:          511M        111M        400M</code></pre>
+<ul>
+<li><p>Mem：内存。</p>
+</li>
+<li><p>Swap：交换空间。</p>
+</li>
+<li><p>total：总空间大小。</p>
+</li>
+<li><p>used：已使用的空间大小。</p>
+</li>
+<li><p>free：空闲空间大小。</p>
+</li>
+<li><p>shared：被共享使用的物理内存大小。</p>
+</li>
+<li><p>buff/cache：被buffer和cache使用的物理内存大小。</p>
+</li>
+<li><p>available：还可以被应用使用的物理内存大小。</p>
+</li>
+</ul>
+<p>buff指buffer cache。</p>
+<p>扇区是硬盘最小寻址单元，块是操作系统中文件系统的最小寻址单元。</p>
+<p>每个块包含一个或多个扇区，一个页可以容纳一个或多个块。</p>
+<p>当一个磁盘块被调入内存时，对应一个缓冲区。</p>
+<p>cache指page cache。</p>
+<p>页高速缓存是内核实现的磁盘缓存，主要用来减少对磁盘的I/O操作。</p>
+<p>当内核读一个文件时，如果文件已经在页高速缓存中，就直接从内存读取，称为缓存命中。</p>
+<p>如果不在缓存中，就要调度I/O操作从磁盘读取数据，将数据放入页高速缓存。</p>
+<p>buff/cache可以理解为一个统一的东西。</p>
+<p>free指真正未被使用的物理内存。</p>
+<p>available指应用程序角度的可用内存。</p>
+<p>Linux会使用部分内存去缓存磁盘数据，就是buff/cache。</p>
+<p>对于系统来说，buff/cache都属于已经被使用的内存。</p>
+<p>当应用程序需要内存时，如果没有足够的free内存，内核就会从buff/cache中回收内存。</p>
+<p>swap是磁盘上的一块区域，当物理内存吃紧时，将内存中不活跃的数据保存到swap上，腾出空间为活跃的进程服务。</p>
+<p>当需要访问swap上的内容时，再将swap上的数据加载到内存中，就是换出和换入。</p>
+<p>交换空间可以在一定程度上缓解内存不足，但是需要读写磁盘，所以性能很低。</p>
+<hr>
+<p>vmstat</p>
+<pre class=" language-log"><code class="language-log">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 3  0    520 199720      0 601480    0    0     0     0    2    0  0  0 100  0  0</code></pre>
+<ul>
+<li>procs：<ul>
+<li>r：就绪队列中的进程数量（Running or Runnable），即正在运行和等待CPU的进程数。</li>
+<li>b：等待IO的进程数量（Blocked），即处于不可中断睡眠状态的进程数。</li>
+</ul>
+</li>
+<li>memory：<ul>
+<li>swpd：使用的虚拟内存。</li>
+<li>free：空闲的物理内存。</li>
+<li>buff：缓冲。</li>
+<li>cache：文件系统缓存。</li>
+</ul>
+</li>
+<li>swap：<ul>
+<li>si：每秒从swap写到内存的大小，大于0表示物理内存不够。</li>
+<li>so：每秒写入交换区的内存大小。</li>
+</ul>
+</li>
+<li>io：<ul>
+<li>bi：每秒读取的块数（块大小为1024bytes）。</li>
+<li>bo：每秒写入的块数。</li>
+</ul>
+</li>
+<li>system：<ul>
+<li>in：每秒中断数，包括时钟中断。</li>
+<li>cs：每秒上下文切换数。</li>
+</ul>
+</li>
+<li>cpu：<ul>
+<li>us：用户进程执行时间。</li>
+<li>sy：系统进程执行时间。</li>
+<li>id：空闲时间（包括IO等待时间）。</li>
+<li>wa：等待IO时间。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>pidstat -w 5</p>
+<pre class=" language-log"><code class="language-log">Linux 3.10.0-957.1.3.el7.x86_64 (10-16-1-15)    10/19/2020      _x86_64_        (2 CPU)
+
+08:18:43 PM   UID       PID   cswch/s nvcswch/s  Command
+08:18:48 PM     0         1      0.80      0.00  systemd
+08:18:48 PM     0         3      0.40      0.00  ksoftirqd/0
+08:18:48 PM     0         9      4.59      0.00  rcu_sched
+08:18:48 PM     0        11      0.20      0.00  watchdog/0
+
+
+Average:      UID       PID   cswch/s nvcswch/s  Command
+Average:        0         1      0.80      0.00  systemd
+Average:        0         3      0.40      0.00  ksoftirqd/0
+Average:        0         9      4.59      0.00  rcu_sched
+Average:        0        11      0.20      0.00  watchdog/0</code></pre>
+<p>cswch：每秒自愿上下文切换（voluntary context switches）的次数。</p>
+<p>nvcswch：每秒非自愿上下文切换（non voluntary context switches）的次数。</p>
+<p>自愿上下文切换是进程无法获取所需资源导致的，比如等待I/O、内存等资源。</p>
+<p>非自愿上下文切换是进程由于时间片已到等原因，被系统调度导致的，比如大量进程争抢CPU。</p>
+<hr>
+<p>top</p>
+<pre class=" language-log"><code class="language-log">top - 20:27:04 up 132 days,  8:47,  1 user,  load average: 0.00, 0.02, 0.05
+Tasks:  82 total,   1 running,  81 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.3 us,  0.2 sy,  0.0 ni, 99.5 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  3904760 total,   705704 free,  1542176 used,  1656880 buff/cache
+KiB Swap:   524284 total,   410616 free,   113668 used.  1870144 avail Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+19383 java      20   0 5728792   1.4g  16276 S   1.0 36.7  22:15.84 java
+ 4624 root      20   0   44236  12164   4680 S   0.3  0.3  60:48.70 gitlab-runner
+45206 root      20   0  161836   2184   1552 R   0.3  0.1   0:00.01 top
+    1 root      20   0  123248   2412   1500 S   0.0  0.1  34:01.76 systemd
+    2 root      20   0       0      0      0 S   0.0  0.0   0:01.13 kthreadd
+    3 root      20   0       0      0      0 S   0.0  0.0   6:16.26 ksoftirqd/0
+    5 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 kworker/0:0H</code></pre>
+<p>load average：CPU平均负载，后面三个分别指load1、load5和load15，即1分钟、5分钟和15分钟的load。</p>
+<p>load是处于运行状态或不可中断状态的进程（线程）的平均数。</p>
+<p>load值和cpu核数有关，单核cpu的load=1表示系统处在负载状态，但是4核cpu的load=1表示系统有75%的空闲。</p>
+<p>所以对于多核心cpu来说，load不应该超过最大核心数量。</p>
+<p>load高只说明等待执行的任务（进程）很多，和使用率不一样。</p>
+<p>如果cpu负载高，但使用率低，那么说明等待执行的任务很多，但是cpu空闲，可能进程僵死了或是等待IO。</p>
+<p>如果cpu负载低，但使用率高，那么说明任务少，但是任务执行时间长。</p>
+<hr>
+<p>宏内核：操作系统功能作为紧密的整体放到内核，由于各模块共享信息，因此有很高的性能。</p>
+<p>微内核：操作系统被划分多个模块，只有微内核运行在内核态，其余模块运行在用户态，因为需要在用户态和核心态之间切换，会有一定的性能损失。</p>
+<hr>
+<p>CPU上下文切换，就是先把前一个任务的CPU上下文（CPU寄存器和程序计数器）保存起来，然后加载新任务的上下文，运行新任务。</p>
+<p>Linux按照特权等级，把进程的运行空间分为内核空间和用户空间。</p>
+<p>进程可以在用户和内核空间中运行，在用户空间运行时，称为进程的用户态，在内核空间运行时，称为进程的内核态。</p>
+<p>从用户态到内核态的转变，需要通过系统调用完成。</p>
+<p>CPU要先保存寄存器里原来用户态的指令位置，更新内核态指令的位置，然后跳转到内核态运行内核任务。</p>
+<p>系统调用结束后，寄存器需要恢复原来保存的用户态，再切换到用户空间，继续运行进程。</p>
+<p>一次系统调用，其实发生了两次CPU上下文切换。</p>
+<p>系统调用一直是同一个进程在运行，不涉及虚拟内存等进程用户态的资源，不会切换进程，通常称为特权模式切换。</p>
+<p>CPU上下文切换可以分为：进程上下文切换、线程上下文切换及中断上下文切换。</p>
+<ul>
+<li>进程上下文切换</li>
+</ul>
+<p>进程上下文切换，是指从一个进程切换到另一个进程运行。</p>
+<p>进程上下文不仅包括了虚拟内存、栈等用户空间的资源，还包括了内核堆栈、寄存器等内核空间的状态。</p>
+<p>Linux为每个CPU维护了一个就绪队列，将活跃进程（即正在运行和正在等待CPU 的进程）按照优先级和等待CPU的时间排序，选择优先级最高和等待时间最长的进程来运行。</p>
+<p>CPU时间被划分为一段段的时间片，分配给各个进程，当某个进程的时间片耗尽了，就会被挂起，切换到其它进程。</p>
+<p>进程在系统资源不足（如内存）时，会被挂起到资源满足，并由系统调度其他进程运行。</p>
+<p>当进程通过睡眠函数主动将自己挂起时，也会重新调度。</p>
+<p>有优先级更高的进程运行时，当前进程会被挂起，由高优先级进程来运行。</p>
+<p>发生硬件中断时，CPU上的进程会被中断挂起，转而执行内核中的中断服务程序。</p>
+<ul>
+<li>线程上下文切换</li>
+</ul>
+<p>线程是调度的基本单位，进程是资源拥有的基本单位。</p>
+<p>内核的任务调度调度的对象是线程，线程共享进程的虚拟内存等资源，这些在上下文切换时不需要修改。</p>
+<p>线程也有自己的私有数据，比如栈和寄存器等，这些在上下文切换时需要保存。</p>
+<p>线程的上下文切换可以分两种情况：</p>
+<p>前后两个线程属于不同进程，因为资源不共享，和进程上下文切换一样。</p>
+<p>前后两个线程属于同个进程，因为虚拟内存是共享的，切换时只需要切换线程的私有数据、寄存器等不共享的数据。</p>
+<p>这也是多线程代替多进程的一个优势。</p>
+<ul>
+<li>中断上下文切换</li>
+</ul>
+<p>CPU运行时会不断地取指令和运算，而中断就是打断CPU的执行，转而处理别的事情。</p>
+<p>为了快速响应硬件事件，中断会打断进程的正常调度和执行，转而调用中断处理程序，响应设备事件。</p>
+<p>打断进程时，需要将进程当前的状态保存下来，中断结束后，进程可以从原来的状态恢复运行。</p>
+<p>中断上下文切换不涉及进程的用户态，只包括内核态的状态。</p>
+<p>即便中断一个处在用户态的进程，也不需要保存和恢复这个进程的用户态资源。</p>
+<hr>
+<p>进程是资源分配的基本单位，线程是独立调度的基本单位。</p>
+<p>一个进程中可以有多个线程，它们共享进程下的资源。</p>
+<p>线程间可以通过直接读写同一进程的数据进行通信，但是进程通信需要借助IPC。</p>
+<p>进程间的共享信息一般通过管道或者共享内存，如果是fork函数后的父子进程则使用共享文件。</p>
+<p>线程是轻量级的进程，线程切换不像进程一样开销大，而且线程通信也更方便。</p>
+<p>线程分两种：用户级线程和内核级线程。</p>
+<p>用户级线程避免使用内核，每个线程会显式执行某种切换操作来放弃CPU，计时器可以强制进行开关。</p>
+<p>用户线程的切换速度通常比内核线程快很多，但单个线程可能会垄断CPU时间片，导致其他线程无法执行。</p>
+<p>内核级线程通常使用几个进程表在内核中实现，每个任务都对应一个进程表。</p>
+<p>内核会在每个进程的时间片内调度每个线程。</p>
+<p>多线程的优点：更加高效的内存共享和较轻的上下文切换。</p>
+<p>多进程的优点：进程有自己内存空间，具有更强的容错性，将地址空间，页表等进行了隔离。</p>
+<hr>
+<p>进程间通信</p>
+<ul>
+<li><p>管道/匿名管道：在于内存中，没有名字，只能在有亲缘关系的父子进程间或兄弟进程间通信。</p>
+</li>
+<li><p>有名管道：遵循先进先出，以磁盘文件的方式存在，可以实现本机任意两个进程通信。</p>
+</li>
+<li><p>信号：用于通知接收进程某个事件已经发生。</p>
+</li>
+<li><p>消息队列：存放在内核中。</p>
+</li>
+<li><p>信号量：是一个计数器，用于多进程对共享数据的访问，意图在于进程间同步，承载信息量少。</p>
+</li>
+<li><p>共享内存：多个进程可以访问同一块内存空间。</p>
+</li>
+<li><p>套接字：在客户端和服务器间通过网络进行通信。</p>
+</li>
+</ul>
+<hr>
+<p>线程间同步</p>
+<ul>
+<li><p>互斥量：只有拥有互斥对象的线程才有访问公共资源的权限。</p>
+</li>
+<li><p>信号量：允许同一时刻多个线程访问同一资源，但控制同一时刻访问此资源的最大线程数量。</p>
+</li>
+<li><p>事件：通过通知来保持多线程同步。</p>
+</li>
+</ul>
+<hr>
+<p>进程的调度算法</p>
+<ul>
+<li><p>先到先服务：从就绪队列中选择一个最先进入该队列的进程为之分配资源，使它执行到完成或被阻塞放弃CPU时再重新调度。</p>
+</li>
+<li><p>短作业优先：从就绪队列中选出一个估计运行时间最短的进程为之分配资源，使它执行到完成或被阻塞放弃CPU时再重新调度。</p>
+</li>
+<li><p>时间片轮转：每个进程被分配一个时间段，称作它的时间片，即该进程允许运行的时间。</p>
+</li>
+<li><p>多级反馈队列：既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。</p>
+</li>
+<li><p>优先级调度：首先执行最高优先级的进程，相同优先级的进程以FCFS方式执行。</p>
+</li>
+</ul>
+<hr>
+<p>Linux中，进程通过fork系统调用创建，创建的是源进程的拷贝。</p>
+<p>调用fork函数的进程被称为父进程，fork函数创建出来的进程被称为子进程。</p>
+<p>父进程和子进程都有自己的内存映像，保持相互独立。</p>
+<p>父子进程能共享相同的文件，如果fork之前，父进程已经打开了某个文件，那么fork后，父子进程仍然共享这个文件。</p>
+<p>子进程创建后，父进程修改了一些变量，这对于子进程不可见，也就是fork后，父子进程相互独立。</p>
+<p>对共享文件的修改会对父子进程同时可见。</p>
+<p>第一次调用fork后的进程称为原始进程，一个原始进程可以生成一颗继承树。</p>
+<p>pstree可以查看进程树，ps aux查看系统所有进程。</p>
+<p>父进程退出，而它的子进程还在运行，那么这些子进程将成为孤儿进程。</p>
+<p>孤儿进程将被init进程收养，并由init进程对它们完成状态收集工作。</p>
+<p>子进程的进程描述符在子进程退出时不会释放，只有当父进程通过wait()或waitpid()获取了子进程信息后才会释放。</p>
+<p>如果子进程退出，而父进程并没有调用wait()或waitpid()，那么子进程的进程描述符仍然保存在系统中，这种进程称为僵尸进程。</p>
+<p>进程号是有限的，如果产生大量僵尸进程，将因为没有可用的进程号而导致系统不能产生新的进程。</p>
+<p>要消灭系统中的僵尸进程，只需要将其父进程杀死，此时僵尸进程就会变成孤儿进程，被init进程收养，释放所有的僵尸进程所占有的资源。</p>
+<table>
+<thead>
+<tr>
+<th align="center">进程状态</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">R</td>
+<td>running or runnable (on run queue)<br>正在执行或者可执行，此时进程位于执行队列中。</td>
+</tr>
+<tr>
+<td align="center">D</td>
+<td>uninterruptible sleep (usually I/O)<br>不可中断阻塞，通常为IO阻塞。</td>
+</tr>
+<tr>
+<td align="center">S</td>
+<td>interruptible sleep (waiting for an event to complete) <br> 可中断阻塞，此时进程正在等待某个事件完成。</td>
+</tr>
+<tr>
+<td align="center">Z</td>
+<td>zombie (terminated but not reaped by its parent)<br>僵死，进程已经终止但是尚未被其父进程获取信息。</td>
+</tr>
+<tr>
+<td align="center">T</td>
+<td>stopped (either by a job control signal or because it is being traced) <br> 结束，进程既可以被作业控制信号结束，也可能是正在被追踪。</td>
+</tr>
+</tbody></table>
+<hr>
+<p>内核缓冲区可能被多个进程共享，进程可能对共享区进行write操作，但write不提供锁操作。</p>
+<p>Linux引入写时复制，当多个进程共享同一块数据时，如果一个进程需要修改这份数据，那么将其拷贝到自己的进程地址空间中。</p>
+<p>MMU需要知道进程地址空间中哪些页面是只读的，当要往这些页面写数据时，发出一个异常给内核，内核会分配新的空间来供写入的需求。</p>
+<hr>
+<p>Linux采用虚拟内存，以32位操作系统为例，每个进程都有4GB（2^32）独立的虚拟地址空间。</p>
+<p>进程初始化分配和操作都基于这个虚拟内存，只有当进程实际访问内存时，才执行对应操作。</p>
+<p>操作系统将虚拟空间分为内核空间和用户空间，用户进程不能直接操作内核。</p>
+<p>每个进程都有独立的用户空间，进程通过系统调用进入内核，因此内核由所有进程共享。</p>
+<p>当进程执行系统调用而陷入内核执行时，称进程处于内核运行态（内核态），执行的内核代码会使用当前进程的内核栈，每个进程都有自己的内核栈。</p>
+<p>当进程执行用户代码时，则处于用户运行态（用户态），如果此时被中断程序中断，也可以称为处于进程的内核态，因为中断处理程序将使用当前进程的内核栈。</p>
+<p>内核态和用户态的区别在于进程能访问的资源。</p>
+<p>应用程序基本运行在用户态，如果需要访问内核资源（如文件等），则需要通过系统调用完成。</p>
+<hr>
+<p>局部性原理：在较短的时间段内，程序执行局限于某一小部分，程序访问的存储空间也局限于某个区域。</p>
+<ul>
+<li>时间局部性：</li>
+</ul>
+<p>如果程序中的某条指令一旦执行，不久以后该指令可能再次执行。</p>
+<p>如果某数据被访问过，不久以后该数据可能再次被访问。</p>
+<p>典型原因是由于程序中存在着大量的循环操作。</p>
+<ul>
+<li>空间局部性：</li>
+</ul>
+<p>一旦程序访问了某个存储单元，不久之后，其附近的存储单元也将被访问。</p>
+<p>即程序在一段时间内所访问的地址，可能集中在一定的范围之内。</p>
+<p>因为指令通常是顺序存放、顺序执行的，数据也一般是以向量、数组、表等形式簇聚存储的。</p>
+<p>时间局部性通过将近来使用的指令和数据保存到高速缓存存储器中，并使用高速缓存实现。</p>
+<p>空间局部性通常使用较大的高速缓存和预取机制实现。</p>
+<hr>
+<p>操作系统将内存抽象成地址空间，每个程序拥有自己的地址空间，这个地址空间被分割成多个页。</p>
+<p>这些页被映射到物理内存，但不需要映射到连续的物理内存，也不需要所有页都必须在物理内存中。</p>
+<p>虚拟内存使得应用程序认为它拥有连续的可用的内存，也方便使用有限的内存运行大程序。</p>
+<p>进程的虚拟地址空间只有在需要时才去内存中寻找虚拟地址对应的页帧，找不到才执行分配，内存是惰性分配的。</p>
+<p>CPU不直接和物理内存打交道，内存管理单元（MMU）管理虚拟地址和物理内存的转换。</p>
+<p>虚拟地址分成两部分，一部分存储页面号，一部分存储偏移量。</p>
+<p>每个进程都有自己的页表，存储了进程中虚拟地址到物理地址的映射，MMU收到CPU的虚拟地址之后查询页表。</p>
+<p>这里有两个问题：虚拟地址到物理地址的转换速度，以及页表的体积。</p>
+<p>因为CPU经常访问的数据是集中的，于是引入了快表，加速转换速度。</p>
+<p>快表相当于MMU和页表之间的一层缓存，MMU先查询快表，没有再去查询页表，同时更新快表中的映射。</p>
+<p>快表也有自己的淘汰算法。</p>
+<p>用页表做地址转换，需要访问两次主存，有了快表，只要访问一次高速缓冲，一次主存。</p>
+<p>为了减少页表的体积，又引入了多级页表，使用时间换空间。</p>
+<p>多级页表减少了连续存储的要求和存储空间，但降低了查询效率。</p>
+<hr>
+<p>如果程序要访问的页不在内存中，就发生缺页中断从而将该页调入内存中。</p>
+<p>如果此时内存已无空闲空间，必须从内存中调出一个页面到磁盘交换区中来腾出空间。</p>
+<p>MMU在页表没有找到虚拟地址对应的物理页帧时，会触发缺页异常（Page Fault），一个硬件中断。</p>
+<p>进程会从用户态切换到内核态，并将缺页中断交给内核的PageFaultHandler处理。</p>
+<ul>
+<li>Hard Page Fault/Major Page Fault</li>
+</ul>
+<p>物理内存中没有对应的页帧，需要CPU打开磁盘设备读取到物理内存中，再让MMU建立映射。</p>
+<ul>
+<li>Soft Page Fault/Minor Page Fault</li>
+</ul>
+<p>物理内存中存在对应页帧，但被其他进程调入，发出缺页异常的进程不知道，此时MMU只需要建立映射，一般出现在多进程共享内存区域。</p>
+<ul>
+<li>Invalid Page Fault</li>
+</ul>
+<p>如内存地址越界访问。</p>
+<p>缺页异常的常见原因：访问的数据被swap换出。</p>
+<hr>
+<p>Linux主要通过“调页Paging”和“交换Swapping”来完成内存调度。</p>
+<p>交换是将整个进程，全部交换到磁盘上。</p>
+<p>调页是将内存中最近不常使用的页面换到磁盘上，把活动页面保留在内存中供进程使用。</p>
+<p>分页写入磁盘称作Page-Out，分页从磁盘重新回到内存称作Page-In。</p>
+<p>当内核需要一个分页，但此分页不在物理内存中，就发生了分页错误（Page Fault）。</p>
+<p>如果Page-out频繁发生，系统性能会急剧下降。</p>
+<hr>
+<p>内存管理机制</p>
+<p>简单分为连续分配和非连续分配两种。</p>
+<p>连续分配管理指为程序分配一个连续的内存空间，如块式管理。</p>
+<p>非连续分配管理方式允许程序使用的内存分布在离散的内存中，如页式管理和段式管理。</p>
+<ul>
+<li><p>块式管理：将内存分为固定大小的块，每个块中只包含一个进程。</p>
+</li>
+<li><p>页式管理：把主存分为大小相等且固定的页，通过页表对应逻辑地址和物理地址。</p>
+</li>
+<li><p>段式管理：把主存分为一段段，每个段定义了一组逻辑信息，如有主程序段、子程序段、数据段及栈段等，通过段表对应逻辑地址和物理地址。</p>
+</li>
+<li><p>段页式管理机制：把主存先分成若干段，每个段又分成若干页，段与段之间以及段的内部的都是离散的。</p>
+</li>
+</ul>
+<p>Linux通过分段和分页机制，把物理内存划分4K大小的内存页Page（也称页框Page Frame）。</p>
+<p>物理内存的分配和回收都基于内存页。</p>
+<p>假如系统请求小块内存，可以预先分配一页给它，避免反复的申请和释放小块内存。</p>
+<p>假如系统需要大块内存，可以用多页内存拼凑，不必要求大块连续内存。</p>
+<p>针对页框内外，物理内存页分配会出现外部和内部碎片问题。</p>
+<p>一个页框内的内存碎片是内部碎片，多个页框间的碎片是外部碎片。</p>
+<p>解决方案略。</p>
+<hr>
+<p>现代计算机内存寻址的单位是字节。</p>
+<p>低字节序列：将数据低位存储在内存低位地址。</p>
+<p>高字节序列：将数据高位存储在内存低位地址。</p>
+<hr>
+<ul>
+<li><p>同步：多个任务或事件要发生，串行执行。</p>
+</li>
+<li><p>异步：多个任务或事件要发生，并行执行，一个事件或任务的执行不会导致整个流程等待。</p>
+</li>
+<li><p>阻塞：事件或任务在执行过程中，发出一个请求，如果请求需要的条件不满足，就一直等待至条件满足。</p>
+</li>
+<li><p>非阻塞：事件或任务在执行过程中，发出一个请求，如果请求需要的条件不满足，立即返回一个标志告知条件不满足。</p>
+</li>
+</ul>
+<p>通常IO操作包括：对磁盘或Socket的读写。</p>
+<p>当用户线程发起一个IO请求操作，内核先查看要读取的数据是否就绪。</p>
+<p>对于阻塞IO，如果数据没有就绪，则会一直等待，直到数据就绪。</p>
+<p>对于非阻塞IO，如果数据没有就绪，则会返回一个标志告知用户线程没有就绪。</p>
+<p>一个完整的IO读请求操作包括两个阶段：</p>
+<ul>
+<li><p>查看数据是否就绪；</p>
+</li>
+<li><p>进行数据拷贝（内核将数据拷贝到用户线程）。</p>
+</li>
+</ul>
+<p>阻塞和非阻塞的区别在于第一个阶段，如果数据没有就绪，是一直等待，还是直接返回一个标志信息。</p>
+<p>同步IO：用户线程请求IO操作，如果数据没有就绪，用户线程或者内核轮询数据是否就绪，当数据就绪将数据从内核拷贝到用户线程，在IO操作完成之前，该线程会被阻塞；</p>
+<p>异步IO：用户线程请求IO操作，IO操作的两个阶段都由内核完成，然后通知用户线程IO操作已完成，不会导致请求线程被阻塞。</p>
+<p>同步IO和异步IO的关键在数据拷贝阶段是由用户线程完成还是内核完成，所以异步IO必须要操作系统支持。</p>
+<p>阻塞IO和非阻塞IO反映在当用户请求IO操作时，如果数据没有就绪，用户线程是一直等待数据就绪，还是收到一个标志信息。</p>
+<hr>
+<p>五种IO模型：阻塞IO、非阻塞IO、多路复用IO、信号驱动IO、异步IO。</p>
+<ul>
+<li>阻塞IO模型</li>
+</ul>
+<p>用户线程发出IO请求后，内核查看数据是否就绪，没有就绪就等待数据就绪，用户线程处于阻塞状态。</p>
+<p>就绪之后，内核将数据拷贝到用户线程，并返回结果给用户线程，用户线程才解除阻塞。</p>
+<pre><code>data = socket.read();</code></pre><ul>
+<li>非阻塞IO模型</li>
+</ul>
+<p>用户线程发出IO请求后，马上得到一个结果标志。</p>
+<p>如果数据还没就绪，可以再次发出IO请求。</p>
+<p>一旦内核中的数据准备好了，并且再次收到了用户线程的请求，那就将数据拷贝到用户线程，然后返回。</p>
+<p>用户线程需要不断轮询内核数据是否就绪，也就是会一直占用CPU。</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">while</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    data <span class="token operator">=</span> socket<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>data <span class="token operator">!=</span> error<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 处理数据</span>
+        <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li>多路复用IO模型</li>
+</ul>
+<p>有一个线程不断轮询多个Socket的状态，只有当Socket真正有读写事件时，才执行IO读写操作。</p>
+<p>只需要一个线程就可以管理多个Socket。</p>
+<p>NIO实际上是多路复用IO，通过Selector#select查询每个通道是否有事件，如果没有则阻塞。</p>
+<p>在非阻塞IO中，轮询Socket状态是用户线程进行的，在多路复用IO中，是内核进行，效率要高的多。</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">//  事先调用epoll_ctl注册感兴趣的事件到epollfd</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 返回触发注册事件的流</span>
+    active_stream<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">epoll_wait</span><span class="token punctuation">(</span>epollfd<span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">// 无须遍历所有的流</span>
+    <span class="token keyword">for</span> i in active_stream<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
+        read or write till
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li>信号驱动IO模型</li>
+</ul>
+<p>用户线程发起IO请求，给对应的Socket注册一个信号函数，然后用户线程直接返回。</p>
+<p>内核数据就绪时会发一个信号给用户线程，用户线程接收后，在信号函数中进行实际的IO操作。</p>
+<ul>
+<li>异步IO模型</li>
+</ul>
+<p>用户线程发起IO请求后，立刻返回。</p>
+<p>内核等待数据就绪，然后将数据拷贝到用户线程，之后通知用户线程操作完成。</p>
+<p>用户线程不需要关心IO操作，只要发起一个请求，接收内核返回的成功信号就可以直接使用数据。</p>
+<p>在异步IO模型中，IO操作的两个阶段都不会阻塞用户线程，都由内核完成。</p>
+<p>信号驱动模型中，当用户线程接收到信号表示数据已经就绪，然后需要用户线程调用IO函数进行实际的读写；</p>
+<p>异步IO模型中，收到信号表示IO操作已经完成，不需要用户线程操作。</p>
+<p>异步IO需要操作系统的底层支持，Java7提供了Asynchronous IO。</p>
+<p>前面四种IO模型都属于同步IO，因为无论是多路复用IO还是信号驱动模型，IO操作的第二个阶段（内核进行数据拷贝）都会引起用户线程阻塞。</p>
+<hr>
+<ul>
+<li>Reactor模式：</li>
+</ul>
+<p>对每个Client注册感兴趣的事件，然后有一个线程专门去轮询每个Client是否有事件发生。</p>
+<p>当有事件发生时，便顺序处理每个事件，所有事件处理完之后，便继续下一轮轮询。</p>
+<p>多路复用IO就是采用Reactor模式。</p>
+<p>为了提高事件处理速度，可以通过多线程的方式来处理事件。</p>
+<ul>
+<li>Proactor模式：</li>
+</ul>
+<p>当检测到有事件发生时，会起一个异步操作，然后交由内核线程去处理，当内核线程完成IO操作后，发送一个通知告知操作已完成。</p>
+<p>异步IO模型采用的就是Proactor模式。</p>
+<hr>
+<p>文件描述符（file descriptor，fd）:</p>
+<p>是一个索引值，指向内核为每个进程维护的该进程打开文件的记录表。</p>
+<p>当程序打开或创建一个文件时，内核向进程返回一个文件描述符。</p>
+<p>Linux将所有的外部设备都当做文件，对一个文件/Socket的读写操作会返回一个文件描述符。</p>
+<hr>
+<p>Linux的IO多路复用模型</p>
+<p>IO多路复用通过把多个IO阻塞复用到同一个select的阻塞上，使得单线程可以同时处理多个请求。</p>
+<p>一个进程可以监视多个文件描述符，一旦某个文件描述符就绪，能够通知程序进行相应的读写操作。</p>
+<p>select，poll，epoll都是IO多路复用的机制，但本质上都是同步IO。</p>
+<ul>
+<li>select</li>
+</ul>
+<p>select函数会阻塞，直到有fd就绪，或者超时，函数返回。</p>
+<p>select函数返回后，遍历fdset，来找到就绪的fd。</p>
+<p>select函数仅知道有I/O事件发生了，但不知道是哪个，只能无差别轮询，时间复杂度O(n)。</p>
+<p>本质是通过设置或检查存放fd标志位的数据结构，但是单个进程打开的fd是有限制的，能监听端口有限。</p>
+<ul>
+<li>poll</li>
+</ul>
+<p>poll本质上和select没有区别。</p>
+<p>查询每个fd对应的状态，如果就绪则加入等待队列，并继续遍历。</p>
+<p>如果遍历完所有fd后没有发现就绪，则挂起当前进程，直到就绪或者超时，被唤醒后再次遍历fd。</p>
+<p>经历了多次无谓遍历，时间复杂度O(n)。</p>
+<p>没有最大连接数的限制，因为是基于链表来存储的。</p>
+<p>还有一个特点是水平触发，如果报告了fd后，没有被处理，下次poll时会再次报告该fd。</p>
+<ul>
+<li>epoll</li>
+</ul>
+<p>epoll支持水平触发和边缘触发。</p>
+<p>边缘触发只告诉进程哪些fd就绪，并且只通知一次。</p>
+<p>epoll是事件驱动，通过epoll_ctl注册fd，一旦该fd就绪，内核就会采用类似回调机制来激活该fd，epoll_wait便可以收到通知。</p>
+<p>时间复杂度O(1)。</p>
+<p>没有最大连接数的限制。</p>
+<p>epoll对fd的操作有两种模式：LT（level trigger）和ET（edge trigger），默认LT模式。</p>
+<p>LT模式：当epoll_wait检测到fd事件发生并将此事件通知应用程序，应用可以不处理该事件，下次epoll_wait时，会再通知此事件。</p>
+<p>ET模式：当epoll_wait检测到fd事件发生并将此事件通知应用程序，应用必须处理该事件，如果不处理，下次epoll_wait时，不会再通知此事件。</p>
+<hr>
+<p>没有DMA前，I/O是这样的：</p>
+<p>CPU发出指令给磁盘控制器，然后返回。</p>
+<p>磁盘控制器把数据复制到自己的缓冲区中，然后产生一个中断。</p>
+<p>CPU收到中断信号后，停下手头的工作，把磁盘控制器的缓冲区的数据复制到自己的寄存器，然后把寄存器里的数据复制到内存。</p>
+<p>整个数据传输都需要CPU参与，此期间不能处理别的请求。</p>
+<p>DMA，Direct Memory Access，就是直接内存访问。</p>
+<p>I/O设备和内存的数据传输交给DMA控制器，CPU不再参与数据复制。</p>
+<p>用户进程调用read方法，向操作系统发出I/O请求，进程进入阻塞状态。</p>
+<p>操作系统将I/O请求发送给DMA，然后CPU执行其他任务。</p>
+<p>DMA将I/O请求发送给磁盘，磁盘把数据读取到磁盘控制器的缓冲区中，然后向DMA发起中断信号。</p>
+<p>DMA将磁盘控制器缓冲区中的数据拷贝到内核缓冲区中。</p>
+<p>DMA读取了足够多的数据，就会发送中断信号给CPU，CPU将数据从内核拷贝到用户空间，系统调用返回。</p>
+<hr>
+<p>以发送文件为例，一般情况下，应用程序将文件发送到网络：</p>
+<ul>
+<li><p>从用户态切换到内核态，DMA将数据从磁盘复制到内核态的内核缓冲。</p>
+</li>
+<li><p>从内核态切换到用户态，CPU将内核缓冲的数据复制到用户态下的缓冲，结束读取。</p>
+</li>
+<li><p>从用户态切换到内核态，CPU将用户态下的缓冲内容复制到内核态下的Socket缓冲，然后复制到网卡。</p>
+</li>
+<li><p>结束调用，从内核态切换到用户态。</p>
+</li>
+</ul>
+<p>内核和用户的上下文切换了4次，并且不需要复制到用户态，CPU却白白复制了2次数据。</p>
+<p>零拷贝是系统层的，减少内核态和用户态之间的上下文切换和数据拷贝，在内核模式下零拷贝。</p>
+<p>对于Linux操作系统，零拷贝依赖于底层的sendfile方法。</p>
+<p>对于Java语言，FileChannal.transferTo方法的底层实现就是sendfile方法。</p>
+<ul>
+<li><p>从用户态切换到内核态，DMA将数据拷贝到内核缓冲，向Socket缓冲追加数据的文件描述符（仅仅是位置和长度，数据没被复制到Socket缓冲），再由DMA将数据从内核模式中复制到网卡设备缓冲区（不需要CPU参与）。</p>
+</li>
+<li><p>从内核态切换到用户态，结束调用。</p>
+</li>
+</ul>
+<p>数据只经历了2次复制，上下文切换也变成了2次。</p>
+<p>没有在内存层面拷贝数据，全程没有通过CPU来搬运数据，所有的数据都通过DMA传输。</p>
+<hr>
+<p>文件传输过程，第一步都是先先把磁盘数据拷贝到内核缓冲区，内核缓冲区实际上是磁盘高速缓存（PageCache）。</p>
+<p>页缓存是操作系统实现的磁盘缓存，把磁盘中的数据缓存到内存，减少磁盘I/O。</p>
+<p>当进程准备读取磁盘时，如果读取的数据所在的页在页缓存中，则直接返回数据。</p>
+<p>如果没有命中，则向磁盘发起读取请求并将读取的数据页存入页缓存，再将数据返回给进程。</p>
+<p>如果进程要将数据写入磁盘，先检测数据对应的页是否在页缓存中，如果不存在，先在页缓存中添加，最后将数据写入对应的页。</p>
+<p>数据都是先被写入页缓存，然后由操作系统负责刷盘。</p>
+<p>PageCache的优点主要是两个：</p>
+<ul>
+<li><p>缓存最近被访问的热点数据；</p>
+</li>
+<li><p>文件预读功能；</p>
+</li>
+</ul>
+<p>这两个做法大大提高了读写磁盘的性能。</p>
+<p>但是发送大文件（GB级别）时，内核会把数据载入PageCache，PageCache空间很快被占满。</p>
+<p>那么其他热点的小文件就会被挤出缓存，可能导致磁盘读写性能下降。</p>
+<hr>
+<p>用户态直接I/O：运行在用户态下的应用直接访问硬件设备，数据跨过内核传输。</p>
+<p>只适用于不需要内核缓冲区处理的应用，这些应用通常在进程地址空间有自己的缓存机制。</p>
+<p>这种方法直接操作磁盘，由于CPU和磁盘I/O间的执行时间差距，需要和异步I/O结合使用。</p>
+<p>异步I/O的读操作：</p>
+<p>内核向磁盘发起读请求后返回，当内核将磁盘中的数据拷贝到进程缓冲区后，进程将收到内核的通知，再去处理数据。</p>
+<p>这里并没有涉及到PageCache。</p>
+<p><del>没找到对应的实例。</del></p>
+<hr>
+<p>read系统调用会把内核缓冲区的数据拷贝到用户的缓冲区里，可以用mmap替换read系统调用函数。</p>
+<p>Linux的mmap将一段用户空间内存映射到内核空间，避免在用户态与内核态之间拷贝数据，减少上下文切换。</p>
+<p>使用mmap + write取代read + write：</p>
+<p>用户进程从用户态切换为内核态，通过mmap函数向内核发起系统调用。</p>
+<p>将用户进程的内核空间的读缓冲区与用户空间的缓存区进行内存地址映射。</p>
+<p>DMA控制器将数据从主存或硬盘拷贝到内核空间的读缓冲区。</p>
+<p>从内核态切换回用户态，mmap系统调用执行返回。</p>
+<p>用户进程从用户态切换为内核态，通过write函数向内核发起系统调用。</p>
+<p>CPU将读缓冲区中的数据拷贝到的Socket缓冲区，DMA控制器将数据从Socket缓冲区拷贝到网卡。</p>
+<p>从内核态切换回用户态，write系统调用执行返回。</p>
+<p>这里经历2次系统调用，4次上下文切换，1次CPU拷贝和2次DMA拷贝。</p>
+<p>mmap可以提高大文件的I/O性能，对于小文件，内存映射文件反而会导致碎片空间的浪费。</p>
+<p>因为内存映射总是要对齐页边界，最小单位是4KB，一个5KB的文件将会映射占用8KB内存。</p>
+<p>当使用mmap映射一个文件时，如果这个文件被另一个进程所截获，那么write系统调用会因为访问非法地址被SIGBUS信号终止。</p>
+<p>SIGBUS默认会杀死进程并产生一个coredump。</p>
+<p>通常为文件申请一个租借锁，当其他进程想要截断这个文件时，内核会发送一个RT_SIGNAL_LEASE信号，告诉当前进程有进程在试图破坏文件。</p>
+<p>这样write在被SIGBUS杀死之前，会被中断，返回已经写入的字节数。</p>
+<p>通常在mmap之前加锁，操作完之后解锁。</p>
+<p>MappedByteBuffer是NIO基于内存映射mmap的实现。</p>
+<pre class=" language-java"><code class="language-java">MappedByteBuffer mappedByteBuffer <span class="token operator">=</span> fileChannel<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>READ_WRITE<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> bytes<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>MappedByteBuffer使用是堆外的虚拟内存，因此映射的内存大小不受JVM的限制。</p>
+<hr>
+<p>Kafka：消息记录的读写都是基于FileChannel，消息索引的读写基于MappedBuffer。</p>
+<p>RocketMQ：读写基于MappedBuffer，可改为FileChannel刷盘，据说是避免页缓存的竞争。</p>
+<p>Kafka分区数量过多的话，读写需要在多个Log间来回切换，从全局看应该算随机。</p>
+<p>RocketMQ所有的Topic的消息都在一个Log内，写是顺序的。</p>
+<p>Kafka发送消息用了sendfile，效率更高，因为少了一次页缓存到Socket缓冲的拷贝。</p>
+<p>RocketMQ默认把消息拷贝到堆内缓冲中再发送，也可以不经过堆，通过MappedBuffer发送到Socket缓冲。</p>
+<p>RocketMQ用文件预分配和文件预热（每页写入一个0字节）减少大文件mmap因为缺页中断的性能问题。</p>
+<hr>
+<p>Linux中一切都是文件。</p>
+<p>网络接口卡、磁盘驱动器、输入输出设备、普通文件或是目录都被看作是一个文件。</p>
+<p>硬盘最小存储单位是扇区（sector），多个扇区组成块（block）。</p>
+<p>一个文件可能会占用多个块，但是一个块只能放一个文件。</p>
+<p>块常见的大小是4kb，8个连续的扇区组成（每个扇区512字节）。</p>
+<p>每个文件都有一个inode，即索引节点，存储文件的元信息：文件被分成几块、每一块的地址、文件拥有者、创建时间、权限、大小等。</p>
+<p>每个inode都有一个号码，Linux使用inode号码区分不同的文件。</p>
+<hr>
+<p>Linux文件类型</p>
+<ul>
+<li><p>普通文件（-）：存储信息和数据。</p>
+</li>
+<li><p>目录文件（d，directory file）：目录也是文件的一种，打开目录事实上就是打开目录文件。</p>
+</li>
+<li><p>符号链接文件（l，symbolic link）：保留了指向文件的地址而不是文件本身。</p>
+</li>
+<li><p>字符设备（c，char）：用来访问字符设备如硬盘。</p>
+</li>
+<li><p>设备文件（b，block）：用来访问块设备如硬盘、软盘。</p>
+</li>
+<li><p>管道文件（p，pipe）：一种特殊类型的文件，用于进程之间的通信。</p>
+</li>
+<li><p>套接字（s，socket）：用于进程间的网络通信，也可以用于本机之间的非网络通信。</p>
+</li>
+</ul>
+<hr>
+<p>扇区是对磁盘进行物理读写的最小单位。</p>
+<p>Windows在逻辑方面对磁盘进行读写的单位是扇区整数倍簇。</p>
+<p>1簇可以是512字节（1簇 = 1扇区）、1KB（1簇 = 2扇区）、2KB、4KB。</p>
+<p>不同的文件不能存储在同一簇，否则就会导致只有一方的文件不能删除。</p>
+<p>所以不管多小的文件，都会占用1簇的空间。</p>
+<hr>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>
