@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-Cache | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="太懈怠了。
+
+缓存就是空间换时间。
+CPU缓存的是内存数据，解决CPU处理速度和内存不匹配的问题。
+内存缓存的是硬盘数据，解决硬盘访问速度过慢的问题。
+操作系统在页表基础上引入了快表，加速虚拟地址到物理地址的转换。
+为了避免用户在请求数据的时候速度过慢，所以在数据库之上增加了缓存。
+以上是复制粘贴来">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-Cache" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-Cache</h2>
+				
+				<div>
+					<div class="post-time">2020-10-31</div>
+				</div>
+				
+				<div class="article-content">
+				<p>太懈怠了。</p>
+<hr>
+<p>缓存就是空间换时间。</p>
+<p>CPU缓存的是内存数据，解决CPU处理速度和内存不匹配的问题。</p>
+<p>内存缓存的是硬盘数据，解决硬盘访问速度过慢的问题。</p>
+<p>操作系统在页表基础上引入了快表，加速虚拟地址到物理地址的转换。</p>
+<p>为了避免用户在请求数据的时候速度过慢，所以在数据库之上增加了缓存。</p>
+<p><del>以上是复制粘贴来的正确的废话。</del></p>
+<hr>
+<p>缓存策略：</p>
+<ul>
+<li>Cache-Aside：</li>
+</ul>
+<p>读的时候，先读缓存，缓存没有再读数据库，放入缓存，返回响应。</p>
+<p>写的时候，先删除缓存，再更新数据库（或者反过来？）。</p>
+<ul>
+<li>Read-Through/Write-Through：</li>
+</ul>
+<p>读的时候，先读缓存，缓存没有再读数据库，放入缓存，返回响应。</p>
+<p>写的时候，同步更新缓存和数据库。</p>
+<p>区别在于客户端不需要关心，缓存服务封装了这些操作，也就是把缓存服务当做数据库。</p>
+<ul>
+<li>Write-Behind：</li>
+</ul>
+<p>写的时候，先写缓存，然后缓存服务异步更新数据库。</p>
+<p>提高了写性能，但有一致性的风险。</p>
+<hr>
+<p>缓存会涉及缓存与数据库双写，会有数据一致性问题。</p>
+<p>如果有严格的一致性要求，可以将读写请求串行化到一个内存队列里，但也会导致吞吐量大幅降低。</p>
+<p>以Cache-Aside为例：</p>
+<p>问题：</p>
+<p>写的时候，先更新数据库，再删除缓存，如果删除缓存失败了，会导致不一致。</p>
+<p>解决方法：</p>
+<p>先删除缓存，再修改数据库。</p>
+<p>问题：</p>
+<p>先删除缓存，再更新数据库，如果还没修改完成，读请求过来，发现缓存空了，从数据库查到了旧数据，放到缓存中，然后数据库的修改才完成，会导致不一致。</p>
+<p>解决方法：</p>
+<p>更新数据时，根据数据的唯一标识，将操作路由到一个内存队列中。</p>
+<p>读取数据时，如果发现数据不在缓存中，将读取数据和更新缓存的操作，根据数据的唯一标识，也将操作路由到一个内存队列中。</p>
+<p>写操作，先删除缓存，再更新数据库，如果读请求读到了空的缓存，先将缓存更新的请求发送到队列中，然后同步等待缓存更新完成。</p>
+<p>一个队列任务串行执行，还可以合并写请求。</p>
+<p>如果请求未超时，就直接返回，否则直接从数据库中读取当前的旧值。</p>
+<p>问题：</p>
+<p>如果数据更新很频繁，队列中积压了大量更新操作，读请求会超时，导致大量的读请求直接抵达数据库。</p>
+<p>解决方法：</p>
+<p>机器集群扩容。</p>
+<p>问题：</p>
+<p>热点缓存的路由问题，打到相同的机器的相同的队列，造成某台机器压力过大。</p>
+<p>解决方法：</p>
+<p>略。</p>
+<hr>
+<p>缓存雪崩：</p>
+<p>缓存在同一时间大面积的过期或失效，大量请求直接落到了数据库上，导致系统宕机。</p>
+<p>或者是使用哈希取模寻址，并且服务端增扩容导致的大量缓存失效。</p>
+<p>解决方案：</p>
+<ol>
+<li><p>缓存的高可用，如Redis主从/哨兵/集群。</p>
+</li>
+<li><p>设置随机失效时间，或者热点数据永不失效。</p>
+</li>
+<li><p>一致性哈希算法。</p>
+</li>
+<li><p>限流，降级，超时，快速失败。</p>
+</li>
+<li><p>或者增加缓存的重试次数？</p>
+</li>
+</ol>
+<hr>
+<p>缓存预热：略。</p>
+<hr>
+<p>热点缓存：</p>
+<p>突发的事件（热卖商品、热点新闻）会形成热点。</p>
+<p>请求集中于某个分片，超过单机的性能上限。</p>
+<p>尽量把热点分散到不同的服务器，降低压力。</p>
+<p>能否自动跟踪统计热点数据（虽然有延迟）？</p>
+<p>比如数据更新读取都经过一层可以水平扩展的Proxy，Proxy同步或异步统计热点数据，再维护一层缓存，对于热点的数据可以直接返回？</p>
+<hr>
+<p>缓存穿透：</p>
+<p>大量请求不命中缓存，直接到了数据库上。</p>
+<p>通常是一个不存在的key，数据库中也不存在对应的值。</p>
+<p>或者是热点数据失效，大量请求直接落到库上。</p>
+<p>解决方案：</p>
+<ul>
+<li>对于不存在的情况：</li>
+</ul>
+<ol>
+<li><p>先做好参数校验，拦截一些不合法的参数请求，比如查询的数据库id不能小于0等。</p>
+</li>
+<li><p>缓存空对象，设置过期时间，但可能在缓存中生成大量无效值，也有被攻击的可能。</p>
+</li>
+<li><p>使用布隆过滤器拦截不存在的请求，但需要考虑布隆过滤器的维护。</p>
+</li>
+</ol>
+<ul>
+<li>对于热点失效的情况：</li>
+</ul>
+<ol>
+<li><p>热点数据设为永不过期。</p>
+</li>
+<li><p>互斥更新，加锁使得同时只有一个线程请求数据库和更新缓存，其它线程等待被唤醒后从缓存获取。</p>
+</li>
+<li><p>略。</p>
+</li>
+</ol>
+<hr>
+<p>缓存淘汰算法：</p>
+<p>常见的有least recently used和least frequently used两种。</p>
+<p>LRU，最近最少使用。</p>
+<p>假设：假如它最近被使用，那么将来也会被使用。</p>
+<p>弊端：假如一个值以前没有被使用，最近却使用了，那么就会认为它是热点，不会被淘汰，出现误判。</p>
+<p>LFU，最少频繁使用。</p>
+<p>假设：假如它最近被使用的次数多，那么将来也会被使用很多次。</p>
+<p>LFU算法反映了热点情况，不会因为LRU算法的偶尔一次被访问被认为是热点数据。</p>
+<hr>
+<p>Redis的并发竞争问题</p>
+<p>Redis的指令都是单线程执行的，理论上不会有线程安全问题。</p>
+<p>但是多客户端并发读写一个key，顺序是不能保证的。</p>
+<p>多客户端并发执行多个Redis指令，不能保证指令的隔离性。</p>
+<p>可以通过分布式锁，或者乐观的实现解决（Redis的事务提供了watch机制）。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

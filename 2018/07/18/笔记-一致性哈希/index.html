@@ -13,16 +13,17 @@
     
     
     <meta name="description"
-        content="** 参考：** http://www.zsythink.net/archives/1182
+        content="参考： http://www.zsythink.net/archives/1182
+分布式寻址算法
 哈希算法
 ** HASH（资源名称） % N（服务器数量）**
 
 当缓存服务器数量发生变化时，会引起缓存的雪崩，大量缓存同一时间失效。
 
-当缓存服务器数量发生变化时，几乎所有缓存的位置都会发生改变。
+当缓存服务器数量发生变化时，几乎所有缓存的位置都会改变。
 
 
-一">
+">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -95,29 +96,28 @@
 				</div>
 				
 				<div class="article-content">
-				<p>** 参考：** <a href="http://www.zsythink.net/archives/1182" target="_blank" rel="noopener">http://www.zsythink.net/archives/1182</a></p>
+				<p><strong>参考：</strong> <a href="http://www.zsythink.net/archives/1182" target="_blank" rel="noopener">http://www.zsythink.net/archives/1182</a></p>
+<p>分布式寻址算法</p>
 <h4 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h4><p><img src="/imgs/hash_server_resource.png" alt="hash cache by huangzhike"></p>
 <p>** <code>HASH（资源名称） % N（服务器数量）</code>**</p>
 <ul>
 <li><p>当缓存服务器数量发生变化时，会引起缓存的雪崩，大量缓存同一时间失效。</p>
 </li>
-<li><p>当缓存服务器数量发生变化时，几乎所有缓存的位置都会发生改变。</p>
+<li><p>当缓存服务器数量发生变化时，几乎所有缓存的位置都会改变。</p>
 </li>
 </ul>
-<h4 id="一致性哈希算法："><a href="#一致性哈希算法：" class="headerlink" title="一致性哈希算法："></a>一致性哈希算法：</h4><p>也是使用取模的方法，只是，之前是对服务器的数量进行取模，而一致性哈希算法是对<code>2^32</code>取模。</p>
+<h4 id="一致性哈希算法："><a href="#一致性哈希算法：" class="headerlink" title="一致性哈希算法："></a>一致性哈希算法：</h4><p>也是使用取模，之前是对服务器的数量取模，而一致性哈希算法是对<code>2^32</code>取模。</p>
 <p><img src="/imgs/consistent_hashing.png" alt="consistent hash cache by huangzhike"></p>
-<p>把二的三十二次方想象成一个圆，就像钟表一样，钟表的圆可以理解成由60个点组成的圆，把这个圆想象成由<code>2^32</code>个点组成的圆，称为HASH环。</p>
-<p>** <code>HASH（服务器A的IP地址） % 2^32</code>**<br>** <code>HASH（服务器B的IP地址） % 2^32</code>**<br>** <code>HASH（服务器C的IP地址） % 2^32</code>**<br>** <code>HASH（资源名称） % 2^32</code>**</p>
-<p>结果是一个<code>0~2^32-1</code>之间的一个整数，代表服务器A，HASH环上必定有一个点与这个整数对应，那么，服务器A就可以映射到这个环上。</p>
-<p>服务器与图片都被映射到了HASH环上，那么资源到底应该被缓存到哪一台服务器上呢？</p>
-<p>从资源的位置开始，沿顺时针方向遇到的第一个服务器就是A服务器，所以，资源将会被缓存到服务器A上。</p>
-<p>将缓存服务器与被缓存对象都映射到HASH环上以后，从被缓存对象的位置出发，沿顺时针方向遇到的第一个服务器，就是当前对象将要缓存于的服务器，由于被缓存对象与服务器HASH后的值是固定的，在服务器不变的情况下，资源必定会被缓存到固定的服务器上，那么，下次想要访问该资源时，只要再次使用相同的算法进行计算，即可算出这个图片被缓存在哪个服务器上，直接去对应的服务器查找对应的图片即可。</p>
-<p>使用一致性哈希算法时，服务器的数量如果发生改变，并不是所有缓存都会失效，而是只有部分缓存会失效，不至于所有压力都在同一时间集中到后端服务器上。</p>
+<p>把一个圆想象成由<code>2^32</code>个点组成，称为HASH环。</p>
+<p><strong><code>HASH（服务器A的IP地址） % 2^32</code></strong><br><strong><code>HASH（服务器B的IP地址） % 2^32</code></strong><br><strong><code>HASH（服务器C的IP地址） % 2^32</code></strong><br><strong><code>HASH（资源名称） % 2^32</code></strong></p>
+<p>服务器可以映射到HASH环上的某个点，资源也可以映射到HASH环上的某个点。</p>
+<p>沿环顺时针遇到的第一个服务器就是资源所在位置。</p>
+<p>由于被缓存对象与服务器HASH后的值是固定的，在服务器不变的情况下，资源必定会被缓存到固定的服务器上。</p>
+<p>服务器的数量如果发生改变，并不是所有缓存都会失效，而是只有部分缓存会失效，不至于所有压力都在同一时间集中到后端服务器上。</p>
 <h4 id="HASH环的偏斜"><a href="#HASH环的偏斜" class="headerlink" title="HASH环的偏斜"></a>HASH环的偏斜</h4><p><img src="/imgs/unbalanced_hash.png" alt="unbalanced hash cache by huangzhike"></p>
-<p>之前理想化的将3台服务器均匀的映射到了HASH环上，如果出现上图中的情况，A、B、C三台服务器并没有被合理的平均的充分利用，缓存分布的极度不均匀。</p>
-<p>一致性哈希算法中使用”虚拟节点”解决了这个问题，如果想要均衡的将缓存分布到3台服务器上，最好能让这3台服务器尽量多的、均匀的出现在环上。</p>
-<p>但是，真实的服务器资源只有3台，既然没有多余的真正的物理服务器节点，就只能将现有的物理节点通过虚拟的方法复制出来，这些由实际节点虚拟复制而来的节点被称为”虚拟节点”。</p>
-<p>“虚拟节点”是”实际节点”（实际的物理服务器）在哈希环上的复制品，一个实际节点可以对应多个虚拟节点。</p>
+<p>一致性哈希算法在节点太少时，容易因为节点分布不均匀而造成缓存热点的问题。</p>
+<p>使用”虚拟节点”解决这个问题，将现有的物理节点通过虚拟的方法复制出来，这些由实际节点虚拟而来的节点被称为”虚拟节点”。</p>
+<p>“虚拟节点”是”实际节点”在哈希环上的复制品，一个实际节点可以对应多个虚拟节点。</p>
 <p>就是这样。</p>
 
 				</div>
