@@ -253,6 +253,26 @@ COMMIT<span class="token punctuation">;</span></code></pre>
     <span class="token comment" spellcheck="true">// 抛异常</span>
 <span class="token punctuation">}</span></code></pre>
 <p>用Redis拦截了一层流量，使得直接落到数据库的流量少了很多。</p>
+<p>update语句都是会加行锁的，在热点数据存在的时候非常危险（毕竟需要排队等待锁）。</p>
+<p>好在目前体量还不算太大，但是放在一个大事务里边还是非常危险的，万一因为某些原因阻塞了（比如这次），锁一直不释放，不止占用了数据库的连接，还会占用请求的线程池，直接崩盘。</p>
+<p>所以一定要做好限流和快速失败，还有超时处理。</p>
+<p>可以的话尽量使用乐观的操作，先查数据，更新时校验一下有没有改变，有的话直接抛个异常让用户重试就好。</p>
+<p>redis不止可以做缓存挡一层流量，还可以用于一些时效比较强、频率高的读写操作，不要直接使用数据库了。</p>
+<p>对于这种比较热点的活动，经常会涉及类似超卖的校验问题：</p>
+<ul>
+<li><p>拆分大SQL，每个SQL尽量只单表查询或更新，应用层做好缓存；</p>
+</li>
+<li><p>应用层做好校验逻辑，及早抛出异常；</p>
+</li>
+<li><p>尽量通过主键查询和更新；</p>
+</li>
+<li><p>尽量不使用事务，或者事务尽可能小，快点结束；</p>
+</li>
+<li><p>乐观的校验，有些状态是简单的正向流转的，那么更新状态时可以带上上一个状态的条件，并且通过主键更新；有些有数量限制的，比如限购，库存这些，更新数量时可以带上上一次的数量作为更新条件，通过更新行数判断是否成功，然后再执行下一步或者直接抛异常（千万别用一句SQL做复杂的逻辑），同时有需要的话应用层可以做补偿或回滚的操作。当然这样在活动特别火爆的时候用户体验不太好，可以适当取舍。</p>
+</li>
+</ul>
+<p>不过这样如果程序突然挂了，是不能保证整个流程的严格一致性和原子性的，因为没有使用事务。</p>
+<p>不过这里也不是转账，不需要绝对的一致性，毕竟只要保证不超过限制就可以了，而且目前的体量，基本不会发生这种情况。</p>
 <p>而异步打款的定时任务逻辑大概是：</p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 先根据标记位canSubmit判断是否能继续提交任务，否则直接返回</span>
 <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>canSubmit<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -293,6 +313,7 @@ COMMIT<span class="token punctuation">;</span></code></pre>
 <p>类似CAS的抢锁的逻辑，抢到锁（更新成功）才能打款。</p>
 <p>发布到生产环境，貌似没啥问题。</p>
 <p>你以为这就完事了？我忘了加重试次数限制了。。。</p>
+<p>于是加了个重试次数字段，重试超过限制就不再打款，改由人工处理。</p>
 <p>你以为这又完事了？我特么。。。算了，心好累，不写了。</p>
 
 				</div>

@@ -1,0 +1,533 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-MySQL | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="一个人最好的生活状态：该看书时看书，该玩时尽情玩；看见优秀的人欣赏，看见落魄的人也不轻视；有自己的小生活和小情趣，不用去想改变世界，努力去活出自己；没有人爱时专注自己，有人爱时有能力拥抱彼此。
+
+本来对鸡汤不屑一顾，但这几句话不知道为什么特别戳我，所以，哈哈，特别写在了前面（是不是暴露了什么？）。
+">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-MySQL" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL</h2>
+				
+				<div>
+					<div class="post-time">2020-11-29</div>
+				</div>
+				
+				<div class="article-content">
+				<blockquote>
+<p>一个人最好的生活状态：<br>该看书时看书，该玩时尽情玩；<br>看见优秀的人欣赏，看见落魄的人也不轻视；<br>有自己的小生活和小情趣，不用去想改变世界，努力去活出自己；<br>没有人爱时专注自己，有人爱时有能力拥抱彼此。</p>
+</blockquote>
+<p>本来对鸡汤不屑一顾，但这几句话不知道为什么特别戳我，所以，哈哈，特别写在了前面（是不是暴露了什么？）。</p>
+<hr>
+<p>半年前花了一个月看MySQL的书，整理了一些笔记，但感觉挺多还是似懂非懂的。</p>
+<p>半年后又花了一个月查资料，又系统地过了一遍，主要是锁相关的问题，应该算是入门了吧。</p>
+<p><del>希望不要被打脸。</del></p>
+<p>基本把豆瓣上评分比较高的MySQL书籍过了一遍：</p>
+<ul>
+<li><p>MySQL技术内幕 InnoDB存储引擎 第2版</p>
+</li>
+<li><p>MySQL技术内幕 第5版</p>
+</li>
+<li><p>高性能MySQL 第3版</p>
+</li>
+<li><p>数据库索引优化与设计（瞄了一遍）</p>
+</li>
+</ul>
+<p>书里的MySQL版本比较老，现在不一定正确，我也没一一验证，但还是可以作为参考的。</p>
+<p>最后推荐一些网站：</p>
+<p><a href="https://www.mysqlzh.com/doc/65/340.html" target="_blank" rel="noopener">MySQL中文文档，版本比较旧，有能力的看一看官方的英文原版文档，很有用</a></p>
+<p><a href="http://mysqlserverteam.com/" target="_blank" rel="noopener">MySQL Server Team Blog</a></p>
+<p><a href="http://mysql.taobao.org/monthly/" target="_blank" rel="noopener">淘宝内核月报</a></p>
+<p>还有一些微信公众号，如yangyidba，不一一列举了。</p>
+<p>这类问题一般还是专业的DBA和数据库开发者比较熟悉。</p>
+<hr>
+<ol>
+<li><p>连接层：连接处理、授权认证等。该层引入了线程池，为接入的客户端提供线程。</p>
+</li>
+<li><p>服务层：大部分的核心功能，包括查询解析、分析、优化、缓存、内置函数（如日期、时间等），及存储过程、触发器、视图等跨存储引擎的实现。</p>
+</li>
+<li><p>引擎层：真正负责MySQL中数据的存储和提取，如InnoDB、MyISAM。服务层通过API与存储引擎通信。</p>
+</li>
+<li><p>存储层：将数据存储在文件系统，并完成与存储引擎的交互。</p>
+</li>
+</ol>
+<hr>
+<p>Starting -&gt; Checking Permissions -&gt; Opening Tables -&gt; Init -&gt; System Lock -&gt; Optimizing - &gt;Statistics -&gt; Preparing -&gt; Creating Tmp Table -&gt; Executing -&gt; Sending Data -&gt; End -&gt; Removing Tmp Table -&gt; Query End -&gt; Closing Tables -&gt; Freeing Items -&gt; Cleaning Up</p>
+<ul>
+<li>建立连接</li>
+</ul>
+<p>MySQL客户端和服务端的通信是半双工的，同一时刻只能单向传输，客户端请求和服务端响应无法同时发生。</p>
+<p>客户端发送完请求后，只有接收完全部数据才能返回，同理服务端回复响应也一样。</p>
+<p>所以批量插入时尽量拆分成多次插入，查询语句最好也带上limit限制条数，避免一次返回过多数据。</p>
+<p>连接器会验证用户身份，给予权限，每个客户端连接都在MySQL服务器进程中对应一个线程。</p>
+<ul>
+<li>查询缓存</li>
+</ul>
+<p>如果打开了缓存，则先从缓存查询，命中就可以直接返回。</p>
+<p>缓存默认关闭，命中条件非常苛刻，通过大小写敏感的哈希值去匹配，哪怕只有一个空格不一致，都无法命中缓存。</p>
+<p>一旦表里有一行数据变动，关于该表的所有缓存都会失效。</p>
+<p>一般不建议使用缓存，MySQL8.0已经将缓存模块移除。</p>
+<ul>
+<li>解析器和预处理器</li>
+</ul>
+<p>解析器对SQL进行词法解析和语法解析，预处理器则检查表名，列名等信息是否合法有效。</p>
+<ul>
+<li>查询优化器</li>
+</ul>
+<p>查询优化器根据解析树生成不同的执行计划，然后选择一种最优的执行计划。</p>
+<p>这个结果参考了每个表或者索引的页面个数，索引的基数，索引和数据行的长度，索引分布的情况。</p>
+<p>优化器在评估成本开销时，不会考虑缓存，而是假设读取任何数据都需要经过一次IO操作。</p>
+<p>优化器常用的优化：</p>
+<ol>
+<li><p>重新定义JOIN关联的顺序；</p>
+</li>
+<li><p>使用等价转换，如：a &lt; b and a = 5会被转为a = 5 and b &gt; 5；</p>
+</li>
+<li><p>优化COUNT()，MIN()和MAX()；</p>
+</li>
+<li><p>覆盖索引扫描；</p>
+</li>
+<li><p>优化IN()语句。将IN中的值先排序，然后按二分查找来确定是否满足条件。</p>
+</li>
+</ol>
+<p>可以使用FORCE INDEX强制使用指定索引，STRAIGHT_JOIN强制按SQL语句的表顺序进行关联。</p>
+<ul>
+<li>执行器</li>
+</ul>
+<p>执行时先看用户是否有执行权限，然后调用引擎的接口执行。</p>
+<ul>
+<li>返回结果</li>
+</ul>
+<p>将查询结果返回Server层。</p>
+<p>MySQL将查询结果返回是一个增量的过程。</p>
+<p>当开始执行查询并且生成第一条结果数据时，就可以开始逐步向客户端传输数据了。</p>
+<p>服务端无需存储太多结果，减少内存消耗。</p>
+<p>就算MySQL只有1G内存，也是可以查询2G的结果的。</p>
+<hr>
+<p>MyISAM和InnoDB的区别：</p>
+<ol>
+<li><p>InnoDB支持事务和崩溃恢复，MyISAM不支持；</p>
+</li>
+<li><p>InnoDB使用聚簇索引存储数据，数据就是索引。</p>
+</li>
+</ol>
+<p>其它：</p>
+<p>MyISAM只有Server层的表锁，InnoDB有引擎层实现的行锁。</p>
+<p>MyISAM执行COUNT(*)操作很快，因为维护了一个计数器。</p>
+<p>InnoDB执行COUNT(*)需要扫描表统计，原因是由于引入了事务和MVCC，每个会话可见的行是不确定的。</p>
+<hr>
+<p>二进制日志</p>
+<p>binlog是Server层的实现，记录了更改操作，不包括SELECT等查询。</p>
+<p>主库按事务提交顺序，把更改记录到二进制日志BINARY LOG，然后异步复制给备库的中继日志RELAY LOG。</p>
+<p>备库的SQL线程重放日志，应用到数据库。</p>
+<p>主从复制中主要有三个线程：Master（binlog dump thread）、Slave（I/O thread 、SQL thread），Master一条线程和Slave两条线程。</p>
+<p>主备（从）复制是异步的，备库的读操作会有延迟，负载高时可能出现主备数据不一致和脏读。</p>
+<p>原因可能是：慢SQL语句过多、从库的硬件比主库差、网络延迟等。</p>
+<p>异步复制只能确保最终一致性，如果对强一致性有要求，可以使用同步复制策略，但性能会大打折扣。</p>
+<p>主从解决了单点故障的问题，并且分摊了读请求的压力（读写分离不能解决写操作的压力）。</p>
+<p>若是主库挂了，选择一台Slave作为Master。</p>
+<p>若是Slave挂了，还有其它的Slave提供读服务。</p>
+<p>作用：</p>
+<ol>
+<li><p>基于时间点的数据备份恢复；</p>
+</li>
+<li><p>主备复制同步；</p>
+</li>
+<li><p>语句监听审查（比如Canal，伪装成Slave，增量监听二进制日志，提供订阅和消费功能）。</p>
+</li>
+</ol>
+<p>模式：</p>
+<ul>
+<li>基于语句（Statement）：</li>
+</ul>
+<p>默认，记录的是SQL语句，其实就是把主库执行过的SQL再执行一遍，好处是简单，但是更新必须是串行的，需要更多的锁，如果使用了某些函数、存储过程或触发器，复制时可能会有问题。</p>
+<ul>
+<li>基于行（Row）：</li>
+</ul>
+<p>以行为单位，记录的是对每行的修改，避免了执行SQL的相关上下文（重放主库的查询，如更新语句包含了查询），效率高，缺点是体积庞大。</p>
+<p>正常情况下，读是非阻塞的，但是在使用语句的复制方式时，执行INSERT … SELECT … 会锁定原表所有行，因为需要保证主备的执行结果是一致的。</p>
+<p>基于行的复制则不会有这个问题。</p>
+<ul>
+<li>混合（Mixed）</li>
+</ul>
+<p>MySQL5.7前，默认采用Statement格式，在一些情况下会使用Row格式，比如使用了UUID()等不确定函数时。</p>
+<p>MySQL官方还提供了MySQL Group Replication高可用方案，基于Paxos协议的状态机复制。</p>
+<p>多个节点组成一个复制组，一个事务的提交，必须经过组内大多数节点（N / 2 + 1）决议并通过，才能提交。</p>
+<p>组复制依靠分布式一致性协议（Paxos协议的变体），实现了分布式下数据的最终一致性。</p>
+<hr>
+<p>MyISAM和InnoDB都有的文件：</p>
+<ul>
+<li>.frm文件：存放与表相关的元数据信息，包括表结构的定义等。</li>
+</ul>
+<p>InnoDB的文件：</p>
+<ul>
+<li>.ibdata：系统表空间文件。</li>
+</ul>
+<p>系统表空间存放了回滚信息（undo），插入缓冲索引页（IBUF bitmap），系统事务信息（trx_sys），二次写缓冲（double write）等信息。</p>
+<p>每个数据文件都归属于一个表空间（tablespace），不同的表空间使用唯一标识space id来标记。</p>
+<p>系统表空间虽然包括不同文件ibdata1, ibdata2…，但这些文件逻辑上是相连的，同属于space_id为0的表空间。</p>
+<p>表空间内部，所有页按照区（extent）为物理单元进行管理，一个区内所有页面物理相邻，表空间可以理解为由物理相邻的区组成。</p>
+<p>表空间内部由自下而上包括page（页），extent（区），segment（段），tablespace（表空间）等几个层次。</p>
+<p>表空间构建起用户数据的结构是btree，每一个索引对应一个btree。</p>
+<p>每个btree使用两个segment来管理数据页，一个管理叶子节点（leaf segment），一个管理非叶子节点（non-leaf segment）。</p>
+<ul>
+<li>.ibd：用户表空间文件。</li>
+</ul>
+<p>.ibd或.ibdata文件都是存放InnoDB数据的文件，之所以有两种，是因为可以配置使用共享还是独享表空间存储数据。</p>
+<p>共享表空间使用.ibdata文件，所有表共同使用一个（或多个）.ibdata文件。</p>
+<p>独享表空间使用.ibd文件，每个表一个.ibd文件。</p>
+<ul>
+<li>.ib_logfile：日志文件。</li>
+</ul>
+<p>日志文件主要用于记录redo log。</p>
+<p>在所有数据变更前，先写redo log，为保证原子写入，通常以512字节的block单位写入。</p>
+<p>现代文件系统通常设置为4k，因此也支持以4k为单位写入。</p>
+<ul>
+<li>.ibtmp：临时表空间文件。</li>
+</ul>
+<p>临时表空间文件用于存储所有非压缩的临时表，第1~32个临时表专用的回滚段也存放在该文件中。</p>
+<p>由于临时表的属性，文件在重启时会重新创建。</p>
+<ul>
+<li>.undo：独立表空间等。</li>
+</ul>
+<p>undo独立表空间是可选项，默认情况下，undo存储在ibdata中。</p>
+<p>可以配置使得undo回滚段分配到不同的文件中。</p>
+<hr>
+<p>上述文件除日志文件外，都具有较统一的物理结构，所有物理文件由页构成。</p>
+<p>不同用途的页具有相同格式的页头和页尾，记录了页面校验值，页面编号，表空间编号，LSN等通用信息。</p>
+<hr>
+<p>Double Write：解决部分写（Partial Write）问题。</p>
+<p>MySQL默认一个数据页的大小是16K，所以数据库IO的单位是16K，假设文件系统IO的最小单位是4K，磁盘IO的最小单位是512字节（一个扇区）。</p>
+<p>如果在把内存中的脏页刷盘时，写了2K突然掉电，那么前2K数据是新的，后14K是旧的，这个数据页就损坏了。</p>
+<p>redo log记录了对页的物理修改（变化），但如果页本身已经损坏，无法根据redo log判断哪些数据需要被修复。</p>
+<p>Double Write由两部分组成，一部分为内存中的double write buffer，另一部分是磁盘上表空间中连续的页。</p>
+<p>当触发数据缓冲池中的脏页刷新时，并不直接写入磁盘，而是先拷贝至内存中的double write buffer，接着顺序写入double write文件。</p>
+<p>保证double write刷盘后，再将double write buffer中的数据写入表空间文件（随机写）。</p>
+<p>如果在将页写入磁盘过程中崩溃，在恢复时可以从double write中找到该页的最近的副本，将其复制到表空间文件，再应用redo log完成恢复。</p>
+<hr>
+<p>InnoDB维护了一个buffer pool，将最近访问的数据（表和索引）缓存到缓冲区。</p>
+<p>所有数据页的读写操作都要通过buffer pool。</p>
+<p>读page时，如果buffer pool中没有，则将page从磁盘读到buffer pool中，可能淘汰buffer pool中旧的page。</p>
+<p>写操作时，先把数据和日志写入buffer pool和log buffer，再由后台线程将buffer刷盘。</p>
+<p>buffer pool基于LRU算法实现。</p>
+<p>链表头部存放的是young page（最近访问的热数据），链表尾部存放的是old page（最近不被访问的数据）。</p>
+<p>buffer pool使用了3种页和链表，保证热数据不被置换出buffer pool。</p>
+<ul>
+<li>3种页：</li>
+</ul>
+<ol>
+<li>Free Page</li>
+</ol>
+<p>空闲页，未被使用，位于Free链表。</p>
+<ol start="2">
+<li>Clean Page</li>
+</ol>
+<p>干净页，已被使用，但是页未发生修改，位于LRU链表。</p>
+<ol start="3">
+<li>Dirty Page</li>
+</ol>
+<p>脏页，已被使用，并且页已经被修改，同时存在于LRU链表和Flush链表。</p>
+<p>脏页的数据和磁盘的数据不一致，刷盘后，脏页就变成了干净页。</p>
+<ul>
+<li>3种链表：</li>
+</ul>
+<ol>
+<li>LRU链表</li>
+</ol>
+<p>least recently used，最近最少使用的算法。</p>
+<p>LRU链表分成两部分：New Sublist（Young链表），存放经常被读取的页地址；Old Sublist（Old链表），存放较少被使用的页。</p>
+<p>每部分都有对应的头部和尾部。</p>
+<p>page cleaner线程每隔1秒对LRU链表执行flush。</p>
+<ol start="2">
+<li>Flush链表</li>
+</ol>
+<p>Flush链表保存的都是脏页，也存在于LRU链表。</p>
+<p>页面被修改的时候，使用mini-transaction，对应的page进入Flush链表。</p>
+<p>第一次修改，需要加入Flush链表，如果已经是脏页，不需要再次加入。</p>
+<p>Flush链表按修改时间排序，尾部的是最老的修改的页。</p>
+<p>page cleaner线程对Flush链表执行flush时，从尾部开始将脏页刷盘。</p>
+<ol start="3">
+<li>Free 链表</li>
+</ol>
+<p>Free链表存放的是空闲页，初始化的时候申请一定数量的页面。</p>
+<p>执行SQL的过程中，将页面加载到内存后，会判断Free链表的页面是否够用。</p>
+<p>如果够用，就将页从Free链表移动到LRU链表。</p>
+<p>如果不够用，就对LRU链表和Flush链表执行flush来释放空闲页。</p>
+<p>LRU链表执行flush，是为了写出尾部的脏页，释放空闲页，写出的脏页，从LRU链表中移动到Free链表。</p>
+<p>Flush链表执行flush，是为了推进checkpoint LSN，用于崩溃恢复，不需要移动在LRU链表中的位置。</p>
+<p>在Flush链表上的页面一定在LRU链表上，反之则不成立。</p>
+<ul>
+<li>触发刷脏页的条件</li>
+</ul>
+<ol>
+<li>redo log buffer快满时。</li>
+</ol>
+<p>MySQL先写redo log，再将数据刷盘，如果redo log的脏数据还没刷盘就被覆盖，如果发生崩溃，数据无法恢复。</p>
+<p>此时会从Flush链表里面选取脏页，执行flush。</p>
+<p>为了保证空闲页面的数量，page cleaner线程会从LRU链表尾部淘汰一部分页面作为空闲页。</p>
+<p>如果对应的页面是脏页的话，需要先将页面flush到磁盘。</p>
+<ol start="2">
+<li>脏页太多时。</li>
+</ol>
+<p>默认当脏页比例大于75%时会强制刷脏页，保证系统有足够可用的空闲页。</p>
+<ol start="3">
+<li>MySQL实例正常关闭时。</li>
+</ol>
+<p>InnoDB的策略是，运行过程中尽可能多占用内存，因此未被使用的页面会很少。</p>
+<p>当读取的数据不在buffer pool时，需要申请一个空闲页来存放。</p>
+<p>如果没有足够的空闲页时，必须从LRU链表的尾部淘汰页面。</p>
+<p>如果该页面是干净的，可以直接拿来用，如果是脏页，就需要将内存中的脏页flush到磁盘，才能重新使用。</p>
+<hr>
+<p>InnoDB事务中ACID实现</p>
+<ol>
+<li><p>原子性：undo log实现回滚。</p>
+</li>
+<li><p>隔离性：锁和MVCC机制。</p>
+</li>
+<li><p>持久性：redo log实现崩溃恢复。</p>
+</li>
+<li><p>一致性：undo log、锁和MVCC机制共同保证。</p>
+</li>
+</ol>
+<hr>
+<p>undo log</p>
+<p>undo log用于回滚和MVCC，长事务会导致undo log过多。</p>
+<p>undo log是InnoDB引擎层面的逻辑日记，记录的是逻辑操作类型和原值。</p>
+<p>具体参考MVCC。</p>
+<hr>
+<p>redo log和undo log有些类似，都是InnoDB存储引擎层实现的，用来执行恢复。</p>
+<p>redo log恢复已提交事务修改的页操作，而undo log回滚行记录到某个特定版本（MVCC）。</p>
+<p>undo log会产生redo log，因为undo log也需要持久化的保护。</p>
+<p>undo log是逻辑日志，以行为单位，需要随机读写。</p>
+<p>redo log是物理日志，记录的是页的物理修改，都是顺序写的，正常运行时不需要读取。</p>
+<p>binlog记录的是逻辑日志，即对应的SQL语句，由Server层实现，用来进行时间点的恢复和主备复制，只在事务提交后一次写入。</p>
+<p>redo log以块的方式保存，和磁盘扇区大小一样，写入可以保证原子性，不需要DoubleWrite。</p>
+<p>InnoDB启动时，不管上次有没有正常关闭，都会尝试根据重做日志进行恢复。</p>
+<hr>
+<p>事务提交要执行内部的分布式事务（XA）流程，执行prepare、写bin log、commit三个步骤。</p>
+<ol>
+<li><p>Server层调用InnoDB引擎接口，将数据写到内存和redo log，并将redo log设为prepare；</p>
+</li>
+<li><p>Server层写入bin log；</p>
+</li>
+<li><p>Server层调用InnoDB引擎接口，将redo log设为commit。</p>
+</li>
+</ol>
+<p>redo log会经过两次提交（prepare和commit），这就是两阶段提交。</p>
+<p>两阶段提交是分布式事务的思想，确保Server层的bin log和存储引擎层的redo log数据一致性。</p>
+<hr>
+<p>redo log引入prepare状态的原因：</p>
+<p>不管是先写redo log再写bin log，还是先写bin log再写redo log，都无法保证两个操作的一致性。</p>
+<p>先写redo log，假如bin log没写入就宕机重启了，通过redo log恢复时，bin log会丢失数据，主从数据不一致。</p>
+<p>先写bin log，假如redo log没写入就宕机重启了，通过redo log恢复时，本机缺失的数据，bin log又有，主从数据不一致。</p>
+<p>宕机重启，执行崩溃恢复：</p>
+<ol>
+<li><p>如果redo log标识为commit，就直接使用redo log恢复。</p>
+</li>
+<li><p>如果redo log标识为prepare，则检查bin log是否完整，完整就提交redo log，否则回滚事务。</p>
+</li>
+</ol>
+<p>一个完整事务的bin log，结尾的格式是固定的，扫描最后一个bin log文件，提取xid。</p>
+<p>InnoDB维护了状态为prepare的事务链表，将这些事务的xid和bin log的xid比较，如果在bin log中存在，则提交，否则回滚事务。</p>
+<hr>
+<p>Write-Ahead Logging（WAL）：执行操作之前，必须先写日志。</p>
+<p>必须先写redo log，才能修改页，宕机后通过redo log完成崩溃恢复（crash-safe）。</p>
+<p>数据随机分散在不同页不同扇区中，读写都是随机IO操作。</p>
+<p>redo log是循环写入，是顺序IO。</p>
+<p>先把修改写入redo log，数据的脏页由别的线程异步刷盘，提升系统吞吐量。</p>
+<hr>
+<p>bin log写到一定大小后会切换到下一个，不会覆盖以前的日志。</p>
+<p>redo log大小是固定的，可以理解为环形的结构，循环写满后，之前的空间就会被覆盖。</p>
+<p>write pos和check point两个指针。</p>
+<p>write pos指向当前写入的位置，check point指向本次刷盘的开始位置（上次刷盘的结束位置）。</p>
+<p>write pos不断向前推进，如果write pos和check point重叠，说明redo log已经写满。</p>
+<p>此时需要同步redo log刷盘，更新check point，腾出redo log空间。</p>
+<p>write pos和check point基本不会重叠，因为MySQL会触发执行redo log刷盘，向前推进check point。</p>
+<p>LSN（log sequence number）是日志逻辑序列号，随着日志的写入而增大。</p>
+<p>可以简单将LSN理解为已经产生了多少字节的redo log。</p>
+<p>通过LSN和文件大小取模，计算出write pos和check point两个指针的位置。</p>
+<hr>
+<p>binlog记录过程是先写binlog cache，然后刷盘，通过sync_binlog参数控制刷盘时机。</p>
+<ul>
+<li><p>0：由系统判断何时刷盘；</p>
+</li>
+<li><p>1：每次事务提交都调用fsync()刷盘；</p>
+</li>
+<li><p>N：每N个事务，才调用fsync()刷盘。</p>
+</li>
+</ul>
+<p>redo log和undo log也是类似，先写buffer，根据刷盘参数决定何时刷盘。</p>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- a字段是普通索引</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>假设插入的(2, 5)落在page1（在内存），(7, 5)落在page2（不在内存）。</p>
+<p>(2, 5)所在页page1在内存中，直接更新内存。</p>
+<p>(7, 5)所在页page2不在内存中，记录change buffer（唯一索引时则将磁盘中的数据页读入内存，并做更新）。</p>
+<p>写undo log buffer。</p>
+<p>写redo log buffer。</p>
+<p>写redo log buffer，标记为prepare。</p>
+<p>写bin log buffer。</p>
+<p>写redo log buffer，标记为commit。</p>
+<p>接着执行查询select * from t where a in (2, 7)。</p>
+<p>查询[7]所在的数据页不在内存中，并且上一步更新已经记录在change buffer，将会触发merge。</p>
+<p>将page2读入内存，依次应用change buffer中的记录，得到最新的数据页。</p>
+<p>写redo log buffer，之前记录的change buffer的改动，现在记录是数据页的改动。</p>
+<hr>
+<p>redo log的顺序写，提高了数据脏页随机写的吞吐量。</p>
+<p>change buffer节省了随机读IO消耗。</p>
+<p>对于更新操作，如果更新的数据所在的页不在内存中，不用将磁盘中的数据页读到内存，而是将这次操作记录在change buffer。</p>
+<p>下次查询时，使用change buffer中的记录即可。</p>
+<hr>
+<p>一条更新语句，可能涉及查，改，删，增四个操作。</p>
+<ol>
+<li>事务执行</li>
+</ol>
+<p>先判断SQL涉及的页是否在缓冲池，不在则从磁盘读取该行所在的页并加载到缓冲池。</p>
+<p>假如不在缓冲，从磁盘读取页后，根据space id和page no计算哈希，然后把索引页加载到指定的缓冲池。</p>
+<p>如果free list没有空闲页可用，则淘汰脏页或lru list的old page。</p>
+<p>然后把数据页复制到free list，然后加载到lru list的old区的头部。</p>
+<p>通过二分法在该页中查找对应的记录，尝试给SQL涉及的行记录加排他锁。</p>
+<p>写undo log buffer：将修改前的记录写入undo，修改当前行的值，事务编号，回滚指针指向undo中修改前的行。</p>
+<p>写redo log buffer：如果redo log buffer不够用，必须等待。</p>
+<p>在buffer pool中lru list的old区头部，对该数据页的行记录执行更新，并把修改后的字段值写到redo log buffer。</p>
+<p>然后给LSN加上redo log本次写入的长度length。</p>
+<p>因为redo group commit，这次事务产生的redo log buffer可能跟随其它事务一同刷盘。</p>
+<p>写binlog cache。</p>
+<p>写change buffer：把SQL需要在二级索引上做的修改，写入到change buffer page，下次有其他SQL需要读取该二级索引时，再与二级索引<br>做merge。</p>
+<p>此时update已经完成，等待提交或回滚。</p>
+<ol start="2">
+<li>假设事务COMMIT</li>
+</ol>
+<p>事务的COMMIT分为prepare与commit阶段，在存储引擎层与Server层间采用内部XA两阶段提交协议。</p>
+<p>写redo log buffer（prepare状态和事务xid）。</p>
+<p>将redo log buffer刷盘（innodb_flush_log_at_trx_commit = 1）。</p>
+<p>将binlog cache里的信息和redo log中的xid写入binlog，binlog写入完成，事务就算成功。</p>
+<p>dump线程从binlog_cache里把事件发送给Slave，并清空binlog cache。</p>
+<p>事务执行时，先把日志写到binlog cache，事务提交时，再把binlog cache刷盘。</p>
+<p>sync_binlog = 1时，只有binlog落盘后才通知dump线程进行主从复制。</p>
+<p>写redo log buffer（commit状态）。</p>
+<p>事务提交成功，释放行记录持有的排他锁。</p>
+<p>binlog和redo log都刷盘后，如果触发了刷新脏页的操作。</p>
+<p>先把脏页复制到doublewrite buffer，把doublewrite buffer里的刷新到表空间，然后才把脏页刷盘。</p>
+<ol start="3">
+<li>假设事务ROLLBACK</li>
+</ol>
+<p>如果事务回滚，所有变更都要恢复。</p>
+<p>对于in-place原地更新，将数据回滚到老版本。</p>
+<p>对于delete + insert方式，标记删除的记录会清理标记，插入索引的记录会被直接删除。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

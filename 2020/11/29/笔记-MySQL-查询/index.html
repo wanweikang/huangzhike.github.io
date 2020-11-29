@@ -1,0 +1,491 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-MySQL-查询 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="count(column)：
+
+InnoDB引擎遍历表，取出行的该列值，返回给Server层，Server层判断不为null则累加，即统计not null的行数。
+
+count(primary key)：
+
+InnoDB引擎遍历表，取出行的主键，返回给Server层，Server层判断不为null则">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-MySQL-查询" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-查询</h2>
+				
+				<div>
+					<div class="post-time">2020-11-29</div>
+				</div>
+				
+				<div class="article-content">
+				<ul>
+<li>count(column)：</li>
+</ul>
+<p>InnoDB引擎遍历表，取出行的该列值，返回给Server层，Server层判断不为null则累加，即统计not null的行数。</p>
+<ul>
+<li>count(primary key)：</li>
+</ul>
+<p>InnoDB引擎遍历表，取出行的主键，返回给Server层，Server层判断不为null则累加，即统计not null的行数。</p>
+<ul>
+<li>count(1)：</li>
+</ul>
+<p>InnoDB引擎遍历表，但不取值，返回给Server层，Server层放入1，判断不为null则累加，即统计所有行数。</p>
+<ul>
+<li>count(*)：</li>
+</ul>
+<p>统计所有行数。</p>
+<hr>
+<p>连接：将一行与另一行匹配并产生结果。</p>
+<p>将一个表的每一行与另一个表的每一行得到全部组合的连接，称为笛卡尔积。</p>
+<p>假设有3个表分别有100、200、300行，可能会返回100* 200 * 300 = 6000000行。</p>
+<p>连接主要有三种：外连接、内连接、交叉连接。</p>
+<p>外连接分为三种：左外连接(left outer join / left join)、右外连接(right outer join / right join)、全外连接(full outer join / full join)。</p>
+<p>MySQL暂不支持全外连接，但可以用union和union all模拟。</p>
+<p>内连接：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t1 <span class="token keyword">inner</span> <span class="token keyword">join</span> t2 <span class="token keyword">on</span> t1<span class="token number">.c1</span> <span class="token operator">=</span> t2<span class="token number">.c2</span><span class="token punctuation">;</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t1 <span class="token keyword">inner</span> <span class="token keyword">join</span> t2 <span class="token keyword">where</span> t1<span class="token number">.c1</span> <span class="token operator">=</span> t2<span class="token number">.c2</span><span class="token punctuation">;</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t1 <span class="token keyword">inner</span> <span class="token keyword">join</span> t2 <span class="token keyword">using</span><span class="token punctuation">(</span>col<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">-- 要求col列必须同名</span></code></pre>
+<hr>
+<p>Join匹配原理：MySQL只支持一种算法，嵌套循环（Nested-Loop）。</p>
+<p>MySQL8.0引入了hash join，但只支持inner join，其它还是嵌套循环。</p>
+<ul>
+<li>Simple Nested-Loop Join</li>
+</ul>
+<p>每扫描驱动表的一行，扫描被驱动表，找匹配的行，总扫描次数为：驱动表行数 * 被驱动表行数，效率最低。</p>
+<p>如驱动表表有200行，被驱动表有100行，总扫描次数为200 * 100。</p>
+<ul>
+<li>Block Nested-Loop Join</li>
+</ul>
+<p>Simple Nested-Loop的优化，先扫描驱动表一定行数（根据join_buffer_size决定），放到join_buffer。</p>
+<p>然后遍历被驱动表，被驱动表每次匹配join_buffer里的行，减少扫描次数。</p>
+<p>一开始把驱动表的行加载到join_buffer，当join_buffer满了，或是最后一行时，才开始扫描被驱动表。</p>
+<p>对于被驱动表的每一行，从join_buffer取出驱动表的行进行匹配，一块join_buffer用完时，只扫描一次被驱动表。</p>
+<ul>
+<li>Index Nested-Loop Join</li>
+</ul>
+<p>每扫描驱动表的一行，通过索引去被驱动表找，避免扫描被驱动表，需要被驱动表有索引，比较高效。</p>
+<hr>
+<p>两个表，t1和t2，表结构和内容一模一样，假设字段a是索引字段：</p>
+<p><code>select * from t1 straight_join t2 on (t1.a = t2.a);</code></p>
+<p>执行逻辑大概是：</p>
+<p>从t1中读取一行r，取出a字段到表t2查找，取出表t2中满足条件的行，和r组成一行，作为结果集的一部分，重复执行，直到表t1末尾，循环结束。</p>
+<p>由于使用了索引，所以将t1表数据取出来后，根据t1表的a字段和t2表的索引，进行等值查找，使用被驱动表的索引关联称为Index Nested-Loop Join。</p>
+<p>由于是驱动表t1去匹配被驱动表t2，匹配次数取决于t1有多少数据，所以最好使用数据量少的表作为驱动表。</p>
+<p>如果被驱动表的关联字段上没有索引，那么使用join_buffer来进行关联：</p>
+<p>把表t1的数据读入内存join_buffer，这里是<code>select *</code>，因此是把整个表t1放入了内存。</p>
+<p>扫描表t2，取出每一行，跟join_buffer的数据对比，满足条件的作为结果集的一部分返回。</p>
+<p>join_buffer大小默认256k，如果放不下表t1的所有数据话，那么需要分段放，被驱动表就要扫描多次。</p>
+<p>两个表按照各自的条件过滤后，参与join的行数小的表，就是小表，应该作为驱动表，减少分段的次数。</p>
+<hr>
+<ul>
+<li>假设t1和t2各自有1000行：</li>
+</ul>
+<p><code>explain select t1.c1, t2.c2 from t1 inner join t2 on t1.c1 = t2.c2;</code></p>
+<p>没有索引：</p>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">t1</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">1000</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">SIMPLE</td>
+<td align="center">t2</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">1000</td>
+<td align="center">Using where; Using join buffer</td>
+</tr>
+</tbody></table>
+<p>全表扫描，对于t1表的每一行，扫描t2表的每一行进行匹配，1000 * 1000种组合（当然这里使用了join buffer）。</p>
+<ul>
+<li>假设t2的列c2有一个索引：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">t1</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">1000</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">SIMPLE</td>
+<td align="center">t2</td>
+<td align="center">ref</td>
+<td align="center">c2</td>
+<td align="center">t1.c1</td>
+<td align="center">10</td>
+<td align="center">Using where; Using index</td>
+</tr>
+</tbody></table>
+<p>可以通过t1.c1的引用完成t2表的索引查找，并且估计对于t1表里的每行，在t2表只需要检查10行即可。</p>
+<p>1000 * 10种组合。</p>
+<p>如果运行<code>analyze table t1, t2;</code>命令，再次执行explain，可以获得更精确的rows估算值，这里第二行的rows会变成1，说明估计对于t1表里的每行，在t2表只有一行匹配。</p>
+<ul>
+<li>假设t2的列c2有一个索引，t1的列c1有一个索引：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">t1</td>
+<td align="center">index</td>
+<td align="center">c1</td>
+<td align="center">NULL</td>
+<td align="center">1000</td>
+<td align="center">Using index</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">SIMPLE</td>
+<td align="center">t2</td>
+<td align="center">ref</td>
+<td align="center">c2</td>
+<td align="center">t1.c1</td>
+<td align="center">10</td>
+<td align="center">Using where; Using index</td>
+</tr>
+</tbody></table>
+<p>只需扫描索引即可。</p>
+<hr>
+<p>Join优化原则：</p>
+<ul>
+<li><p>尽量减少驱动表的行数，减少嵌套循环的循环次数，小表作为驱动表；</p>
+</li>
+<li><p>尽量保证被驱动表的join关联条件建立索引；</p>
+</li>
+<li><p>上面的条件都不满足，可以适当提高join buffer大小。</p>
+</li>
+</ul>
+<p>优化器优先将小表作为驱动表，inner join有优化，执行计划会安排顺序，自动以小表为驱动。</p>
+<p>left join等没有优化，因为left join相当于强制要求了左边为主表。</p>
+<p>同理straight_join只适用于inner join，因为left join已经指定了表的执行顺序。</p>
+<hr>
+<h4 id="INNER-JOIN："><a href="#INNER-JOIN：" class="headerlink" title="INNER JOIN："></a>INNER JOIN：</h4><p>如果不涉及order by，首先考虑用join，join的性能比exists和in好。</p>
+<p>如果是一对多，查出来的结果会有重复，如果为了去重加了distinct，但查询字段包括未建立索引的字段，执行计划就会出现Using temporary，性能大打折扣。</p>
+<p>MySQL在join时会选择结果集较小的表作为驱动表，再以此遍历被驱动表。</p>
+<p>如果对驱动表的字段order by，没有问题，但如果对被驱动表order by，则会出现Using temporary，及Using filesort。</p>
+<p>在order by时，可以考虑使用exists或in子查询代替。</p>
+<p>但有时候优化器会将in转化为join，执行计划其实是一样的。</p>
+<h4 id="EXISTS："><a href="#EXISTS：" class="headerlink" title="EXISTS："></a>EXISTS：</h4><p>关联子查询，查询是条件表达式的一部分，exists子查询不返回结果集，只返回true或false。</p>
+<p>首先执行外部查询，对于外部查询中的每一行，执行一次子查询，每次执行子查询时都会引用外部查询中当前行的值。</p>
+<p>根据使用子查询返回的结果，确定外部查询的结果集。</p>
+<p>exists适合外部查询的表数量级比内部子查询表小的情况。</p>
+<h4 id="IN："><a href="#IN：" class="headerlink" title="IN："></a>IN：</h4><p>in和exists不一样，执行顺序是先执行子查询产生结果集，主查询再去结果集里获取。</p>
+<p>如果in后面的列表很少，并且字段上存在索引，性能还是很高的。</p>
+<p>但即使存在索引，当列表数量达到临界值时，也会导致全表扫描，不走索引（避免回表的随机IO）。</p>
+<p>in适合外部查询的表数据量级比子查询表大的情况，但是子查询返回的行数一般都较多，所以通常都用exists。</p>
+<p>in和exists主要是驱动顺序的改变，如果是exists，外层表为驱动表，先被访问，如果是in，那么先执行子查询。</p>
+<p>所以in适合于外表大而内表小，exists适合于外表小而内表大。</p>
+<h4 id="NOT-EXISTS："><a href="#NOT-EXISTS：" class="headerlink" title="NOT EXISTS："></a>NOT EXISTS：</h4><p>先执行外查询，对外查询的每一行，执行子查询，可以使用索引，存在就返回true，不存在就返回false。</p>
+<p>尽量使用not exists，而不要用not in。</p>
+<h4 id="NOT-IN："><a href="#NOT-IN：" class="headerlink" title="NOT IN："></a>NOT IN：</h4><p>先执行子查询，然后在子查询返回的结果集中，一行行遍历，符合要求的就返回，直到遍历完。</p>
+<p>为了证明不在结果集里边，只能查询全部记录才能证明，不会用到索引。</p>
+<p>其实和连接查询类似，都是尽量以小表为驱动表，同时被驱动表的关联字段尽量要有索引。</p>
+<hr>
+<p>group by可能占据执行时间的90%，可能最复杂的操作就是聚合计算。</p>
+<p>MySQL会一个接一个获取构成单个组的所有行，在处理下个组之前，计算出当前组的聚合值。</p>
+<p>group by的3种方式：</p>
+<ol>
+<li>利用索引排序进行group by</li>
+</ol>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> k<span class="token punctuation">,</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token number">c</span> <span class="token keyword">from</span> t <span class="token keyword">group</span> <span class="token keyword">by</span> k <span class="token keyword">order</span> <span class="token keyword">by</span> k <span class="token keyword">limit</span> <span class="token number">5</span><span class="token punctuation">;</span></code></pre>
+<p>group by字段上有索引，可以在顺序扫描索引的同时进行聚合计算，因为数据是按照组来排序的。</p>
+<p>当使用limit限制组的数量或覆盖索引被使用时，执行效率会很高。</p>
+<ol start="2">
+<li>利用external sort进行group by</li>
+</ol>
+<p>如果没有按照组顺序扫描数据的索引，可以通过外部排序来排序数据（Using filesort）。</p>
+<ol start="3">
+<li>利用临时表进行group by</li>
+</ol>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> g<span class="token punctuation">,</span> <span class="token function">sum</span><span class="token punctuation">(</span>g<span class="token punctuation">)</span> s <span class="token keyword">from</span> t <span class="token keyword">group</span> <span class="token keyword">by</span> g <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token boolean">null</span> <span class="token keyword">limit</span> <span class="token number">5</span><span class="token punctuation">;</span></code></pre>
+<p>MySQL会创建一张临时表，会全表扫描，但不会进行额外的排序。</p>
+<p>该临时表当中每个组会先保存一行记录，处理剩余的行时，把对应的行添加到临时表。</p>
+<p>如果结果表太大，可能导致大量的磁盘IO。</p>
+<p>MySQL默认对group by的结果按组的顺序进行排序，order by null可以取消这种默认排序，让执行计划只用临时表进行group by。</p>
+<p>使用order by null禁止排序后，没有Using filesort。</p>
+<p>否则同时使用了临时表和文件排序，是非常糟糕的。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> id<span class="token punctuation">,</span> <span class="token function">sum</span><span class="token punctuation">(</span>money<span class="token punctuation">)</span> form <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">group</span> <span class="token keyword">by</span> name<span class="token punctuation">;</span></code></pre>
+<p>group by后的列是非索引列，才会体现group by的排序。</p>
+<p>如果是主键，那默认是按照主键排好序的。</p>
+<hr>
+<p>假设有联合索引(a, b, c)，MySQL可以使用索引满足order by的排序，但要同时满足：</p>
+<p>where条件和order by使用相同的索引，order by顺序和联合索引的顺序相同，并且要么都是升序要么都是降序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span> <span class="token keyword">desc</span><span class="token punctuation">,</span> <span class="token number">b</span> <span class="token keyword">desc</span><span class="token punctuation">;</span></code></pre>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- type = ALL, Extra = Using filesort</span></code></pre>
+<p>因为不能用覆盖索引扫描，并且where语句没有具体条件，MySQL选择了全表扫描且进行了排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- type = index, Extra = Using index</span></code></pre>
+<p>使用覆盖索引扫描排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">b</span><span class="token punctuation">;</span></code></pre>
+<p>where条件使用联合索引的左前缀进行等值查询，使用剩余字段进行order by排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span> <span class="token keyword">desc</span><span class="token punctuation">,</span> <span class="token number">b</span> <span class="token keyword">desc</span><span class="token punctuation">;</span></code></pre>
+<p>只是倒序，可以利用覆盖索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span> <span class="token keyword">desc</span><span class="token punctuation">,</span> <span class="token number">b</span> <span class="token keyword">desc</span><span class="token punctuation">;</span></code></pre>
+<p>可以利用覆盖索引排序，但是需要回表。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">></span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span> <span class="token keyword">asc</span><span class="token punctuation">;</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">&lt;</span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span> <span class="token keyword">desc</span><span class="token punctuation">;</span></code></pre>
+<p>可能使用了索引排序，也可能没有，和索引的区分度有关，优化器选择不同的执行计划。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token operator">and</span> <span class="token number">b</span> <span class="token operator">></span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">b</span><span class="token punctuation">;</span></code></pre>
+<p>利用联合索引前缀进行ref等值查询，其他字段进行范围查询，order by非等值的字段。</p>
+<p>利用索引进行等值查询，使用了ICP特性，无排序操作。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">></span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">b</span><span class="token punctuation">,</span> <span class="token number">c</span><span class="token punctuation">;</span></code></pre>
+<p>范围查询，不能使用索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token operator">and</span> <span class="token number">b</span> <span class="token operator">in</span><span class="token punctuation">(</span><span class="token string">'x'</span><span class="token punctuation">,</span> <span class="token string">'y'</span><span class="token punctuation">)</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">c</span><span class="token punctuation">;</span></code></pre>
+<p>不能使用索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">f</span><span class="token punctuation">,</span> g<span class="token punctuation">;</span></code></pre>
+<p>order by语句使用了多个不同的索引，不能使用索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">f</span> <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> id<span class="token punctuation">;</span></code></pre>
+<p>因为所有二级索引都包含主键，可以使用索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">f</span> <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">c</span><span class="token punctuation">;</span></code></pre>
+<p>查询条件使用了与order by不同的其他索引，且值为常量，但order by字段是联合索引的非连续部分。</p>
+<p>不能使用索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span> <span class="token keyword">desc</span><span class="token punctuation">,</span> <span class="token number">b</span> <span class="token keyword">asc</span><span class="token punctuation">;</span></code></pre>
+<p>order by混合asc和desc，使用了和联合索引默认不同的排序规则，不能使用索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">f</span> <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> g<span class="token punctuation">;</span></code></pre>
+<p>where条件中利用的索引与order by的索引不同，不能使用索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">b</span><span class="token punctuation">,</span> <span class="token number">d</span><span class="token punctuation">;</span></code></pre>
+<p>包含了不在索引的列，不能使用索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">c</span><span class="token punctuation">;</span></code></pre>
+<p>不符合最左匹配，不能使用索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token operator">-</span><span class="token number">a</span><span class="token punctuation">;</span></code></pre>
+<p>order by字段使用了表达式，和在where条件中索引字段使用函数一样，都无法利用索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">group</span> <span class="token keyword">by</span> <span class="token number">f</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span><span class="token punctuation">;</span></code></pre>
+<p>如果order by的列与group by的列不一致，不能使用索引排序。</p>
+<p>另外，group by默认本身会进行排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t1 <span class="token keyword">inner</span> <span class="token keyword">join</span> t2 <span class="token keyword">on</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">order</span> <span class="token keyword">by</span> t1<span class="token punctuation">.</span>col<span class="token punctuation">;</span></code></pre>
+<p>多表连接查询，并且order by的列全部来自执行计划的第一个非常量（const）驱动表时，才能使用索引排序。</p>
+<p>另外，对于字符串的部分前缀索引，如idx_name(name(2))，不能使用索引排序。</p>
+<hr>
+<p>如果不能利用索引排序，那么只能优化order by相关的缓存参数。</p>
+<p>增加sort_buffer_size大小，避免磁盘排序和合并排序。</p>
+<p>sort_buffer_size是connection级的参数，并不是越大越好，过大的设置和高并发可能会耗尽系统内存资源。</p>
+<p>常规排序：</p>
+<ol>
+<li><p>从表中获取满足where条件的记录；</p>
+</li>
+<li><p>对于每条记录，将记录的主键和排序键(id, col)取出放入sort buffer；</p>
+</li>
+<li><p>如果sort buffer可以存放所有的(id, col)，则进行排序（快速排序）；</p>
+</li>
+<li><p>否则sort buffer满后，进行排序并固化到临时文件中；</p>
+</li>
+<li><p>若排序中产生了临时文件，需要归并排序；</p>
+</li>
+<li><p>循环执行上述过程，直到所有满足条件的记录全部排序；</p>
+</li>
+<li><p>扫描排好序的(id, col)，并利用id回表查询需要的列；</p>
+</li>
+<li><p>返回获取的结果集。</p>
+</li>
+</ol>
+<p>是否使用文件排序主要看sort buffer大小，由sort_buffer_size参数控制。</p>
+<p>此外一次排序需要两次IO，一次是获取(id, col)，第二次回表获取需要的列(col1, col2, …)。</p>
+<p>由于返回的结果集按col排序，因此通过乱序的主键回表时会产生大量的随机IO。</p>
+<p>MySQL对回表有一个优化，在回表前先将id排序，并放入缓冲区，大小由read_rnd_buffer_size参数控制。</p>
+<p>然后有序去回表，将随机IO转为顺序IO。</p>
+<p>优化排序：</p>
+<p>为了避免常规排序的第二次回表IO，优化排序放入sort buffer的不是(id, col)，而是需要的所有列(col1, col2, …)。</p>
+<p>排序完成后可以直接返回，无需回表。</p>
+<p>代价在于容纳的记录变小了，可能导致需要写临时文件，造成额外的IO。</p>
+<p>所以查询时尽量不要select不必要的返回字段。</p>
+<p>另外，当有查询列含有blob或text时，MySQL会选择常规排序。</p>
+<hr>
+<p>优先队列排序：</p>
+<p>针对order by limit m, n，加入了新的排序方式，采用堆排序实现。</p>
+<ol>
+<li><p>当order by不能使用索引排序时，将使用排序算法进行排序；</p>
+</li>
+<li><p>若排序内容能全部放入内存，则仅在内存中使用快速排序；</p>
+</li>
+<li><p>若排序内容不能全部放入内存，则分批次将排好序的内容放入文件，然后将多个文件进行归并排序；</p>
+</li>
+<li><p>若排序中包含limit语句，则使用堆排序优化。</p>
+</li>
+</ol>
+<p>堆排序正好解决limit n的排序，虽然仍然需要所有元素参与排序，但只需保留n条记录，少量的sort buffer内存。</p>
+<p>对于升序，采用大顶堆，最终堆中的元素组成了最小的n个元素。</p>
+<p>对于降序，采用小顶堆，最终堆中的元素组成了最大的n个元素。</p>
+<p>堆排序是不稳定的排序方法，遇到相等的值，不会保证前后顺序。</p>
+<p>假设有a, b, c, d，共4个相等的项，输入算法时是abcd的顺序，输出则可能不是abcd的顺序。</p>
+<p>执行顺序依次为：form … where … select … order by … limit …。</p>
+<p>筛选符合条件的记录后，再执行order by，查询出的数据是有顺序的，但经过堆排序，顺序可能发生了变化。</p>
+<p>如order by view_count desc limit 2，在order by时，仅把view_count值大的往前移动。</p>
+<p>但由于limit，排序过程中只需要保留2条记录即可，找到排序的2行后立马返回，而不是排序整个查询结果再返回。</p>
+<p>在有分页的情况下，可能第一页的两行是a, b，第二页的两行是b, c，第一页和第二页的数据都有b，重复了。</p>
+<p>可能全部数据完全排序完成后，应该是a, d, b, c。</p>
+<p>但因为b和d是相同的，在第一页查询中，排序好最大的两行记录a, b，就不再继续排序，直接返回。</p>
+<p>第二页查询中，需要将a, b, c, d排序后返回两条记录，这个过程堆排序就可能会改变相同分数的学生位置。</p>
+<p>解决方法第一种就是，在排序中加上唯一值，如主键，确保参与排序的值不相同。</p>
+<p>如：order by view_count desc, id limit 0, 2。</p>
+<p>第二种就是避免使用堆排序，让order by根据索引来排序。</p>
+<hr>
+<p>MySQL8.0引入了倒序索引，和搜索引擎中的倒排索引不一样，这里倒序索引只是反向排序存储。</p>
+<p>MySQL8.0前，不支持倒序索引，但支持基于索引的倒序排序（利用索引的有序性）。</p>
+<p>MySQL8.0前，都是按正序来存储索引，即使创建索引的时候可以(a desc, b asc)，也会忽略。</p>
+<p>MySQL8.0前，列排序顺序不一样，不支持按索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span> <span class="token keyword">asc</span> <span class="token punctuation">,</span> <span class="token number">b</span> <span class="token keyword">desc</span><span class="token punctuation">;</span></code></pre>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

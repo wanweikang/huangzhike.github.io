@@ -1,0 +1,831 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-MySQL-死锁分析 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="假设表中只有一行，可重复读级别。
+-- 事务1：
+update u set status = 1 where username = &#39;x&#39;
+-- 已获取的锁：index_username -&gt; lock_mode X
+-- 等待加的锁：PRIMARY -&gt; lock_mode X locks rec">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-MySQL-死锁分析" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-死锁分析</h2>
+				
+				<div>
+					<div class="post-time">2020-11-29</div>
+				</div>
+				
+				<div class="article-content">
+				<p>假设表中只有一行，可重复读级别。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">update</span> u <span class="token keyword">set</span> <span class="token keyword">status</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">where</span> username <span class="token operator">=</span> <span class="token string">'x'</span>
+<span class="token comment" spellcheck="true">-- 已获取的锁：index_username -> lock_mode X</span>
+<span class="token comment" spellcheck="true">-- 等待加的锁：PRIMARY -> lock_mode X locks rec but not gap waiting</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">update</span> u <span class="token keyword">set</span> username <span class="token operator">=</span> <span class="token string">'y'</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token comment" spellcheck="true">-- 已获取的锁：PRIMARY -> lock_mode X locks rec but not gap</span>
+<span class="token comment" spellcheck="true">-- 等待加的锁：index_username -> lock_mode X locks rec but not gap waiting</span></code></pre>
+<p>事务1：先获取index_username上的行级锁，再获取PRIMAEY上的行级锁，然后更新。</p>
+<p>事务2：先获取PRIMAEY上的行级锁，然后因为需要更新二级索引index_username的值，所以还要获取index_username上的行级锁。</p>
+<p>两个事务分别通过二级索引和主键去更新行，因为索引加锁的顺序不一样导致死锁。</p>
+<p>解决方案：建议统一通过主键更新。</p>
+<hr>
+<p>可重复读级别。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> tx <span class="token punctuation">(</span>
+    id <span class="token keyword">INT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">auto_increment</span><span class="token punctuation">,</span>
+    <span class="token number">c1</span> <span class="token keyword">INT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token number">c2</span> <span class="token keyword">INT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token keyword">KEY</span> idx_c1 <span class="token punctuation">(</span><span class="token number">c1</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">INNODB</span><span class="token punctuation">;</span>
+
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> tx <span class="token keyword">VALUES</span>
+    <span class="token punctuation">(</span><span class="token number">24</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token number">25</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token number">26</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> tx <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">30</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 持有id(30)的lock_mode X locks rec but not gap</span>
+
+<span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">update</span> tx <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">8</span> <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 获取了二级索引idx_c1(5)的lock_mode X，再等待获取id[30]的锁</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> tx <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 获取id(30)的锁，然后等待获取二级索引idx_c1(5)的锁，触发死锁</span>
+<span class="token comment" spellcheck="true">-- ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</span></code></pre>
+<p>大部分情况下，死锁的原因是不同的事务加锁的顺序不一样，导致循环等待。</p>
+<p>尽量避免通过不同的索引进行更新，最好统一通过主键更新。</p>
+<hr>
+<p>可重复读级别。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> X <span class="token punctuation">(</span>
+    id <span class="token keyword">INT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token punctuation">,</span>
+    <span class="token number">c</span> <span class="token keyword">INT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token number">d</span> <span class="token keyword">INT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token keyword">KEY</span> idxcd <span class="token punctuation">(</span><span class="token number">c</span><span class="token punctuation">,</span> <span class="token number">d</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> X <span class="token punctuation">(</span><span class="token number">c</span><span class="token punctuation">,</span> <span class="token number">d</span><span class="token punctuation">)</span> <span class="token keyword">VALUES</span>
+    <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>可重复读级别下，通过索引（唯一或非唯一）更新或删除不存在的记录，会申请gap lock。</p>
+<p>update索引字段，相当于删除后重新插入，需要重新组织索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- session2：</span>
+<span class="token keyword">update</span> x <span class="token keyword">set</span> <span class="token number">d</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">where</span> <span class="token number">c</span> <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- c(6)不存在，在c(7)上加gap lock，锁住(5 ~7)</span>
+
+<span class="token comment" spellcheck="true">-- session1：</span>
+<span class="token keyword">update</span> x <span class="token keyword">set</span> <span class="token number">d</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">where</span> <span class="token number">c</span> <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 需要在c(5)和c(10)上加next key lock</span>
+<span class="token comment" spellcheck="true">-- 删除再插入c(5)，要加insert intention lock，和session2的gap lock(5 ~7)冲突</span>
+
+<span class="token comment" spellcheck="true">-- session2：</span>
+<span class="token keyword">update</span> x <span class="token keyword">set</span> <span class="token number">d</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">where</span> <span class="token number">c</span> <span class="token operator">=</span> <span class="token number">7</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 同样道理，触发死锁</span></code></pre>
+<p>解决方法：把联合索引(c, d)中的d去掉。</p>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- session1：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token number">d</span> <span class="token keyword">where</span> i <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">lock</span> <span class="token operator">in</span> <span class="token keyword">share mode</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 持有i(1)上的lock mode S locks rec but not gap</span>
+
+<span class="token comment" spellcheck="true">-- session2：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token number">d</span> <span class="token keyword">where</span> i <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">lock</span> <span class="token operator">in</span> <span class="token keyword">share mode</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 同上</span>
+
+<span class="token comment" spellcheck="true">-- session1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> <span class="token number">d</span> <span class="token keyword">where</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 请求i(1)上的lock_mode X locks rec but not gap，被session2阻塞了，等待中</span>
+
+<span class="token comment" spellcheck="true">-- session2：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> <span class="token number">d</span> <span class="token keyword">where</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 同上，检测到死锁，失败，回滚</span></code></pre>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>push_token<span class="token punctuation">`</span> <span class="token punctuation">(</span>
+    <span class="token punctuation">`</span>id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span> <span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span>token<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span> <span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'push token'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span>app_id<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span> <span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'appid'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span>deleted<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">'是否已删除 0：否 1：是'</span><span class="token punctuation">,</span>
+    <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>id<span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token keyword">UNIQUE</span> <span class="token keyword">KEY</span> <span class="token punctuation">`</span>uk_token_appid<span class="token punctuation">`</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>token<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>app_id<span class="token punctuation">`</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">INNODB</span><span class="token punctuation">;</span>
+
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> push_token <span class="token punctuation">(</span>id<span class="token punctuation">,</span> token<span class="token punctuation">,</span> app_id<span class="token punctuation">,</span> deleted<span class="token punctuation">)</span> <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">"token1"</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- s1：</span>
+<span class="token keyword">update</span> push_token <span class="token keyword">set</span> deleted <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">where</span> token <span class="token operator">=</span> <span class="token string">'token1'</span> <span class="token operator">and</span> app_id <span class="token operator">=</span> <span class="token string">'1'</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 唯一键和主键都加锁了，lock_mode X locks rec but not gap</span>
+
+<span class="token comment" spellcheck="true">-- s2：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> push_token <span class="token keyword">where</span> id <span class="token operator">IN</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 需要获取主键上的lock_mode X locks rec but not gap，被堵塞</span>
+
+<span class="token comment" spellcheck="true">-- s3：</span>
+<span class="token keyword">update</span> push_token <span class="token keyword">set</span> deleted <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">where</span> token <span class="token operator">=</span> <span class="token string">'token1'</span> <span class="token operator">and</span> app_id <span class="token operator">=</span> <span class="token string">'1'</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 需要获取唯一键上的lock_mode X locks rec but not gap，被堵塞</span>
+
+<span class="token comment" spellcheck="true">-- s1：</span>
+<span class="token keyword">commit</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- s1释放了锁，s2获取了主键上的锁，s3获取了唯一键上的锁，然后ABBA死锁形成</span></code></pre>
+<hr>
+<p>死锁的关键在于：两个或以上的事务加锁的顺序不一致。</p>
+<p>对应解决死锁的关键就是：让不同的事务加锁有次序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">2</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">2</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span></code></pre>
+<p>解决方法：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> id <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span></code></pre>
+<p>in会自动排序，加锁也是一条条从小到大加。</p>
+<hr>
+<p>没有id = 22的行。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- session1:</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">22</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session2: </span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">23</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session1: </span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">22</span><span class="token punctuation">,</span> <span class="token string">'ac'</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token comment" spellcheck="true">-- 锁等待</span>
+
+<span class="token comment" spellcheck="true">-- session2: </span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">23</span><span class="token punctuation">,</span> <span class="token string">'bc'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token comment" spellcheck="true">-- ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</span></code></pre>
+<p>对存在的行加行锁时（主键），只有行锁。</p>
+<p>对不存在的行加锁时（即使条件为主键），会锁住一段范围：</p>
+<p>(无穷小或小于表中锁住id的最大值，无穷大或大于表中锁住id的最小值)</p>
+<p>如果表中已有的id为(11, 12)，那么就锁住(12, +∞)。</p>
+<p>如果表中已有的id为(11, 30)，那么就锁住(10, 30)。</p>
+<p>解决办法是：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">insert</span> <span class="token keyword">into</span> t<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">)</span> <span class="token keyword">on</span> <span class="token keyword">duplicate key</span> <span class="token keyword">update</span> <span class="token punctuation">`</span><span class="token number">a</span><span class="token punctuation">`</span><span class="token operator">=</span><span class="token string">'x'</span><span class="token punctuation">;</span></code></pre>
+<p>用MySQL的语法解决，没有就插入。</p>
+<p>insert对于主键来说，插入的行不管有没有存在，都只有行锁。</p>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">9</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> id <span class="token operator">&lt;</span> <span class="token number">20</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 已经获取了1到8的锁，等待id=9的锁</span>
+
+<span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</span></code></pre>
+<hr>
+<p>唯一键场景：c2是唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> ty <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">>=</span> <span class="token number">13</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 对c2(13)加next-key lock:(8, 13]，还锁住了(13, +∞)</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> ty<span class="token punctuation">(</span><span class="token number">c2</span><span class="token punctuation">,</span> <span class="token number">c3</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction</span></code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> ty <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">11</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 没有c2(11)的记录，所以会持有(8, 13)的gap lock</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> ty<span class="token punctuation">(</span><span class="token number">c2</span><span class="token punctuation">,</span> <span class="token number">c3</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction</span></code></pre>
+<hr>
+<p>可重复读隔离级别，c1非唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> tx <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">=</span> <span class="token number">5</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 对二级索引c1加lock_mode X (3,5], (5,+∞]，对主键(30)加lock_mode X locks rec but not gap</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> tx<span class="token punctuation">(</span><span class="token number">c1</span><span class="token punctuation">,</span> <span class="token number">c2</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- lock_mode X locks gap before rec insert intention waiting</span></code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> tx <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">></span> <span class="token number">5</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 持有二级索引锁(5, 8] (8,13], (19,+∞]，持有主键行锁[32], [33], [34]</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> tx<span class="token punctuation">(</span><span class="token number">c1</span><span class="token punctuation">,</span> <span class="token number">c2</span><span class="token punctuation">)</span> <span class="token keyword">select</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- lock_mode X insert intention waiting</span>
+<span class="token comment" spellcheck="true">-- ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction</span></code></pre>
+<hr>
+<p>可重复读级别，假设表中只有一条记录：(1, ‘a’, ‘b’, ‘c’, ‘data’)。</p>
+<p>三个并发事务，分别执行以下SQL：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">delete</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token operator">and</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token string">'b'</span> <span class="token operator">and</span> <span class="token number">c</span> <span class="token operator">=</span> <span class="token string">'c'</span><span class="token punctuation">;</span></code></pre>
+<p>事务1：在uniq_a_b_c索引上，对(a, b, c)记录加rec lock（lock_mode X locks rec but not gap）</p>
+<p>事务3：在uniq_a_b_c索引上，对(a, b, c)记录加rec lock，因为需要等待，释放page lock，然后等待rec lock。</p>
+<p>事务1：将索引上的记录标记为删除，提交事务，释放rec lock。</p>
+<p>事务3：成功获取rec lock，但之前放弃了page lock，页面可能已经改变，因此需要重新判断状态。</p>
+<p>事务2：成功获取page lock，读取到对应的记录，发现满足条件的行被标记为删除，因此尝试对记录加next-key lock（lock_mode X），但事务3持有rec lock，因此释放page lock，等待获取rec lock（lock mode X wating）。</p>
+<p>事务3：重新获取page lock，读取到对应的记录，需要对记录加next-key lock，但和事务2等待的next-key lock互斥，并且加next-key lock和事务3持有rec lock不兼容，为了防止事务2饥饿，事务3释放page lock，等待获取next-key lock（lock mode X wating）。</p>
+<p>死锁形成。</p>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">update</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">set</span> score <span class="token operator">=</span> <span class="token number">100</span> <span class="token keyword">where</span> id <span class="token operator">&lt;</span> <span class="token number">30</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 加锁顺序为：id = 20 -> 30，即id = 15 -> 18 -> 20</span>
+
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">update</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">set</span> score <span class="token operator">=</span> <span class="token number">100</span> <span class="token keyword">where</span> age <span class="token operator">></span> <span class="token number">23</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 加锁顺序为：id = 30 -> 20</span>
+<span class="token comment" spellcheck="true">-- 走的是二级索引age，加锁顺序为：(age, id) = (24, 18) -> (24, 20) -> (25, 15) -> (25, 49)</span>
+<span class="token comment" spellcheck="true">-- 对 id 的加锁顺序为 id = 18 -> 20 -> 15 -> 49</span></code></pre>
+<hr>
+<p>可重复读级别。</p>
+<p>id为主键，no为二级唯一索引，name和 age为二级非唯一索引，score无索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">update</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">set</span> score <span class="token operator">=</span> <span class="token number">100</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">25</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 记录不存在，由于为RR，会锁住间隙(20, 30)（lock_mode X locks gap before rec）</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">update</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">set</span> score <span class="token operator">=</span> <span class="token number">100</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">26</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 记录不存在，由于为RR，会锁住间隙(20, 30)（lock_mode X locks gap before rec）</span>
+
+<span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">(</span>id<span class="token punctuation">,</span> <span class="token keyword">no</span><span class="token punctuation">,</span> name<span class="token punctuation">,</span> age<span class="token punctuation">,</span> score<span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">25</span><span class="token punctuation">,</span> <span class="token string">'S0025'</span><span class="token punctuation">,</span> <span class="token string">'Sony'</span><span class="token punctuation">,</span> <span class="token number">28</span><span class="token punctuation">,</span> <span class="token number">90</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">(</span>id<span class="token punctuation">,</span> <span class="token keyword">no</span><span class="token punctuation">,</span> name<span class="token punctuation">,</span> age<span class="token punctuation">,</span> score<span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">26</span><span class="token punctuation">,</span> <span class="token string">'S0026'</span><span class="token punctuation">,</span> <span class="token string">'Ace'</span><span class="token punctuation">,</span> <span class="token number">25</span><span class="token punctuation">,</span> <span class="token number">88</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>tt<span class="token punctuation">`</span><span class="token punctuation">(</span>
+    <span class="token punctuation">`</span>id<span class="token punctuation">`</span> <span class="token keyword">INT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span><span class="token number">c1</span><span class="token punctuation">`</span> <span class="token keyword">INT</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span><span class="token punctuation">(</span><span class="token punctuation">`</span>id<span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token keyword">UNIQUE</span> <span class="token keyword">KEY</span> <span class="token punctuation">`</span><span class="token number">c1</span><span class="token punctuation">`</span><span class="token punctuation">(</span><span class="token punctuation">`</span><span class="token number">c1</span><span class="token punctuation">`</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">InnoDB</span><span class="token punctuation">;</span> 
+
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> tt <span class="token keyword">VALUES</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>可重复读级别</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- session1：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> tt <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+<span class="token keyword">update</span> tt <span class="token keyword">set</span> id <span class="token operator">=</span> <span class="token number">2</span> <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session2：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> tt <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session1：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> tt <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li><code>select * from tt where c1 = 1 for update;</code></li>
+</ul>
+<p>RC和RR隔离级别时：</p>
+<p>因为c1是唯一键，因此都是LOCK_X | LOCK_REC_NOT_GAP，主键也是同样。</p>
+<p>锁住了二级唯一索引和主键的相关记录。</p>
+<ul>
+<li><code>update tt set id = 2 where c1 = 1;</code></li>
+</ul>
+<p>在二级唯一索引c1上做删除和插入操作，将原来的(1, 1)记录标记为删除，然后插入(1, 2)。</p>
+<p>对于二级索引的update总是先删除然后插入，主键则会判断是否可以允许插入。</p>
+<p>还会涉及唯一性检查，因此还有LOCK_S | LOCK_ORDINARY。</p>
+<p>对二级索引做唯一性检查始终是next key lock。</p>
+<p>RC和RR级别：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">5</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">5</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">2</span> <span class="token comment" spellcheck="true">-- 主键上删除然后插入记录，产生两个undo</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>tt<span class="token punctuation">`</span> trx id <span class="token number">231106</span> <span class="token keyword">lock</span> mode IX <span class="token comment" spellcheck="true">-- 表级意向锁</span>
+RECORD LOCKS space id <span class="token number">127</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token number">c1</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>tt<span class="token punctuation">`</span> trx id <span class="token number">231106</span> lock_mode X locks rec but <span class="token operator">not</span> gap 
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">2</span> PHYSICAL RECORD: n_fields <span class="token number">2</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">32</span> <span class="token comment" spellcheck="true">-- 二级唯一索引(1, 1)</span>
+ <span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span> 
+ <span class="token number">1</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span> 
+
+RECORD LOCKS space id <span class="token number">127</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>tt<span class="token punctuation">`</span> trx id <span class="token number">231106</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">2</span> PHYSICAL RECORD: n_fields <span class="token number">4</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">32</span> <span class="token comment" spellcheck="true">-- 主键(1, 1)</span>
+ <span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span> 
+ <span class="token number">1</span>: len <span class="token number">6</span><span class="token punctuation">;</span> hex <span class="token number">0000000386c2</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>       <span class="token punctuation">;</span><span class="token punctuation">;</span> 
+ <span class="token number">2</span>: len <span class="token number">7</span><span class="token punctuation">;</span> hex <span class="token number">2c000000410dca</span><span class="token punctuation">;</span> <span class="token keyword">asc</span> <span class="token punctuation">,</span>   A  <span class="token punctuation">;</span><span class="token punctuation">;</span> 
+ <span class="token number">3</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span> 
+
+RECORD LOCKS space id <span class="token number">127</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token number">c1</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>tt<span class="token punctuation">`</span> trx id <span class="token number">231106</span> <span class="token keyword">lock</span> mode S locks gap <span class="token operator">and</span> rec
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">1</span> PHYSICAL RECORD: n_fields <span class="token number">1</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">0</span> <span class="token comment" spellcheck="true">-- 二级唯一索引上界supremum</span>
+ <span class="token number">0</span>: len <span class="token number">8</span><span class="token punctuation">;</span> hex <span class="token number">73757072656d756d</span><span class="token punctuation">;</span> <span class="token keyword">asc</span> supremum<span class="token punctuation">;</span><span class="token punctuation">;</span> 
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">2</span> PHYSICAL RECORD: n_fields <span class="token number">2</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">32</span> <span class="token comment" spellcheck="true">-- 二级唯一索引(1, 1)</span>
+ <span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">1</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span>
+
+RECORD LOCKS space id <span class="token number">127</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token number">c1</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>tt<span class="token punctuation">`</span> trx id <span class="token number">231106</span> <span class="token keyword">lock</span> mode S locks gap before rec
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">3</span> PHYSICAL RECORD: n_fields <span class="token number">2</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">0</span> <span class="token comment" spellcheck="true">-- 二级唯一索引(1, 2)</span>
+ <span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">1</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000002</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li><code>select * from tt where c1 = 1 for update;</code></li>
+</ul>
+<p>语句会访问二级索引((1, 1) -&gt; 标记为删除)、((1, 2) -&gt; 没有提交)，这两个记录。</p>
+<p>如果是RC级别，则直接上LOCK_REC_NOT_GAP，只锁住记录本身。</p>
+<p>如果是RR级别，如果是二级唯一索引并且没有被标记为删除，则加LOCK_REC_NOT_GAP。</p>
+<p>如果标记为删除，则加LOCK_ORDINARY。</p>
+<p>这里会先访问二级索引(1, 1)，RC会加LOCK_X | LOCK_REC_NOT_GAP，RR会加LOCK_X | LOCK_ORDINARY。</p>
+<p>然后阻塞等待。</p>
+<ul>
+<li><code>select * from tt where c1 = 1 for update;</code></li>
+</ul>
+<p>语句会访问((1, 1) -&gt; 标记为删除)、((1, 2) -&gt; 没有提交)，这两个记录。</p>
+<p>RC级别时，需要唯一索引(1, 1)的LOCK_X | LOCK_REC_NOT_GAP，已经获得，直接通过。</p>
+<p>RR级别时，需要唯一索引(1, 1)的LOCK_X | LOCK_ORDINARY，没有获取过，需要重新检测兼容性，阻塞等待。</p>
+<p>总结：在RR级别时形成了锁等待环路。</p>
+<p>首先事务1获得唯一索引(1, 1)记录的LOCK_X | LOCK_REC_NOT_GAP。</p>
+<p>然后事务1对唯一索引执行update，删除再插入，获得获得唯一索引(1, 1)记录的LOCK_S | LOCK_ORDINARY。</p>
+<p>然后事务2阻塞等待唯一索引(1, 1)记录的LOCK_X | LOCK_ORDINARY。</p>
+<p>然后事务1阻塞等待唯一索引(1, 1)记录的LOCK_X | LOCK_ORDINARY。</p>
+<p>触发死锁。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> WAITING <span class="token keyword">FOR</span> THIS <span class="token keyword">LOCK</span> <span class="token keyword">TO</span> BE GRANTED:
+RECORD LOCKS space id <span class="token number">117</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token number">c1</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>t1<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>tt<span class="token punctuation">`</span> trx id <span class="token number">230530</span> lock_mode X locks gap <span class="token operator">and</span> rec waiting
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">2</span> PHYSICAL RECORD: n_fields <span class="token number">2</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">32</span>
+ <span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">1</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span>
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token keyword">TRANSACTION</span>:
+<span class="token keyword">TRANSACTION</span> <span class="token number">230525</span><span class="token punctuation">,</span> ACTIVE <span class="token number">68</span> sec starting <span class="token keyword">index</span> readmysql <span class="token keyword">tables</span> <span class="token operator">in</span> <span class="token keyword">use</span> <span class="token number">1</span><span class="token punctuation">,</span> locked <span class="token number">1</span>
+<span class="token number">6</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">6</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">2</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> tt <span class="token keyword">where</span> <span class="token number">c1</span><span class="token operator">=</span><span class="token number">1</span> <span class="token keyword">for</span> <span class="token keyword">update</span>
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> HOLDS THE <span class="token keyword">LOCK</span><span class="token punctuation">(</span>S<span class="token punctuation">)</span>:
+RECORD LOCKS space id <span class="token number">117</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token number">c1</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>t1<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>tt<span class="token punctuation">`</span> trx id <span class="token number">230525</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">2</span> PHYSICAL RECORD: n_fields <span class="token number">2</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">32</span>
+ <span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">1</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span>
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> WAITING <span class="token keyword">FOR</span> THIS <span class="token keyword">LOCK</span> <span class="token keyword">TO</span> BE GRANTED:
+RECORD LOCKS space id <span class="token number">117</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token number">c1</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>t1<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>tt<span class="token punctuation">`</span> trx id <span class="token number">230525</span> lock_mode X locks gap <span class="token operator">and</span> rec waiting
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">2</span> PHYSICAL RECORD: n_fields <span class="token number">2</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">32</span>
+ <span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">1</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     <span class="token punctuation">;</span><span class="token punctuation">;</span></code></pre>
+<hr>
+<p>RR隔离级别</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>t8<span class="token punctuation">`</span><span class="token punctuation">(</span>
+    <span class="token punctuation">`</span>id<span class="token punctuation">`</span> <span class="token keyword">BIGINT</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span>d_id<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">40</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span>b_id<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">40</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span>is_dropped<span class="token punctuation">`</span> <span class="token keyword">TINYINT</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token string">'0'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span>u_c<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span><span class="token punctuation">(</span><span class="token punctuation">`</span>id<span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token keyword">UNIQUE</span> <span class="token keyword">KEY</span> <span class="token punctuation">`</span>xxx<span class="token punctuation">`</span><span class="token punctuation">(</span><span class="token punctuation">`</span>d_id<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>b_id<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>is_dropped<span class="token punctuation">`</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">INNODB</span><span class="token punctuation">;</span> 
+
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> t8 <span class="token keyword">VALUES</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- S1：</span>
+<span class="token keyword">select</span> u_c <span class="token keyword">from</span> t8 <span class="token keyword">where</span> d_id <span class="token operator">=</span> <span class="token string">'1'</span> <span class="token operator">and</span> b_id <span class="token operator">=</span><span class="token string">' 1'</span> <span class="token operator">and</span> is_dropped <span class="token operator">=</span> <span class="token number">0</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 获取唯一索引LOCK_REC_NOT_GAP | LOCK_X</span>
+<span class="token comment" spellcheck="true">-- 回表，获取主键LOCK_REC_NOT_GAP | LOCK_X</span>
+
+<span class="token comment" spellcheck="true">-- S2：</span>
+<span class="token keyword">select</span> u_c <span class="token keyword">from</span> t8 <span class="token keyword">where</span> d_id <span class="token operator">=</span> <span class="token string">'1'</span> <span class="token operator">and</span> b_id <span class="token operator">=</span> <span class="token string">'1'</span> <span class="token operator">and</span> is_dropped <span class="token operator">=</span> <span class="token number">0</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 堵塞等待唯一索引LOCK_REC_NOT_GAP | LOCK_X</span>
+
+<span class="token comment" spellcheck="true">-- S1：</span>
+<span class="token keyword">update</span> t8 <span class="token keyword">set</span> u_c <span class="token operator">=</span> <span class="token string">'b'</span> <span class="token keyword">where</span> d_id <span class="token operator">=</span> <span class="token string">'1'</span> <span class="token operator">and</span> b_id <span class="token operator">=</span> <span class="token string">'1'</span><span class="token punctuation">;</span> 
+<span class="token comment" spellcheck="true">-- 缺少is_dropped字段，这时查询不会判定为唯一性查询，而是普通的二级索引定位</span>
+<span class="token comment" spellcheck="true">-- 需要获取唯一索引的LOCK_ORDINARY | LOCK_X，以及下一行的LOCK_GAP | LOCK_X</span>
+<span class="token comment" spellcheck="true">-- 虽然之前获取了该行的LOCK_REC_NOT_GAP | LOCK_X，但模式变化了（LOCK_REC_NOT_GAP -> LOCK_ORDINARY），需要重新获取，即slow加锁，否则是直接跳过，即fast加锁</span>
+<span class="token comment" spellcheck="true">-- 触发死锁，S2回滚</span></code></pre>
+<p>如果将</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">update</span> t8 <span class="token keyword">set</span> u_c <span class="token operator">=</span> <span class="token string">'b'</span> <span class="token keyword">where</span> d_id <span class="token operator">=</span> <span class="token string">'1'</span> <span class="token operator">and</span> b_id <span class="token operator">=</span> <span class="token string">'1'</span><span class="token punctuation">;</span> </code></pre>
+<p>修改为</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">update</span> t8 <span class="token keyword">set</span> u_c <span class="token operator">=</span> <span class="token string">'b'</span> <span class="token keyword">where</span> d_id <span class="token operator">=</span> <span class="token string">'1'</span> <span class="token operator">and</span> b_id <span class="token operator">=</span> <span class="token string">'1'</span> <span class="token operator">and</span> is_dropped <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span></code></pre>
+<p>那么死锁不会触发，因为锁模式一致，不会加锁。</p>
+<p>唯一性查找至少满足如下3点：</p>
+<ol>
+<li><p>索引具有唯一性；</p>
+</li>
+<li><p>查询条件的字段和索引唯一性字段相同；</p>
+</li>
+<li><p>是主键或者查询条件中不包含NULL值（二级唯一索引可以包含多个相同的值，如果其中一列是NULL）；</p>
+</li>
+</ol>
+<hr>
+<p>读已提交</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t1 <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 持有id(10)的lock_mode X locks rec but not gap</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t1 <span class="token keyword">where</span> id <span class="token operator">&lt;</span> <span class="token number">9</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- id(9)不存在，需要申请第一个不满足条件的记录id(10)的next-key lock，也就是(7,10]</span>
+<span class="token comment" spellcheck="true">-- 此时id(10)的行锁被sess1持有，故sess2被阻塞</span></code></pre>
+<p>如果会话A，会话B的执行顺序调整一下，会话B则不会被阻塞。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t1 <span class="token keyword">where</span> id <span class="token operator">&lt;</span> <span class="token number">9</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- RC模式，因为id(10)不符合条件id &lt; 9，会释放锁，降级为(7, 10)间的gap lock</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t1 <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span></code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t1 <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 持有id(10)的lock_mode X locks rec but not gap</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t1 <span class="token keyword">where</span> id <span class="token operator">&lt;</span> <span class="token number">9</span> <span class="token keyword">order</span> <span class="token keyword">by</span> id <span class="token keyword">desc</span><span class="token punctuation">;</span> 
+<span class="token comment" spellcheck="true">-- 没有阻塞，获取到第一个满足条件的记录是id(7)，不会访问id(10)</span>
+<span class="token comment" spellcheck="true">-- 也不会加上id(10)的next-key lock，不会与sess1持有的锁冲突</span></code></pre>
+<p>可重复读的加锁基本单位是next-key lock。</p>
+<p>查找过程中访问到的对象才会加锁。</p>
+<p>索引上的等值查询，给唯一索引加锁的时候，next-key lock退化为行锁。</p>
+<p>索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock退化为间隙锁。</p>
+<p>唯一索引上的范围查询会访问到不满足条件的第一个值为止。</p>
+<p>在读提交隔离级别下，提前释放不满足条件的行上的行锁，不需要等到事务提交。</p>
+<hr>
+<p>可重复读隔离级别，a非唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> ty <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">5</span>
+<span class="token comment" spellcheck="true">-- 对于a(5)加next-key lock(2, 5]，对a(6)加gap lock(5, 6)，对id(9)加rec lock</span>
+
+<span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> ty <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">5</span>
+<span class="token comment" spellcheck="true">-- lock_mode X waiting</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> ty<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true">-- insert(2)介于gap lock(2, 5)之间，所以提示lock_mode X locks gap before rec insert intention waiting</span></code></pre>
+<p>delete的加锁逻辑</p>
+<ol>
+<li><p>找到满足条件的记录，并且记录没被标记为删除，则对记录加lock_mode X locks rec but not gap。</p>
+</li>
+<li><p>找到满足条件的记录，但是记录被标记为删除，则对记录加lock_mode X，即next-key lock。</p>
+</li>
+<li><p>未找到满足条件的记录，则对第一个不满足条件的记录加locks gap before rec，保证没有满足条件的记录插入。</p>
+</li>
+</ol>
+<hr>
+<p>可重复读隔离级别，a唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> ty <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">5</span>
+<span class="token comment" spellcheck="true">-- 因为a是唯一键，对索引a(5)加lock_mode X locks rec but not gap</span>
+
+<span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> ty <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">5</span>
+<span class="token comment" spellcheck="true">-- a(5)被标记为删除，所以等待对a(5)加next-key lock，lock_mode X waiting</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> ty<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true">-- 因为索引a是唯一索引，在插入前进行一次duplicate key检查，申请S锁防止其他事务对a进行插入</span>
+<span class="token comment" spellcheck="true">-- 所以是lock mode S waiting，共享模式的next-key lock</span></code></pre>
+<hr>
+<p>可重复读级别，kdt_id是唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- T2：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t4 <span class="token keyword">where</span> kdt_id <span class="token operator">=</span> <span class="token number">15</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 符合条件的记录不存在，所以lock_mode X locks gap before rec，锁住(10, 20)，防止符合条件的记录插入</span>
+
+<span class="token comment" spellcheck="true">-- T1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t4 <span class="token keyword">where</span> kdt_id <span class="token operator">=</span> <span class="token number">18</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 同上，lock_mode X locks gap before rec，锁住(10, 20)</span>
+<span class="token comment" spellcheck="true">-- gap X-lock可以同时存在，如果记录从索引中被purged了，该记录上被不同事务加的gap lock要被合并</span>
+
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t4<span class="token punctuation">(</span><span class="token punctuation">`</span>kdt_id<span class="token punctuation">`</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token string">'18'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 插入意向锁，和T2的gap lock冲突，lock_mode X locks gap before rec insert intention waiting</span>
+
+<span class="token comment" spellcheck="true">-- T2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t4<span class="token punctuation">(</span><span class="token punctuation">`</span>kdt_id<span class="token punctuation">`</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token string">'15'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 插入意向锁，和T1的gap lock冲突，lock_mode X locks gap before rec insert intention waiting</span>
+<span class="token comment" spellcheck="true">-- Deadlock found when trying to get lock; try restarting transaction</span></code></pre>
+<p>解决方法：先select是否存在，再删除，或用insert into on deuplicate key，而不是先删除，再插入。</p>
+<hr>
+<p>读已提交级别，b是唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- session1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t8 <span class="token keyword">where</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 唯一索引b：lock_mode X locks rec but not gap，然后被标记为删除</span>
+<span class="token comment" spellcheck="true">-- 主键：lock_mode X locks rec but not gap</span>
+
+<span class="token comment" spellcheck="true">-- session2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t8<span class="token punctuation">(</span><span class="token number">b</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 插入前检测到唯一索引b唯一冲突，并且被标记为删除，则阻塞等待：lock mode S waiting</span>
+<span class="token comment" spellcheck="true">-- 所以即使是读已提交级别，也会存在next-key lock</span>
+
+<span class="token comment" spellcheck="true">-- session1：</span>
+<span class="token keyword">commit</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- session2成功对冲突的唯一索引加了LOCK_S | LOCK_ORDINARY，并且该行被标记为删除</span>
+<span class="token comment" spellcheck="true">-- 然后执行insert，在新插入的行上加lock mode S locks gap before rec</span>
+<span class="token comment" spellcheck="true">-- 同时隐式持有新插入行的LOCK_X | LOCK_REC_NOT_GAP</span>
+
+<span class="token comment" spellcheck="true">-- session3：</span>
+<span class="token keyword">update</span> t8 <span class="token keyword">set</span> <span class="token number">c</span> <span class="token operator">=</span> <span class="token number">13</span> <span class="token keyword">where</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 检测到冲突，将session2的隐式锁转为显式锁，lock mode S locks gap before rec</span>
+<span class="token comment" spellcheck="true">-- 于是session3被阻塞：lock_mode X locks rec but not gap waiting</span></code></pre>
+<hr>
+<p>a唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- T2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t7<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- insert成功，隐式持有[10]的lock_mode X locks rec but not gap</span>
+
+<span class="token comment" spellcheck="true">-- T1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t7<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 发生唯一约束冲突，将隐式锁转为显式锁</span>
+<span class="token comment" spellcheck="true">-- 于是等待对冲突的唯一索引[10]加lock mode S，即next-key lock，lock mode S waiting</span>
+
+<span class="token comment" spellcheck="true">-- T2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t7<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">9</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 等待对唯一索引a加锁，lock_mode X locks gap before rec insert intention waiting</span>
+<span class="token comment" spellcheck="true">-- 插入的行刚好在上面T1的next-key lock区间，死锁</span></code></pre>
+<hr>
+<p>可重复读级别，a唯一键。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t6<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 此时除了表级的意向锁lock mode IX，没有别的锁（隐式锁不算）</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t6<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- sess2插入前检查到唯一冲突，于是将sess1的隐式锁转为显式锁，lock_mode X locks rec but not gap</span>
+<span class="token comment" spellcheck="true">-- 同时因为发生了冲突，所以阻塞等待对冲突的行加next-key lock，状态为lock mode S waiting</span>
+
+<span class="token comment" spellcheck="true">-- sess3：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t6<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 同上，状态为lock mode S waiting</span>
+
+<span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">rollback</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 此时sess1释放了锁lock_mode X locks rec but not gap，然后sess2和sess3都获得lock mode S成功</span>
+<span class="token comment" spellcheck="true">-- 于是sess2和sess3执行插入都要请求b(15)上的lock_mode X insert intention，但和lock mode S互斥</span>
+<span class="token comment" spellcheck="true">-- sess2和sess3都等待对方释放S锁，lock_mode X insert intention waiting，于是死锁，选择回滚其中之一</span>
+
+<span class="token comment" spellcheck="true">-- sess3：</span>
+<span class="token comment" spellcheck="true">-- ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</span></code></pre>
+<hr>
+<p>可重复读级别，a是唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- sess1：</span>
+replace <span class="token keyword">into</span> ix<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- a(5)已经存在，所以执行更新，对a(5)加lock_mode X</span>
+<span class="token comment" spellcheck="true">-- 产生2条undo，持有4个锁，一个IX锁，1个[5]的rec lock，2个gap lock，分别锁住(1, 5)和(5, 15)</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+replace <span class="token keyword">into</span> ix<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- a(8)不存在，所以执行插入，但和sess1持有的gap lock(5, 15)冲突，于是lock_mode X locks gap before rec insert intention waiting</span>
+
+<span class="token comment" spellcheck="true">-- sess1：</span>
+replace <span class="token keyword">into</span> ix<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">9</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- a(9)不存在，所以执行插入，但和sess2持有的gap lock冲突，于是lock_mode X locks gap before rec insert intention waiting</span>
+<span class="token comment" spellcheck="true">-- 死锁发生</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token comment" spellcheck="true">-- ERROR 1213 (40001): Deadlock found when trying to get lock; try  restarting transaction</span></code></pre>
+<hr>
+<p>可重复读级别，c1和c2都是唯一索引。</p>
+<p>通过唯一索引更新或删除不存在的记录，会申请gap lock。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">update</span> ty <span class="token keyword">set</span> <span class="token number">c3</span> <span class="token operator">=</span> <span class="token number">2</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- c2(4)不存在，因此在下一个记录c2(6)上加gap lock，锁住(3, 6)</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">update</span> ty <span class="token keyword">set</span> <span class="token number">c3</span> <span class="token operator">=</span> <span class="token number">2</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 同上，lock_mode X locks gap before rec</span>
+
+<span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> ty <span class="token punctuation">(</span><span class="token number">c1</span><span class="token punctuation">,</span> <span class="token number">c2</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 先插入聚簇索引，再插入唯一索引c1(3)，然后再插入唯一索引c2</span>
+<span class="token comment" spellcheck="true">-- 插入唯一索引c2时，插入意向锁和gap lock冲突，lock_mode X locks gap before rec insert intention waiting</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> ty <span class="token punctuation">(</span><span class="token number">c1</span><span class="token punctuation">,</span> <span class="token number">c2</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 同样，但在插入唯一索引c1(3)时，检测到冲突，于是将隐式锁转为显式锁</span>
+<span class="token comment" spellcheck="true">-- 同时，等待在冲突的唯一索引c1(3)上加next-key lock，状态为lock mode S waiting，于是触发死锁</span>
+
+<span class="token comment" spellcheck="true">-- ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</span></code></pre>
+<hr>
+<p>可重复读，c1和c2都是唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> ty <span class="token punctuation">(</span><span class="token number">c1</span><span class="token punctuation">,</span> <span class="token number">c2</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 插入成功</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> ty <span class="token punctuation">(</span><span class="token number">c1</span><span class="token punctuation">,</span> <span class="token number">c2</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 检查到c1(4)唯一冲突，隐式锁转换，等待对冲突的行加lock mode S，即next key lock</span>
+
+<span class="token comment" spellcheck="true">-- sess3：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> ty <span class="token punctuation">(</span><span class="token number">c1</span><span class="token punctuation">,</span> <span class="token number">c2</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 同上</span>
+
+<span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">commit</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 此时sess2和sess3同时获取lock mode S</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">update</span> ty <span class="token keyword">set</span> <span class="token number">c3</span> <span class="token operator">=</span> <span class="token number">5</span> <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 需要获取c1(4)的独占锁，和sess3的lock mode S冲突，阻塞等待：lock_mode X locks rec but not gap waiting</span>
+
+<span class="token comment" spellcheck="true">-- sess3：</span>
+<span class="token keyword">update</span> ty <span class="token keyword">set</span> <span class="token number">c3</span> <span class="token operator">=</span> <span class="token number">5</span> <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 同上，和sess2的lock mode S冲突，触发死锁</span>
+
+<span class="token comment" spellcheck="true">-- ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</span></code></pre>
+<p>解决方式是使用insert into … on  duplicate key update。</p>
+<hr>
+<p>可重复读级别，num是唯一索引。</p>
+<p>insert into … on  duplicate key update等语句的锁模式做了加强，除rec lock外还有gap lock。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t<span class="token punctuation">(</span>num<span class="token punctuation">,</span> val<span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">45</span><span class="token punctuation">,</span> <span class="token string">'45'</span><span class="token punctuation">)</span> <span class="token keyword">on</span> <span class="token keyword">duplicate key</span> <span class="token keyword">update</span> val <span class="token operator">=</span> <span class="token string">'45'</span><span class="token punctuation">;</span> 
+<span class="token comment" spellcheck="true">-- 持有表级意向锁IX和num的2个gap lock（lock_mode X locks gap before rec），区间为(30, 45), (45, 50)</span>
+<span class="token comment" spellcheck="true">-- 还隐式持有num(46)的rec lock（lock_mode X locks rec but not gap）</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t<span class="token punctuation">(</span>num<span class="token punctuation">,</span> val<span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">40</span><span class="token punctuation">,</span> <span class="token string">'40'</span><span class="token punctuation">)</span> <span class="token keyword">on</span> <span class="token keyword">duplicate key</span> <span class="token keyword">update</span> val <span class="token operator">=</span> <span class="token string">'40'</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 持有表级锁意向锁IX和num的gap lock（lock_mode X locks gap before rec），区间为(30, 40)</span>
+<span class="token comment" spellcheck="true">-- 准备插入的值40与sess1持有的gap lock冲突，发生等待locks gap before rec insert intention waiting</span>
+
+<span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t<span class="token punctuation">(</span>num<span class="token punctuation">,</span> val<span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">38</span><span class="token punctuation">,</span> <span class="token string">'38'</span><span class="token punctuation">)</span> <span class="token keyword">on</span> <span class="token keyword">duplicate key</span> <span class="token keyword">update</span> val <span class="token operator">=</span> <span class="token string">'38'</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- sess1要插入38需要的insert intention lock与sess2持有的gap lock冲突，于是死锁</span>
+<span class="token comment" spellcheck="true">-- lock_mode X locks gap before rec insert intention waiting</span></code></pre>
+<hr>
+<p>读已提交级别，num是唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> dl<span class="token punctuation">(</span>num<span class="token punctuation">,</span> val<span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">102</span><span class="token punctuation">,</span> <span class="token string">'sess1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 隐式持有num(102)的lock_mode X locks rec but not gap</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> dl<span class="token punctuation">(</span>num<span class="token punctuation">,</span> val<span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">102</span><span class="token punctuation">,</span> <span class="token string">'sess2'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 唯一冲突，对冲突的num(102)加lock mode S，锁住了(60, 102)，然后等待</span>
+<span class="token comment" spellcheck="true">-- lock mode S waiting</span>
+
+<span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> dl<span class="token punctuation">(</span>num<span class="token punctuation">,</span> val<span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">101</span><span class="token punctuation">,</span> <span class="token string">'sess1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 插入的行在sess2的gap lock区间内，触发死锁</span>
+<span class="token comment" spellcheck="true">-- lock_mode X locks gap before rec insert intention waiting</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token comment" spellcheck="true">-- deadlock </span></code></pre>
+<p>解决方法：调整插入101和102的顺序。</p>
+<hr>
+<p>读已提交级别，(a, b)为唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- sess1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">3</span> <span class="token operator">and</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">,</span> <span class="token number">c</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 持有LOCK S Next key lock，而且是(1, 3), (3, 6)两个区间</span>
+
+<span class="token comment" spellcheck="true">-- sess2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">,</span> <span class="token number">c</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- lock_mode X locks gap before rec insert intention waiting</span>
+
+<span class="token comment" spellcheck="true">-- sess3：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">,</span> <span class="token number">c</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- lock_mode X locks gap before rec insert intention waiting</span></code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- session1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">3</span> <span class="token operator">and</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">3</span> <span class="token operator">and</span> <span class="token number">c</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 持有二级索引(3, 3)行锁，记录被标记为失效</span>
+
+<span class="token comment" spellcheck="true">-- session2：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">6</span> <span class="token operator">and</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">6</span> <span class="token operator">and</span> <span class="token number">c</span> <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 持有二级索引(6, 6)行锁，记录被标记为失效</span>
+
+<span class="token comment" spellcheck="true">-- session1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">,</span> <span class="token number">c</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- insert(3, 3)，检查到被标记为删除的(3, 3)，申请加LOCK_S，即next-key lock</span>
+<span class="token comment" spellcheck="true">-- 但检查到下一条记录持有Lock X的rec lock，于是等待</span>
+<span class="token comment" spellcheck="true">-- uk_ab lock mode S waiting</span>
+
+<span class="token comment" spellcheck="true">-- session2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">,</span> <span class="token number">c</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- insert(6, 5)在(3, 6)的区间，lock_mode X locks gap before rec insert intention waiting</span>
+<span class="token comment" spellcheck="true">-- 需要等待T3会话LOCK_S next-key lock，发生死锁</span>
+
+<span class="token comment" spellcheck="true">-- uk_ab lock_mode X locks gap before rec insert intention waiting</span></code></pre>
+<p>在插入或更新记录时，检查到duplicate key或有被标记删除的duplicate key。</p>
+<p>对于普通的insert / update，会加LOCK_S的next-key lock。</p>
+<p>对于类似replace into或insert on duplicate，会加LOCK_X的next-key lock。</p>
+<p>大概是因为日志复制的原因？</p>
+<p>向某个数据页中插入一行时，总是会进行锁检查，检查当前插入位置的逻辑顺序的下一条记录是否存在锁对象。</p>
+<hr>
+<p>读已提交级别，a是唯一索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t7<span class="token punctuation">(</span>id<span class="token punctuation">,</span> <span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token number">26</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 隐式持有a(10)的行锁lock_mode X locks rec but not gap</span>
+
+<span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t7<span class="token punctuation">(</span>id<span class="token punctuation">,</span> <span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token number">30</span> <span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 唯一约束冲突，对冲突的唯一索引加上lock mode S，然后lock mode S waiting</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t7<span class="token punctuation">(</span>id<span class="token punctuation">,</span> <span class="token number">a</span><span class="token punctuation">)</span> <span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token number">40</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 事务1的gap lock阻塞插入，然后lock_mode X locks gap before rec insert intention waiting</span></code></pre>
+<hr>
+<p>需要进行唯一性冲突检测时，需要先加一个S锁。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- session1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> <span class="token number">d</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> <span class="token number">d</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 检测到唯一冲突，阻塞等待对id(1)加next-key lock(lock mode S)</span>
+
+<span class="token comment" spellcheck="true">-- session3：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> <span class="token number">d</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 检测到唯一冲突，阻塞等待对id(1)加next-key lock(lock mode S)</span>
+
+<span class="token comment" spellcheck="true">-- session1：</span>
+<span class="token keyword">commit</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 事务提交释放id(1)上的独占锁，然后session2和session3成功获取id(1)上的lock mode S</span>
+<span class="token comment" spellcheck="true">-- 然后session2和session3执行insert都会被对方阻塞，死锁形成</span></code></pre>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

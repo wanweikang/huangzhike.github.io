@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-MySQL-数据类型 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="char固定长度，varchar长度可变。
+char存储时不管实际数据的长度，直接按规定的长度分配存储空间，varchar会根据实际存储的数据分配存储空间。
+如果char的字符长度小于固定长度，在尾部自动用空格补齐。
+如果char的字符长度大于固定长度，在严格模式下会报错，在非严格模式下会做截断。
+">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-MySQL-数据类型" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-数据类型</h2>
+				
+				<div>
+					<div class="post-time">2020-11-29</div>
+				</div>
+				
+				<div class="article-content">
+				<p>char固定长度，varchar长度可变。</p>
+<p>char存储时不管实际数据的长度，直接按规定的长度分配存储空间，varchar会根据实际存储的数据分配存储空间。</p>
+<p>如果char的字符长度小于固定长度，在尾部自动用空格补齐。</p>
+<p>如果char的字符长度大于固定长度，在严格模式下会报错，在非严格模式下会做截断。</p>
+<p>char的最大长度为255个字符。</p>
+<p>varchar的最大长度为65535字节，因为每行数据不能超过65535字节。</p>
+<p>如果存储的值小于255字节，则使用1个字节存储长度（字符数），如果大于255字节，则使用2个字节存储长度。</p>
+<p>如果varchar字段允许为空（default null），则还需要1比特来标识。</p>
+<ul>
+<li><p>‘’不做存储，但是会记录可变长度的长度为0，null位图为0。</p>
+</li>
+<li><p>null不做实际存储，也不会记录可变长度，null位图为1。</p>
+</li>
+<li><p>‘ ‘做存储为0x20，记录可变长度为01，null位图为0。</p>
+</li>
+</ul>
+<p>如果表中只有一个varchar字段，并且不允许为空，则varchar最大长度为65533字节。</p>
+<p>此时如果字符集为utf-8，65533 / 3 = 21844，即最大为varchar(21844)，21844个字符。</p>
+<p>char(n)和varchar(n)中括号中n代表字符数，不是字节数。</p>
+<p>utf-8编码，1个汉字占3个字符，1个英文字母或者数字占1个字符。</p>
+<p>char适合存储很短的、固定长度的字符串，如身份证号、手机号、邮箱等。</p>
+<p>一般建议使用varchar类型。</p>
+<p>保存大数据量文本时，可以使用text和blob。</p>
+<p>blob保存字节数据，text保存字符数据（包含字符集）。</p>
+<p>一般不建议使用MySQL保存大文本，因为如果text太大，溢出了多个页（一个页16k），那么可能产生多次IO。</p>
+<p>如果必须使用，可用考虑拆出去独立一张扩展表，用主键做关联。</p>
+<p>同时text和blob类型只能使用前缀索引（索引有长度限制）。</p>
+<hr>
+<p>整型分无符号（unsigned）和有符号（signed）两种类型，默认是有符号的类型。</p>
+<ul>
+<li><p>tinyint：占用1字节，[-2^7, 2^7 - 1]，即-128到127，有符号的范围是[0, 2^8 - 1]，即0到255。</p>
+</li>
+<li><p>smallint：占用2字节。</p>
+</li>
+<li><p>mediumint：占用3字节。</p>
+</li>
+<li><p>int、integer：占用4字节。</p>
+</li>
+<li><p>bigint：占用8字节，[-2^63, 2^63 - 1]，无符号的范围是[0, 2^64 - 1]。</p>
+</li>
+</ul>
+<p>int(7)：表示int类型的数据，最大长度为7，默认是int(11)。</p>
+<p>int占用字节是固定的，这里的长度只代表显示的宽度，即用0在左边填充，但必须搭配zerofill使用。</p>
+<p>如果为一个数值列指定zerofill，则自动为该列添加unsigned属性。</p>
+<p>浮点数：含有小数的值，超过指定精度后，会四舍五入，如float和double，表示单精度和双精度。</p>
+<p>定点数：能精确的保存和显示数据，如decimal，以字符串的形式保存，默认是decimal(10, 0)。</p>
+<p>浮点数和定点数都可以用(m, d)来表示，m表示整数位和小数位的数字，d表示小数点后面的小数。</p>
+<p>数据较大的小数，可以考虑使用bigint，根据小数的位数乘以对应倍数即可。</p>
+<p>财务相关如货币等对精度敏感，应该使用decimal。</p>
+<hr>
+<ul>
+<li>datetime：</li>
+</ul>
+<p>没有时区信息，保存的是当前会话所设置的时区对应的时间</p>
+<p>当时区更换之后，从数据库中读出的时间是不正确的。</p>
+<p>但是使用8字节的存储空间，表示的时间范围大（1000-01-01 00:00:00 ~ 9999-12-31 23:59:59）。</p>
+<ul>
+<li>timestamp：</li>
+</ul>
+<p>保存了时区信息，读写时会根据当前时区自动转换。</p>
+<p>使用4字节的存储空间，表示的时间范围更小（1970-01-01 00:00:01 ~ 2037-12-31 23:59:59）。</p>
+<p>通常优先考虑timestamp。</p>
+<hr>
+<p>尽量不要允许字段为null，最好用<code>not null</code> + <code>default</code>。</p>
+<p>使用is null或is not null判断null值。</p>
+<p>null值可以使用索引，但需要特别的处理。</p>
+<p>单表字段建议不要太多。</p>
+<p>优先选择utf8mb4字符集（兼容emoji字符）。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

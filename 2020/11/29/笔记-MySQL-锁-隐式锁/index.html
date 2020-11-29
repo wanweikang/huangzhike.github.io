@@ -1,0 +1,434 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-MySQL-锁-隐式锁 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="加锁可分为数据查找和数据修改两个阶段。
+
+SELECT FOR UPDATE：
+
+
+通过主键访问数据：
+
+访问主键，判断是否存在隐式锁（Implicit Lock），然后加显示锁。
+
+通过二级索引访问数据（需要回表的情况）：
+
+访问二级索引，判断是否存在隐式锁，然后加显示锁，接着回表主键判断是否存在">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-MySQL-锁-隐式锁" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-锁-隐式锁</h2>
+				
+				<div>
+					<div class="post-time">2020-11-29</div>
+				</div>
+				
+				<div class="article-content">
+				<p>加锁可分为数据查找和数据修改两个阶段。</p>
+<ul>
+<li>SELECT FOR UPDATE：</li>
+</ul>
+<ol>
+<li>通过主键访问数据：</li>
+</ol>
+<p>访问主键，判断是否存在隐式锁（Implicit Lock），然后加显示锁。</p>
+<ol start="2">
+<li>通过二级索引访问数据（需要回表的情况）：</li>
+</ol>
+<p>访问二级索引，判断是否存在隐式锁，然后加显示锁，接着回表主键判断是否存在隐式锁，然后加显示锁。</p>
+<ul>
+<li>UPDATE / DELETE：</li>
+</ul>
+<ol>
+<li>通过主键访问修改数据：</li>
+</ol>
+<p>数据查找阶段，主键判断是否存在隐式锁，然后加显示锁。</p>
+<p>数据修改阶段，如果修改了其它二级索引，那么为对应的二级索引加隐式锁。</p>
+<ol start="2">
+<li>通过二级索引访问修改数据：</li>
+</ol>
+<p>数据查找阶段，二级索引判断是否存在隐式锁（可能需要回表），二级索引加显示锁。</p>
+<p>数据修改阶段，回表修改主键数据加显示锁，然后为二级索引（修改字段涉及的二级索引，修改主键则包含所有二级索引）加隐式锁。</p>
+<ul>
+<li>INSERT</li>
+</ul>
+<p>如果没有冲突，那么始终为隐式锁。</p>
+<p>隐式锁不会占用lock结构体，因此在SHOW ENGINE INNODB STATUS里看不到，除非其他事务将其转换为显示锁。</p>
+<p>隐式锁可以理解为没有主动加锁。</p>
+<hr>
+<p>可重复读级别。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- show create table t</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>t<span class="token punctuation">`</span> <span class="token punctuation">(</span>
+  <span class="token punctuation">`</span>id<span class="token punctuation">`</span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span><span class="token number">a</span><span class="token punctuation">`</span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span><span class="token number">b</span><span class="token punctuation">`</span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token punctuation">`</span><span class="token number">d</span><span class="token punctuation">`</span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>id<span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">KEY</span> <span class="token punctuation">`</span><span class="token number">b</span><span class="token punctuation">`</span> <span class="token punctuation">(</span><span class="token punctuation">`</span><span class="token number">b</span><span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">KEY</span> <span class="token punctuation">`</span><span class="token number">d</span><span class="token punctuation">`</span> <span class="token punctuation">(</span><span class="token punctuation">`</span><span class="token number">d</span><span class="token punctuation">`</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">InnoDB</span><span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>a</th>
+<th>b</th>
+<th>d</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>5</td>
+<td>5</td>
+<td>300</td>
+<td>NULL</td>
+</tr>
+<tr>
+<td>6</td>
+<td>7000</td>
+<td>7700</td>
+<td>1124</td>
+</tr>
+<tr>
+<td>11</td>
+<td>7000</td>
+<td>7700</td>
+<td>1124</td>
+</tr>
+<tr>
+<td>12</td>
+<td>7000</td>
+<td>7700</td>
+<td>1124</td>
+</tr>
+<tr>
+<td>13</td>
+<td>2900</td>
+<td>1800</td>
+<td>NULL</td>
+</tr>
+<tr>
+<td>14</td>
+<td>2900</td>
+<td>1800</td>
+<td>NULL</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>88</td>
+<td>1499</td>
+<td>NULL</td>
+</tr>
+<tr>
+<td>4000</td>
+<td>6000</td>
+<td>5904</td>
+<td>iii</td>
+</tr>
+<tr>
+<td>4001</td>
+<td>7000</td>
+<td>7700</td>
+<td>1124454555</td>
+</tr>
+<tr>
+<td>9999</td>
+<td>9999</td>
+<td>9999</td>
+<td>a</td>
+</tr>
+</tbody></table>
+<hr>
+<p>INSERT</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- S1</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> t <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">10000</span><span class="token punctuation">,</span> <span class="token number">10000</span><span class="token punctuation">,</span> <span class="token number">10000</span><span class="token punctuation">,</span> <span class="token string">'gp'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- S2</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">10000</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- S3</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">10000</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- S4</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">d</span> <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span></code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">1</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">0</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> <span class="token keyword">lock</span> mode IX</code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">2</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">1</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> lock_mode X locks rec but <span class="token operator">not</span> gap</code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">3</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">2</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">b</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> lock_mode X locks rec but <span class="token operator">not</span> gap</code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">4</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">3</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">b</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">5</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">d</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> lock_mode X locks rec but <span class="token operator">not</span> gap</code></pre>
+<p>INSERT后，主键和各个索引都加了隐式锁，通过其他事务，逐步把这些隐式锁转换为显示锁。</p>
+<hr>
+<p>通过主键DELETE</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- S1</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">9999</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- S2 </span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">9999</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- S3</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">d</span> <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span></code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">2</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">1</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> lock_mode X locks rec but <span class="token operator">not</span> gap</code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">4</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">3</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">b</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> lock_mode X locks rec but <span class="token operator">not</span> gap</code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">4</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">3</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">b</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">5</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">d</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> lock_mode X locks rec but <span class="token operator">not</span> gap</code></pre>
+<p>通过主键DELETE，主键加了显示锁，因为数据查找阶段要加显示锁。</p>
+<p>但是各个二级索引加的是隐式锁，通过其他事务，逐步把这些隐式锁转换为显示锁。</p>
+<hr>
+<p>通过二级索引DELETE</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- S1</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">9999</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- S2 </span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">d</span> <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span></code></pre>
+<p>在删除的二级索引行上加了next-key lock。</p>
+<p>同时因为是非唯一索引和可重复读级别，还会在下一行记录上加gap lock，因为这里下一行记录是supremum record，所以显示的是next-key lock。</p>
+<p>然后会回表在聚簇索引对应的行加rec lock。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">3</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">3</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94501</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">b</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94501</span> lock_mode X
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">1</span> PHYSICAL RECORD: n_fields <span class="token number">1</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">0</span>
+<span class="token number">0</span>: len <span class="token number">8</span><span class="token punctuation">;</span> hex <span class="token number">73757072656d756d</span><span class="token punctuation">;</span> <span class="token keyword">asc</span> supremum<span class="token punctuation">;</span><span class="token punctuation">;</span>
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">12</span> PHYSICAL RECORD: n_fields <span class="token number">2</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">32</span>
+<span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   <span class="token string">' ;;
+1: len 4; hex 8000270f; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94501</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">12</span> PHYSICAL RECORD: n_fields <span class="token number">6</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">32</span>
+<span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   <span class="token string">' ;;
+1: len 6; hex 000000017125; asc     q%;;
+2: len 7; hex 5a0000002518ea; asc Z   %  ;;
+3: len 4; hex 8000270f; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+<span class="token number">4</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   ' <span class="token punctuation">;</span><span class="token punctuation">;</span>
+<span class="token number">5</span>: len <span class="token number">1</span><span class="token punctuation">;</span> hex <span class="token number">61</span><span class="token punctuation">;</span> <span class="token keyword">asc</span> <span class="token number">a</span><span class="token punctuation">;</span><span class="token punctuation">;</span></code></pre>
+<p>之前的事务执行DELETE，并没有涉及别的二级索引。</p>
+<p>因为别的事务想要对这个没有涉及的二级索引的行加锁，于是隐式锁转为显式锁。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">4</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">4</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94501</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">b</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94501</span> lock_mode X
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">1</span> PHYSICAL RECORD: n_fields <span class="token number">1</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">0</span>
+<span class="token number">0</span>: len <span class="token number">8</span><span class="token punctuation">;</span> hex <span class="token number">73757072656d756d</span><span class="token punctuation">;</span> <span class="token keyword">asc</span> supremum<span class="token punctuation">;</span><span class="token punctuation">;</span>
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">12</span> PHYSICAL RECORD: n_fields <span class="token number">2</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">32</span>
+<span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   <span class="token string">' ;;
+1: len 4; hex 8000270f; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94501</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">12</span> PHYSICAL RECORD: n_fields <span class="token number">6</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">32</span>
+<span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   <span class="token string">' ;;
+1: len 6; hex 000000017125; asc     q%;;
+2: len 7; hex 5a0000002518ea; asc Z   %  ;;
+3: len 4; hex 8000270f; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+<span class="token number">4</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   <span class="token string">' ;;
+5: len 1; hex 61; asc a;;
+
+RECORD LOCKS space id 501 page no 5 n bits 80 index d of table `test`.`t` trx id 94501 lock_mode X locks rec but not gap
+Record lock, heap no 12 PHYSICAL RECORD: n_fields 2; compact format; info bits 32
+0: len 1; hex 61; asc a;;
+1: len 4; hex 8000270f; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span></code></pre>
+<p>通过二级索引DELETE，二级索引加了显示锁，然后主键加了显示锁，因为数据查找阶段先查找二级索引然后回表。</p>
+<p>但对于语句没有直接涉及的二级索引，加的是隐式锁（标记删除然后更新page_update_max_trx_id），通过其他事务，把隐式锁转换为显示锁。</p>
+<hr>
+<p>通过主键UPDATE，更新了二级索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- S1</span>
+<span class="token keyword">update</span> t <span class="token keyword">set</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">10000</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">9999</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- S2 </span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">9999</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- S3 </span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">10000</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span></code></pre>
+<p>聚簇索引上加的是显式锁。</p>
+<p>然后更新二级索引，通常是删除和插入，因此有2行数据（标记删除、插入新行）都有隐式锁。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">2</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">1</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94553</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94553</span> lock_mode X locks rec but <span class="token operator">not</span> gap</code></pre>
+<p>访问了被标记删除的行，于是转为显式锁。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">3</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">2</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94553</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94553</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">b</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94553</span> lock_mode X locks rec but <span class="token operator">not</span> gap</code></pre>
+<p>访问了新插入的行，于是转为显式锁。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">3</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">3</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94553</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94553</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">12</span> PHYSICAL RECORD: n_fields <span class="token number">6</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">0</span>
+ <span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   <span class="token string">' ;;
+ 1: len 6; hex 000000017159; asc     qY;;
+ 2: len 7; hex 770000002a187f; asc w   *  ;;
+ 3: len 4; hex 8000270f; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">4</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80002710</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   <span class="token string">' ;;
+ 5: len 1; hex 61; asc a;;
+
+RECORD LOCKS space id 501 page no 4 n bits 80 index b of table `test`.`t` trx id 94553 lock_mode X locks rec but not gap
+Record lock, heap no 2 PHYSICAL RECORD: n_fields 2; compact format; info bits 0
+ 0: len 4; hex 80002710; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">1</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   <span class="token string">' ;;
+Record lock, heap no 12 PHYSICAL RECORD: n_fields 2; compact format; info bits 32
+ 0: len 4; hex 8000270f; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">1</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   ' <span class="token punctuation">;</span><span class="token punctuation">;</span></code></pre>
+<p>标记删除的行、插入的新行，这两行加了隐式锁，是由于更新二级索引加的，但是不相关的二级索引不会上隐式锁（因为根本没有访问或修改）。</p>
+<p>比如这里，如果想通过二级索引d对应的行加锁访问，会加锁成功，然后堵塞在获取主键的锁。</p>
+<p>但是通过主键直接访问时则会直接阻塞。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">LOCK</span> WAIT <span class="token number">3</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1160</span><span class="token punctuation">,</span> <span class="token number">2</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">d</span> <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token keyword">for</span> <span class="token keyword">update</span>
+<span class="token comment" spellcheck="true">------- TRX HAS BEEN WAITING 4 SEC FOR THIS LOCK TO BE GRANTED:</span>
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94565</span> lock_mode X locks rec but <span class="token operator">not</span> gap waiting
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">12</span> PHYSICAL RECORD: n_fields <span class="token number">6</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">0</span>
+ <span class="token number">0</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   <span class="token string">' ;;
+ 1: len 6; hex 000000017161; asc     qa;;
+ 2: len 7; hex 7c0000002d25eb; asc |   -% ;;
+ 3: len 4; hex 8000270f; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">4</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80002710</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   ' <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">5</span>: len <span class="token number">1</span><span class="token punctuation">;</span> hex <span class="token number">61</span><span class="token punctuation">;</span> <span class="token keyword">asc</span> <span class="token number">a</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">------------------</span>
+<span class="token keyword">TABLE</span> <span class="token keyword">LOCK</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94565</span> <span class="token keyword">lock</span> mode IX
+RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">5</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">d</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94565</span> lock_mode X
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">12</span> PHYSICAL RECORD: n_fields <span class="token number">2</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">0</span>
+ <span class="token number">0</span>: len <span class="token number">1</span><span class="token punctuation">;</span> hex <span class="token number">61</span><span class="token punctuation">;</span> <span class="token keyword">asc</span> <span class="token number">a</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">1</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   <span class="token string">' ;;
+
+RECORD LOCKS space id 501 page no 3 n bits 80 index PRIMARY of table `test`.`t` trx id 94565 lock_mode X locks rec but not gap waiting
+Record lock, heap no 12 PHYSICAL RECORD: n_fields 6; compact format; info bits 0
+ 0: len 4; hex 8000270f; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">1</span>: len <span class="token number">6</span><span class="token punctuation">;</span> hex <span class="token number">000000017161</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>     qa<span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">2</span>: len <span class="token number">7</span><span class="token punctuation">;</span> hex <span class="token number">7c0000002d25eb</span><span class="token punctuation">;</span> <span class="token keyword">asc</span> <span class="token operator">|</span>   <span class="token operator">-</span><span class="token operator">%</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">3</span>: len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">8000270f</span><span class="token punctuation">;</span> <span class="token keyword">asc</span>   <span class="token string">' ;;
+ 4: len 4; hex 80002710; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+ <span class="token number">5</span>: len <span class="token number">1</span><span class="token punctuation">;</span> hex <span class="token number">61</span><span class="token punctuation">;</span> <span class="token keyword">asc</span> <span class="token number">a</span><span class="token punctuation">;</span><span class="token punctuation">;</span></code></pre>
+<hr>
+<p>对于update和delete，首先要找到需要修改的数据，加锁前还要判断本记录是否存在隐式锁。</p>
+<p>由于二级索引行数据不包含trx_id，因此先用page的max_trx_id和当前活跃的最小读写事务比对。</p>
+<p>如果小于，说明该页所有的行都没有活跃事务引用，肯定是无锁的。</p>
+<p>如果大于等于，则可能存在显式锁，然后需要回表通过聚簇索引查找判断。</p>
+<p>而精细化回表判断行是否存在隐式锁，代价就比较大了。</p>
+<p>page_update_max_trx_id只会在二级索引上更新，并且每更新一行时都会判断更新。</p>
+<p>所以二级索引是由于行的修改而被动地加了隐式锁。</p>
+<p>加显式锁前需要判断是否存在隐式锁，而聚簇索引行中已经包含了trx_id，可以通过trx_id对应的事务是否还活跃判定，代价很小。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

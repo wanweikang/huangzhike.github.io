@@ -1,0 +1,332 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-MySQL-优化 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="第一范式：列是最小的的单元，列的信息，不能分解。
+
+第二范式：表中的记录是唯一的，通常使用主键来实现。
+
+第三范式：表中不要有冗余数据。
+
+反第三范式：有时为了提高查询效率，可以适当允许部分字段冗余。
+
+
+范式（写方便，没有冗余，节省空间，但读时关联表较多）和反范式（适当冗余，避免join关联）。
+">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-MySQL-优化" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-优化</h2>
+				
+				<div>
+					<div class="post-time">2020-11-29</div>
+				</div>
+				
+				<div class="article-content">
+				<ul>
+<li><p>第一范式：列是最小的的单元，列的信息，不能分解。</p>
+</li>
+<li><p>第二范式：表中的记录是唯一的，通常使用主键来实现。</p>
+</li>
+<li><p>第三范式：表中不要有冗余数据。</p>
+</li>
+<li><p>反第三范式：有时为了提高查询效率，可以适当允许部分字段冗余。</p>
+</li>
+</ul>
+<p>范式（写方便，没有冗余，节省空间，但读时关联表较多）和反范式（适当冗余，避免join关联）。</p>
+<hr>
+<p>减少同数据库的交互次数，节约网络开销，尽量使用批量操作，合并相同的操作。</p>
+<ul>
+<li>对于复杂的读操作，一个复杂的大SQL尽量分解为多个小SQL执行：</li>
+</ul>
+<ol>
+<li><p>大SQL逻辑比较复杂，需要占用CPU时间，而在MySQL中，一个SQL只能使用一个CPU计算。</p>
+</li>
+<li><p>将多表关联查询改为多个单表查询，方便在应用层做细粒度的缓存，如果第一步查询结果已经被缓存了，则可直接进行第二步查询。相当于在应用层实现了哈希关联，不再使用MySQL的嵌套循环关联，效率高很多。</p>
+</li>
+<li><p>另外，根据结果在应用层关联，把计算放到业务层而不是数据库层，除了方便应用层做缓存，还可以节省数据库的CPU。</p>
+</li>
+<li><p>方便数据库扩展。</p>
+</li>
+</ol>
+<ul>
+<li>对于极大数量的批量写操作(UPDATE, DELETE, INSERT)，要分批多次进行：</li>
+</ul>
+<ol>
+<li><p>SQL拆分后可以通过并行执行来提高处理效率。</p>
+</li>
+<li><p>大批量操作可能造成严重的主从延迟，特别是基于行的复制时，会记录每一行数据的修改，产生大量日志。</p>
+</li>
+<li><p>如果在一个大事务中进行，会造成大批量数据的长时间锁定，可能导致大量阻塞，进而占满数据库的可用连接，造成不可用。</p>
+</li>
+<li><p>应用层也要考虑GC问题，一次性处理大量数据可能导致OOM。</p>
+</li>
+</ol>
+<hr>
+<p>如果有一个大表，某列无索引，需要先查询该列，删除符合条件的记录，大约占40%数据量。</p>
+<p>这种情况下，假如存在其它索引（主键、普通索引），可利用现有索引分段扫描全表，如每次只读取1000条记录。</p>
+<p>然后再根据条件判断并删除。</p>
+<hr>
+<p>如果发现MySQL所有的压力都在一个CPU核心上，是因为一个会话中的SQL只会被分配到一个逻辑CPU上。</p>
+<p>CPU消耗高，可能的原因是该会话正在执行长时间的慢SQL，或者开启了大事务。</p>
+<p>解决方法是检查是否有慢SQL，是不是没有走索引导致了全表扫描，还有就是尽量不使用大事务，尽量拆分成小事务。</p>
+<hr>
+<p>当分页的偏移offset很大时，会有效率问题：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">limit</span> <span class="token number">300000</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">;</span></code></pre>
+<p>执行逻辑是先顺序扫描300005行，然后过滤掉前300000行，取出最后5行，耗费了大量I/O。</p>
+<p>为什么不先根据索引查到最后需要的5行的主键，再去聚簇索引中查询？</p>
+<p>改写成如下语句，走覆盖索引：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token number">a</span> <span class="token keyword">inner</span> <span class="token keyword">join</span> <span class="token punctuation">(</span><span class="token keyword">select</span> id <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">limit</span> <span class="token number">300000</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span> <span class="token number">b</span> <span class="token keyword">on</span> <span class="token number">a</span><span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">b</span><span class="token punctuation">.</span>id<span class="token punctuation">;</span></code></pre>
+<p>延迟关联，通过覆盖索引获取主键，再通过主键进行查询。</p>
+<p>不仅适用于二级索引，也适用于聚簇索引的查询。</p>
+<p>对于子查询<code>select id from t where ... limit 300000, 5</code>，看上去也是扫描了聚簇索引，但执行计划其实是选择了一个代价最小的二级索引执行全索引扫描获取主键，避免了直接扫描聚簇索引，因为扫描聚簇索引就是扫描全表。</p>
+<p>还有一种方法是使用主键进行“书签式”查询：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> id <span class="token operator">></span> <span class="token number">1000</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">limit</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">;</span></code></pre>
+<p>前提是能使用唯一索引，而且单调递增，并且不支持跨页查询，只能按顺序逐页查询。</p>
+<p>但这种方式和延迟关联相比，少了一次索引查询，性能会更高。</p>
+<hr>
+<p>搜索严禁左模糊（%xxx）或全模糊，如果需要可以使用搜索引擎如ES。</p>
+<p>InnoDB从5.6版本开始支持全文索引(Fulltext)。</p>
+<p>支持的字段格式包括CHAR、VARCHAR和TEXT。</p>
+<p>查询包含”hello”的记录：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token keyword">match</span><span class="token punctuation">(</span>col<span class="token punctuation">)</span> against<span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p><code>match(col) against(&#39;hello&#39;)</code>返回col列对目标字符”hello”的匹配程度，不存在任何匹配结果时，返回0。</p>
+<p>否则，根据匹配次数和位置先后返回一个匹配度。</p>
+<p>返回表中每条记录对目标字段”hello”的匹配度：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token keyword">match</span><span class="token punctuation">(</span>col<span class="token punctuation">)</span> against<span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">)</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">;</span></code></pre>
+<p>但MySQL不是专业的搜索引擎，所以性能有待商榷。</p>
+<hr>
+<p>尽量只返回需要的列。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> table_a <span class="token keyword">inner</span> <span class="token keyword">join</span> table_b <span class="token keyword">on</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">inner</span> <span class="token keyword">join</span> table_c <span class="token keyword">on</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">;</span></code></pre>
+<p>这句SQL会返回三个表的全部数据列。</p>
+<p>虽然查所有的列和需要的列在性能上基本没有区别，但是大量不必要的数据会带来额外的网络开销。</p>
+<p>MySQL的半双工协议决定该连接这段时间是不能处理请求的。</p>
+<hr>
+<p>如果知道只有一条结果返回，使用<code>limit 1</code>提高效率。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> name <span class="token operator">=</span> <span class="token string">'x'</span><span class="token punctuation">;</span></code></pre>
+<p>可以优化为：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> name <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token keyword">limit</span> <span class="token number">1</span><span class="token punctuation">;</span></code></pre>
+<p>这样遇到匹配的一行后，就可以直接停止匹配不再继续。</p>
+<hr>
+<p>判断是否存在，尽量不要使用count：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token operator">and</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span></code></pre>
+<p>推荐写法：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token number">1</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token operator">and</span> <span class="token number">b</span> <span class="token operator">=</span> <span class="token number">2</span> <span class="token keyword">limit</span> <span class="token number">1</span><span class="token punctuation">;</span></code></pre>
+<hr>
+<p>count的优化有限：</p>
+<ol>
+<li><p>确保where条件一定利用到最优索引。</p>
+</li>
+<li><p>业务层避免并发count，可以使用缓存，避免直接访问数据库。</p>
+</li>
+</ol>
+<p>对于无where_clause的count(*)，MySQL优化器会选择成本最小的二级索引查询计数，不会扫描全表。</p>
+<p>成本主要包括：</p>
+<ol>
+<li>IO成本</li>
+</ol>
+<p>即从磁盘把数据加载到内存的成本，默认读取数据页的IO成本是1。</p>
+<p>MySQL是以页的形式读取数据的，用到某个数据时，不会只读取这个数据，还会把相邻的数据也读到内存中。</p>
+<p>MySQL每次会读取一整页，一页的成本是1。</p>
+<p>IO成本主要和页的大小有关。</p>
+<ol start="2">
+<li>CPU成本：</li>
+</ol>
+<p>将数据读入内存后，还要检测数据是否满足条件和排序等，与行数有关，默认检测记录的成本是0.2。</p>
+<hr>
+<p>避免使用or，同一列进行or判断时，使用in代替。</p>
+<p>or的效率是n级别，in的效率是log(n)级别，in的个数建议控制在200以内。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> col <span class="token operator">=</span> <span class="token number">10</span> <span class="token operator">or</span> col <span class="token operator">=</span> <span class="token number">20</span><span class="token punctuation">;</span></code></pre>
+<p>可以改为：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> col <span class="token operator">=</span> <span class="token number">10</span> <span class="token keyword">union</span> <span class="token keyword">all</span> <span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> col <span class="token operator">=</span> <span class="token number">20</span><span class="token punctuation">;</span></code></pre>
+<p>或者：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> col <span class="token operator">in</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>in需要避免列表过大，否则执行计划可能不使用索引，而是全表扫描。</p>
+<p>对于连续的数值，考虑用between替代。</p>
+<p>MySQL使用or时，使用索引的条件比较苛刻，必须每个条件列都使用了独立索引。</p>
+<p>如果一个字段有索引，一个字段没有索引，将放弃使用索引而进行全表扫描。</p>
+<p>假设有索引(user_id, name)、索引(idcard)。</p>
+<p>使用了索引(index_merge)，实际上是把结果union：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> user_info <span class="token keyword">where</span> user_id <span class="token operator">=</span> <span class="token number">1</span> <span class="token operator">or</span> idcard <span class="token operator">=</span> <span class="token string">'x'</span><span class="token punctuation">;</span></code></pre>
+<p>全表扫描：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> user_info <span class="token keyword">where</span> address <span class="token operator">=</span> <span class="token string">'x'</span> <span class="token operator">or</span> user_id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span></code></pre>
+<hr>
+<p>避免使用子查询，可以把子查询优化为join连接。</p>
+<p>通常子查询在in子句中，且子查询中为简单语句（不含union、group by、order by、limit从句）时，才可以把子查询优化为关联查询。</p>
+<p>子查询性能差的原因在于，子查询的结果集无法使用索引，因为通常子查询的结果集会被存储到临时表中。</p>
+<p>不论是内存临时表还是磁盘临时表都不会存在索引，会消耗过多的CPU和IO资源，特别是返回结果集比较大的子查询，产生大量慢查询。</p>
+<hr>
+<p>避免join关联太多的表，建议不超过5个。</p>
+<p>MySQL存在join_buffe，同一个SQL多join一个表，就会多分配一个关联缓存。</p>
+<p>一个SQL中关联的表越多，占用的内存就越大。</p>
+<p>访问量比较大的应用，如C端，应该避免join查询，尽可能使用kv查询，单表查询。</p>
+<hr>
+<p>MySQL单表数据到多少时才需要考虑分库分表？</p>
+<p>MySQL为了提高性能，会将索引装载到缓冲中。</p>
+<p>当索引过大时，如果缓冲无法存放，那么会产生磁盘IO，导致性能下降。</p>
+<hr>
+<p>根据情况可以用<code>replace</code>代替<code>delete / insert</code>。</p>
+<p>如果在一个字段上建立了唯一索引，向这个表中使用已存在的键值插入一条记录，将会抛出主键冲突异常。</p>
+<p>如果想用新记录的值来覆盖原来的记录值时，就可以使用<code>replace</code>。</p>
+<p>如果记录不重复，<code>replace</code>与<code>insert</code>一样，如果存在重复记录，<code>replace</code>就使用新记录替换原记录（删除再插入）。</p>
+<p><code>replace</code>的好处是将<code>delete</code>和<code>insert</code>合二为一，形成一个原子操作，不需要另外添加事务。</p>
+<p>使用<code>replace</code>时，表中必须有唯一约束，如<code>primary key</code>或<code>unique</code>索引。</p>
+<hr>
+<p>表的删除语句有两种：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">drop</span> <span class="token keyword">table</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">truncate</span> <span class="token keyword">table</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre>
+<p>truncate是先把整张表删除，然后重建该表，同时重置水平线（自增长列起始位）。</p>
+<hr>
+<ul>
+<li>SELECT</li>
+</ul>
+<ol>
+<li><p>单表SELECT，查看执行计划是否使用了索引，含有ORDER BY LIMIT，可以考虑延迟JOIN。</p>
+</li>
+<li><p>多表JOIN，确定好驱动表，被驱动表必须含有索引，减少JOIN次数，含有GROUP BY的可以考虑先聚合后JOIN。</p>
+</li>
+</ol>
+<ul>
+<li>UPDATE / DELETE</li>
+</ul>
+<ol>
+<li><p>不要大事务更新或删除，适当分批进行。</p>
+</li>
+<li><p>查看是否有锁竞争。</p>
+</li>
+<li><p>不要用WHERE条件的子查询，改成JOIN。</p>
+</li>
+<li><p>大量删除可以考虑创建表结构后更名。</p>
+</li>
+</ol>
+<hr>
+<p>join关联的字段，应该是相同的类型的。</p>
+<p>如果把decimal和int字段join在一起，就无法使用索引。</p>
+<p>对于字符串类型，还要有相同的字符集，char和varchar没有影响。</p>
+<ul>
+<li>隐式类型转换：</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> col <span class="token operator">=</span> <span class="token number">110717</span><span class="token punctuation">;</span></code></pre>
+<p>假设字段col上有索引，但执行计划却显示这条语句走全表扫描。</p>
+<p>可能col的字段类型是varchar，而输入的参数却是整型，所以需要做类型转换。</p>
+<p>相当于：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> cast<span class="token punctuation">(</span>col <span class="token keyword">as</span> signed <span class="token keyword">int</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">110717</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li>隐式字符编码转换：</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span> <span class="token keyword">where</span> <span class="token number">a</span><span class="token punctuation">.</span>col <span class="token operator">=</span> <span class="token number">b</span><span class="token punctuation">.</span>col <span class="token operator">AND</span> <span class="token number">a</span><span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span></code></pre>
+<p>假设a表的字符集编码是utf8mb4，bl表的字符集编码是utf8，那么是无法走索引的。</p>
+<p>根据执行计划可知，a是驱动表，b是被驱动表，也就是从a表中取col字段，再去b表里查询匹配字段。</p>
+<p>字符集utf8mb4是utf8的超集，当这两个类型比较时，MySQL先把utf8字符串转成utf8mb4字符集，再做比较。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

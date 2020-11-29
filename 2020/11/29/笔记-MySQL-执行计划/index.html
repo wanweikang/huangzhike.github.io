@@ -1,0 +1,1190 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-MySQL-执行计划 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="id：标识select，id越大越先执行，如SUBQUERY比PRIMARY先执行。
+相同则从上往下执行，为NULL最后执行。
+select_type：查询分为简单（SIMPLE）和复杂（PRIMARY）类型，复杂类型可分为简单子查询、派生表、union查询。
+
+SIMPLE：简单查询，查询中不包含">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-MySQL-执行计划" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-执行计划</h2>
+				
+				<div>
+					<div class="post-time">2020-11-29</div>
+				</div>
+				
+				<div class="article-content">
+				<h4 id="id："><a href="#id：" class="headerlink" title="id："></a>id：</h4><p>标识select，id越大越先执行，如SUBQUERY比PRIMARY先执行。</p>
+<p>相同则从上往下执行，为NULL最后执行。</p>
+<h4 id="select-type："><a href="#select-type：" class="headerlink" title="select_type："></a>select_type：</h4><p>查询分为简单（SIMPLE）和复杂（PRIMARY）类型，复杂类型可分为简单子查询、派生表、union查询。</p>
+<ol>
+<li><p>SIMPLE：简单查询，查询中不包含子查询或union。</p>
+</li>
+<li><p>PRIMARY：如果查询中包含复杂的子部分，那么最外层查询则被标记为PRIMARY。</p>
+</li>
+<li><p>SUBQUERY：select或where中包含的子查询。</p>
+</li>
+</ol>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> <span class="token keyword">select</span> <span class="token punctuation">(</span><span class="token keyword">select</span> <span class="token number">1</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">limit</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">;</span></code></pre>
+<p>优化器可能重写子查询，转换为连接查询。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token keyword">user</span> <span class="token keyword">where</span> id <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token keyword">select</span> user_id <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<ol start="4">
+<li>DERIVED：from中包含的子查询，会递归执行并将结果放入临时表中。</li>
+</ol>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">(</span><span class="token keyword">select</span> id <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">as</span> derived<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>也称物化，第一次需要子查询结果时执行子查询并将子查询的结果保存为临时表 ，后续对子查询结果集的访问将直接通过临时表获得。</p>
+<p>与之相对的是对外表的每一行都对子查询进行调用，执行计划中的查询类型为“DEPENDENT SUBQUERY”。</p>
+<ol start="5">
+<li>UNION：在union中的第二个及以后的select被标记为UNION。</li>
+</ol>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">;</span></code></pre>
+<p>如果union在from子句的子查询中，那么它的第一个select会被标记为DERIVED，而不是PRIMARY。</p>
+<ol start="6">
+<li><p>UNION RESULT：使用临时表完成union去重。</p>
+</li>
+<li><p>DEPENDENT SUBQUERY：</p>
+</li>
+</ol>
+<p>SUBQUERY和UNION还可以被标记为DEPENDENT和UNCACHEABLE。</p>
+<p>DEPENDENT SUBQUERY意味着子查询依赖外层查询的结果，则查询可能会被执行多次。</p>
+<ol start="8">
+<li>DEPENDENT UNION：</li>
+</ol>
+<p>union查询依赖于外层查询，这些子查询语句类型为DEPENDENT UNION。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> id <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token keyword">select</span> user_id <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">union</span> <span class="token keyword">select</span> id <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p><code>select user_id from ... where ...</code>是第一个子查询，它为DEPENDENT SUBQUERY（表面上不依赖外层查询，但MySQL会改写，谨慎使用in子查询）。</p>
+<p><code>select id from ... where ...</code>这个查询在union后面，它为DEPENDENT UNION。</p>
+<p>一个栗子：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> <span class="token keyword">select</span> film_id <span class="token keyword">from</span> <span class="token punctuation">(</span><span class="token keyword">select</span> flm_id <span class="token keyword">from</span> film<span class="token punctuation">)</span> <span class="token keyword">as</span> derived<span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center"><code>&lt;derived2&gt;</code></td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">DERIVED</td>
+<td align="center">film</td>
+</tr>
+</tbody></table>
+<p>from子句有子查询时，table列是<code>&lt;derivedN&gt;</code>，其中N是子查询的id，这是向前引用，指向explain的下面一行。</p>
+<p>MySQL引入了物化，用于子查询（如在in / not in子查询及from子查询）优化。</p>
+<p>第一次需要子查询时，执行子查询并将子查询的结果保存为临时表，后续对子查询结果集的访问直接通过临时表获得。</p>
+<p>物化子查询的关键在于对子查询只需要执行一次，相对的是对外表的每一行都对子查询进行调用（DEPENDENT SUBQUERY）。</p>
+<p>物化表的记录都建立了索引（基于内存的物化表有哈希索引，基于磁盘的有B+树索引）。</p>
+<p><del>一种说法是临时表是没有索引的，不知道怎么解释。</del></p>
+<p>一个栗子：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> <span class="token keyword">select</span> <span class="token number">1</span> <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center">NULL</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">UNION</td>
+<td align="center">NULL</td>
+</tr>
+<tr>
+<td align="center">NULL</td>
+<td align="center">UNION RESULT</td>
+<td align="center"><code>&lt;union1,2&gt;</code></td>
+</tr>
+</tbody></table>
+<p>当有union时，UNION RESULT的table列包含了参与union的id列表，这是向后引用。</p>
+<p>union结果总是放在一个匿名临时表中，在这里名为<code>&lt;union1, 2&gt;</code>，这个临时表是为了合并两个查询结果集而创建的。</p>
+<p>跟union对比，union all无需为结果去重，所以不会产生临时表。</p>
+<p>一个栗子：</p>
+<pre class=" language-SQL"><code class="language-SQL">explain
+select actor_id, ( select 1 from film_actor where film_actor.actor_id = der_1.actor_id limit 1 )
+    from ( select actor_id from actor limit 5 ) as der_1 
+union all
+select film_id, ( select @var1 from rental limit 1 )
+    from ( select film_id, ( select 1 from store limit 1 ) from film limit 5 ) as der_2；</code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center"><code>&lt;derived3&gt;</code></td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">DERIVED</td>
+<td align="center">actor</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">DEPENDENT SUBQUERY</td>
+<td align="center">film_actor</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">UNION</td>
+<td align="center"><code>&lt;derived6&gt;</code></td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">DERIVED</td>
+<td align="center">film</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="center">SUBQUERY</td>
+<td align="center">store</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">UNCACHEABLE SUBQUERY</td>
+<td align="center">rental</td>
+</tr>
+<tr>
+<td align="center">NULL</td>
+<td align="center">UNION RESULT</td>
+<td align="center"><code>&lt;union1,4&gt;</code></td>
+</tr>
+</tbody></table>
+<p>第1行向前引用了der_1，这个査询被标记为<code>&lt;derived3&gt;</code>。</p>
+<p>第2行，id是3，因为它是査询中第3个select的一部分，归为DERIVED类型是因为它嵌套在from子句中的子査询内部。</p>
+<p>第3行的id为2，它在具有更高id的行后面，暗示后面再执行，它被归为DEPENDENT SUBQUERY，意味着其结果依赖于外层査询。</p>
+<p>第4行被归为UNION，意味着它是union中的第2个或之后的select，它的表为<code>&lt;derived6&gt;</code>，意味着是从子句from的子査询中检索数据并附加到union的临时表。</p>
+<p>第5行是der_2子査询，称为<code>&lt;derived6&gt;</code>。</p>
+<p>第6行是<code>&lt;derived6&gt;</code>的select列表中的一个普通子査询，它的id为7，比下一行的id大，它显示了<code>&lt;derived6&gt;</code>子査询结束的边界。</p>
+<p>explain输出select类型为DERIVED的一行时，表示一个嵌套范围开始，如果后续行id更小，意味着嵌套范围已经结束。</p>
+<p>第7行是从第4行<code>&lt;derived6&gt;</code>中检索数据的select列表中的部分，因为有用户变量，它被列为UNCACHEABLE SUBQUERY。</p>
+<p>最后一行是UNION RESULT，代表从union的临时表中读取行，它会返回id是1和4的行结果，分别引用了<code>&lt;derived3&gt;</code>和<code>&lt;derived6&gt;</code>。</p>
+<h4 id="type："><a href="#type：" class="headerlink" title="type："></a>type：</h4><p>访问类型</p>
+<ol>
+<li>ALL：</li>
+</ol>
+<p>全表扫描，从头到尾扫描找到需要的行。</p>
+<p>例外：查询使用了limit，或Extra显示Using distinct/not exists。</p>
+<ol start="2">
+<li>index：</li>
+</ol>
+<p>全索引扫描，扫描顺序是索引顺序，优点是避免了排序，缺点是按索引顺序回表，通常是随机读取。</p>
+<p>例外：如果Extra显示Using index，说明使用覆盖索引，只需扫描索引。</p>
+<ol start="3">
+<li>index_merge：</li>
+</ol>
+<p>使用了索引合并优化，一个查询里面用到了多个索引搜索，然后合并搜索结果。</p>
+<ol start="4">
+<li>range：</li>
+</ol>
+<p>有范围限制的索引扫描，常见于between、&lt;&gt;、in、or等。</p>
+<ol start="5">
+<li>ref：</li>
+</ol>
+<p>通过索引访问，返回匹配单个值的所有行（可能匹配多个），见于非唯一索引或唯一索引的非唯一前缀，索引要和某个值相比较，可能会找到多个符合条件的行。</p>
+<p>称为ref是因为索引需要和某个参考值比较（参考值可能是常数，或者来自多表查询的前一个表的结果值）。</p>
+<ol start="6">
+<li>eq_ref：</li>
+</ol>
+<p>在连接查询时，如果被驱动表是通过主键或唯一索引列等值匹配的方式进行访问的，则对该被驱动表的访问方法就是eq_ref。</p>
+<p>只需返回一条匹配的结果，见于使用主键或唯一索引查找，性能很好。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> user_group <span class="token keyword">inner</span> <span class="token keyword">join</span> <span class="token keyword">user</span> <span class="token keyword">on</span> user_group<span class="token punctuation">.</span>user_id <span class="token operator">=</span> <span class="token keyword">user</span><span class="token punctuation">.</span>id<span class="token punctuation">;</span></code></pre>
+<ol start="7">
+<li>const：</li>
+</ol>
+<p>可以将查询的某部分转化为一个常量。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> id <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token string">'xx'</span><span class="token punctuation">;</span></code></pre>
+<p>这个查询就是一个常量，不需要执行。</p>
+<p>用于主键或唯一索引列与常数比较时，表最多有一个匹配行。</p>
+<ol start="8">
+<li>system：</li>
+</ol>
+<p>const的特例，表里只有一条记录。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> <span class="token keyword">select</span> <span class="token keyword">from</span> <span class="token punctuation">(</span><span class="token keyword">select</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> tmp<span class="token punctuation">;</span></code></pre>
+<ol start="9">
+<li>NULL：</li>
+</ol>
+<p>在优化阶段即可分解语句，执行阶段不需访问索引或行。</p>
+<p>如从一个索引列选取最小值，可以通过查找索引完成，不需在执行时访问表。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> <span class="token keyword">select</span> <span class="token function">min</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">;</span></code></pre>
+<h4 id="ref："><a href="#ref：" class="headerlink" title="ref："></a>ref：</h4><p>上一个表的key列索引查找时用的列或常量。</p>
+<h4 id="rows："><a href="#rows：" class="headerlink" title="rows："></a>rows：</h4><p>估计的需要遍历的行数，非准确值。</p>
+<h4 id="Extra："><a href="#Extra：" class="headerlink" title="Extra："></a>Extra：</h4><ol>
+<li>Using index：</li>
+</ol>
+<p>使用覆盖索引，不需要回表查询。</p>
+<ol start="2">
+<li>Using where：</li>
+</ol>
+<p>查询的列没有被索引覆盖，存储引擎层读取行后，服务器层再通过where条件过滤。</p>
+<ol start="3">
+<li>Using where Using index：</li>
+</ol>
+<p>查询的列被索引覆盖，并且where筛选条件是索引列之一，但不是索引的前导列，无法直接通过索引过滤（最左匹配），需要在服务器层再通过where条件过滤。</p>
+<ol start="4">
+<li>Using index condition：</li>
+</ol>
+<p>使用了索引条件推送。</p>
+<p>不使用索引条件推送时，where过滤条件只在服务器层作用，存储引擎只是读记录，然后在服务层过滤，再从存储引擎中读记录，如此循环。</p>
+<p>使用了索引条件推送，过滤条件推送到存储引擎层，存储引擎直接返回过滤后的数据，服务层不需要过滤。</p>
+<p>索引条件推送只能用于二级索引。</p>
+<ol start="5">
+<li>NULL：</li>
+</ol>
+<p>查询的列未被索引覆盖，并且where筛选条件是索引的前导列，意味着用到了索引，但是部分字段未被索引覆盖，必须回表查询。</p>
+<ol start="6">
+<li>Using temparory：</li>
+</ol>
+<p>对查询结果排序时使用临时表，比如order by和group by，需要优化。</p>
+<ol start="7">
+<li>Using filesort：</li>
+</ol>
+<p>说明没有使用索引读取的顺序，而是使用外部排序，在内存或者磁盘完成，需要优化。</p>
+<ol start="8">
+<li>Using join buffer：</li>
+</ol>
+<p>在获取join条件时没有使用索引，并且需要连接缓冲区来存储中间结果，需要优化。</p>
+<ol start="9">
+<li>Not exists：</li>
+</ol>
+<p>优化left join，一旦找到了匹配left join的行，就不再搜索。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t1 <span class="token keyword">left</span> <span class="token keyword">join</span> t2 <span class="token keyword">on</span> t1<span class="token punctuation">.</span>id <span class="token operator">=</span> t2<span class="token punctuation">.</span>id <span class="token keyword">where</span> t2<span class="token punctuation">.</span>id <span class="token operator">is</span> <span class="token boolean">null</span><span class="token punctuation">;</span></code></pre>
+<p>假设t2.id是not null列，MySQL会扫描t1，并使用t1.id的值查找t2中的行。</p>
+<p>如果MySQL在t2中找到一个匹配的行，它会知道t2.id不可能为null，不会扫描t2中具有相同id值的其余行。</p>
+<p>也就是说，对于t1中的每一行，只需要在t2中只执行一次查找，而不考虑在t2中实际匹配的行数。</p>
+<p>MySQL8.0后，还可表示：not in(subquery)或not exists(subquery)的where条件已经在内部转换为反连接。</p>
+<p>这将删除子查询并将其表放入最顶层的执行计划中，对表重新排序，改进查询的开销。</p>
+<p>两表关联只返回主表的数据，并且只返回主表与子表没关联上的数据，就叫反连接。</p>
+<ol start="10">
+<li>Range checked for each record (index map: N)：</li>
+</ol>
+<p>没有找到合适的索引，因此去检查是否可以使用range或index_merge来检索行。</p>
+<h4 id="filtered"><a href="#filtered" class="headerlink" title="filtered"></a>filtered</h4><p>表示符合查询条件的数据百分比，最大100。</p>
+<p>rows * filtered可获得和下一张表连接的行数。</p>
+<p>例如rows = 1000，filtered = 50%，则和下一张表连接的行数是500。</p>
+<hr>
+<p>MySQL执行时，一个表可能会使用多个索引。</p>
+<ul>
+<li>index merge</li>
+</ul>
+<p>执行计划的type列显示index_merge，key显示了使用的索引，根据Extra可以将index merge分为三类：</p>
+<ol>
+<li>Using intersect(…)，Index Merge Intersection：</li>
+</ol>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token operator">and</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span></code></pre>
+<ol start="2">
+<li>Using union(…)，Index Merge Union：</li>
+</ol>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token operator">or</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">2</span> <span class="token operator">or</span> <span class="token number">c3</span> <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span></code></pre>
+<ol start="3">
+<li>Using sort_union(…)，Index Merge Sort-Union：</li>
+</ol>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">where</span> <span class="token number">c1</span> <span class="token operator">&lt;</span> <span class="token number">10</span> <span class="token operator">or</span> <span class="token number">c2</span> <span class="token operator">&lt;</span> <span class="token number">20</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li>表自关联</li>
+</ul>
+<p>表自关联可以用到多个索引。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t <span class="token keyword">as</span> t1 <span class="token keyword">join</span> t <span class="token keyword">as</span> t2 <span class="token keyword">on</span> t1<span class="token number">.c1</span> <span class="token operator">=</span> t2<span class="token number">.c2</span> <span class="token keyword">where</span> t1<span class="token number">.c2</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span></code></pre>
+<hr>
+<p>理论上下面的句子可以使用索引排序，但优化器把film_actor当做关联的第二张表，所以无法使用索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> 
+    <span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> film_actor 
+        <span class="token keyword">inner</span> <span class="token keyword">join</span> film <span class="token keyword">using</span><span class="token punctuation">(</span>film_id<span class="token punctuation">)</span> 
+        <span class="token keyword">order</span> <span class="token keyword">by</span> film_actor<span class="token punctuation">.</span>actor_id<span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">table</th>
+<th align="center">Extra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">film</td>
+<td align="center">Using index; Using temparory; Using filesort</td>
+</tr>
+<tr>
+<td align="center">film_actor</td>
+<td align="center">Using index</td>
+</tr>
+</tbody></table>
+<p>优化器可能重新定义关联表的顺序，执行顺序不一定按查询指定的顺序执行。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> 
+    <span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> film 
+        <span class="token keyword">inner</span> <span class="token keyword">join</span> film_actor <span class="token keyword">using</span><span class="token punctuation">(</span>film_id<span class="token punctuation">)</span> 
+        <span class="token keyword">inner</span> <span class="token keyword">join</span> actor <span class="token keyword">using</span><span class="token punctuation">(</span>actor_id<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>表面上看，应该是从film表开始，根据film_actor的索引film_id查找对应的actor_id，再根据actor的主键查找。</p>
+<p>结果顺序是完全相反的。</p>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">actor</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">200</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film_actor</td>
+<td align="center">ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">actor.actor_id</td>
+<td align="center">1</td>
+<td align="center">Using index</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">film_actor.film_id</td>
+<td align="center">1</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> straight_join 
+    <span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> film 
+        <span class="token keyword">inner</span> <span class="token keyword">join</span> film_actor <span class="token keyword">using</span><span class="token punctuation">(</span>film_id<span class="token punctuation">)</span> 
+        <span class="token keyword">inner</span> <span class="token keyword">join</span> actor <span class="token keyword">using</span><span class="token punctuation">(</span>actor_id<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">951</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film_actor</td>
+<td align="center">ref</td>
+<td align="center">idx_film_id</td>
+<td align="center">film.film_id</td>
+<td align="center">1</td>
+<td align="center">Using index</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">actor</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">film_actor.actor_id</td>
+<td align="center">1</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>两种关联顺序下，明显倒转后，第一个关联表只需扫描较少的行数，而第二和第三个关联都是根据索引查询。</p>
+<p>在嵌套查询下，优化后的查询成本会更低。</p>
+<p>MySQL的文件排序，数量小则在内存进行快速排序，数量大则使用磁盘，分块排序后合并，统一称为filesort。</p>
+<p>在关联查询的时候如果需要排序，如果ORDER BY子句的所有列都来自关联的第一个表，那么可以在处理第一个表的时候就进行文件排序（Extra: Using filesort）。</p>
+<p>否则，都会先将关联的结果放入一个临时表，在所有关联结束后，再进行文件排序（Extra: Using temporary; Using filesort），如果查询中有LIMIT的话，也要排序后才能应用。</p>
+<p>当最后的排序列不属于驱动表时，则会生成临时表，且又有额外排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t1 
+    <span class="token keyword">left</span> <span class="token keyword">join</span> t2 <span class="token keyword">on</span> <span class="token punctuation">(</span>t1<span class="token punctuation">.</span>col <span class="token operator">=</span> t2<span class="token punctuation">.</span>col<span class="token punctuation">)</span> 
+    <span class="token keyword">where</span> t1<span class="token punctuation">.</span>id <span class="token operator">>=</span> <span class="token number">5000</span> 
+    <span class="token keyword">order</span> <span class="token keyword">by</span> t2<span class="token punctuation">.</span>id<span class="token punctuation">;</span></code></pre>
+<p>当最后的排序列属于驱动表时，则不会生成临时表，也不需要额外排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t1 
+    <span class="token keyword">left</span> <span class="token keyword">join</span> t2 <span class="token keyword">on</span> <span class="token punctuation">(</span>t1<span class="token punctuation">.</span>col <span class="token operator">=</span> t2<span class="token punctuation">.</span>col<span class="token punctuation">)</span> 
+    <span class="token keyword">where</span> t1<span class="token punctuation">.</span>id <span class="token operator">>=</span> <span class="token number">5000</span> 
+    <span class="token keyword">order</span> <span class="token keyword">by</span> t1<span class="token punctuation">.</span>id<span class="token punctuation">;</span></code></pre>
+<hr>
+<p>对于WHERE条件包含IN的子查询语句：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> 
+    <span class="token keyword">from</span> film 
+        <span class="token keyword">where</span> film_id <span class="token operator">in</span><span class="token punctuation">(</span> 
+                <span class="token keyword">select</span> film_id 
+                    <span class="token keyword">from</span> film_actor 
+                    <span class="token keyword">where</span> actor_id <span class="token operator">=</span> <span class="token number">1</span> 
+            <span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>一般会认为先执行子查询，返回film_id列表，然后执行in列表查询，但是MySQL会将外层表压到子查询中：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> 
+    <span class="token keyword">from</span> film 
+    <span class="token keyword">where</span> <span class="token keyword">exists</span> <span class="token punctuation">(</span>
+            <span class="token keyword">select</span> <span class="token operator">*</span> 
+                <span class="token keyword">from</span> film_actor 
+                <span class="token keyword">where</span> actor_id <span class="token operator">=</span> <span class="token number">1</span> 
+                <span class="token operator">and</span> film_actor<span class="token punctuation">.</span>film_id <span class="token operator">=</span> film<span class="token punctuation">.</span>film_id 
+        <span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center">film</td>
+<td align="center">ALL</td>
+<td align="center">PRIMARY</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">DEPENDENT SUBQUERY</td>
+<td align="center">film_actor</td>
+<td align="center">eq_ref</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>如果外层表film非常大，性能会非常糟糕。</p>
+<p>改写：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> film<span class="token punctuation">.</span><span class="token operator">*</span> 
+    <span class="token keyword">from</span> film 
+        <span class="token keyword">inner</span> <span class="token keyword">join</span> film_actor <span class="token keyword">using</span><span class="token punctuation">(</span>film_id<span class="token punctuation">)</span> 
+        <span class="token keyword">where</span> actor_id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span></code></pre>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">explain</span> 
+    <span class="token keyword">select</span> film<span class="token punctuation">.</span>film_id<span class="token punctuation">,</span> film_actor<span class="token punctuation">.</span>actor_id 
+        <span class="token keyword">from</span> film 
+            <span class="token keyword">inner</span> <span class="token keyword">join</span> film_actor <span class="token keyword">using</span><span class="token punctuation">(</span>film_id<span class="token punctuation">)</span> 
+            <span class="token keyword">where</span> film<span class="token punctuation">.</span>film_id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film</td>
+<td align="center">const</td>
+<td align="center">PRIMARY</td>
+<td align="center">const</td>
+<td align="center">1</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">film_actor</td>
+<td align="center">ref</td>
+<td align="center">idx_film_id</td>
+<td align="center">const</td>
+<td align="center">10</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>第一步查film表，因为有主键索引film_id，所以会知道只会返回一行数据。</p>
+<p>第二步，将film_id当做一个已知的值处理，所以两个表的访问类型都是const。</p>
+<p>语义上，in(x, x, x)等同于多个or条件的子句，但是MySQL会将in中的数据排序，再通过二分查找来确定列表的值是否满足条件，当in中的数据量较大时，速度会更快。</p>
+<p>对于union查询，MySQL先将单个查询结果放入临时表，然后读出临时表完成查询。</p>
+<p>MySQL对任何关联都执行嵌套关联，先从一个表取出一条数据，再嵌套循环到下一个表寻找匹配的行，直到找到表中所有的匹配。</p>
+<p>然后根据各个表匹配的行，返回查询中需要的各个列。</p>
+<p>MySQL尝试在最后一个关联表中找到所有匹配的行，如果无法找到，返回上一层关联表，以此类推。</p>
+<p>MySQL在from子句中遇到子查询时，先执行子查询，并将结果放入临时表，临时表是没有索引的，对union也一样。</p>
+<p><del>物化表？</del></p>
+<hr>
+<p>explain extended … ：显示优化后的SQL语句，来自执行计划。</p>
+<p>straight_join：强制优化器按特定的顺序使用表。</p>
+<p>强制索引：<code>select ... from ... force index(&#39;index_name&#39;) where ...</code>。</p>
+<p>忽略索引：<code>ignore index</code>。</p>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span>  <span class="token keyword">SELECT</span>
+<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>  <span class="token keyword">DISTINCT</span> <span class="token operator">&lt;</span>select_list<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>  <span class="token keyword">FROM</span> <span class="token operator">&lt;</span>left_table<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>  <span class="token operator">&lt;</span>join_type<span class="token operator">></span> <span class="token keyword">JOIN</span> <span class="token operator">&lt;</span>right_table<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>  <span class="token keyword">ON</span> <span class="token operator">&lt;</span>join_condition<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span>  <span class="token keyword">WHERE</span> <span class="token operator">&lt;</span>where_condition<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>  <span class="token keyword">GROUP</span> <span class="token keyword">BY</span> <span class="token operator">&lt;</span>group_by_list<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span>  <span class="token keyword">HAVING</span> <span class="token operator">&lt;</span>having_condition<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">9</span><span class="token punctuation">)</span>  <span class="token keyword">ORDER</span> <span class="token keyword">BY</span> <span class="token operator">&lt;</span>order_by_condition<span class="token operator">></span>
+<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token keyword">LIMIT</span> <span class="token operator">&lt;</span>limit_number<span class="token operator">></span></code></pre>
+<p>执行顺序：</p>
+<p>FROM：对FROM的左边和右边的表计算笛卡尔积。产生虚表VT1。</p>
+<p>ON：对虚表VT1进行ON筛选，产生虚表VT2，把符合条件的存在VT2。</p>
+<p>JOIN：如果是OUTER JOIN，将添加外部行，如果是LEFT JOIN就把左表未匹配的行添加进来，如果是RIGHT JOIN，就把右表添加进来，生成新的虚表VT3。</p>
+<p>WHERE：执行WHERE过滤，对上一步的虚表筛选，生成虚表VT4。</p>
+<p>GROUP BY: 根据GROUP BY子句中的列，对VT4中的记录进行分组操作，产生VT5。</p>
+<p>HAVING：使用HAVING过滤，把符合条件的放在VT6。</p>
+<p>SELECT：执行SELECT语句，将VT6中的结果按照SELECT进行筛选，生成VT7。</p>
+<p>DISTINCT：对TV7生成的记录进行去重，生成VT8。如果应用了GROUP BY子句那么DISTINCT是多余的，分组是将列中唯一的值分成一组，同时只为每一组返回一行记录，记录都是不相同的。</p>
+<p>ORDER BY：按照条件排序VT8，返回一个游标，而不是虚拟表。</p>
+<p>LIMIT：取出指定行的记录，产生虚拟表，并将结果返回。</p>
+<hr>
+<p>MySQL产生临时表的情况：执行计划的Extra列中，出现Using temporary就表示用到临时表。</p>
+<ul>
+<li><p>union查询：union会去掉两个表中的重复数据，会产生临时表，对结果集去重（union all则不会）。</p>
+</li>
+<li><p>order by和group by的子句不一样时。</p>
+</li>
+<li><p>distinct查询并且加上order by时。</p>
+</li>
+<li><p>from中的子查询。</p>
+</li>
+</ul>
+<hr>
+<p>物化仅针对查询语句的优化，对于更新或删除需要手工重写成JOIN。</p>
+<p>下面的UPDATE 语句，实际执行的是嵌套子查询（DEPENDENT SUBQUERY)。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">UPDATE</span> operation o
+<span class="token keyword">SET</span> <span class="token keyword">STATUS</span> <span class="token operator">=</span> <span class="token string">'applying'</span>
+<span class="token keyword">WHERE</span>
+    o<span class="token punctuation">.</span>id <span class="token operator">IN</span> <span class="token punctuation">(</span>
+        <span class="token keyword">SELECT</span>
+            id
+        <span class="token keyword">FROM</span>
+            <span class="token punctuation">(</span>
+                <span class="token keyword">SELECT</span>
+                    o<span class="token punctuation">.</span>id<span class="token punctuation">,</span>
+                    o<span class="token punctuation">.</span> <span class="token keyword">STATUS</span>
+                <span class="token keyword">FROM</span>
+                    operation o
+                <span class="token keyword">WHERE</span>
+                    o<span class="token punctuation">.</span> <span class="token keyword">GROUP</span> <span class="token operator">=</span> <span class="token number">123</span>
+                <span class="token operator">AND</span> o<span class="token punctuation">.</span> <span class="token keyword">STATUS</span> <span class="token operator">NOT</span> <span class="token operator">IN</span> <span class="token punctuation">(</span><span class="token string">'done'</span><span class="token punctuation">)</span>
+                <span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
+                    o<span class="token punctuation">.</span>parent<span class="token punctuation">,</span>
+                    o<span class="token punctuation">.</span>id
+                <span class="token keyword">LIMIT</span> <span class="token number">1</span>
+            <span class="token punctuation">)</span> t
+    <span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p><del>这SQL怎么写出来的，天，状态还是字符串。</del></p>
+<p>重写为JOIN后，子查询从DEPENDENT SUBQUERY变成DERIVED，执行速度大大加快。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">UPDATE</span> operation o
+<span class="token keyword">JOIN</span> <span class="token punctuation">(</span>
+    <span class="token keyword">SELECT</span>
+        o<span class="token punctuation">.</span>id<span class="token punctuation">,</span>
+        o<span class="token punctuation">.</span> <span class="token keyword">STATUS</span>
+    <span class="token keyword">FROM</span>
+        operation o
+    <span class="token keyword">WHERE</span>
+        o<span class="token punctuation">.</span> <span class="token keyword">GROUP</span> <span class="token operator">=</span> <span class="token number">123</span>
+    <span class="token operator">AND</span> o<span class="token punctuation">.</span> <span class="token keyword">STATUS</span> <span class="token operator">NOT</span> <span class="token operator">IN</span> <span class="token punctuation">(</span><span class="token string">'done'</span><span class="token punctuation">)</span>
+    <span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
+        o<span class="token punctuation">.</span>parent<span class="token punctuation">,</span>
+        o<span class="token punctuation">.</span>id
+    <span class="token keyword">LIMIT</span> <span class="token number">1</span>
+<span class="token punctuation">)</span> t <span class="token keyword">ON</span> o<span class="token punctuation">.</span>id <span class="token operator">=</span> t<span class="token punctuation">.</span>id
+<span class="token keyword">SET</span> <span class="token keyword">STATUS</span> <span class="token operator">=</span> <span class="token string">'applying'</span></code></pre>
+<hr>
+<p>MySQL对待EXISTS子句，仍然采用嵌套子查询的执行方式。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+    <span class="token operator">*</span>
+<span class="token keyword">FROM</span>
+    my_neighbor n
+<span class="token keyword">LEFT</span> <span class="token keyword">JOIN</span> my_neighbor_apply sra <span class="token keyword">ON</span> n<span class="token punctuation">.</span>id <span class="token operator">=</span> sra<span class="token punctuation">.</span>neighbor_id
+<span class="token operator">AND</span> sra<span class="token punctuation">.</span>user_id <span class="token operator">=</span> <span class="token string">'xxx'</span>
+<span class="token keyword">WHERE</span>
+    n<span class="token punctuation">.</span>topic_status <span class="token operator">&lt;</span> <span class="token number">4</span>
+<span class="token operator">AND</span> <span class="token keyword">EXISTS</span> <span class="token punctuation">(</span>
+    <span class="token keyword">SELECT</span>
+        <span class="token number">1</span>
+    <span class="token keyword">FROM</span>
+        message_info m
+    <span class="token keyword">WHERE</span>
+        n<span class="token punctuation">.</span>id <span class="token operator">=</span> m<span class="token punctuation">.</span>neighbor_id
+    <span class="token operator">AND</span> m<span class="token punctuation">.</span>inuser <span class="token operator">=</span> <span class="token string">'xxx'</span>
+<span class="token punctuation">)</span>
+<span class="token operator">AND</span> n<span class="token punctuation">.</span>topic_type <span class="token operator">&lt;></span> <span class="token number">5</span></code></pre>
+<p><del>能写出这个SQL也是个大师了，这。</del></p>
+<p>去掉EXISTS改为JOIN，能够避免嵌套子查询。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+    <span class="token operator">*</span>
+<span class="token keyword">FROM</span>
+    my_neighbor n
+<span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> message_info m <span class="token keyword">ON</span> n<span class="token punctuation">.</span>id <span class="token operator">=</span> m<span class="token punctuation">.</span>neighbor_id
+<span class="token operator">AND</span> m<span class="token punctuation">.</span>inuser <span class="token operator">=</span> <span class="token string">'xxx'</span>
+<span class="token keyword">LEFT</span> <span class="token keyword">JOIN</span> my_neighbor_apply sra <span class="token keyword">ON</span> n<span class="token punctuation">.</span>id <span class="token operator">=</span> sra<span class="token punctuation">.</span>neighbor_id
+<span class="token operator">AND</span> sra<span class="token punctuation">.</span>user_id <span class="token operator">=</span> <span class="token string">'xxx'</span>
+<span class="token keyword">WHERE</span>
+    n<span class="token punctuation">.</span>topic_status <span class="token operator">&lt;</span> <span class="token number">4</span>
+<span class="token operator">AND</span> n<span class="token punctuation">.</span>topic_type <span class="token operator">&lt;></span> <span class="token number">5</span></code></pre>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+    <span class="token operator">*</span>
+<span class="token keyword">FROM</span>
+    my_order o
+<span class="token keyword">LEFT</span> <span class="token keyword">JOIN</span> my_userinfo u <span class="token keyword">ON</span> o<span class="token punctuation">.</span>uid <span class="token operator">=</span> u<span class="token punctuation">.</span>uid
+<span class="token keyword">LEFT</span> <span class="token keyword">JOIN</span> my_productinfo p <span class="token keyword">ON</span> o<span class="token punctuation">.</span>pid <span class="token operator">=</span> p<span class="token punctuation">.</span>pid
+<span class="token keyword">WHERE</span>
+    <span class="token punctuation">(</span>o<span class="token punctuation">.</span>display <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token operator">AND</span> <span class="token punctuation">(</span>o<span class="token punctuation">.</span>ostaus <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
+    o<span class="token punctuation">.</span>selltime <span class="token keyword">DESC</span>
+<span class="token keyword">LIMIT</span> <span class="token number">0</span><span class="token punctuation">,</span>
+ <span class="token number">15</span></code></pre>
+<p>该SQL语句原意是：先做一系列的左连接，然后排序取前15条记录。</p>
+<p>从执行计划可以看出，最后一步估算排序记录数为90万。</p>
+<p>由于最后WHERE条件以及排序均针对最左主表，可以先对主表排序，提前缩小数据量再做左连接。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+    <span class="token operator">*</span>
+<span class="token keyword">FROM</span>
+    <span class="token punctuation">(</span>
+        <span class="token keyword">SELECT</span>
+            <span class="token operator">*</span>
+        <span class="token keyword">FROM</span>
+            my_order o
+        <span class="token keyword">WHERE</span>
+            <span class="token punctuation">(</span>o<span class="token punctuation">.</span>display <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token operator">AND</span> <span class="token punctuation">(</span>o<span class="token punctuation">.</span>ostaus <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span>
+        <span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
+            o<span class="token punctuation">.</span>selltime <span class="token keyword">DESC</span>
+        <span class="token keyword">LIMIT</span> <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token number">15</span>
+    <span class="token punctuation">)</span> o
+<span class="token keyword">LEFT</span> <span class="token keyword">JOIN</span> my_userinfo u <span class="token keyword">ON</span> o<span class="token punctuation">.</span>uid <span class="token operator">=</span> u<span class="token punctuation">.</span>uid
+<span class="token keyword">LEFT</span> <span class="token keyword">JOIN</span> my_productinfo p <span class="token keyword">ON</span> o<span class="token punctuation">.</span>pid <span class="token operator">=</span> p<span class="token punctuation">.</span>pid
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
+    o<span class="token punctuation">.</span>selltime <span class="token keyword">DESC</span>
+<span class="token keyword">LIMIT</span> <span class="token number">0</span><span class="token punctuation">,</span>
+ <span class="token number">15</span></code></pre>
+<p>再检查执行计划：子查询物化后（select_type = DERIVED)参与JOIN。</p>
+<p>虽然估算行扫描仍然为90万，但是利用了索引以及LIMIT子句后，实际执行时间变得很小。</p>
+<hr>
+<p>慢查询归纳：</p>
+<ul>
+<li><p>全表扫描。</p>
+</li>
+<li><p>全索引扫描。</p>
+</li>
+<li><p>索引过滤性不好。</p>
+</li>
+<li><p>频繁回表的开销。</p>
+</li>
+</ul>
+<p>慢查询优化基本步骤：</p>
+<ul>
+<li><p>设置SQL_NO_CACHE，观察SQL执行结果。</p>
+</li>
+<li><p>WHERE条件单表查，找到返回记录最少的表，单表每个字段分别查询，看哪个字段的区分度最高。</p>
+</li>
+<li><p>EXPLAIN查看执行计划，是否从锁定记录较少的表开始查询。</p>
+</li>
+<li><p>ORDER BY LIMIT形式让排序的表优先查。</p>
+</li>
+<li><p>酌情加索引，继续调试。</p>
+</li>
+</ul>
+<p>遍历的ROWS越少，速度越快。</p>
+<hr>
+<p><strong><a href="https://tech.meituan.com/2014/06/30/mysql-index.html" target="_blank" rel="noopener">来自美团的技术分享：MySQL索引原理及慢查询优化</a>：</strong></p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
+   <span class="token keyword">distinct</span> cert<span class="token punctuation">.</span>emp_id 
+<span class="token keyword">from</span>
+   cm_log cl 
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+   <span class="token punctuation">(</span>
+      <span class="token keyword">select</span>
+         emp<span class="token punctuation">.</span>id <span class="token keyword">as</span> emp_id<span class="token punctuation">,</span>
+         emp_cert<span class="token punctuation">.</span>id <span class="token keyword">as</span> cert_id 
+      <span class="token keyword">from</span>
+         employee emp 
+      <span class="token keyword">left</span> <span class="token keyword">join</span>
+         emp_certificate emp_cert 
+            <span class="token keyword">on</span> emp<span class="token punctuation">.</span>id <span class="token operator">=</span> emp_cert<span class="token punctuation">.</span>emp_id 
+      <span class="token keyword">where</span>
+         emp<span class="token punctuation">.</span>is_deleted <span class="token operator">=</span> <span class="token number">0</span>
+   <span class="token punctuation">)</span> cert 
+      <span class="token keyword">on</span> <span class="token punctuation">(</span>
+         cl<span class="token punctuation">.</span>ref_table <span class="token operator">=</span> <span class="token string">'Employee'</span> 
+         <span class="token operator">and</span> cl<span class="token punctuation">.</span>ref_oid <span class="token operator">=</span> cert<span class="token punctuation">.</span>emp_id
+      <span class="token punctuation">)</span> 
+      <span class="token operator">or</span> <span class="token punctuation">(</span>
+         cl<span class="token punctuation">.</span>ref_table <span class="token operator">=</span> <span class="token string">'EmpCertificate'</span> 
+         <span class="token operator">and</span> cl<span class="token punctuation">.</span>ref_oid <span class="token operator">=</span> cert<span class="token punctuation">.</span>cert_id
+      <span class="token punctuation">)</span> 
+<span class="token keyword">where</span>
+   cl<span class="token punctuation">.</span>last_upd_date <span class="token operator">>=</span> <span class="token string">'2013-11-07 15:03:00'</span> 
+   <span class="token operator">and</span> cl<span class="token punctuation">.</span>last_upd_date <span class="token operator">&lt;=</span> <span class="token string">'2013-11-08 16:00:00'</span><span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center">cl</td>
+<td align="center">range</td>
+<td align="center">idx_last_upd_date</td>
+<td align="center">NULL</td>
+<td align="center">379</td>
+<td align="center">Using where; Using temporary</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center"><code>&lt;derived2&gt;</code></td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">63727</td>
+<td align="center">Using where; Using join buffer</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">DERIVED</td>
+<td align="center">emp</td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL</td>
+<td align="center">13317</td>
+<td align="center">Using where</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">DERIVED</td>
+<td align="center">emp_cert</td>
+<td align="center">ref</td>
+<td align="center">emp_certificate_empid</td>
+<td align="center">meituanorg.emp.id</td>
+<td align="center">1</td>
+<td align="center">Using index</td>
+</tr>
+</tbody></table>
+<p>首先根据idx_last_upd_date索引扫描cm_log表获得379条记录；</p>
+<p>然后查表扫描了63727条记录，分为两部分，derived表示语句形成的结果集。</p>
+<p>derived2表示的是ID = 2的查询构造了虚拟表，并且返回了63727条记录。</p>
+<p>ID = 2的语句首先全表扫描employee表13317条记录，然后根据索引emp_certificate_empid关联emp_certificate表，rows为1表示，每个关联都只锁定了一条记录。</p>
+<p>获得后，再和cm_log的379条记录根据规则关联。</p>
+<p>可以看出返回了太多的数据，绝大部分cm_log都用不到，因为cm_log只锁定了379条记录。</p>
+<p>在运行完后还是要和cm_log做join，那么能不能之前和cm_log做join呢？</p>
+<p>分析语句发现，其基本思想是如果cm_log的ref_table是EmpCertificate就关联emp_certificate表，如果ref_table是Employee就关联employee表。</p>
+<p>可以拆成两部分，并用union连接起来，这里用union，而不用union all是因为原语句有“distinct”来得到唯一的记录，而union恰好具备了这种功能。</p>
+<p>如果原语句中没有distinct不需要去重，就可以直接使用union all了，因为union需要去重，影响性能。</p>
+<p>优化过的语句如下：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
+    emp<span class="token punctuation">.</span>id 
+<span class="token keyword">from</span>
+    cm_log cl 
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    employee emp 
+        <span class="token keyword">on</span> cl<span class="token punctuation">.</span>ref_table <span class="token operator">=</span> <span class="token string">'Employee'</span> 
+        <span class="token operator">and</span> cl<span class="token punctuation">.</span>ref_oid <span class="token operator">=</span> emp<span class="token punctuation">.</span>id  
+<span class="token keyword">where</span>
+    cl<span class="token punctuation">.</span>last_upd_date <span class="token operator">>=</span> <span class="token string">'2013-11-07 15:03:00'</span> 
+    <span class="token operator">and</span> cl<span class="token punctuation">.</span>last_upd_date<span class="token operator">&lt;=</span> <span class="token string">'2013-11-08 16:00:00'</span> 
+    <span class="token operator">and</span> emp<span class="token punctuation">.</span>is_deleted <span class="token operator">=</span> <span class="token number">0</span>  
+<span class="token keyword">union</span>
+<span class="token keyword">select</span>
+    emp<span class="token punctuation">.</span>id 
+<span class="token keyword">from</span>
+    cm_log cl 
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    emp_certificate <span class="token number">ec</span> 
+        <span class="token keyword">on</span> cl<span class="token punctuation">.</span>ref_table <span class="token operator">=</span> <span class="token string">'EmpCertificate'</span> 
+        <span class="token operator">and</span> cl<span class="token punctuation">.</span>ref_oid <span class="token operator">=</span> <span class="token number">ec</span><span class="token punctuation">.</span>id 
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    employee emp 
+        <span class="token keyword">on</span> emp<span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">ec</span><span class="token punctuation">.</span>emp_id  
+<span class="token keyword">where</span>
+    cl<span class="token punctuation">.</span>last_upd_date <span class="token operator">>=</span> <span class="token string">'2013-11-07 15:03:00'</span> 
+    <span class="token operator">and</span> cl<span class="token punctuation">.</span>last_upd_date <span class="token operator">&lt;=</span> <span class="token string">'2013-11-08 16:00:00'</span> 
+    <span class="token operator">and</span> emp<span class="token punctuation">.</span>is_deleted <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center">cl</td>
+<td align="center">range</td>
+<td align="center">idx_last_upd_date</td>
+<td align="center">NULL</td>
+<td align="center">379</td>
+<td align="center">Using where</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">PRIMARY</td>
+<td align="center">emp</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">meituanorg.cl.ref_oid</td>
+<td align="center">1</td>
+<td align="center">Using where</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">UNION</td>
+<td align="center">cl</td>
+<td align="center">range</td>
+<td align="center">idx_last_upd_date</td>
+<td align="center">NULL</td>
+<td align="center">379</td>
+<td align="center">Using where</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">UNION</td>
+<td align="center">ec</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">meituanorg.cl.ref_oid</td>
+<td align="center">1</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">UNION</td>
+<td align="center">emp</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">meituanorg.ec.emp_id</td>
+<td align="center">1</td>
+<td align="center">Using where</td>
+</tr>
+<tr>
+<td align="center">NULL</td>
+<td align="center">UNION RESULT</td>
+<td align="center"><code>&lt;union1,2&gt;</code></td>
+<td align="center">ALL</td>
+<td align="center">NULL</td>
+<td align="center">NULL.emp.id</td>
+<td align="center">NULL</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<hr>
+<p>一般认为区分度越高的列，越容易锁定更少的记录，但在特殊的情况下，这是有局限性的。</p>
+<p>无法优化的语句：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>id<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>name<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>position<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>sex<span class="token punctuation">,</span>
+    from_unixtime<span class="token punctuation">(</span><span class="token number">c</span><span class="token punctuation">.</span>created_time<span class="token punctuation">)</span> <span class="token keyword">as</span> created_time<span class="token punctuation">,</span>
+    from_unixtime<span class="token punctuation">(</span><span class="token number">c</span><span class="token punctuation">.</span>last_modified<span class="token punctuation">)</span> <span class="token keyword">as</span> last_modified<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>last_modified_user_id  
+<span class="token keyword">from</span>
+    contact <span class="token number">c</span>  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    contact_branch <span class="token number">cb</span> 
+        <span class="token keyword">on</span> <span class="token number">c</span><span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">cb</span><span class="token punctuation">.</span>contact_id  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    branch_user bu 
+       <span class="token keyword">on</span> <span class="token number">cb</span><span class="token punctuation">.</span>branch_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>branch_id 
+       <span class="token operator">and</span> bu<span class="token punctuation">.</span><span class="token keyword">status</span> <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    org_emp_info oei 
+        <span class="token keyword">on</span> oei<span class="token punctuation">.</span>data_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>user_id 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_left <span class="token operator">>=</span> <span class="token number">2875</span> 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_right <span class="token operator">&lt;=</span> <span class="token number">10802</span> 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>org_category <span class="token operator">=</span> <span class="token operator">-</span> <span class="token number">1</span> 
+<span class="token keyword">order</span> <span class="token keyword">by</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>created_time <span class="token keyword">desc</span> <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">;</span></code></pre>
+<p>返回10条记录用了13秒。</p>
+<table>
+<thead>
+<tr>
+<th align="center">id</th>
+<th align="center">select_type</th>
+<th align="center">table</th>
+<th align="center">type</th>
+<th align="center">key</th>
+<th align="center">ref</th>
+<th align="center">rows</th>
+<th align="center">Extra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">oei</td>
+<td align="center">ref</td>
+<td align="center">idx_category_left_right</td>
+<td align="center">const</td>
+<td align="center">8849</td>
+<td align="center">Using where; Using temporary; Using filesort</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">bu</td>
+<td align="center">ref</td>
+<td align="center">idx_userid_status</td>
+<td align="center">meituancrm.oei.data_id</td>
+<td align="center">76</td>
+<td align="center">Using where; Using index</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">cb</td>
+<td align="center">ref</td>
+<td align="center">idx_branch_id</td>
+<td align="center">meituancrm.bu.branch_id</td>
+<td align="center">1</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">SIMPLE</td>
+<td align="center">c</td>
+<td align="center">eq_ref</td>
+<td align="center">PRIMARY</td>
+<td align="center">meituancrm.cb.contact_id</td>
+<td align="center">1</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>先查org_emp_info表扫描8849记录，再用索引idx_userid_status关联branch_user表，再用索引idx_branch_id关联contact_branch表，最后主键关联contact表。</p>
+<p>返回的行都非常少，会不会是排序量太大？于是简化SQL，看看到底用了多少记录来排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
+    <span class="token function">count</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span>
+<span class="token keyword">from</span>
+    contact <span class="token number">c</span>  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    contact_branch <span class="token number">cb</span> 
+        <span class="token keyword">on</span> <span class="token number">c</span><span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">cb</span><span class="token punctuation">.</span>contact_id  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    branch_user bu 
+        <span class="token keyword">on</span> <span class="token number">cb</span><span class="token punctuation">.</span>branch_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>branch_id 
+        <span class="token operator">and</span> bu<span class="token punctuation">.</span><span class="token keyword">status</span> <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>  
+<span class="token keyword">inner</span> <span class="token keyword">join</span>
+    org_emp_info oei 
+        <span class="token keyword">on</span> oei<span class="token punctuation">.</span>data_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>user_id 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_left <span class="token operator">>=</span> <span class="token number">2875</span> 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_right <span class="token operator">&lt;=</span> <span class="token number">10802</span> 
+        <span class="token operator">and</span> oei<span class="token punctuation">.</span>org_category <span class="token operator">=</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">count(*)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">778878</td>
+</tr>
+</tbody></table>
+<p>发现排序之前居然锁定了778878条记录，如果针对70万的结果集排序，将是灾难性的。</p>
+<p>那能不能换个思路，先根据contact的created_time排序，再来join？</p>
+<p>于是改造成下面的语句，也可以用straight_join来优化：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>id<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>name<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>position<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>sex<span class="token punctuation">,</span>
+    from_unixtime<span class="token punctuation">(</span><span class="token number">c</span><span class="token punctuation">.</span>created_time<span class="token punctuation">)</span> <span class="token keyword">as</span> created_time<span class="token punctuation">,</span>
+    from_unixtime<span class="token punctuation">(</span><span class="token number">c</span><span class="token punctuation">.</span>last_modified<span class="token punctuation">)</span> <span class="token keyword">as</span> last_modified<span class="token punctuation">,</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>last_modified_user_id   
+<span class="token keyword">from</span>
+    contact <span class="token number">c</span>  
+<span class="token keyword">where</span>
+    <span class="token keyword">exists</span> <span class="token punctuation">(</span>
+        <span class="token keyword">select</span>
+            <span class="token number">1</span> 
+        <span class="token keyword">from</span>
+            contact_branch <span class="token number">cb</span> 
+        <span class="token keyword">inner</span> <span class="token keyword">join</span>
+            branch_user bu
+                <span class="token keyword">on</span>  <span class="token number">cb</span><span class="token punctuation">.</span>branch_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>branch_id 
+                <span class="token operator">and</span> bu<span class="token punctuation">.</span><span class="token keyword">status</span> <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+        <span class="token keyword">inner</span> <span class="token keyword">join</span>
+            org_emp_info oei
+                <span class="token keyword">on</span>  oei<span class="token punctuation">.</span>data_id <span class="token operator">=</span> bu<span class="token punctuation">.</span>user_id  
+                <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_left <span class="token operator">>=</span> <span class="token number">2875</span> 
+                <span class="token operator">and</span> oei<span class="token punctuation">.</span>node_right <span class="token operator">&lt;=</span> <span class="token number">10802</span>
+                <span class="token operator">and</span> oei<span class="token punctuation">.</span>org_category <span class="token operator">=</span> <span class="token operator">-</span> <span class="token number">1</span> 
+        <span class="token keyword">where</span>
+            <span class="token number">c</span><span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">cb</span><span class="token punctuation">.</span>contact_id
+    <span class="token punctuation">)</span> 
+<span class="token keyword">order</span> <span class="token keyword">by</span>
+    <span class="token number">c</span><span class="token punctuation">.</span>created_time <span class="token keyword">desc</span> <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">;</span></code></pre>
+<p>结果在1ms内，但前面漏了一个细节，先排序再join和先join再排序理论上开销是一样的，差别这么多是因为有limit。</p>
+<p>大致执行过程是：先按索引排序得到前10条记录，再去join过滤，发现匹配结果不够10条时，再次取10条，再次join。</p>
+<p>在内层的数据非常多的时候，极端情况，内层一条数据都不匹配，还要每次取10条去匹配，几乎遍历了这个数据表。</p>
+<p>由于MySQL的嵌套循环机制，遇到这种情况，基本无法优化。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

@@ -1,0 +1,558 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-MySQL-死锁 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="这部分的死锁检测算法来自滴滴技术的文章。
+死锁是由于参与线程等待锁的释放，这种等待构成了等待循环，如ABBA死锁：
+Thread1：lock A -&amp;gt; lock B -&amp;gt; unlock B -&amp;gt; unlock A
+Thread2：lock B -&amp;gt; lock A -&amp;gt; ">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-MySQL-死锁" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-死锁</h2>
+				
+				<div>
+					<div class="post-time">2020-11-29</div>
+				</div>
+				
+				<div class="article-content">
+				<p>这部分的死锁检测算法来自<a href="https://segmentfault.com/a/1190000020287896" target="_blank" rel="noopener">滴滴技术的文章</a>。</p>
+<p>死锁是由于参与线程等待锁的释放，这种等待构成了等待循环，如ABBA死锁：</p>
+<p>Thread1：lock A -&gt; lock B -&gt; unlock B -&gt; unlock A</p>
+<p>Thread2：lock B -&gt; lock A -&gt; unlock A -&gt; unlock B</p>
+<p>如果这两个线程执行的时间改变，比如串行执行，那么不会发生死锁，但这种用锁行为是一个潜在死锁。</p>
+<p>如果追踪并分析程序的用锁行为，就可能预测死锁或者找出潜在死锁，而不是等死锁发生时才能检测出死锁实例。</p>
+<p>Linux内核的Lockdep工具就是去刻画内核的用锁行为，进而预测潜在死锁。</p>
+<p>Lockdep能刻画出一类锁（Lock Class）的行为，通过记录一类锁中所有锁实例的加锁顺序（Locking Order）。</p>
+<p>即如果一个线程拿着锁A，在没有释放前又去拿锁B，那么锁A和锁B就有一个A-&gt;B的加锁顺序，这个加锁顺序被称为：锁依赖（Lock Dependency）。</p>
+<p>对于ABBA类型的死锁，只要有线程产生了A-&gt;B加锁顺序行为，又有线程产生了一个B-&gt;A的加锁顺序行为，这就构成了一个潜在死锁。</p>
+<p>由此推广开，可以把所有的加锁顺序（即锁依赖）记录和保存下来，构成一个加锁顺序图（Graph）。</p>
+<p>如果有锁依赖（A-&gt;B），又有锁依赖（B-&gt;C），由于锁依赖的关系（Relation）是传递的（Transitive），因此可以得到锁依赖（A-&gt;C）。</p>
+<p>A-&gt;B和B-&gt;C称为直接依赖（Direct Dependency），而A-&gt;C称为间接依赖（Indirect Dependency）。</p>
+<p>对于每个新的直接锁依赖，检查这个依赖是否和图中已存在的锁依赖构成一个循环，如果是，那么就可以预测产生了一个潜在死锁。</p>
+<p>上面所指的锁都是互斥锁（Exclusive Lock），读写锁是更复杂的锁，或者说一种通用的锁（General Lock），可以认为互斥锁是只用写锁的读写锁。</p>
+<p>读写锁会让死锁预测变得复杂，Lockdep就不支持，因此会产生一些错误假阳性（False Positive）和错误假阴性（False Negative）的死锁预测。</p>
+<p>于是滴滴提出一个通用的死锁预测算法（General Deadlock Prediction For Locks），并证明这个算法解决了读写锁的死锁预测问题。</p>
+<p>几个引理（Lemma）：</p>
+<p>▍引理1：</p>
+<p>引入读写锁后，锁的加锁顺序循环是潜在死锁的必要条件，但不是充分条件。</p>
+<p>一个潜在死锁能且只能最早在最后一个加锁顺序（或锁依赖）即将生成死锁循环的时候被预测出来。</p>
+<p>基于引理1，死锁预测就是在最后一个拿锁顺序（即锁依赖）形成等待圆环（循环）时，计算出这个等待圆环是否构成潜在死锁。</p>
+<p>▍引理2：</p>
+<p>两个虚拟线程T1和T2可以用来表示所有的死锁场景。</p>
+<p>假定有n个线程参与到一个死锁实例，这n个线程表示为：T1, T2, …, Tn。</p>
+<p>如果n = 1：被称为递归死锁（Recursion Deadlock）。</p>
+<p>如果n &gt; 1：被称为翻转死锁（Inversion Deadlock）。</p>
+<p>对于这种情况，将这n个线程分成两组，即(T1, T2, …, Tn-1)和(Tn)，然后把前一组中的所有锁依赖合并，并假想所有这些依赖存在于一个虚拟的线程中，于是得到两个虚拟线程T1和T2。</p>
+<p>基于引理2，提出一个死锁检查双线程模型（Two-Thread Model）来表示内核的加锁行为：</p>
+<p>T1：当前检查锁依赖之前的所有锁依赖，这些依赖形成了一个锁依赖图。</p>
+<p>T2：当前的待检查的直接锁依赖。</p>
+<p>▍引理3：</p>
+<p>任何死锁都可以转化成ABBA类型。</p>
+<p>得到一个新的直接锁依赖B -&gt; A时，将这个新依赖设想为T2，而之前的所有锁依赖都存在于设想的T1的锁依赖图中。</p>
+<p>死锁预测就是检查T1中是否存在A-&gt;B的锁依赖，如果存在即存在死锁，否则就没有死锁，并将T2合并到T1中。</p>
+<p>引入了读写锁之后，锁依赖还取决于锁的类型，即读或写类型。</p>
+<p>递归读锁（Recursive-read Lock）是特殊的读锁，它能够被同一个线程递归地拿。</p>
+<p>一个简单算法（Simple Algorithm）：</p>
+<p>基于双线程模型，给定T1和T2，和ABBA锁：</p>
+<p>T1: X1.A -&gt; X2.B</p>
+<p>T2: X2.A -&gt; X1.B</p>
+<p>如果X1.A和X1.B是互斥的，且X2.A和X2.B是互斥的，那么T1和T2构成潜在死锁，否则，不构成潜在死锁。</p>
+<p>互斥关系是检查死锁的关键，对于读写锁，锁类型可能在程序执行过程中变化。</p>
+<p>基于锁类型的互斥性由低到高：递归读锁 &lt; 读锁 &lt; 写锁（互斥锁），提出了锁类型的升级（Lock Type Promotion）。</p>
+<p>程序执行过程，如果碰到了高互斥性的锁类型，那么将锁依赖中的锁类型升级到高互斥性的锁依赖。</p>
+<p>RRn表示递归读锁n（Recursive-read Lock n），Rn表示读锁n（Read Lock n），Wn代表写锁或者互斥锁n（Write Lock n）。</p>
+<p>Xn则表示任意锁n（即递归读、读或者写锁）。</p>
+<p>如上简单算法不能处理所有情况，比如下面这个案例就会躲过简单算法，但它是一个潜在死锁：</p>
+<p>T1: X1 -&gt; RR2 -&gt; X3</p>
+<p>T2: X3 -&gt; RR2 -&gt; X1</p>
+<p>X1和X3是互斥的，构成了潜在死锁。</p>
+<p>但简单算法在检查T2（RR2 -&gt; X1）时，能够找到T1（X1 -&gt; RR2），但RR和RR不互斥，因而错误认定不是死锁。</p>
+<p>因为真正的死锁中的X3 -&gt; X1是间接锁依赖，而间接依赖被简单算法漏掉了。</p>
+<p>因为互斥锁之间只有互斥性，因此只要有ABBA就是潜在死锁，不需要检查T2的间接锁依赖。</p>
+<p>而有读锁的情况下，必须考虑T2中的间接锁依赖。</p>
+<p>▍引理4：</p>
+<p>对于直接锁依赖引入的间接锁依赖，如果间接锁依赖构成死锁，那么直接锁依赖仍然是关键的。</p>
+<p>原先T2中直接锁依赖可能进一步生成了很多间接锁依赖，如何找到最终产生潜在死锁的间接锁依赖？</p>
+<p>首先需要重新定义T2，再在这个T2中找出所有的间接锁依赖，那么T2的边界是？</p>
+<p>如果把T2扩展到整个锁依赖图，那么算法复杂度会提高非常多。</p>
+<p>▍引理5：</p>
+<p>T2只需要扩展到当前线程的拿锁栈（Lock Stack）。</p>
+<p>修改之前的双线程模型为：</p>
+<p>T1：当前检查的直接锁依赖之前的所有锁依赖，这些依赖形成了一个图。</p>
+<p>T2：当前的待检查的线程的锁栈。</p>
+<p>在简单算法的基础上提出最终算法（Final Algorithm）：</p>
+<p>搜索锁依赖图即T1，寻找锁依赖循环。</p>
+<p>在这个循环中，如果有T2中的其他锁存在，那么这个锁和T2中的直接锁依赖构成一个间接锁依赖。</p>
+<p>检查这个间接锁依赖是否构成潜在死锁，如果找到潜在死锁，那么算法结束。</p>
+<p>如果没有找到，继续寻找依赖循环，直到搜索完整个锁依赖图。</p>
+<p>我的理解：</p>
+<p>T1: X1 -&gt; RR2 -&gt; X3</p>
+<p>T2: X3 -&gt; (RR2 -&gt; X1)</p>
+<p>假设T2当前要检查的是直接锁依赖(RR2 -&gt; X1)，那么在这之前所有的锁构成的锁图中（除了RR2 -&gt; X1），有锁依赖循环(RR2 &lt;-&gt; X3)。</p>
+<p>在这个循环中，存在T2线程的锁栈中的锁RR2和X3，那么说明：</p>
+<p>对于RR2，存在：</p>
+<ul>
+<li><input disabled="" type="checkbox"> <p>(RR2 -&gt; X3) - (RR2 -&gt; X1)</p>
+</li>
+<li><input checked="" disabled="" type="checkbox"> <p>(X3 -&gt; RR2) - (RR2 -&gt; X1)</p>
+</li>
+</ul>
+<p>对于X3，存在：</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <p>(X3 -&gt; RR2) - (RR2 -&gt; X1)</p>
+</li>
+<li><input disabled="" type="checkbox"> <p>(RR2 -&gt; X3) - (RR2 -&gt; X1)</p>
+</li>
+</ul>
+<p>即，存在间接依赖(X3 -&gt; X1)，那么检查图是否构成潜在死锁。</p>
+<p>不知道是不是我的理解问题，这个算法复杂度应该不低（吧），极端情况下。</p>
+<hr>
+<p>死锁发生时，会立刻被检测到，并回滚其中某个事务，不会长时间阻塞。</p>
+<p>innodb_deadlock_detect选项默认打开，InnoDB会检测死锁。</p>
+<p>在高并发场景可以考虑关闭，提高事务并发性能，但要注意设置锁等待时间innodb_lock_wait_timeout。</p>
+<p>启用死锁检测时，默认最大检测深度为200，在高并发高场景下，在热点数据上的锁等待队列可能很长。</p>
+<p>当等待队列中的行锁总数超过100万时，也认为发生死锁，直接触发死锁处理机制。</p>
+<p>InnoDB行锁等待超时默认为50秒，长时间的锁等待和死锁是不一样的。</p>
+<p>死锁机制包含两部分：检测和处理。</p>
+<p>把事务等待列表和锁等待信息列表通过事务信息进行wait-for graph检测，如果发现闭环，则回滚undo log少的事务。</p>
+<p>当InnoDB事务尝试请求一个锁，并且需要等待时，会进行死锁检测。</p>
+<p>检测死锁过程中，由计数器来限制次数，在wait-for graph检测过程中超时或超过阈值，则停止检测。</p>
+<p>TOO DEEP OR LONG SEARCH IN THE LOCK TABLE WAITS-FOR GRAPH</p>
+<p>MyISAM表锁不会产生死锁，因为MyISAM总是一次获得所需的全部锁。</p>
+<p>InnoDB中，锁是逐步获得的，并且在涉及外部锁，或表锁的情况下，InnoDB不能完全自动检测到死锁。</p>
+<p>需要设置innodb_lock_wait_timeout锁等待超时阈值，避免大量事务因无法获得锁而挂起。</p>
+<hr>
+<p>通过锁的等待超时机制，选一个事务进行回滚并释放锁。</p>
+<p>等待图机制，如果图中存在回路，说明存在死锁。</p>
+<hr>
+<p>如何降低死锁发生的概率：</p>
+<ol>
+<li><p>尽量使用小事务，避免大事务长时间持有锁；</p>
+</li>
+<li><p>尽量降低事务隔离级别，避免间隙锁；</p>
+</li>
+<li><p>尽量使用索引，并且尽量避免无序的操作；</p>
+</li>
+<li><p>尽量把最可能造成锁冲突的锁放到后面，这样该锁的持有时间最短；</p>
+</li>
+</ol>
+<hr>
+<p>基本的原子操作：</p>
+<p>锁的目的是为了保护一块临界区，该临界区会被并发访问到。</p>
+<p>锁的核心是一个布尔变量，为0或1，0表示临界区现在没有被访问，1表示临界区正在被访问。</p>
+<p>各种锁的实现都是在这个基础上的扩展。</p>
+<p>当要访问临界区时，先检查锁变量，若为0则置为1，否则暂时不能访问临界区，就是获取锁。</p>
+<p>锁变量本身是被并发访问的，自身就是一块临界区。</p>
+<p>一般是用机器支持的原子数据类型存储这个0/1变量，并通过CAS这类原语来原子地读取并改写该变量。</p>
+<p>对于不提供原子读写指令的机器，可以使用汇编语法中的LOCK前缀，通过锁住CPU和内存总线的方式实现。</p>
+<p>等待队列，睡眠和唤醒：</p>
+<p>通过原子操作可以实现最简单的自旋锁，除非持锁时间非常短，大多数场景下，锁获取失败时不会选择循环重试，而是将自己挂起到一个等待队列上并让出CPU。</p>
+<p>等持锁的进程释放锁时，检查等待队列，从中取一个进程唤醒并赋予锁。</p>
+<p>等待队列一般通过自旋锁保护。</p>
+<hr>
+<ul>
+<li>performance_schema和information_schema</li>
+</ul>
+<p>查看事务的锁信息。</p>
+<ul>
+<li>show processlist;</li>
+</ul>
+<p>查看哪些线程正在运行。</p>
+<ul>
+<li>show engine innodb status;</li>
+</ul>
+<p>查看当前InnoDB引擎的状态，包括：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">11</span><span class="token operator">-</span><span class="token number">10</span> <span class="token number">11</span>:<span class="token number">01</span>:<span class="token number">46</span> <span class="token number">7f8cec239700</span> <span class="token keyword">INNODB</span> MONITOR OUTPUT
+<span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span>
+
+<span class="token comment" spellcheck="true">-----------------</span>
+BACKGROUND THREAD
+<span class="token comment" spellcheck="true">-----------------</span>
+
+<span class="token comment" spellcheck="true">----------</span>
+SEMAPHORES
+<span class="token comment" spellcheck="true">----------</span>
+
+<span class="token comment" spellcheck="true">------------------------</span>
+LATEST DETECTED DEADLOCK
+<span class="token comment" spellcheck="true">------------------------</span>
+
+<span class="token comment" spellcheck="true">------------</span>
+<span class="token keyword">TRANSACTIONS</span>
+<span class="token comment" spellcheck="true">------------</span>
+
+<span class="token comment" spellcheck="true">--------</span>
+<span class="token keyword">FILE</span> I<span class="token operator">/</span>O
+<span class="token comment" spellcheck="true">--------</span>
+
+<span class="token comment" spellcheck="true">-------------------------------------</span>
+<span class="token keyword">INSERT</span> BUFFER <span class="token operator">AND</span> ADAPTIVE <span class="token keyword">HASH</span> <span class="token keyword">INDEX</span>
+<span class="token comment" spellcheck="true">-------------------------------------</span>
+
+<span class="token comment" spellcheck="true">---</span>
+LOG
+<span class="token comment" spellcheck="true">---</span>
+
+<span class="token comment" spellcheck="true">----------------------</span>
+BUFFER POOL <span class="token operator">AND</span> MEMORY
+<span class="token comment" spellcheck="true">----------------------</span>
+
+<span class="token comment" spellcheck="true">----------------------</span>
+INDIVIDUAL BUFFER POOL INFO
+<span class="token comment" spellcheck="true">----------------------</span>
+<span class="token comment" spellcheck="true">---BUFFER POOL 0</span>
+
+<span class="token comment" spellcheck="true">---BUFFER POOL 1</span>
+
+<span class="token comment" spellcheck="true">---BUFFER POOL 2</span>
+
+<span class="token comment" spellcheck="true">---BUFFER POOL 3</span>
+
+<span class="token comment" spellcheck="true">---BUFFER POOL 4</span>
+
+<span class="token comment" spellcheck="true">---BUFFER POOL 5</span>
+
+<span class="token comment" spellcheck="true">---BUFFER POOL 6</span>
+
+<span class="token comment" spellcheck="true">---BUFFER POOL 7</span>
+
+<span class="token comment" spellcheck="true">--------------</span>
+<span class="token keyword">ROW</span> OPERATIONS
+<span class="token comment" spellcheck="true">--------------</span>
+
+<span class="token comment" spellcheck="true">----------------------------</span>
+<span class="token keyword">END</span> <span class="token keyword">OF</span> <span class="token keyword">INNODB</span> MONITOR OUTPUT
+<span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span><span class="token operator">=</span></code></pre>
+<p>其中TRANSACTIONS部分会打印当前MySQL所有的事务，包括事务详细的加锁信息。</p>
+<p>只能获取最近一次的死锁日志。</p>
+<p>死锁日志包含死锁时间，导致死锁的事务信息（只显示两个事务，如果由多个事务导致的死锁也只显示两个），每个事务正在执行的SQL、等待的锁以及持有的锁信息等。</p>
+<hr>
+<p>可重复读级别</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>ty<span class="token punctuation">`</span> <span class="token punctuation">(</span>
+    <span class="token punctuation">`</span>id<span class="token punctuation">`</span> <span class="token keyword">INT</span> <span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span><span class="token number">a</span><span class="token punctuation">`</span> <span class="token keyword">INT</span> <span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span><span class="token number">b</span><span class="token punctuation">`</span> <span class="token keyword">INT</span> <span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>id<span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token keyword">KEY</span> <span class="token punctuation">`</span>idxa<span class="token punctuation">`</span> <span class="token punctuation">(</span><span class="token punctuation">`</span><span class="token number">a</span><span class="token punctuation">`</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">INNODB</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span> <span class="token operator">=</span> utf8mb4<span class="token punctuation">;</span>
+
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> ty <span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">)</span> <span class="token keyword">VALUES</span>
+    <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> ty <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> ty <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- 事务2：</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> ty<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- 事务1：</span>
+<span class="token keyword">delete</span> <span class="token keyword">from</span> ty <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</span></code></pre>
+<p>LATEST DETECTED DEADLOCK</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">TRANSACTION</span>: 
+<span class="token comment" spellcheck="true">-- 事务1</span>
+
+<span class="token keyword">TRANSACTION</span> <span class="token number">462308399</span><span class="token punctuation">,</span> ACTIVE <span class="token number">33</span> sec starting <span class="token keyword">index</span> <span class="token keyword">read</span> 
+<span class="token comment" spellcheck="true">-- 事务编号462308399，活跃33秒，状态为根据索引读取数据</span>
+
+mysql <span class="token keyword">tables</span> <span class="token operator">in</span> <span class="token keyword">use</span> <span class="token number">1</span><span class="token punctuation">,</span> locked <span class="token number">1</span>
+<span class="token comment" spellcheck="true">-- 当前的事务使用了一个表，有一个表级锁，对于DML语句为LOCK_IX，插入意向锁</span>
+
+<span class="token keyword">LOCK</span> WAIT <span class="token number">2</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">360</span><span class="token punctuation">,</span> <span class="token number">1</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true">-- LOCK WAIT 正在等待锁</span>
+<span class="token comment" spellcheck="true">-- 2 lock struct(s) 锁链表trx->trx_locks的长度为2，这里表示LOCK_IX和lock_mode X (next-key lock)</span>
+<span class="token comment" spellcheck="true">-- heap size 事务分配的锁堆内存大小</span>
+<span class="token comment" spellcheck="true">-- 1 row lock(s) 当前事务持有的行级锁数量</span>
+
+MySQL thread id <span class="token number">3525577</span><span class="token punctuation">,</span> OS thread handle <span class="token number">0x7f896cc4b700</span><span class="token punctuation">,</span> query id <span class="token number">780039657</span> localhost root updating
+
+<span class="token keyword">delete</span> <span class="token keyword">from</span> ty <span class="token keyword">where</span> <span class="token number">a</span> <span class="token operator">=</span> <span class="token number">5</span>
+<span class="token comment" spellcheck="true">-- 每个事务只显示一条，当前正在等待锁的SQL</span>
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> WAITING <span class="token keyword">FOR</span> THIS <span class="token keyword">LOCK</span> <span class="token keyword">TO</span> BE GRANTED:
+
+RECORD LOCKS space id <span class="token number">219</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token punctuation">`</span>idxa<span class="token punctuation">`</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>ty<span class="token punctuation">`</span> trx id <span class="token number">462308399</span> lock_mode X waiting
+<span class="token comment" spellcheck="true">## RECORD LOCKS 表示行级锁，正在等待表ty上的索引idxa上的X锁，即next-key lock</span>
+
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token keyword">TRANSACTION</span>:
+
+<span class="token keyword">TRANSACTION</span> <span class="token number">462308398</span><span class="token punctuation">,</span> ACTIVE <span class="token number">61</span> sec inserting<span class="token punctuation">,</span> thread declared inside <span class="token keyword">InnoDB</span> <span class="token number">5000</span>
+
+mysql <span class="token keyword">tables</span> <span class="token operator">in</span> <span class="token keyword">use</span> <span class="token number">1</span><span class="token punctuation">,</span> locked <span class="token number">1</span>
+
+<span class="token number">5</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1184</span><span class="token punctuation">,</span> <span class="token number">4</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">2</span>
+<span class="token comment" spellcheck="true">-- undo log entries 约等于已修改的记录数，每修改一行都占用一个undo log entry</span>
+<span class="token comment" spellcheck="true">-- 当前事务有2个undo log entries，因为二级索引不记undo log，说明该事务已经更新了2行聚簇索引</span>
+
+MySQL thread id <span class="token number">3525490</span><span class="token punctuation">,</span> OS thread handle <span class="token number">0x7f78eab82700</span><span class="token punctuation">,</span> query id <span class="token number">780039714</span> localhost root <span class="token keyword">update</span>
+
+<span class="token keyword">insert</span> <span class="token keyword">into</span> ty<span class="token punctuation">(</span><span class="token number">a</span><span class="token punctuation">,</span> <span class="token number">b</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span>
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> HOLDS THE <span class="token keyword">LOCK</span><span class="token punctuation">(</span>S<span class="token punctuation">)</span>:
+
+RECORD LOCKS space id <span class="token number">219</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token punctuation">`</span>idxa<span class="token punctuation">`</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>ty<span class="token punctuation">`</span> trx id <span class="token number">462308398</span> lock_mode X
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> WAITING <span class="token keyword">FOR</span> THIS <span class="token keyword">LOCK</span> <span class="token keyword">TO</span> BE GRANTED:
+
+RECORD LOCKS space id <span class="token number">219</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token punctuation">`</span>idxa<span class="token punctuation">`</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>ty<span class="token punctuation">`</span> trx id <span class="token number">462308398</span> lock_mode X locks gap before rec <span class="token keyword">insert</span> intention waiting
+<span class="token comment" spellcheck="true">-- 事务2正在等待索引idxa上的插入意向锁，lock_mode X locks gap before rec insert intention waiting</span>
+
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> WE ROLL BACK <span class="token keyword">TRANSACTION</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true">-- 回滚了事务1，因为它的undo log entries最少</span></code></pre>
+<hr>
+<p>常见的锁模式：</p>
+<ol>
+<li><p>LOCK_S：共享模式</p>
+</li>
+<li><p>LOCK_X：独占模式</p>
+</li>
+</ol>
+<p>常见的锁类型：</p>
+<ol>
+<li><p>LOCK_TABLE：表级锁</p>
+</li>
+<li><p>LOCK_REC：行级锁</p>
+<ul>
+<li><p>LOCK_REC_NOT_GAP：如lock_mode X locks rec but not gap。</p>
+</li>
+<li><p>LOCK_GAP：如lock_mode X locks gap before rec，也是行级锁，gap lock也是加在行上的。</p>
+</li>
+<li><p>LOCK_ORDINARY：如lock_mode X，ORDINARY就是最常见的锁，即next-key lock，特例是在supremum record上加next-key lock，实质上是gap lock。</p>
+</li>
+<li><p>LOCK_INSERT_INTENTION：如lock_mode X locks gap before rec insert intention。</p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<pre class=" language-sql"><code class="language-sql">RECORD LOCKS space id <span class="token number">0</span> page <span class="token keyword">no</span> <span class="token number">307</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token punctuation">`</span><span class="token keyword">PRIMARY</span><span class="token punctuation">`</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>test<span class="token punctuation">`</span> trx id 50F lock_mode X
+Record <span class="token keyword">lock</span><span class="token punctuation">,</span> heap <span class="token keyword">no</span> <span class="token number">1</span> PHYSICAL RECORD: n_fields <span class="token number">1</span><span class="token punctuation">;</span> compact format<span class="token punctuation">;</span> info bits <span class="token number">0</span></code></pre>
+<p>说明是个next-key lock，但heap no 1表示这个记录是supremum record，所以可以看作一个gap lock。</p>
+<p>另外，heap no 0表示这个记录是infimum record。</p>
+<ul>
+<li>infimum和supremum：</li>
+</ul>
+<p>一个page中总是包含这两个伪记录。</p>
+<p>页中所有未删除（或删除但还未purged）的行逻辑上都链接到这两个伪记录之间，表现为一个逻辑链表结构。</p>
+<p>其中supremum伪记录的锁始终为next-key lock。</p>
+<ul>
+<li>heap no：</li>
+</ul>
+<p>物理块所在位置（物理存储填充的序号）。</p>
+<p>页的空闲空间挂载在free链表中（头插法），空闲heap可以重用，但是重用时heap no不变。</p>
+<p>如果一直insert，则heap no不断增加。</p>
+<p>heap并不是按照主键排序，而是物理填充顺序。</p>
+<ul>
+<li>n bits：</li>
+</ul>
+<p>和这个page相关的锁位图的大小，始终预留64bit。</p>
+<p>每行记录都有1bit的位图信息，表示是否加锁。</p>
+<p>例如表有9条数据，外加infimum和supremum虚拟记录，即64 + 9 + 2 bits = 75 bits。</p>
+<p>但它必须是8的整数倍（8 bits = 1 byte），结果就是80 bits。</p>
+<ul>
+<li>lock struct：</li>
+</ul>
+<p>LOCK的内存结构体，LOCK_TABLE和LOCK_REC。</p>
+<p>每个链表节点代表该事务持有的一个锁结构。</p>
+<p>一般先会加上IX表级锁，占用一个结构体，然后在索引加对应的行级锁，每个BLOCK占用一个结构体。</p>
+<ul>
+<li>row lock(s)：</li>
+</ul>
+<p>当前事务加锁的行数，lock struct中行级锁的数量，包含了infimum和supremum伪记录。</p>
+<p>对大量行加锁时，多次show engine innodb status可以看到输出中，事务信息中的row lock会不断增加。</p>
+<p>因为加行锁会调用lock_rec_lock逐行加锁，也是导致死锁的原因。</p>
+<hr>
+<p>读已提交级别</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>t1<span class="token punctuation">`</span> <span class="token punctuation">(</span>
+    <span class="token punctuation">`</span>ID<span class="token punctuation">`</span> <span class="token keyword">INT</span> <span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> UNSIGNED <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span> <span class="token keyword">COMMENT</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span>t1<span class="token punctuation">`</span> <span class="token keyword">INT</span> <span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span>t2<span class="token punctuation">`</span> <span class="token keyword">INT</span> <span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span>order_no<span class="token punctuation">`</span> <span class="token keyword">VARCHAR</span> <span class="token punctuation">(</span><span class="token number">64</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token string">''</span> <span class="token keyword">COMMENT</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span><span class="token keyword">status</span><span class="token punctuation">`</span> <span class="token keyword">INT</span> <span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">COMMENT</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token punctuation">`</span>createtime<span class="token punctuation">`</span> <span class="token keyword">TIMESTAMP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CURRENT_TIMESTAMP</span> <span class="token keyword">COMMENT</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>ID<span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token keyword">KEY</span> <span class="token punctuation">`</span>idx_order_no<span class="token punctuation">`</span> <span class="token punctuation">(</span><span class="token punctuation">`</span>order_no<span class="token punctuation">`</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token keyword">KEY</span> <span class="token punctuation">`</span>idx_status_createtime<span class="token punctuation">`</span> <span class="token punctuation">(</span><span class="token punctuation">`</span><span class="token keyword">status</span><span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>createtime<span class="token punctuation">`</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span> <span class="token operator">=</span> <span class="token keyword">INNODB</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span> <span class="token operator">=</span> utf8mb4 <span class="token keyword">COMMENT</span> <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 表中有3个索引，一个主键索引，两个辅助索引</span>
+
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token punctuation">`</span>t1<span class="token punctuation">`</span> <span class="token punctuation">(</span> <span class="token punctuation">`</span>ID<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>t1<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>t2<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span>order_no<span class="token punctuation">`</span><span class="token punctuation">,</span> <span class="token punctuation">`</span><span class="token keyword">status</span><span class="token punctuation">`</span><span class="token punctuation">,</span>  <span class="token punctuation">`</span>createtime<span class="token punctuation">`</span> <span class="token punctuation">)</span> <span class="token keyword">VALUES</span>
+    <span class="token punctuation">(</span> <span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token string">'123456'</span><span class="token punctuation">,</span> <span class="token string">'0'</span><span class="token punctuation">,</span> <span class="token string">'2020-04-24 12:10:00'</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 插入一行记录</span></code></pre>
+<p>死锁日志</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">TRANSACTION</span> : 
+<span class="token keyword">LOCK</span> WAIT <span class="token number">3</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1136</span><span class="token punctuation">,</span> <span class="token number">2</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>
+<span class="token keyword">update</span> t1 <span class="token keyword">set</span> <span class="token keyword">status</span> <span class="token operator">=</span> <span class="token number">5</span> <span class="token keyword">where</span> <span class="token keyword">status</span> <span class="token operator">=</span> <span class="token number">0</span> 
+    <span class="token operator">and</span> <span class="token punctuation">(</span>createtime <span class="token operator">between</span> date_sub<span class="token punctuation">(</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> interval <span class="token number">90</span> minute<span class="token punctuation">)</span>
+        <span class="token operator">and</span> date_sub<span class="token punctuation">(</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> interval <span class="token number">60</span> minute<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> WAITING <span class="token keyword">FOR</span> THIS <span class="token keyword">LOCK</span> <span class="token keyword">TO</span> BE GRANTED : 
+RECORD LOCKS space id <span class="token number">260</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>sbtest<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t1<span class="token punctuation">`</span> trx id <span class="token number">18912896</span> lock_mode X locks rec but <span class="token operator">not</span> gap waiting
+
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token keyword">TRANSACTION</span> : 
+mysql <span class="token keyword">tables</span> <span class="token operator">in</span> <span class="token keyword">use</span> <span class="token number">1</span><span class="token punctuation">,</span> locked <span class="token number">1</span> <span class="token number">4</span> <span class="token keyword">lock</span> struct <span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1136</span><span class="token punctuation">,</span> <span class="token number">3</span> <span class="token keyword">row</span> <span class="token keyword">lock</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span> 
+<span class="token keyword">update</span> t1 <span class="token keyword">set</span> <span class="token keyword">status</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">where</span> order_no <span class="token operator">=</span> <span class="token string">'123456'</span><span class="token punctuation">;</span>
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> HOLDS THE <span class="token keyword">LOCK</span><span class="token punctuation">(</span>S<span class="token punctuation">)</span> : 
+RECORD LOCKS space id <span class="token number">260</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>sbtest<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t1<span class="token punctuation">`</span> trx id <span class="token number">18912129</span> lock_mode X locks rec but <span class="token operator">not</span> gap
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> WAITING <span class="token keyword">FOR</span> THIS <span class="token keyword">LOCK</span> <span class="token keyword">TO</span> BE GRANTED : 
+RECORD LOCKS space id <span class="token number">260</span> page <span class="token keyword">no</span> <span class="token number">5</span> n bits <span class="token number">72</span> <span class="token keyword">index</span> idx_status_createtime <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>sbtest<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t1<span class="token punctuation">`</span> trx id <span class="token number">18912129</span> lock_mode X locks rec but <span class="token operator">not</span> gap waiting
+
+
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> WE ROLL BACK <span class="token keyword">TRANSACTION</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span></code></pre>
+<p>事务二（TRANSACTION 18912129）：</p>
+<p>持有的锁：主键索引[1]上的行锁。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>sbtest<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t1<span class="token punctuation">`</span> <span class="token comment" spellcheck="true">-- 加锁加在表t1的PRIMARY索引上</span>
+n_fields <span class="token number">8</span> : <span class="token comment" spellcheck="true">-- 这个主键的记录是8列，PK / DB_TRX_ID / DB_ROLL_PTR / Other cols</span>
+<span class="token number">0</span> : len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">00000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span><span class="token punctuation">;</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">-- 第一个字段，即主键字段ID，00000001从16进制转为10进制，得到1</span></code></pre>
+<p>等待的锁：二级索引idx_status_createtime上的行锁(0, ‘2020-04-24 12:10:00’, 1)</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">index</span> idx_status_createtime <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>sbtest<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t1<span class="token punctuation">`</span> <span class="token comment" spellcheck="true">-- 等待表t1的二级索引idx_status_createtime上的锁</span>
+lock_mode X locks rec but <span class="token operator">not</span> gap waiting <span class="token comment" spellcheck="true">-- 等待获取的锁是独占的rec lock，不锁gap</span>
+Record <span class="token keyword">LOCK</span> <span class="token comment" spellcheck="true">-- 行级锁 </span>
+n_fields <span class="token number">3</span> <span class="token comment" spellcheck="true">-- 这个二级索引idx_status_createtime的记录是3列，依次为status、createtime、ID</span>
+<span class="token number">0</span> : len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">80000000</span><span class="token punctuation">;</span> <span class="token keyword">asc</span><span class="token punctuation">;</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">--status字段，值为0</span>
+<span class="token number">1</span> : len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">5ea26698</span><span class="token punctuation">;</span> <span class="token keyword">asc</span> <span class="token operator">^</span> <span class="token number">f</span><span class="token punctuation">;</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">--createtime字段，5ea26698从16进制转为10进制，得到时间戳1587701400，即2020-04-24 12:10:00</span>
+<span class="token number">2</span> : len <span class="token number">4</span><span class="token punctuation">;</span> hex <span class="token number">00000001</span><span class="token punctuation">;</span> <span class="token keyword">asc</span><span class="token punctuation">;</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">--ID字段，00000001从16进制转为10进制，得到1</span></code></pre>
+<p>事务一（TRANSACTION 18912896）：</p>
+<p>持有的锁：二级索引idx_status_createtime(0, ‘2020-04-24 12:10:00’, 1)上的行锁。</p>
+<p>因为事务二在等它。</p>
+<p>等待的锁：主键索引[1]上的行锁。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>sbtest<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t1<span class="token punctuation">`</span> <span class="token comment" spellcheck="true">-- 等待表t1的主键索引上面的锁</span>
+lock_mode X locks rec but <span class="token operator">not</span> gap waiting <span class="token comment" spellcheck="true">-- 等待获取的锁是独占的rec lock，不锁gap</span>
+Record <span class="token keyword">LOCK</span> <span class="token comment" spellcheck="true">-- 行级锁 </span>
+<span class="token number">0</span> : len <span class="token number">4</span><span class="token punctuation">;</span>hex <span class="token number">00000001</span><span class="token punctuation">;</span><span class="token keyword">asc</span><span class="token punctuation">;</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">-- 第一个字段，即主键字段ID，00000001从16进制转为10进制，得到1</span></code></pre>
+<p>还原现场：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 事务二：</span>
+<span class="token keyword">select</span> <span class="token keyword">status</span> <span class="token keyword">from</span> t1 <span class="token keyword">where</span> order_no <span class="token operator">=</span> <span class="token string">'123456'</span> <span class="token keyword">for</span> <span class="token keyword">update</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 持有主键ID = 1的记录锁，锁模式为排他</span>
+
+<span class="token comment" spellcheck="true">-- 事务一：</span>
+<span class="token keyword">update</span> t1 <span class="token keyword">set</span> <span class="token keyword">status</span> <span class="token operator">=</span> <span class="token number">5</span> <span class="token keyword">where</span> <span class="token keyword">status</span> <span class="token operator">=</span> <span class="token number">0</span> 
+    <span class="token operator">and</span> <span class="token punctuation">(</span>createtime <span class="token operator">between</span> date_sub<span class="token punctuation">(</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> interval <span class="token number">90</span> minute<span class="token punctuation">)</span>
+        <span class="token operator">and</span> date_sub<span class="token punctuation">(</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> interval <span class="token number">60</span> minute<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 持有二级索引idx_status_createtime(0, '2020-04-24 12:10:00', 1)的记录锁，锁模式为排他</span>
+<span class="token comment" spellcheck="true">-- 等待主键ID = 1的记录锁</span>
+
+<span class="token comment" spellcheck="true">-- 事务二：</span>
+<span class="token keyword">update</span> t1 <span class="token keyword">set</span> <span class="token keyword">status</span> <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">where</span> order_no <span class="token operator">=</span> <span class="token string">'123456'</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- 等待二级索引idx_status_createtime(0, '2020-04-24 12:10:00', 1)的记录锁</span></code></pre>
+<p>锁资源请求形成了环路，触发死锁检测，把代价最小的事务回滚。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

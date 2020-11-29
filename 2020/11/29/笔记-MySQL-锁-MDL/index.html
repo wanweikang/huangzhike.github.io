@@ -1,0 +1,470 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-MySQL-锁-MDL | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="会话A在执行select查询，如果此时会话B要新增列，会被阻塞，避免会话A前后看到的表结构不一致。
+MDL（metadata lock）主要解决2个问题：
+
+事务隔离：在可重复读隔离级别，会话A的多次select期间，会话B执行alter表结构，select就会不一致，无法满足可重复读。
+
+数据复制">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-MySQL-锁-MDL" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-锁-MDL</h2>
+				
+				<div>
+					<div class="post-time">2020-11-29</div>
+				</div>
+				
+				<div class="article-content">
+				<p>会话A在执行select查询，如果此时会话B要新增列，会被阻塞，避免会话A前后看到的表结构不一致。</p>
+<p>MDL（metadata lock）主要解决2个问题：</p>
+<ol>
+<li><p>事务隔离：在可重复读隔离级别，会话A的多次select期间，会话B执行alter表结构，select就会不一致，无法满足可重复读。</p>
+</li>
+<li><p>数据复制：会话A执行多条update语句期间，会话B执行alter表结构并先提交，导致slave在重放日志时，先alter，再update，出现错误。</p>
+</li>
+</ol>
+<p>MDL锁的是元数据，包括：global, commit, schema, table, function, procedure, trigger, event。</p>
+<p>目标对象分为两大类，范围锁（scoped lock）和目标锁（object lock）。</p>
+<p>常见的范围类型包括GLOBAL, SCHEMA, TABLESPACE和COMMIT，常见的目标类型为TABLE。</p>
+<p>等待这些对象的锁时，show processlist可以看到：</p>
+<pre class=" language-sql"><code class="language-sql">Waiting <span class="token keyword">for</span> <span class="token keyword">global</span> <span class="token keyword">read</span> <span class="token keyword">lock</span> 
+Waiting <span class="token keyword">for</span> <span class="token keyword">commit</span> <span class="token keyword">lock</span>
+Waiting <span class="token keyword">for</span> <span class="token keyword">schema</span> metadata <span class="token keyword">lock</span>
+Waiting <span class="token keyword">for</span> <span class="token keyword">table</span> metadata <span class="token keyword">lock</span>
+Waiting <span class="token keyword">for</span> stored <span class="token keyword">function</span> metadata <span class="token keyword">lock</span>
+Waiting <span class="token keyword">for</span> stored <span class="token keyword">procedure</span> metadata <span class="token keyword">lock</span>
+Waiting <span class="token keyword">for</span> <span class="token keyword">trigger</span> metadata <span class="token keyword">lock</span>
+Waiting <span class="token keyword">for</span> event metadata <span class="token keyword">lock</span></code></pre>
+<p>关于commit对象锁：</p>
+<p>主要作用是在执行flush tables with read lock后，阻止已经在执行的写事务提交。</p>
+<p>事务提交时都会上（COMMIT，MDL_EXPLICIT，MDL_INTENTION_EXCLUSIVE）锁。</p>
+<p>select：</p>
+<ul>
+<li><p>Opening tables阶段，加MDL_INTENTION_EXCLUSIVE和MDL_SHARED_READ锁；</p>
+</li>
+<li><p>事务提交阶段，释放MDL_INTENTION_EXCLUSIVE和MDL_SHARED_READ锁；</p>
+</li>
+</ul>
+<p>insert / delete / update：</p>
+<ul>
+<li><p>Opening tables阶段，加MDL_INTENTION_EXCLUSIVE和MDL_SHARED_WRITE锁；</p>
+</li>
+<li><p>事务提交阶段，释放MDL_INTENTION_EXCLUSIVE和MDL_SHARED_WRITE锁；</p>
+</li>
+</ul>
+<p>alter：</p>
+<ul>
+<li><p>Opening tables阶段，加MDL_INTENTION_EXCLUSIVE和MDL_SHARED_UPGRADABLE锁，MDL_SHARED_UPGRADABLE锁升级到MDL_SHARED_NO_WRITE锁；</p>
+</li>
+<li><p>复制数据阶段，创建临时表，从原表复制数据到临时表，将MDL_SHARED_NO_WRITE读锁升级到MDL_EXCLUSIVE锁，然后删除原表，rename临时表替换；</p>
+</li>
+<li><p>事务提交阶段，释放MDL_INTENTION_EXCLUSIVE和MDL_EXCLUSIVE锁；</p>
+</li>
+</ul>
+<p>MDL_SHARED_NO_WRITE与MDL_SHARED_WRITE互斥，MDL_SHARED_WRITE与MDL_SHARED_READ兼容。</p>
+<p>MDL是在MySQL的Server层的锁，InnoDB层也有表级别的IS/IX锁，二者不是一回事。</p>
+<hr>
+<p>select / insert / delete / update和alter会阻塞的。</p>
+<p>执行select时，假如alter没有执行到rename阶段，那么select获取MDL_SHARED_READ锁成功，然后alter执行到rename阶段，请求MDL_EXCLUSIVE锁时，就会被阻塞。</p>
+<p>rename阶段会持有MDL_EXCLUSIVE锁，但时间非常短，所以基本感觉不到alter阻塞select语句。</p>
+<p>MDL锁在事务提交后才释放，如果此时存在大查询或未提交的事务，则会出现DDL阻塞，同时，新的select或DML都会被阻塞。</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th>session1</th>
+<th>session2</th>
+<th>session3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>select * from t1 limit 1;</td>
+<td>*</td>
+<td>*</td>
+</tr>
+<tr>
+<td>*</td>
+<td>alter table t1 add cx int; – 阻塞</td>
+<td>*</td>
+</tr>
+<tr>
+<td>*</td>
+<td>*</td>
+<td>select * from t1 limit 1; – 阻塞</td>
+</tr>
+</tbody></table>
+<p>show processlist查看线程信息。</p>
+<table>
+<thead>
+<tr>
+<th>Id</th>
+<th>Time</th>
+<th>State</th>
+<th>Info</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1853</td>
+<td>0</td>
+<td>starting</td>
+<td>show processlist</td>
+</tr>
+<tr>
+<td>1854</td>
+<td>134</td>
+<td>Waiting for table metadata lock</td>
+<td>alter table t1 add cx int</td>
+</tr>
+<tr>
+<td>1855</td>
+<td>83</td>
+<td>Waiting for table metadata lock</td>
+<td>select * from t1 limit 1</td>
+</tr>
+</tbody></table>
+<p>select * from performance_schema.metadata_locks查看当前的MDL请求状态。</p>
+<table>
+<thead>
+<tr>
+<th>OBJECT_TYPE</th>
+<th>OBJECT_NAM</th>
+<th>LOCK_TYPE</th>
+<th>LOCK_DURATION</th>
+<th>LOCK_STATUS</th>
+<th>TID</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TABLE</td>
+<td>t1</td>
+<td>SHARED_READ</td>
+<td>TRANSACTION</td>
+<td>GRANTED</td>
+<td>1892</td>
+</tr>
+<tr>
+<td>GLOBAL</td>
+<td>NULL</td>
+<td>INTENTION_EXCLUSIVE</td>
+<td>STATEMENT</td>
+<td>GRANTED</td>
+<td>1893</td>
+</tr>
+<tr>
+<td>SCHEMA</td>
+<td>NULL</td>
+<td>INTENTION_EXCLUSIVE</td>
+<td>TRANSACTION</td>
+<td>GRANTED</td>
+<td>1893</td>
+</tr>
+<tr>
+<td>TABLE</td>
+<td>t1</td>
+<td>SHARED_UPGRADABLE</td>
+<td>TRANSACTION</td>
+<td>GRANTED</td>
+<td>1893</td>
+</tr>
+<tr>
+<td>BACKUP LOCK</td>
+<td>NULL</td>
+<td>INTENTION_EXCLUSIVE</td>
+<td>TRANSACTION</td>
+<td>GRANTED</td>
+<td>1893</td>
+</tr>
+<tr>
+<td>TABLESPACE</td>
+<td>test/t1</td>
+<td>INTENTION_EXCLUSIVE</td>
+<td>TRANSACTION</td>
+<td>GRANTED</td>
+<td>1893</td>
+</tr>
+<tr>
+<td>TABLE</td>
+<td>#sql-e953_</td>
+<td>EXCLUSIVE</td>
+<td>STATEMENT</td>
+<td>GRANTED</td>
+<td>1893</td>
+</tr>
+<tr>
+<td>TABLE</td>
+<td>t1</td>
+<td>EXCLUSIVE</td>
+<td>TRANSACTION</td>
+<td>PENDING</td>
+<td>1893</td>
+</tr>
+<tr>
+<td>TABLE</td>
+<td>t1</td>
+<td>SHARED_READ</td>
+<td>TRANSACTION</td>
+<td>PENDING</td>
+<td>1894</td>
+</tr>
+</tbody></table>
+<p>select * from sys.schema_table_lock_waits\G查看当前的MDL阻塞等待状态。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token number">1</span><span class="token punctuation">.</span> <span class="token keyword">row</span> <span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span>
+               object_schema: test
+                 object_name: t1
+           waiting_thread_id: <span class="token number">1893</span>  <span class="token comment" spellcheck="true">-- 等待的线程ID</span>
+                 waiting_pid: <span class="token number">1854</span>  <span class="token comment" spellcheck="true">-- 等待的连接PID</span>
+             waiting_account: root<span class="token variable">@localhost</span>
+           waiting_lock_type: EXCLUSIVE  <span class="token comment" spellcheck="true">-- 等待的锁类型</span>
+       waiting_lock_duration: <span class="token keyword">TRANSACTION</span>
+               waiting_query: <span class="token keyword">alter</span> <span class="token keyword">table</span> t1 <span class="token keyword">drop</span> cx
+          waiting_query_secs: <span class="token number">134</span>  <span class="token comment" spellcheck="true">-- 锁等待时长</span>
+ waiting_query_rows_affected: <span class="token number">0</span>
+ waiting_query_rows_examined: <span class="token number">0</span>
+          blocking_thread_id: <span class="token number">1892</span>  <span class="token comment" spellcheck="true">-- 这里的线程ID值对应上面的TID</span>
+                blocking_pid: <span class="token number">1853</span>  <span class="token comment" spellcheck="true">-- 连接PID，对应下方的trx_mysql_thread_id</span>
+            blocking_account: root<span class="token variable">@localhost</span>
+          blocking_lock_type: SHARED_READ  <span class="token comment" spellcheck="true">-- 阻塞的锁类型</span>
+      blocking_lock_duration: <span class="token keyword">TRANSACTION</span>
+     sql_kill_blocking_query: <span class="token keyword">KILL</span> QUERY <span class="token number">1853</span>
+sql_kill_blocking_connection: <span class="token keyword">KILL</span> <span class="token number">1853</span>
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">.</span> <span class="token keyword">row</span> <span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span>
+               object_schema: test
+                 object_name: t1
+           waiting_thread_id: <span class="token number">1894</span>
+                 waiting_pid: <span class="token number">1855</span>
+             waiting_account: root<span class="token variable">@localhost</span>
+           waiting_lock_type: SHARED_READ
+       waiting_lock_duration: <span class="token keyword">TRANSACTION</span>
+               waiting_query: <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t1 <span class="token keyword">limit</span> <span class="token number">1</span>
+          waiting_query_secs: <span class="token number">83</span>
+ waiting_query_rows_affected: <span class="token number">0</span>
+ waiting_query_rows_examined: <span class="token number">0</span>
+          blocking_thread_id: <span class="token number">1892</span>
+                blocking_pid: <span class="token number">1853</span>
+            blocking_account: root<span class="token variable">@localhost</span>
+          blocking_lock_type: SHARED_READ
+      blocking_lock_duration: <span class="token keyword">TRANSACTION</span>
+     sql_kill_blocking_query: <span class="token keyword">KILL</span> QUERY <span class="token number">1853</span>
+sql_kill_blocking_connection: <span class="token keyword">KILL</span> <span class="token number">1853</span>
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token number">3</span><span class="token punctuation">.</span> <span class="token keyword">row</span> <span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span>
+               object_schema: test
+                 object_name: t1
+           waiting_thread_id: <span class="token number">1893</span>
+                 waiting_pid: <span class="token number">1854</span>
+             waiting_account: root<span class="token variable">@localhost</span>
+           waiting_lock_type: EXCLUSIVE
+       waiting_lock_duration: <span class="token keyword">TRANSACTION</span>
+               waiting_query: <span class="token keyword">alter</span> <span class="token keyword">table</span> t1 <span class="token keyword">drop</span> cx
+          waiting_query_secs: <span class="token number">83</span>
+ waiting_query_rows_affected: <span class="token number">0</span>
+ waiting_query_rows_examined: <span class="token number">0</span>
+          blocking_thread_id: <span class="token number">1893</span>
+                blocking_pid: <span class="token number">1854</span>
+            blocking_account: root<span class="token variable">@localhost</span>
+          blocking_lock_type: SHARED_UPGRADABLE
+      blocking_lock_duration: <span class="token keyword">TRANSACTION</span>
+     sql_kill_blocking_query: <span class="token keyword">KILL</span> QUERY <span class="token number">1854</span>
+sql_kill_blocking_connection: <span class="token keyword">KILL</span> <span class="token number">1854</span>
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token number">4</span><span class="token punctuation">.</span> <span class="token keyword">row</span> <span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span>
+               object_schema: test
+                 object_name: t1
+           waiting_thread_id: <span class="token number">1894</span>
+                 waiting_pid: <span class="token number">1855</span>
+             waiting_account: root<span class="token variable">@localhost</span>
+           waiting_lock_type: SHARED_READ
+       waiting_lock_duration: <span class="token keyword">TRANSACTION</span>
+               waiting_query: <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t1 <span class="token keyword">limit</span> <span class="token number">1</span>
+          waiting_query_secs: <span class="token number">83</span>
+ waiting_query_rows_affected: <span class="token number">0</span>
+ waiting_query_rows_examined: <span class="token number">0</span>
+          blocking_thread_id: <span class="token number">1893</span>
+                blocking_pid: <span class="token number">1854</span>
+            blocking_account: root<span class="token variable">@localhost</span>
+          blocking_lock_type: SHARED_UPGRADABLE
+      blocking_lock_duration: <span class="token keyword">TRANSACTION</span>
+     sql_kill_blocking_query: <span class="token keyword">KILL</span> QUERY <span class="token number">1854</span>
+sql_kill_blocking_connection: <span class="token keyword">KILL</span> <span class="token number">1854</span></code></pre>
+<p>连接PID = 1854的会话，被连接PID = 1853的会话阻塞。</p>
+<p>连接PID = 1855的会话，被连接PID = 1854的会话阻塞。</p>
+<p>也就是：session1阻塞session2，然后session2阻塞session3。</p>
+<hr>
+<p>查看当前活跃未提交的事务，通常持续时间最久的事务也是引起大面积MDL阻塞的根源。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+    trx_id<span class="token punctuation">,</span>
+    trx_state<span class="token punctuation">,</span>
+    time_to_sec<span class="token punctuation">(</span>
+        timediff<span class="token punctuation">(</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> trx_started<span class="token punctuation">)</span>
+    <span class="token punctuation">)</span> <span class="token keyword">AS</span> trx_active_secs<span class="token punctuation">,</span>
+    trx_mysql_thread_id <span class="token keyword">AS</span> pid<span class="token punctuation">,</span>
+    trx_query
+<span class="token keyword">FROM</span>
+    information_schema<span class="token punctuation">.</span>innodb_trx
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
+    trx_active_secs <span class="token keyword">DESC</span><span class="token punctuation">;</span></code></pre>
+<p>MDL锁等待超时阈值由选项lock_wait_timeout控制，默认31536000秒，也就是一年。</p>
+<p>建议调低，比如5-10分钟，建议最长不超过1小时。</p>
+<hr>
+<p>几种Online DDL：增加新列（ADD COLUMN）、修改列定义（MODIFY COLUMN）、增加/删除索引（ADD/DROP INDEX）。</p>
+<p>ALTERT TABLE如果不加ALGORITHM参数，如果执行的语句支持INPLACE，默认ALGORITHM=INPLACE，否则使用ALGORITHM=COPY。</p>
+<ol>
+<li>INPLACE</li>
+</ol>
+<p>无需拷贝全表数据到新表，但可能需要IN-PLACE（原地，无需生成临时表）重建整表。</p>
+<p>INPLACE在DDL的初始准备和最后结束两个阶段时通常需要加排他MDL锁，除此外，DDL期间不会阻塞DML。</p>
+<ul>
+<li><p>表重命名、字段重命名、索引重命名；</p>
+</li>
+<li><p>只修改表元数据而不修改表数据，比如字段类型CHAR改VARCHAR，字符集从UTF8变成UTF8MB4，并且修改字符集的字段上没有索引；</p>
+</li>
+<li><p>修改字段默认值；</p>
+</li>
+<li><p>新增、删除二级索引；</p>
+</li>
+</ul>
+<ol start="2">
+<li>COPY</li>
+</ol>
+<p>DDL时，会生成临时新表，将原表数据拷贝到新表中，此期间会阻塞DML修改数据操作。</p>
+<p>COPY会生成临时新表，操作完成后原表会被删除，新表被重命名为原表名。</p>
+<p>COPY开始后，原表仅能只读，DML操作会被阻塞，唯一会阻塞只读的时候是在清理旧表时。</p>
+<ol start="3">
+<li>INSTANT</li>
+</ol>
+<p>只需修改数据字典中的metadata，无需拷贝数据或重建表，也无需加排他MDL锁。</p>
+<p>MySQL8.0后引入，DDL几乎瞬间完成，不会阻塞DML，条件是新增的列在表最后等。</p>
+<hr>
+<p>一般DDL操作最好采用pt-osc或gh-ost，并且务必先检查目标表上是否有事务或大查询未结束，避免MDL锁等待。</p>
+<p>pt-osc依赖触发器：</p>
+<ol>
+<li><p>检查更改表是否有主键或唯一索引，是否有触发器；</p>
+</li>
+<li><p>检查修改表的表结构，创建一个临时表，在新表上执行ALTER TABLE语句；</p>
+</li>
+<li><p>在源表上创建三个触发器分别对于INSERT UPDATE DELETE操作；</p>
+</li>
+<li><p>从源表拷贝数据到临时表，在拷贝过程中，对源表的更新操作会写入到新建表中；</p>
+</li>
+<li><p>将临时表和源表rename（需要元数据修改锁，需要短时间锁表）；</p>
+</li>
+<li><p>删除源表和触发器，完成修改。</p>
+</li>
+</ol>
+<p>简单地说，先建立一个与原表结构相同的新表，并在新表上进行表结构的修改，然后再把原表中的数据复制到新表中。</p>
+<p>同时在原表添加触发器，把原表中新增的数据复制到新表，所有数据复制完后，把新表命名成原表，并把原表删掉。</p>
+<p>把原来一个DDL操作，分解成多个小批次进行。</p>
+<p><del>但是，我没用过。</del></p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

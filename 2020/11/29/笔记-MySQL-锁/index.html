@@ -1,0 +1,706 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-MySQL-锁 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="MySQL将锁分成两部分：锁类型（lock_type）和锁模式（lock_mode），两者结合使用。
+/* Basic lock modes */
+enum lock_mode {
+    LOCK_IS = 0, /* intention shared */
+    LOCK_IX,    /* ">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-MySQL-锁" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-锁</h2>
+				
+				<div>
+					<div class="post-time">2020-11-29</div>
+				</div>
+				
+				<div class="article-content">
+				<p>MySQL将锁分成两部分：锁类型（lock_type）和锁模式（lock_mode），两者结合使用。</p>
+<pre class=" language-c++"><code class="language-c++">/* Basic lock modes */
+enum lock_mode {
+    LOCK_IS = 0, /* intention shared */
+    LOCK_IX,    /* intention exclusive */
+    LOCK_S,     /* shared */
+    LOCK_X,     /* exclusive */
+    LOCK_AUTO_INC,  /* locks the auto-inc counter of a table in an exclusive mode*/
+    ...
+};</code></pre>
+<ul>
+<li><p>LOCK_IS：读意向锁；</p>
+</li>
+<li><p>LOCK_IX：写意向锁；</p>
+</li>
+<li><p>LOCK_S：读锁；</p>
+</li>
+<li><p>LOCK_X：写锁；</p>
+</li>
+<li><p>LOCK_AUTO_INC：自增锁；</p>
+</li>
+</ul>
+<ol>
+<li>读意向锁/写意向锁：</li>
+</ol>
+<p>也称共享意向锁（intention share locking，IS）和排他意向锁（intention exclusive locking，IX）。</p>
+<p>表锁锁定整张表，行锁锁定表中的某行记录，因此二者有冲突。</p>
+<p>假如表中某行记录被加了X锁，如果这时要对该表加表锁，那么可能要遍历全表才能判断是否存在行锁。</p>
+<p>为了方便检测表锁和行锁的冲突，引入了意向锁，代表请求加锁的意向。</p>
+<p>读/写意向锁是表级别的锁，用于处理表锁和行锁之间的冲突。</p>
+<p>事务试图获取某行的S锁前，必须先对表加IS锁，获取某行的X锁前，必须先对表加IX锁。</p>
+<p>这样，加表锁前，要判断表中是否有行锁，只需检查表上是否有意向锁。</p>
+<p>IS/IX之间没有冲突，因为它们只表示加锁意向，而不是真正加锁。</p>
+<p>表级的IX锁和行级的X锁也没有冲突，因为两个事务可以对两个不同的数据行加X锁。</p>
+<ol start="2">
+<li>读锁：</li>
+</ol>
+<p>共享（S）锁，读锁之间互相不阻塞。</p>
+<ol start="3">
+<li>写锁：</li>
+</ol>
+<p>独占（X）锁，不允许其他锁同时存在，优先级高，可被插入到读锁队列之前。</p>
+<ol start="4">
+<li>自增锁：</li>
+</ol>
+<p>AI锁，表级别的锁，当表中有自增列（AUTOINCREMENT）时出现。</p>
+<p>插入的表有自增列时，先为该表加AUTOINC表锁，阻塞其他事务插入，保证生成的自增值唯一。</p>
+<p>自增值一旦分配了就不会回滚，即使事务回滚也一样，所以自增值可能出现空隙。</p>
+<p>所以LAST_INSERT_ID()函数获取最后插入的自增值不是完全可靠的，比如插入失败或同时多次插入。</p>
+<p>自增锁不是事务锁，不是在事务结束时释放，而是在INSERT语句执行结束时释放。</p>
+<p>MySQL将插入语句分三类：simple inserts、bulk inserts、mixed-mode inserts。</p>
+<p>通过分析INSERT语句可以知道插入数量的叫simple inserts，如：insert into t values(1, 2), (3, 4)。</p>
+<p>通过分析INSERT语句无法确定插入数量的叫bulk inserts，如：insert into t select …。</p>
+<p>不确定是否需要分配自增值的，叫mixed-mode inserts，如：insert … on duplicate key update。</p>
+<p>bulk inserts不能确定插入数，使用AI锁。</p>
+<p>simple inserts和mixed-mode inserts使用轻量级锁mutex，只锁住预分配的自增区间，不锁整张表。</p>
+<p>mixed-mode inserts会分析语句，获得最坏情况下需要插入的数量，一次性分配自增值，保证同一条INSERT语句内自增值连续。</p>
+<p>全部使用轻量级锁mutex，并发性能最高，不会预分配，而是按顺序依次分配自增值。</p>
+<p>但是不能保证同一条INSERT语句内的自增值是连续的，因为是来一个分配一个。</p>
+<p>在复制（replication）时，如果binlog_format为statement-based（基于语句的复制）就可能导致主从数据不一致。</p>
+<hr>
+<pre class=" language-c++"><code class="language-c++">#define LOCK_TABLE  16  /*!< table lock */
+#define LOCK_REC    32  /*!< record lock */</code></pre>
+<p>MySQL定义了四种行级锁：</p>
+<pre class=" language-c++"><code class="language-c++">/* Precise modes */
+
+#define LOCK_ORDINARY   0
+/*!< this flag denotes an ordinary next-key lock in contrast to LOCK_GAP or LOCK_REC_NOT_GAP */
+
+#define LOCK_GAP    512
+/*!< when this bit is set, it means that the lock holds only on the gap before the record; for instance, an x-lock on the gap does not give permission to modify the record on which the bit is set; locks of this type are created when records are removed from the index chain */
+
+#define LOCK_REC_NOT_GAP 1024
+/*!< this bit means that the lock is only on the index record and does NOT block inserts to the gap before the index record; this is used in the case when we retrieve a record with a unique key, and is also used in locking plain SELECTs (not part of UPDATE or DELETE) when the user has set the READ COMMITTED isolation level */
+
+#define LOCK_INSERT_INTENTION 2048
+/*!< this bit is set when we place a waiting gap type record lock request in order to let an insert of an index record to wait until there are no conflicting locks by other transactions on the gap; note that this flag remains set when the waiting lock is granted, or if the lock is inherited record */</code></pre>
+<ul>
+<li><p>LOCK_ORDINARY：Next-Key Lock，RR最常用，锁一条记录及其之前的间隙（左开右闭的区间）。</p>
+</li>
+<li><p>LOCK_GAP：Gap Lock，锁两个记录之间的间隙，防止记录插入。</p>
+</li>
+<li><p>LOCK_REC_NOT_GAP：Record Lock，只锁记录。</p>
+</li>
+<li><p>LOCK_INSERT_INTENSION：插入意向锁，插入记录时使用，是特别的Gap Lock。</p>
+</li>
+</ul>
+<ol>
+<li>Next-Key Lock：</li>
+</ol>
+<p>Next-Key Lock是记录锁和间隙锁的组合，锁住某条记录及这条记录前面间隙。</p>
+<p>假设一个索引包含(10, 11, 13, 20)，可能的Next-Key Lock为：(-∞, 10], (10, 11], (11, 13], (13, 20], (20, +∞)。</p>
+<p>前面四个是Next-Key Lock，最后一个实际上是间隙锁。</p>
+<ol start="2">
+<li>间隙锁：</li>
+</ol>
+<p>间隙锁和间隙锁互不冲突，间隙锁唯一的意义就是防止其他事务插入，间隙S锁和间隙X锁没有区别。</p>
+<p>只有在隔离级别为可重复读和序列化时，会存在间隙锁（例外：标记删除造成唯一键冲突时）。</p>
+<ol start="3">
+<li>行锁：</li>
+</ol>
+<p>其实上面的行级锁实际都是加在索引的记录上，加锁的过程就是B+树搜索的过程。</p>
+<p>当无法使用索引时，会扫描聚簇索引，给所有行加锁，再由Server层过滤。</p>
+<p>Server层过滤的时候，如果发现不满足WHERE条件，会释放对应记录的锁（根据隔离级别决定）。</p>
+<p>当表有多个索引的时候，不同的事务可以使用不同的索引锁定不同的行。</p>
+<p>即便存在索引，是否使用索引来检索是由MySQL决定的。</p>
+<p>如果MySQL认为全表扫描效率更高，就不会使用索引，将直接扫描聚簇索引，逐行加锁，等于加了表锁。</p>
+<ol start="4">
+<li>插入意向锁：</li>
+</ol>
+<p>插入意向锁是特殊的间隙锁（II GAP），表示插入的意向。</p>
+<p>插入意向锁和上面的表级的读/写意向锁是不同的概念。</p>
+<p>插入意向锁和插入意向锁之间互不冲突。</p>
+<p>比如在索引(1, 5)之间，可以有两个事务同时分别插入2和3，两个事务可能都在索引(5)上加插入意向锁，但不会冲突。</p>
+<p>插入意向锁只和Gap锁或Next-key锁冲突，间隙锁唯一的作用就是防止其他事务插入记录造成幻读。</p>
+<p>由于在执行INSERT前需要先加插入意向锁，而插入意向锁和间隙锁互斥，阻止了INSERT操作。</p>
+<p>为什么要插入意向锁，而不是直接在插入前检查一下是否有间隙锁？</p>
+<p>因为锁的作用不只是检测冲突，还用来处理等待和唤醒，其他事务释放间隙锁后，插入操作可以继续。</p>
+<hr>
+<p>表锁是粒度最大的锁，开销小，加锁快，但锁的冲突几率大，并发度低。</p>
+<p>一般执行DDL语句，如ALTER TABLE就会对整个表加锁。</p>
+<p>表锁是Server层的实现，使用的是一次封锁，不会死锁，所以在MyISAM存储引擎中，不可能出现死锁。</p>
+<p>行锁是粒度最小的锁，是InnoDB存储引擎的实现。</p>
+<p>行锁的加锁开销大，加锁慢，可能出现死锁，但锁冲突的几率低，并发度高。</p>
+<p>行级锁定的优点：多线程访问不同的行时只存在少量锁定冲突，可以长时间锁定行。</p>
+<p>行级锁定的缺点：开销大，当涉及多行时，必须获取更多的锁。</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>num</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>100</td>
+</tr>
+<tr>
+<td>2</td>
+<td>200</td>
+</tr>
+<tr>
+<td>3</td>
+<td>300</td>
+</tr>
+<tr>
+<td>7</td>
+<td>200</td>
+</tr>
+</tbody></table>
+<ul>
+<li>条件列是聚簇索引时，是根据聚簇索引搜索的。</li>
+</ul>
+<ol>
+<li><code>select ... where id = 2</code></li>
+</ol>
+<p>在串行化级别以下，普通查询执行的是快照读，不加锁。</p>
+<p>在串行化时，读写串行化，等同于：<code>select ... lock in share mode</code>，使用共享锁，当前读。</p>
+<p>根据聚簇索引定位，有一行符合条件，加rec lock，没有gap lock。</p>
+<ol start="2">
+<li><code>select ... where id &gt; 2</code></li>
+</ol>
+<p>基本同上，但在串行化时，除了在对应的符合条件的聚簇索引上加rec lock外，还会加上gap lock。</p>
+<p>依次在聚簇索引(3), (7)上加next-key lock，在上边界上加gap lock。</p>
+<ol start="3">
+<li><code>select ... where id = 2 lock in share mode</code></li>
+</ol>
+<p>根据主键为条件精确查询时，只存在rec lock。</p>
+<ol start="4">
+<li><code>select ... where id &gt; 2 lock in share mode</code></li>
+</ol>
+<p>根据聚簇索引定位，有两行符合条件，在聚簇索引上对应的行上加rec lock锁，当前读。</p>
+<p>在可重复读级别及以上，条件为范围查询时，除了rec lock，还有gap lock。</p>
+<ol start="5">
+<li><code>select ... where id = 2 for update</code></li>
+</ol>
+<p>略。</p>
+<ol start="6">
+<li><code>select ... where id &gt; 2 for update</code></li>
+</ol>
+<p>略。</p>
+<ol start="7">
+<li><code>select ... where id = 6 [lock in share mode | for update]</code></li>
+</ol>
+<p>查询一个不存在的列，在可重复读级别及以上，会在聚簇索引(7)上加gap lock，锁住(3 ~ 7)。</p>
+<ol start="8">
+<li><code>select ... where id &gt; 18 [lock in share mode | for update]</code></li>
+</ol>
+<p>查询的主键超过了上限，在可重复读级别及以上，会在上边界上加gap lock，锁住(7 ~ +∞)。</p>
+<ol start="9">
+<li><code>select ... where id &lt; 1 for update</code></li>
+</ol>
+<p>可重复读级别及以上时，会对聚簇索引(1)加next-key lock。</p>
+<p>为什么加next-key lock而不是只加gap lock？</p>
+<p>因为MySQL对范围查询的加锁规则是一直加到第一条不满足条件的记录，<del>大概是偷懒吧</del>。</p>
+<ol start="10">
+<li><code>select ... where id &lt;= 1 for update</code></li>
+</ol>
+<p>读已提交及以下，是没有间隙锁的，只锁符合条件的行则可。</p>
+<p>可重复读级别及以上时，理论上只需在(1)上加next-key lock即可，但实际上还把后面一条，即(2)也加next-key lock。</p>
+<p>在(1)上加next-key lock，锁住(-∞ ~ 1]，在(2)上加next-key lock，锁住(1 ~ 2]。</p>
+<p>理论上是不必要的，因为聚簇索引已经保证了唯一，这是MySQL一直存在的问题：</p>
+<p>在可重复读级别及以上，唯一索引上的范围查询时，会一直向右遍历扫描（正序索引，不加order by … desc），并加next-key lock。</p>
+<p>直到访问到不满足条件的第一个记录为止（才知道到了边界），锁被扩大。</p>
+<p>这个问题在MySQL8.0版本中被解决。</p>
+<p>总结：</p>
+<p>对于聚簇索引的范围查询，如果是&lt;= N，那么N后一条记录也会被加上next-key lock。</p>
+<p>如果是&lt; N，那么N这条记录会被加上next-key lock。</p>
+<p>如果是&gt;= N，只会给N和比N大的记录加next-key lock，不会给N前一条记录加锁。</p>
+<p>如果是&gt; N，不会锁前一条记录，也不会锁N这条记录。</p>
+<ul>
+<li>条件列非索引时，是遍历聚簇索引搜索的。</li>
+</ul>
+<ol>
+<li><code>select ... where num = 200</code></li>
+</ol>
+<p>在串行化级别以下，普通的查询执行的是快照读，不加锁。</p>
+<p>在串行化时，读写串行化，等同于：<code>select ... lock in share mode</code>，使用共享锁，当前读。</p>
+<p>遍历聚簇索引，在聚簇索引上逐行加next-key lock，锁住所有间隙，相当于锁全表。</p>
+<ol start="2">
+<li><code>select ... where num &gt; 200</code></li>
+</ol>
+<p>略。</p>
+<ol start="3">
+<li><code>select ... where num = 200 lock in share mode</code></li>
+</ol>
+<p>遍历聚簇索引，扫描全表，逐行加锁，当前读。</p>
+<p>在读已提交级别及以下，Server层会过滤并提前释放不符合条件的行锁，所以看起来和使用聚簇索引时一样，只在聚簇索引上两行符合条件的行上加S锁。</p>
+<p>某些情况下，如Union时，由于在汇总结果时生成了临时表，临时表的行记录和原始表的行记录丢失了关联，只能等待结束才能释放。</p>
+<p>在可重复读级别及以上，不会提前释放行锁，另外还存在间隙锁，所以表现为全表加S锁。</p>
+<ol start="4">
+<li><code>select ... where num &gt; 200 lock in share mode</code></li>
+</ol>
+<p>略。</p>
+<ol start="5">
+<li><code>select ... where num = 200 for update</code></li>
+</ol>
+<p>略。</p>
+<ol start="6">
+<li><code>select ... where num &gt; 200 for update</code></li>
+</ol>
+<p>略。</p>
+<ul>
+<li>条件列是二级索引时，是先在对应的二级索引上查找，然后到聚簇索引上回表的。</li>
+</ul>
+<ol>
+<li><code>select ... where num = 200</code></li>
+</ol>
+<p>不加任何锁，快照读，但在串行化时，是当前读。</p>
+<p>先在二级索引上查找到对应的行，加锁，然后去聚簇索引上对应的行上加锁。</p>
+<p>这里共有2把next-key lock，1把gap lock，2把rec lock，一共5把锁。</p>
+<p>二级索引(200, 2)和(200, 7)上加next-key lock，二级索引(300, 3)上加gap lock，聚簇索引(2), (7)上加rec lock。</p>
+<p>所以锁住了二级索引(100 ~ 200), (200 ~ 300)的区间。</p>
+<ol start="2">
+<li><code>select ... where num &gt; 200</code></li>
+</ol>
+<p>在串行化时，是当前读。</p>
+<p>二级索引有一行符合条件，加next-key lock，然后一直向右遍历加next-key lock，最后在上边界上加gap lock。</p>
+<p>锁住了二级索引(200 ~ 300), (300 ~ +∞)上的间隙，另外还会到聚簇索引上对应的行上加rec lock。</p>
+<p>加锁顺序是，在二级索引对应的行加锁，再回表到聚簇索引上对应行加锁，然后继续向右遍历二级索引加锁。</p>
+<ol start="3">
+<li><code>select ... where num = 200 lock in share mode</code></li>
+</ol>
+<p>略。</p>
+<ol start="4">
+<li><code>select ... where num &gt; 200 lock in share mode</code></li>
+</ol>
+<p>略。</p>
+<ol start="5">
+<li><code>select ... where num = 200 for update</code></li>
+</ol>
+<p>略。</p>
+<ol start="6">
+<li><code>select ... where num &gt; 200 for update</code></li>
+</ol>
+<p>略。</p>
+<ol start="7">
+<li><code>select ... where num &lt;= 100 for update</code></li>
+</ol>
+<p>给满足条件的记录加锁，可重复读级别及以上时，后面一行记录(200)也会加next-key lock。</p>
+<p>虽然(200)有两条记录，但只有第一条被加锁，第二条没有加锁，第一条和第二条之间也没有加锁。</p>
+<ol start="8">
+<li><code>select ... where num = 250 [lock in share mode | for update]</code></li>
+</ol>
+<p>查询不存在的列，在可重复读及以上，会在二级索引(300)上加gap lock，聚簇索引就不用加锁了。</p>
+<p>gap lock存在的唯一意义是防止插入，因为非唯一索引在这些位置前面都有可能插入，所以会加gap lock。</p>
+<ol start="9">
+<li><code>select ... where num &gt; 400 [lock in share mode | for update]</code></li>
+</ol>
+<p>查询的索引超过了上限，在可重复读级别及以上，会在上边界上加gap lock，锁住(300 ~ +∞)。</p>
+<p>InnoDB里，每个数据页中都会有两个虚拟的行记录，限定记录的边界。</p>
+<p>Infimum Record和Supremum Record，分别是比该页中任何记录都要小和大的值。</p>
+<p>这里gap lock（其实是next-key lock）就是加在Supremum Record上。</p>
+<p>注：</p>
+<p>上面说的是二级索引为非唯一索引的情况，当二级索引为唯一索引时，在可重复读级别及以上，gap lock有区别。</p>
+<p>如果是唯一索引，和聚簇索引类似，但要在对应的非聚簇和聚簇索引，两个索引树上加锁。</p>
+<p>非唯一索引和唯一索引的区别是，通过索引精确查询后，非唯一索引不仅存在rec lock，还存在gap lock。</p>
+<p>而通过唯一索引进行精确查询，只需要rec lock，不需要gap lock。</p>
+<p>对于非唯一索引，如x(1, 5, 10)，对于查询x = 5，为了解决幻读，会锁(1, 5], (5, 10)，一个next-key lock和一个gap lock。</p>
+<p>因为x是非唯一索引，所以x = 5可能有多条记录，为了防止插入一条x = 5的记录，必须锁住可能插入的间隙。</p>
+<p>比如：(1, ~ 5, ~ 5, ~ 5, ~ 10, 11, 13, 15)，会加上rec lock，而且记录前后的间隙也会加上锁。</p>
+<p>只有唯一索引下的等值查询时，才只加rec lock。</p>
+<p>间隙锁是为了解决幻读，防止其他事务插入相同索引值的记录，而唯一和主键约束已经保证了该索引值只有一条记录，所以无需gap lock。</p>
+<hr>
+<p>更新的操作逻辑：</p>
+<ul>
+<li>更新聚簇索引：</li>
+</ul>
+<ol>
+<li><p>如果更新了主键的值，则先标记为删除，再执行插入。</p>
+</li>
+<li><p>如果没更新主键的值，则执行乐观的更新，判断新的记录是否超过本行现有大小：</p>
+<ol>
+<li><p>如果新记录没有超过本行大小，则执行原地更新。</p>
+</li>
+<li><p>如果新记录超过本行大小，则直接删除（不是标记删除），然后插入新行。</p>
+</li>
+</ol>
+</li>
+</ol>
+<ul>
+<li>更新二级索引：</li>
+</ul>
+<ol>
+<li>始终是先标记删除，再插入新行。</li>
+</ol>
+<hr>
+<p>UPDATE分查找和更新两个阶段，查找阶段都是当前读和X锁，更新阶段可能还会涉及删除和插入的逻辑。</p>
+<p>所以关键在于，如果UPDATE语句涉及到了索引列的更新，还会另外在新旧索引值上加锁（先删除，再插入）。</p>
+<p>根据主键更新二级索引值时，先锁主键，然后检查更新的二级索引是否有锁冲突，如果无冲突，不会对二级索引加锁。</p>
+<p>UPDATE语句被发给MySQL后，Server会请求读取第一条满足条件的记录，InnoDB引擎将第一条记录加锁并返回。</p>
+<p>Server收到这条加锁的记录后，再发起一个UPDATE请求，更新这条记录。</p>
+<p>一条记录操作完成，再读取下一条记录，直至没有满足条件的记录为止。</p>
+<p>MySQL在操作多条记录时，InnoDB与MySQL Server的交互是一条一条进行的，加锁也是一条一条依次进行的。</p>
+<p>先对一条满足条件的记录加锁，返回给MySQL Server，执行DML操作，然后读取下一条加锁，直至读取完毕。</p>
+<p>有时候虽然UPDATE时，WEHRE条件列已有索引，但还会锁全表。</p>
+<p>MySQL预估扫描行数超过全表总数约20% ～ 30%时，即便有二级索引，也会直接升级为全表扫描。</p>
+<p>因为根据二级索引的顺序回表读数据时，对于主键很可能是随机扫描。</p>
+<p>不管检索还是更新，都尽可能利用索引。</p>
+<p>不要一次性检索或更新大批量数据，建议分多批次。</p>
+<p>事务尽快提交，降低行锁持有时间。</p>
+<hr>
+<p>DELETE加锁逻辑和别的类似。</p>
+<p>DELETE语句并没有直接删除记录，而是在记录上打上删除标记，由后台的purge线程清理。</p>
+<p>确切地说，在DELETE后，如果别的事务读到了被标记为删除的记录，加锁机制不一样。</p>
+<ul>
+<li>情况1：</li>
+</ul>
+<p>假如事务A对某行记录执行了DELETE，但还没提交，此时事务B对该行执行快照读。</p>
+<p>之后事务A提交事务并释放锁，此时事务B需要对被标记为删除的行记录加锁吗（不然可能被purge）？</p>
+<p>应该是不用的，因为purge会根据trx_no判断是否有readview使用，详情参考MVCC。</p>
+<ul>
+<li>情况2：</li>
+</ul>
+<p>假如事务A对某行记录执行了DELETE，但还没提交，此时事务B想要对该行执行当前读，则阻塞等待获取锁。</p>
+<p>之后事务A提交事务并释放锁，此时事务B需要继续对被标记删除的行记录加锁，才能读到该行。</p>
+<p>如果被删除记录为聚簇索引，需要在被删除行上加锁（lock_mode X locks rec but not gap），并在删除的后一行上加锁（lock_mode X locks gap before rec）。</p>
+<p>后一条记录上加gap lock的目的是为了防止新的相同主键的行插入。</p>
+<p>如果被删除记录为为二级索引（唯一和非唯一），需要在被删除行上加next-key lock，并在删除的后一行上加gap lock。</p>
+<p>也就是锁住记录本身和记录两边的间隙。</p>
+<p>总结：</p>
+<p>对于更新操作的unique查询，根据查询的记录是否满足查询条件，记录是否已被删除：</p>
+<ol>
+<li><p>找到满足条件的记录，并且记录有效，则只对记录加rec lock（lock_mode X locks rec but not gap）；</p>
+</li>
+<li><p>找到满足条件的记录，但是记录无效（标为删除），则对记录加next-key lock（lock_mode X）;</p>
+</li>
+<li><p>未找到满足条件的记录，则对第一个不满足条件的记录加gap lock（lock_mode X locks gap before rec），保证没有满足条件的记录插入。</p>
+</li>
+</ol>
+<p>所以读未提交和读已提交级别在此时也是会有间隙锁的。</p>
+<hr>
+<p>非唯一索引，INSERT X：</p>
+<ul>
+<li><p>找到大于X的第一条记录N，尝试对N加上insert intention lock；</p>
+<ul>
+<li><p>如果N上面没有gap lock/next-key lock，则执行插入；</p>
+</li>
+<li><p>如果N上面被加了gap lock/next-key lock，则阻塞等待插入；</p>
+</li>
+</ul>
+</li>
+<li><p>插入成功，对新插入的记录X加lock_mode X locks rec but not gap（实际上并没有加，是隐式持有的），结束。</p>
+</li>
+</ul>
+<p>比如插入4，会找到插入位置（4）的下一个记录5，如果5上面有gap lock/next-key lock，则会阻塞insert intention lock。</p>
+<p>插入成功后，会隐式持有新插入行的lock_mode X locks rec but not gap。</p>
+<hr>
+<p>唯一索引，INSERT X：</p>
+<ul>
+<li><p>找到大于X的第一条记录N，以及N的前一条记录P，尝试对N加上insert intention lock；</p>
+<ul>
+<li><p>如果N上面没有gap lock/next-key lock，则还需要判断唯一性；</p>
+</li>
+<li><p>如果N上面被加了gap lock/next-key lock，则等待判断唯一性；</p>
+</li>
+</ul>
+</li>
+<li><p>唯一约束检查，检查前一条记录P；</p>
+<ul>
+<li><p>如果P不等于X，说明没有唯一约束冲突，则执行插入；</p>
+</li>
+<li><p>如果P等于X，还要判断P是否被加了锁；</p>
+<ul>
+<li><p>如果P没有被加锁，还要判断P是否被标记为删除；</p>
+<ul>
+<li><p>如果P被标记为删除，说明事务已经提交，但还没purge，那么加next-key lock(lock mode S)；</p>
+</li>
+<li><p>如果P没被标记为删除，则发生唯一约束冲突，duplicate key，插入失败，结束。</p>
+</li>
+</ul>
+</li>
+<li><p>如果P被加了锁（显式或隐式），说明P正在被处理（新增、删除或更新），且事务还未提交，那么阻塞等待加next-key lock(lock mode S)；</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>插入成功。</p>
+<ul>
+<li><p>如果之前没有唯一冲突，会隐式持有新插入行的lock_mode X locks rec but not gap，结束。</p>
+</li>
+<li><p>如果之前有唯一冲突（被标记删除了），则会对新插入的行加next-key lock(lock mode X)，结束。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>如果没有冲突，insert是不加锁的。</p>
+<p>间隙锁只和插入意向锁冲突，而且是先加间隙锁，然后加插入意向锁时才会冲突。</p>
+<p>next-key lock的目的是为了防止别的事务插入相同的值，违反唯一约束。</p>
+<p>所以即使是读已提交级别，在唯一键冲突时，也同样会存在next-key lock。</p>
+<hr>
+<ol>
+<li><p>事务A：加了插入意向锁后，还没插入数据</p>
+</li>
+<li><p>事务B：select … lock in share mode</p>
+</li>
+<li><p>事务A：插入了数据并提交</p>
+</li>
+<li><p>事务B：select … lock in share mode</p>
+</li>
+</ol>
+<p>问：事务B是否会出现幻读，读到新插入的数据？</p>
+<p>答：不会。</p>
+<p>如果insert不加锁，其他事务执行select … for update，如何阻止其他事务加锁？</p>
+<p>隐式锁的转换：</p>
+<p>事务（B）对某条记录加锁前，先根据该记录中的trx_id判断该记录是否属于active的事务（A），活跃指的是事务还没提交或回滚。</p>
+<p>如果属于active的事务，说明有活跃事务修改了该行，那么检查锁冲突。</p>
+<p>如果存在冲突，则为该事务（A）创建一个锁，然后才加自己的锁，进入等待状态。</p>
+<p>所以在没有冲突时，insert是不加锁的，也就是只有隐式锁，当其他事务要加锁时，会将insert的隐式锁转换为显式锁。</p>
+<p>update和delete在查询时，直接对查询用的索引和主键使用显式锁，其他索引上使用隐式锁。</p>
+<p>理论上说，可以对主键使用隐式锁，提前使用显式锁是为了减少死锁。</p>
+<p>隐式锁是针对被修改的索引记录，因此都是LOCK_REC_NOT_GAP，不可能是LOCK_GAP或LOCK_ORDINARY。</p>
+<hr>
+<ol>
+<li><p>事务A：还没执行insert插入数据</p>
+</li>
+<li><p>事务B：记录还不存在，于是判断没有锁冲突，select … lock in share mode</p>
+</li>
+<li><p>事务A：不加任何锁，执行insert插入数据，并提交</p>
+</li>
+<li><p>事务B：没有活跃事务，于是判断没有锁冲突，select … lock in share mode</p>
+</li>
+</ol>
+<p>问：事务B是否会出现幻读，读到新插入的数据？</p>
+<p>答：不会。</p>
+<p>Latch是一种轻量级的锁，锁定时间非常短，用来保证并发线程可以安全的操作临界资源，通常没有死锁检测。</p>
+<p>Latch可以分为两种：MUTEX（互斥量）和RW-LOCK（读写锁）。</p>
+<p>执行插入操作是通过mini-transaction保证原子性的。</p>
+<p>修改一个页需要获得该页的X-LATCH，访问一个页需要获得该页的S-LATCH或X-LATCH。</p>
+<p>持有该页的LATCH直到修改或者访问该页的操作完成。</p>
+<p>INSERT会先对记录所在的页加一个RW-X-LATCH锁，执行完写数据后再释放（就是写redo log，将脏页加入flush list）。</p>
+<p>事务A：</p>
+<p>执行INSERT语句，对要操作的页加RW-X-LATCH，判断是否有和插入意向锁冲突的锁。</p>
+<p>如果有，加插入意向锁，进入锁等待；如果没有，直接写数据，不加任何锁。</p>
+<p><del>这里有个疑问，是先判断锁冲突，然后加插入意向锁等待呢？还是直接通过加插入意向锁来判断锁冲突呢？</del></p>
+<p><del>应该是先判断间隙锁是否存在，如果不存在就不必加意向锁，存在的话就加意向锁阻塞等待。</del></p>
+<p>事务B：</p>
+<p>执行select … lock in share mode，对要操作的页加RW-S-LATCH，如果页面上存在RW-X-LATCH会被阻塞。</p>
+<p>没有的话则判断记录上是否存在活跃的事务，如果存在，则为insert事务创建一个排他记录锁，并将自己加入到锁等待队列。</p>
+<hr>
+<p>读取一个页面时，需要对页面加S锁，更新一个页面时，需要对页面加X锁。</p>
+<p>操作一个页面，都会对页面加锁，页面锁加上之后，页面内存储的索引记录才不会被并发修改。</p>
+<p>相对于事务锁，页面锁是一个短期的锁，而事务锁（行锁、表锁）是长期持有的锁。</p>
+<p>因此，为了修改一条记录：</p>
+<ul>
+<li><p>根据查询条件，找到对应的记录所在页面；</p>
+</li>
+<li><p>对页面加X锁(RWLock)，然后在页面内寻找满足条件的记录；</p>
+</li>
+<li><p>在持有页面锁的情况下，对满足条件的记录加事务锁；</p>
+</li>
+</ul>
+<p>为了防止页面锁与事务锁之间死锁：</p>
+<ul>
+<li><p>持有事务锁（行锁、表锁），可以等待获取页面锁；</p>
+</li>
+<li><p>持有页面锁，不能等待事务锁。</p>
+</li>
+</ul>
+<p>在持有页面锁，加行锁的时候，如果需要等待行锁，则释放页面锁，然后等待获取行锁。</p>
+<p>但此时，获取行锁没有被页面锁保护，因此加上行锁之后，记录可能已经被并发修改。</p>
+<p>所以还要重新加回页面锁，重新判断记录的状态，对记录加锁。</p>
+<p>如果此时记录未被并发修改，那么第二次加锁能够很快完成，因为已经持有了相同模式的锁。</p>
+<p>但如果记录已经被并发修改，就有可能导致死锁。</p>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">insert</span> <span class="token keyword">into</span> <span class="token number">a</span> <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token number">b</span> <span class="token keyword">where</span> <span class="token number">b</span><span class="token punctuation">.</span>col <span class="token operator">=</span> <span class="token string">'x'</span><span class="token punctuation">;</span></code></pre>
+<p>读已提交级别，InnoDB不会加锁。</p>
+<p>可重复读级别，InnoDB会对b中满足条件的数据加锁。</p>
+<ol>
+<li>如果b.col没有索引：</li>
+</ol>
+<p>对b表所有记录加LOCK_S | LOCK_ORDINARY，对supremum加上LOCK_S | LOCK_GAP。</p>
+<ol start="2">
+<li>如果b.col是非唯一二级索引，并且非覆盖索引：</li>
+</ol>
+<p>对b表二级索引所有符合条件的记录加LOCK_S | LOCK_ORDINARY，并且对下一条记录加LOCK_S | LOCK_GAP。</p>
+<p>如果符合条件的二级索引有多条记录，每个记录都要加。</p>
+<p>对b表聚簇索引对应的记录加LOCK_S | LOCK_REC_NOT_GAP。</p>
+<ol start="2">
+<li>如果b.col是唯一二级索引，并且非覆盖索引：</li>
+</ol>
+<p>对b表二级索引所有符合条件的记录加LOCK_S | LOCK_REC_NOT_GAP。</p>
+<p>对b表聚簇索引对应的记录加LOCK_S | LOCK_REC_NOT_GAP。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">table</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre>
+<p>也是类似，根据隔离级别，不加锁或加共享模式的next-key lock。</p>
+<hr>
+<p>insert ignore与insert into的区别就是insert ignore会忽略已经存在的数据。</p>
+<p>如果没有就插入新行，如果有就跳过。</p>
+<hr>
+<pre class=" language-sql"><code class="language-sql">replace <span class="token keyword">into</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre>
+<ul>
+<li><p>表中存在主键但不存在唯一键：</p>
+<ol>
+<li>主键值存在则update，不存在则insert。</li>
+</ol>
+</li>
+<li><p>表中同时存在主键和唯一键：</p>
+<ol>
+<li><p>主键值已存在：先delete，后insert。</p>
+</li>
+<li><p>唯一键值已存在：update唯一键冲突的行，将主键值修改为要插入的值。</p>
+</li>
+<li><p>主键值和唯一键值同时已存在：先delete主键冲突的行，再update唯一键冲突的行。</p>
+</li>
+</ol>
+</li>
+</ul>
+<p>如果有唯一键冲突，会对冲突的唯一键加next-key lock（lock_mode X）。</p>
+<p>这里在检查duplicate key时，对于普通insert，加的是LOCK_S，而对于replace into或insert … on duplicate，加的是LOCK_X。</p>
+<pre class=" language-sql"><code class="language-sql">replace <span class="token keyword">into</span> t <span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> s <span class="token keyword">where</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token keyword">update</span> t <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> col <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> s <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span></code></pre>
+<p>这两句中的select部分将在s表记录上加next-key lock（lock_mode S）。</p>
+<hr>
+<p>replace into通过delete和insert实现。</p>
+<p>在基于行的复制时，binlog记录的是update类型日志。</p>
+<p>insert会更新autoincrement，update则不会。</p>
+<p>replace into在master上按delete和insert操作，auto_increment是正常的。</p>
+<p>复制到slave后，slave按update回放，只更新行中自增键的值，不会更新auto_increment。</p>
+<p>但如果slave切为master，insert就会出现”Duplicate key”错误。</p>
+<p>解决方案：</p>
+<ol>
+<li><p>binlog改为mixed或statement格式；</p>
+</li>
+<li><p>insert on duplicate key update代替replace into。</p>
+</li>
+</ol>
+<hr>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">insert</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">on</span> <span class="token keyword">duplicate key</span> <span class="token keyword">update</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre>
+<p>insert和update的结合。</p>
+<p>如果没有唯一键冲突，和insert加锁流程一样。</p>
+<p>如果有唯一键冲突，会对冲突的唯一键加next-key lock（lock_mode X），对主键加record lock（lock_mode X locks rec but not gap），再执行update。</p>
+<p>update大概也是delete和insert（吧）。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

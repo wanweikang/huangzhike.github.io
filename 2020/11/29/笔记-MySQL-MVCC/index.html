@@ -1,0 +1,551 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-MySQL-MVCC | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="MVCC部分主要参考了腾讯数据库技术的文章。
+
+原子性（Atomicity）：
+事务是最小的执行单元，不可分割。
+事务的操作要么全部成功提交，要么全部失败回滚。
+一致性（Consistency）：
+执行事务前后，数据保持一致。
+多个事务对同一个数据的读取结果是相同的。
+隔离性（Isolation）：">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-MySQL-MVCC" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-MySQL-MVCC</h2>
+				
+				<div>
+					<div class="post-time">2020-11-29</div>
+				</div>
+				
+				<div class="article-content">
+				<p>MVCC部分主要参考了<a href="https://mp.weixin.qq.com/s?__biz=MzI5NzkyOTA1Mw==&mid=2247484058&idx=1&sn=4f5c6ccfdd845c7543f2742e020b6f05" target="_blank" rel="noopener">腾讯数据库技术的文章</a>。</p>
+<hr>
+<p><strong>原子性（Atomicity）</strong>：</p>
+<p>事务是最小的执行单元，不可分割。</p>
+<p>事务的操作要么全部成功提交，要么全部失败回滚。</p>
+<p><strong>一致性（Consistency）</strong>：</p>
+<p>执行事务前后，数据保持一致。</p>
+<p>多个事务对同一个数据的读取结果是相同的。</p>
+<p><strong>隔离性（Isolation）</strong>：</p>
+<p>事务的修改在提交前，对其它事务是不可见的。</p>
+<p><strong>持久性（Durability）</strong>：</p>
+<p>事务提交后，修改是持久的，即使发生故障或崩溃，结果也不能丢失。</p>
+<hr>
+<p><strong>TRX_ISO_READ_UNCOMMITTED</strong>：</p>
+<p>读未提交，会读到其他事务未提交的数据，即脏读。</p>
+<p>写的时候加X锁，写完释放（一级封锁协议），为了防止第一类丢失更新（回滚覆盖）。</p>
+<p>如果不对写操作加X锁，当两个事务并发写某行记录时，可能出现丢失更新。</p>
+<p>读无需加锁。</p>
+<p><strong>TRX_ISO_READ_COMMITTED</strong>：</p>
+<p>读已提交，只能读到已提交的数据，但在一个事务中多次读同一行结果可能不一致（被别的事务UPDATE或DELETE了），即不可重复读。</p>
+<p>写的时候加X锁，写完释放，读的时候加S锁，读完释放（二级封锁协议）。</p>
+<p>为了解决脏读，只读取已提交的记录，读操作必须加S锁，别的事务要想写，必须加X锁，读写互斥。</p>
+<p>这里的S锁不是在事务结束释放，而是在事务读完之后立即释放，让其他事务继续写。</p>
+<p>所以如果事务再读的话，可能读到不同的结果集，就是不可重复读。</p>
+<p>InnoDB还使用了MVCC来控制可见性。</p>
+<p><strong>TRX_ISO_REPEATABLE_READ</strong>：</p>
+<p>可重复读，但某事务对一个范围内的行执行了UPDATE，期间其它事务INSERT一行进入这个范围，那么新插入的行没有被该事务UPDATE，即幻读。</p>
+<p>写的时候加X锁，读的时候加S锁。</p>
+<p>X锁和S锁直到事务结束时才释放（三级封锁协议），阻塞其他事务的写操作，实现可重复读。</p>
+<p>InnoDB默认可重复读隔离级别，同时通过间隙锁解决幻读。</p>
+<p>InnoDB还使用了MVCC来控制可见性。</p>
+<p><strong>TRX_ISO_SERIALIZABLE</strong>：</p>
+<p>可串行化，事务串行化执行，读写都加锁，读加S锁，写加X锁，读写互斥。</p>
+<p>使用了范围锁，另外，没有了快照读，全部使用当前读。</p>
+<p>一般用于分布式事务的场景。</p>
+<hr>
+<p>通过对锁的类型（读锁还是写锁），锁的粒度，持有锁的时间（释放时机）的组合，就可以实现四种不同的隔离级别。</p>
+<p>这四种不同的加锁策略又称为封锁协议。</p>
+<p>三级封锁协议在事务结束时才释放锁，加锁和解锁分成两个阶段，称作两段锁协议。</p>
+<p>加锁阶段只允许加锁，不允许解锁，而解锁阶段只允许解锁，不允许加锁。</p>
+<p>一般程序在方法的开始就知道会使用哪些数据，可以一次锁住，最后一次解锁，这样可以避免死锁。</p>
+<p>数据库在事务开始时不知道会用到哪些数据（语句是一条条发送的，一条语句也可能涉及多个索引，多行记录）。</p>
+<p>数据库遵循两段锁协议，事务执行中，随时可以锁定，只有在提交或回滚时，所有锁才统一释放。</p>
+<p>这种方式无法避免死锁，但可以保证事务的并发调度是串行化的。</p>
+<p>MySQL默认自动提交，使用事务前需要关闭自动提交。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">BEGIN</span><span class="token punctuation">;</span>
+<span class="token keyword">UPDATE</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token comment" spellcheck="true">-- 加对应的锁</span>
+<span class="token keyword">UPDATE</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token comment" spellcheck="true">-- 加对应的锁</span>
+<span class="token keyword">COMMIT</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">-- 事务提交时，释放所有锁</span></code></pre>
+<p>常见的DDL语句（如ALTER、CREATE）加表级锁，且这些语句为隐式提交，不能回滚。</p>
+<hr>
+<p>有的说法认为，InnoDB中RR隔离级别不能完全阻止幻读：</p>
+<table>
+<thead>
+<tr>
+<th>事务A</th>
+<th>事务B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BEGIN;</td>
+<td>BEGIN;</td>
+</tr>
+<tr>
+<td>SELECT * FROM t;</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>INSERT INTO t VALUES …;</td>
+</tr>
+<tr>
+<td>SELECT * FROM t;</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>COMMIT;</td>
+</tr>
+<tr>
+<td>SELECT * FROM t;</td>
+<td></td>
+</tr>
+<tr>
+<td>UPDATE t SET value = ‘x’;</td>
+<td></td>
+</tr>
+<tr>
+<td>SELECT * FROM t;</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>对于事务A来说，前三次的SELECT返回的结果是一致的，不会读到事务B插入的行。</p>
+<p>但是事务A执行UPDATE会读到事务B提交的新行，并更新。</p>
+<p>之后事务A再执行SELECT返回了修改后的新行。</p>
+<p>除非一开始就SELECT … FOR UPDATE加锁，阻塞事务B的插入。</p>
+<p>类似的场景，如事务1在SELECT的时候只有一行记录，但是UPDATE时却提示两行记录被修改，而且UPDATE之后再SELECT也会返回两行记录。</p>
+<p>这个现象符合幻读的定义（两次同样的查询返回的结果集不同），但是有个矛盾的地方。</p>
+<p>第一次SELECT是快照读，后来执行了UPDATE，而UPDATE是当前读，开启并更新事务的版本号，后面的SELECT则使用新的版本号进行快照读。</p>
+<hr>
+<p>一致性锁定读：</p>
+<p>悲观，读取的是当前最新的记录，必须先获取锁，避免并发修改。</p>
+<p>修改操作（INSERT、UPDATE、DELETE）需要加锁，读取最新的数据。</p>
+<p>一致性非锁定读：</p>
+<p>基于MVCC，读取的是历史版本，因为读取的是快照数据，没有竞争，自然不需要加锁。</p>
+<hr>
+<p>多版本并发控制（Multi-Version Concurrency Control, MVCC）大概的思路：</p>
+<p>每行加两个隐藏列，创建行时的系统版本号，删除行时的系统版本号。</p>
+<p>每开启一个事务，系统版本号就会递增，事务开始时的版本号会作为事务的版本号，用来对比行数据。</p>
+<p>以可重复读隔离级别为例：</p>
+<ul>
+<li>INSERT：</li>
+</ul>
+<p>插入行，保存当前事务的版本号，作为创建版本号。</p>
+<ul>
+<li>UPDATE：</li>
+</ul>
+<p>插入行，保存当前事务的版本号，作为创建版本号，同时，保存当前事务的版本号，作为原本的行的删除版本号。</p>
+<ul>
+<li>DELETE：</li>
+</ul>
+<p>更新行，保存当前事务的版本号，作为删除版本号。</p>
+<ul>
+<li>SELECT：</li>
+</ul>
+<p>只查找创建事务版本号小于等于当前事务的行，保证不会读到别的事务未提交的数据行（要么是已经存在的，要么是事务自身修改的）。</p>
+<p>只查找删除事务版本号为空或者大于当前事务的行，保证该行在事务开始前没被删除。</p>
+<hr>
+<p>MVCC只在可重复读和读已提交的隔离级别下工作，因为读未提交永远读最新的行（没必要多版本），而串行化对所有读的行都加锁（MVCC无法实现）。</p>
+<p>可以实现非阻塞的读，但MVCC如何解决并发提交时的冲突？</p>
+<p>MVCC大概的思路是，每行都有一个版本号，每次修改时复制一份，更新版本，各个事务之间无干扰。</p>
+<p>提交时比较版本号，成功则覆盖原记录，失败则放弃。</p>
+<p>MVCC是乐观锁，在提交的时候才知道能否成功。</p>
+<p>事务在访问数据之前先加锁叫悲观锁，先加锁，独占数据。</p>
+<p>乐观锁实际上不加锁，而在读写之前检查一下版本，等到提交时再检查一下版本，如果两次相同，说明期间没有外部修改过数据，那么可以提交（类似CAS）。</p>
+<p>CAS操作的原子性是系统和硬件保证的。</p>
+<p>乐观体现在，访问数据时不提前加锁，在冲突不激烈情况下，用乐观锁性能较好。</p>
+<p>但如果资源冲突严重，乐观锁会不断失败重试，那还不如直接加锁。</p>
+<hr>
+<p>InnoDB的MVCC实现：</p>
+<p>行的一些隐藏列：</p>
+<ul>
+<li><p>DB_TRX_ID：最近一个修改该行记录的事务号。</p>
+</li>
+<li><p>DB_ROLL_PTR：指向回滚段在UNDO LOG位置的指针。</p>
+</li>
+<li><p>DB_ROW_ID：隐含的自增ID，找不到主键时自动以DB_ROW_ID产生一个聚簇索引。</p>
+</li>
+<li><p>DELETE BIT：标识该行是否被删除，最终删除是在PURGE操作完成。</p>
+</li>
+</ul>
+<p>UNDO LOG：</p>
+<p>InnoDB用于实现MVCC和事务回滚的日志，默认在系统表空间中。</p>
+<p>如果一行记录被更新，UNDO LOG包含回滚需要的信息。</p>
+<p>事务修改某行数据时，先用排它锁，锁定该行，再把该行的初始值复制到UNDO LOG的回滚段，再修改当前行，更新事务号，使回滚指针指向UNDO LOG中的副本。</p>
+<p>事务提交时，只需标记事务状态为COMMIT，不需其他额外操作，而回滚则需要根据行的回滚指针从UNDO LOG中找出事务修改前的版本并恢复。</p>
+<p>此时InnoDB是会加独占锁的，所以其它事务在锁释放前不能读写该行数据（除非是快照读）。</p>
+<p>锁释放后，假如有别的事务获取了锁，并修改该行，UNDO LOG的回滚段会组成一个链表，遍历链表可以看到该行的变化。</p>
+<p>UNDO LOG保存了历史版本，当链表较长，那么回滚会比较耗时。</p>
+<p>对于INSERT操作，在事务提交前只有当前事务可见，因此产生的UNDO日志可以在事务提交后直接删除。</p>
+<p>对于UPDATE/DELETE，则需要维护多版本信息，不仅事务回滚时需要，MVCC一致性读也需要，所以不能直接删除。</p>
+<p>PURGE线程会找到比当前最早开始的未提交的事务还早的UNDO，因为没有快照读需要引用该日志，可以删除。</p>
+<p>所以InnoDB不是严格意义上的MVCC，因为写操作加了锁，UNDO LOG只是串行写的结果，不是乐观的实现。</p>
+<p>InnoDB基本都是因为死锁而回滚，而不是因为写冲突而回滚。</p>
+<p>MVCC是难以实现的，特别是当事务影响到多行数据时，如，事务A修改RowA成功，修改RowB失败，那么需要回滚RowA，但RowA没有被锁定，又被事务B修改，如果此时回滚RowA，则会影响事务B。</p>
+<hr>
+<p>ReadView：</p>
+<p>InnoDB实现MVCC快照读的关键，在SELECT语句执行时创建。</p>
+<p>并不是BEGIN就是开始一个事务，而是执行了第一条SQL语句才开始事务，快照从此开始。</p>
+<p>除非使用START TRANSACTION WITH CONSISTENT SNAPSHOT，此时会立即创建ReadView。</p>
+<p>MVCC允许可重复读，但读到的是历史数据，称为快照读(Snapshot Read)，而读取当前最新的版本，叫当前读(Current Read)，需要加锁。</p>
+<p>读已提交级别，事务中每次SELECT都会重新创建ReadView，所以每次读取都是新的快照。</p>
+<p>可重复读级别，事务中的第一个SELECT才创建ReadView，一次快照读后，后面都会读快照。</p>
+<p>三个主要字段：</p>
+<ol>
+<li><p>UP_TRX_ID：该SELECT执行时，最小的未提交的事务的事务号，即，当前最早创建但还未提交的事务的事务号；</p>
+</li>
+<li><p>LOW_TRX_ID：该SELECT执行时，最大的未提交的事务的事务号，即，除自身外最近创建的未提交的事务的事务号；</p>
+</li>
+<li><p>TRX_IDS：该SELECT执行时，未提交的事务号链表集合，即，对当前事务不可见的事务号。</p>
+</li>
+</ol>
+<p>所有DATA_TRX_ID小于UP_TRX_ID的记录，说明该事务在当前事务之前已提交，所以修改对当前事务可见。</p>
+<p>所有DATA_TRX_ID大于LOW_TRX_ID的记录，说明该事务在当前事务之后，所以修改对当前事务不可见。</p>
+<p>ReadView是与SQL绑定的，不是事务，即使在同一个事务中，每次SQL执行时构造的ReadView的UP_TRX_ID和LOW_TRX_ID也可能不一样。</p>
+<p>对于读已提交级别，所有已提交的事务都是对当前事务可见的，每次读取，都会创建新的ReadView，这样就能读取到其他事务已提交的内容。</p>
+<p>对于可重复读级别，ReadView是执行事务中的第一条SELECT语句时创建，后续所有的SELECT都是复用该ReadView，所以能保证可重复读。</p>
+<hr>
+<p>InnoDB行记录（仅限聚簇索引）中保存了事务相关信息，如trx_id，roll_ptr。</p>
+<p>trx_id用于可见性判断，roll_ptr用于从undo中回溯上一个版本。</p>
+<p>InnoDB行格式：</p>
+<ol>
+<li><p>Cluster Index: PK / DB_TRX_ID / DB_ROLL_PTR / Other cols…</p>
+</li>
+<li><p>Secondary Index: Secondary key / PK</p>
+</li>
+</ol>
+<p>无主键表会自动加一个DB_ROW_ID字段代替PK。</p>
+<hr>
+<p>InnoDB的undo log保存了多版本的记录，undo log支持事务回滚的同时，也支持数据的一致性读。</p>
+<p>undo log保存在回滚段中，回滚段在ibdata或单独的undo tablespace中，回收由purge线程进行。</p>
+<p>undo记录的类型：</p>
+<pre class=" language-c++"><code class="language-c++">#define TRX_UNDO_INSERT_REC 11 
+/* fresh insert into clustered index */
+
+#define TRX_UNDO_UPD_EXIST_REC 12 
+/* update of a non-delete-marked record */
+
+#define TRX_UNDO_UPD_DEL_REC 13 
+/* update of a delete marked record to a not delete marked record; also the fields of the record can change */
+
+#define TRX_UNDO_DEL_MARK_REC 14 
+/* delete marking of a record; fields do not change */</code></pre>
+<ul>
+<li>TRX_UNDO_INSERT_REC</li>
+</ul>
+<p>insert的undo，只需记录键值。</p>
+<ul>
+<li>TRX_UNDO_UPD_EXIST_REC</li>
+</ul>
+<p>update的undo，不涉及索引更新，因为修改了原值，undo中会记录键值和原本的值。</p>
+<ul>
+<li>TRX_UNDO_UPD_DEL_REC</li>
+</ul>
+<p>update的undo，更新了二级索引，先把原行标记为删除，再插入新行，undo只需记录键值。</p>
+<ul>
+<li>TRX_UNDO_DEL_MARK_REC</li>
+</ul>
+<p>delete的undo，因为delete操作只是标记删除，undo只需记录键值。</p>
+<hr>
+<ul>
+<li>trx_sys-&gt;rw_trx_ids：</li>
+</ul>
+<p>保存系统当前活跃的事务Id。</p>
+<ul>
+<li>trx_sys-&gt;max_trx_id：</li>
+</ul>
+<p>保存当前分配的最大事务Id，用于分配id和no。</p>
+<ul>
+<li>trx_id::id：</li>
+</ul>
+<p>读写事务开始时，从trx_sys-&gt;max_trx_id分配id，递增。</p>
+<ul>
+<li>trx-&gt;no：</li>
+</ul>
+<p>读写事务结束时，从trx_sys-&gt;max_trx_id分配id，递增。</p>
+<ul>
+<li>m_ids：</li>
+</ul>
+<p>readview创建时，活跃的事务id列表，不可见。</p>
+<ul>
+<li>m_up_limit_id：</li>
+</ul>
+<p>readview创建时，小于此值的是已提交事务，可见。</p>
+<ul>
+<li>m_low_limit_id：</li>
+</ul>
+<p>readview创建时，大于等于此值的是未开启的事务，不可见。</p>
+<ul>
+<li>m_low_limit_no：</li>
+</ul>
+<p>readview创建时，已经提交事务的最大trx-&gt;no，小于此值的事务都已提交，当前readview不需要这些事务的undo log。</p>
+<p><img src="/imgs/mvcc_read_view.png" alt="mvcc_read_view"></p>
+<pre class=" language-c++"><code class="language-c++">    bool changes_visible(trx_id_t id, const table_name_t & name) const MY_ATTRIBUTE((warn_unused_result)) {
+        ut_ad(id > 0);
+        // T1, T2, T3 trx_id都小于m_up_limit_id，可见
+        if (id < m_up_limit_id || id == m_creator_trx_id) {
+            return (true);
+        }
+        check_trx_id_sanity(id, name);
+        // T6 trx_id > m_low_limit_id，不可见
+        if (id >= m_low_limit_id) {
+            return (false);
+        } else if (m_ids.empty()) {
+            return (true);
+        }
+        const ids_t::value_type * p = m_ids.data();
+        // T5 trx_id不在m_ids里，可见
+        return (!std::binary_search(p, p + m_ids.size(), id));
+    }</code></pre>
+<p>purge处理undo log和delete marked record的回收，当undo中的历史版本不再需要时，由purge清理。</p>
+<p>undo log应该及时purge，undo log的堆积会导致回滚段空间的增长，另外，delete mark的记录没有真正删除，也会影响查询效率。</p>
+<ul>
+<li>trx_sys-&gt;mvcc-&gt;m_views：</li>
+</ul>
+<p>保存系统当前所有的readview，oldest_view为其中最老的readview，只有小于oldest_view-&gt;m_low_limit_no的undo才可以被purge。</p>
+<ul>
+<li>purge_queue：</li>
+</ul>
+<p>以trx-&gt;id排序的最小堆，事务提交后，会将undo日志信息加入到purge_queue。</p>
+<p>purge线程从purge_queue中获取符合条件（trx-&gt;id &lt; oldest_view-&gt;m_low_limit_no）的undo并依次purge。</p>
+<hr>
+<p><img src="/imgs/mvcc_select.png" alt="mvcc_select"></p>
+<p>上图分别有三个事务依次修改了二级索引的值。</p>
+<p>聚簇索引的记录的历史版本或者为delete mark的记录，或者在undo log中。</p>
+<p>二级索引的记录的历史版本为delete mark的记录，不会在undo log中。</p>
+<p>二级索引没有undo log，因为不需要，undo log的目的是用于回滚和快照读。</p>
+<p>回滚的话，可以聚簇索引有全量的信息，根据聚簇索引回滚即可。</p>
+<p>快照读的话，二级索引的信息本来就不是完整的，到聚簇索引回表查历史版本即可。</p>
+<p>二级索引只是用来查找，只需维护聚簇索引上的数据即可。</p>
+<p>上图某行有三个版本数据：</p>
+<p>在聚簇索引中，最新的版本记录为T3(1, 5, roll_ptr, 1, ‘c’)，其中5为trx_id，数据就在page中。</p>
+<p>上一个版本为T2(1, 3, roll_ptr, 1, ‘b’)，可通过T3上的roll_ptr指向的undo记录构建。</p>
+<p>最老的版本为T1(1, 1, roll_ptr, 1, ‘a’)，可通过T2上roll_ptr指向的undo记录构建。</p>
+<p>在二级索引中，最新的版本记录为T3(‘c’, 1)，数据就在当前二级索引的page中。</p>
+<p>上一个版本为T2(‘b’, 1)，数据也在当前二级索引page中，但标记delete mark。</p>
+<p>最老的版本为T1(‘a’, 1)，数据也在当前二级索引page中，但标记delete mark。</p>
+<hr>
+<p>可见性判断：对于获取正确的版本，聚簇索引和二级索引有不同的获取方式。</p>
+<p>对于上面的例子，可重复读级别，select * from …，查询结果为老版本(1, 1, ’a)。</p>
+<ul>
+<li>根据聚簇索引查询：</li>
+</ul>
+<p>首先查询到最新的记录(1, 1, ’c’)，trx_id为5，大于m_low_limit_id（2），所以不可见。</p>
+<p>然后通过roll_ptr构建上一个版本(1, 1, ’b’)，trx_id为3，大于m_low_limit_id（2），仍然不可见。</p>
+<p>再通过roll_ptr构建(1, 1, ’a’)，trx_id为1，小于m_up_limit_id（2），可见，最后返回(1, 1, ’a’)。</p>
+<ul>
+<li>根据二级索引查询：</li>
+</ul>
+<p>二级索引记录中没trx_id和roll_ptr字段，所以需要回表判断。</p>
+<p>但二级索引page中的page_update_max_trx_id记录了当前page涉及事务的最大的trx-&gt;id。</p>
+<p>这个值只存在于二级索引上，聚簇索引没有，每次更新行后会更新这个值，大于则修改，小于则不变。</p>
+<p>判断二级索引记录可见性时，先与此page的trx_id比较，进行粗略的过滤。</p>
+<p>如果page_update_max_trx_id小于当前view的m_up_limit_id，则认为此记录可见。</p>
+<p>否则无法确定可见性，必须从聚簇索引回表，即使使用了覆盖索引，也是可能回表的。</p>
+<p>还是上例，使用force index强制使用二级索引查询，然后回到聚簇索引获取完整记录，查询结果为老版本(1, 1, ’a)。</p>
+<p>假设二级索引所在page的最大trx_id为5，并且当前view-&gt;m_up_limit_id为5。</p>
+<p>先读取记录(‘a’, 1)，不可见，需要回聚簇索引查找，然后依次回溯到可见版本(1, 1, ’a)。</p>
+<p>还要判断二级索引列值和聚集索引列值是否一致，因此可以返回记录(1, 1, ’a’)。</p>
+<p>接着读取记录(‘b’, 1)，不可见，需要回聚簇索引查找，依然回溯到可见版本(1, 1, ’a’)，但此时二级索引列值和聚集索引列值不一致（’a’ != ’b’），因此(’b’, 1)不符合条件。</p>
+<p>再读取记录(‘c’, 1)，不可见，需要回聚簇索引查找，依然回溯到可见版本(1, 1, ’a’)，但此时二级索引列值和聚集索引列值也不一致（’a’ != ’c’），因此(’c’, 1)也不符合条件。</p>
+<p>最终返回符合条件的记录为(1, 1, ’a’)。</p>
+<p>另外，除了判断可见性外，还需要判断是否被标记为删除。</p>
+<p>通过二级索引扫描记录时需要从聚簇索引判断其可见性，存在性能问题。</p>
+<p>MySQL8.0的优化方法是缓存聚簇索引的游标记录，下次扫描时可以重用，避免不必要的重复回溯。</p>
+<hr>
+<p>Index Condition Pushdown并不会受到MVCC的影响。</p>
+<p>在通过聚簇索引或二级索引查找记录时，会优先判断记录的可见性。</p>
+<p>例如，select * from t1 force index(idx) where c2 &gt; 1 and c3 = 2;。</p>
+<p>从二级索引扫描到记录不可见时，这时候需要回聚簇索引判断可见性，但在这之前会优先判断条件c3 = 2是否满足，满足条件才会扫描聚簇索引，否则忽略。</p>
+<hr>
+<p>semi-consistent read</p>
+<p>semi-consistent read是在InnoDB多版本基础上的针对update的优化。</p>
+<p>指在读已提交级别或开启innodb_locks_unsafe_for_binlog的情况下，当update语句读取的行正在被其他会话更新时，不直接加锁等待，而是先读取此行最近的一个历史版本。</p>
+<p>如果此版本符合where条件，则重新读取此行并加锁，如果不符合则忽略此行，避免了一些锁等待。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 初始化</span>
+<span class="token comment" spellcheck="true">-- insert into table t2 (c1, c2) values(1, 1);</span>
+
+<span class="token comment" spellcheck="true">-- session1: </span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">2</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session2: </span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">3</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- update t2 set c2 = 3 where c2 = 1;</span></code></pre>
+<p>在可重复读级别下，session2会被阻塞。</p>
+<p>而在读已提交级别下，会走semi-consistent read，session2的更新成功。</p>
+<p>session2在执行update时，先读取到(1, 2)这行记录，发现已被session1持有锁，于是读取最近的一个历史版本(1, 1)，发现此记录不符合where条件，于是忽略此记录，结果更新0行返回。</p>
+<p>如果session2更新条件变为<code>update t2 set c2 = 3 where c2 = 1;</code>，那么session2将等待。</p>
+<p>session2在执行update时，先读取到(1, 2)这行记录，发现已被session1持有锁，于是读取最近的一个历史版本(1, 1)，发现此记录符合where条件，于是重新读此行加锁等待。</p>
+<p>semi-consistent read的问题：某些情况会破坏事务的串行化。</p>
+<p>可串行化是指session1和session2并发执行完成后，最终结果应该为以下情况中的一种：</p>
+<ul>
+<li><p>session1先执行完成后session2再执行</p>
+</li>
+<li><p>session2先执行完成后session1再执行</p>
+</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 初始化</span>
+<span class="token comment" spellcheck="true">-- insert into table t2 (c1, c2) values(1, 1), (10, 10);</span>
+
+<span class="token comment" spellcheck="true">-- session1: </span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">2</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session2: </span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">3</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session1: </span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">20</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+<span class="token keyword">commit</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session2: </span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">30</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">20</span><span class="token punctuation">;</span>
+<span class="token keyword">commit</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session3: </span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t2<span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- (1, 2), (10, 30)</span></code></pre>
+<p>如果session1先执行完成后session2再执行：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- session1: </span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">2</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">20</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+<span class="token keyword">commit</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session2: </span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">3</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">30</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">20</span><span class="token punctuation">;</span>
+<span class="token keyword">commit</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session3: </span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t2<span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- (1, 3), (10, 30)</span></code></pre>
+<p>而如果session2先执行完成后session1再执行：</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- session2: </span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">3</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">30</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">20</span><span class="token punctuation">;</span>
+<span class="token keyword">commit</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session1: </span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">2</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword">update</span> t2 <span class="token keyword">set</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">20</span> <span class="token keyword">where</span> <span class="token number">c2</span> <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+<span class="token keyword">commit</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">-- session3: </span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> t2<span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">-- (1, 2), (10, 20)</span></code></pre>
+<p>在可重复读级别下不存在上述问题。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>
