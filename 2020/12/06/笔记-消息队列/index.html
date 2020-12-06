@@ -1,0 +1,470 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-消息队列 | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="为什么使用消息队列？
+异步解耦，水平扩展，流量削峰，消息推送。
+核心有三个：解耦、异步、削峰。
+
+解耦：
+
+A系统执行完某个功能后，需要调用别的系统的接口通知它们。
+如果有新的系统需要通知呢？
+如果突然有系统不需要通知了呢？
+如果系统改了接口呢？
+如果接口调用失败了呢？
+都可以通过MQ解决。
+
+异步">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-消息队列" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-消息队列</h2>
+				
+				<div>
+					<div class="post-time">2020-12-06</div>
+				</div>
+				
+				<div class="article-content">
+				<p>为什么使用消息队列？</p>
+<p>异步解耦，水平扩展，流量削峰，消息推送。</p>
+<p>核心有三个：解耦、异步、削峰。</p>
+<ul>
+<li>解耦：</li>
+</ul>
+<p>A系统执行完某个功能后，需要调用别的系统的接口通知它们。</p>
+<p>如果有新的系统需要通知呢？</p>
+<p>如果突然有系统不需要通知了呢？</p>
+<p>如果系统改了接口呢？</p>
+<p>如果接口调用失败了呢？</p>
+<p>都可以通过MQ解决。</p>
+<ul>
+<li>异步：</li>
+</ul>
+<p>系统处理请求，需要写数据库，非常耗时，但是请求并发量高，吞吐量却很低。</p>
+<p>或许并不需要等待写入数据库成功后才返回，那么可以通过MQ解决。</p>
+<ul>
+<li>削峰：</li>
+</ul>
+<p>系统突然来了流量，并发请求数暴增，但是系统的处理能力有限，容易被拖垮。</p>
+<p>或许可以通过MQ的消息堆积功能处理。</p>
+<hr>
+<p>消息队列的缺点？</p>
+<p>系统可用性降低：引入外部依赖，强依赖MQ。</p>
+<p>系统复杂性提高：重复消费？消息丢失？消息顺序性？</p>
+<p>一致性问题：系统A处理完后发送MQ消息，BCD三个系统消费，BD成功，C失败。</p>
+<hr>
+<p>消息队列的高可用性?</p>
+<ul>
+<li>RabbitMQ</li>
+</ul>
+<ol>
+<li>普通集群模式</li>
+</ol>
+<p>在多台机器上启动多个RabbitMQ实例，每个实例都有同步队列的元数据，但队列和消息只存放在一个RabbitMQ实例上。</p>
+<p>消费时如果连接到了另外的RabbitMQ实例，该实例会帮忙从队列所在的RabbitMQ实例上拉取数据。</p>
+<p>有消息中转的开销，也没有很好地缓解RabbitMQ实例的压力。</p>
+<p>如果队列所在的RabbitMQ实例宕机，那么必须等该实例恢复，否则不可用。</p>
+<p>普通集群模式的意义大概就是将队列分摊到不同的RabbitMQ实例上。</p>
+<ol start="2">
+<li>镜像集群模式</li>
+</ol>
+<p>高可用模式，队列的元数据和消息都可以存在于多个RabbitMQ实例上，通过环形的镜像队列同步。</p>
+<p>任何一个实例宕机了，都会有新的实例接任，实现高可用。</p>
+<p>但这种环形同步数据的方式对于网络要求很高，只适合局域网内使用。</p>
+<p>消息的读写都是通过该队列的主节点进行的，从节点只是中转和备份。</p>
+<p>和普通集群模式一样，队列是不支持分布式部署的，所以对单机压力缓解有限。</p>
+<ul>
+<li>Kafka</li>
+</ul>
+<p>Topic下划分多个Partition，每个分区可以有一个Leader副本和多个Follower副本。</p>
+<p>同时Topic下的分区可以存在于不同的Broker节点，实现水平扩展，是真正的分布式架构。</p>
+<p>Kafka通过ISR集合的副本同步机制实现高可用，同时权衡了性能与可靠性。</p>
+<p>客户端只和Leader副本通信，进行消息发布和消费，不支持主写从读。</p>
+<p>Leader副本宕机时，通过KafkaController进行选举，KafkaController则可以通过ZooKeeper实现选举切换。</p>
+<p>客户端只需要连上任何一台Broker，就可以获取相关的元数据信息。</p>
+<ul>
+<li>RocketMQ</li>
+</ul>
+<ol>
+<li>NameServer</li>
+</ol>
+<p>NameServer稳定性是很高的，不会有频繁的读写，开销非常小。</p>
+<p>而且无状态，互相独立，彼此不相互通信，互不影响。</p>
+<p>NameServer地址列表的发现有两种，一种是启动时显式指定，一种是通过指定的HTTP接口定时更新。</p>
+<p>客户端本地缓存有Topic的路由信息，否则从NameServer获取，此时只有所有NameServer都不可用，系统才不可用。</p>
+<ol start="2">
+<li>Broker</li>
+</ol>
+<p>Broker会和所有NameServer保持长连接，定时通过心跳向所有NameServer同步自身的Topic路由信息。</p>
+<p>如果心跳超时，那么该Broker对应的Topic路由信息会被移除，但不会通知生产者和消费者。</p>
+<p>一个Topic分布在多个Broker上，一个Broker可以配置多个Topic，多对多，实现负载均衡。</p>
+<p>Broker集群配置：多主多从，主从同步。</p>
+<p>Slave主动向Master发起同步请求，同时携带本地的CommitLog偏移，Master根据偏移响应Slave，如此一来一回。</p>
+<p>不过现在RocketMQ也支持主从切换了，即DLedger。</p>
+<ol start="3">
+<li>Consumer</li>
+</ol>
+<p>Consumer和一个NameServer保持长连接（没有心跳），如果NameServer宕机，自动连接下一个NameServer。</p>
+<p>Consumer定时从NameServer获取Topic信息。</p>
+<p>Consumer和关联的所有Broker保持长连接，定时向所有Broker发送心跳。</p>
+<p>Broker定时扫描清理无效的Consumer连接，并通知该消费者分组的所有Consumer，分组内Consumer重新分配队列（重平衡）。</p>
+<p>集群消费模式下，一个消费者集群多个Consumer共同消费一个Topic的多个队列，一个队列只会被一个消费者消费，实现负载均衡。</p>
+<p>如果某个Consumer宕机，分组内其它Consumer会接替并继续消费。</p>
+<ol start="4">
+<li>Producer</li>
+</ol>
+<p>Producer和一个NameServer保持长连接（没有心跳），如果NameServer宕机，自动连接下一个NameServer。</p>
+<p>Producer定时从NameServer获取Topic信息。</p>
+<p>在这个时间间隔内，生产者对于Broker的状态是无感知的，如果此时向已宕机的Broker发送消息，分不同情况处理。</p>
+<p>如果生产者启用了故障延迟（sendLatencyFaultEnable），如果对一个MessageQueue发送失败，会标记该Broker，此时只有当该Topic所有Broker都宕机才不可用。</p>
+<p>如果生产者没有启用故障延迟，则只是轮询MessageQueue发送，可能会抛出异常。</p>
+<p>Producer和关联的所有Broker保持长连接，定时向所有Broker发送心跳。</p>
+<hr>
+<p>如何保证消息不被重复消费（消息消费的幂等性）？</p>
+<p>RabbitMQ、RocketMQ、Kafka，都可能出现重复消费。</p>
+<p>比如Kafka，消费者消费消息后，提交消费偏移前宕机了，该消息就会被重复消费。</p>
+<p>重复消费的问题MQ很难处理，因为很难保证消费消息和业务操作的原子性。</p>
+<p>如果要解决的话应该也是可以的，比如分布式事务常见的二阶段提交，但肯定会使代码复杂化，性能下降，得不偿失。</p>
+<p>所以重复消费的问题，不应该由消息队列来保证，而是由业务自己保证幂等或去重。</p>
+<p>简单点的处理方式就是数据库的唯一约束，或者用Redis判断业务Id是否重复。</p>
+<hr>
+<p>消息队列的可靠性（不丢失消息）？</p>
+<p>对于消息传输的可靠性，消息队列通常可分三个阶段，生产者发送消息、服务端持久化、消息投递给消费者。</p>
+<ul>
+<li>RabbitMQ</li>
+</ul>
+<p>对于生产者发送阶段，可以使用RabbitMQ的事务或者PublisherConfirm机制。</p>
+<p>事务是AMQP提供的功能，保证提交后消息一定被发送到服务端，但吞吐量会极大下降。</p>
+<p>PublisherConfirm机制通过对消息Id的应答确保可靠性，支持串行，批量，异步回调三种。</p>
+<p>对于服务端持久化阶段，首先必须设置队列和消息的持久化，保证宕机恢复（异步刷盘可能有极小概率丢失）。</p>
+<p>使用持久化后，事务或者PublisherConfirm机制都会保证刷盘（这里不确定是否是同步刷盘）后才返回。</p>
+<p>对于消息投递给消费者阶段，必须关闭autoAck，使用手动确认，当然如果手动拒绝，那是另外一个话题。</p>
+<ul>
+<li>Kafka</li>
+</ul>
+<p>对于生产者发送阶段，设置<code>request.required.acks = all</code>，保证ISR中的所有副本都成功写入后才能收到成功响应；副本因子<code>replication.factor &gt; 1</code>，保证存在多副本；<code>min.insync.replicas &gt; 1</code>，保证ISR中有Follower副本写入后才能响应；还有必须确认非ISR集合中的副本不能成为Leader副本（因为可以通过配置使非ISR中的副本被选举）；同时生产者使用同步（默认）的方式发送数据，有异常则重发消息（<code>retries</code>）。</p>
+<p>对于服务端持久化阶段，其实Kafka是可以通过配置使用同步刷盘的，不过需要斟酌使用。</p>
+<p>对于消息投递给消费者阶段，必须关闭自动提交，使用手动提交消费偏移。</p>
+<ul>
+<li>RocketMQ</li>
+</ul>
+<p>多主多从，同步刷盘。</p>
+<p>RocketMQ支持主从同步，不支持主从切换（不讨论DLedger），主节点宕机后，消息不可写入，但从节点可以提供消息消费功能。</p>
+<p>从节点不能保证主节点的消息100%都同步过来，所以可能会有少量的消息丢失。</p>
+<p>但消息最终不会丢失，因为主节点恢复后，未同步的消息会被消费掉。</p>
+<p>如果对可靠性有极其严格的要求，可以通过配置使用同步刷盘。</p>
+<p>消费都是批量的（不过BatchMaxSize好像默认1）。</p>
+<p>并发消费 &amp;&amp; 广播模式，如果消费失败，会忽略并丢弃。</p>
+<p>并发消费 &amp;&amp; 集群模式，消费失败的消息会跳过，发回Broker重新消费，发回失败则会尝试重新消费，不断循环，同时，提交的是最小偏移，不会提交未消费的消息，但可能导致重复消费。</p>
+<p>顺序消费时，消息消费失败会发回Broker重试，直到超过重试次数，则将消息发回Broker的死信队列，不会再次消费。</p>
+<hr>
+<p>消息队列的消息顺序性？</p>
+<p>如果消息消费失败后，消费者把消息发回队列重新消费，不保证顺序。</p>
+<ul>
+<li>RabbitMQ</li>
+</ul>
+<p>一个Queue，一个Consumer，单线程消费。</p>
+<ul>
+<li>Kafka</li>
+</ul>
+<p>一个Topic，一个Partition，一个Consumer，单线程消费。</p>
+<ul>
+<li>RocketMQ</li>
+</ul>
+<p>RocketMQ支持顺序消费和并发消费，默认是并发消费。</p>
+<p>并发消费下，Consumer拉取到消息后回被放入本地的ProcessQueue，多个线程同时处理队列中的消息。</p>
+<p>同时消息消费失败时会跳过该消息，并将消息发回Broker，下次继续消费。</p>
+<p>如果要实现顺序消费，Producer需要单线程同步顺序发送消息，且发送到同一个Queue，同一个Broker，因为顺序存储，所以是有序的。</p>
+<p>顺序消费下，一个Queue同时只允许一个Consumer消费，一般是集群消费模式。</p>
+<p>如果是新分配的MessageQueue，Consumer只有先向Broker获取到Queue的分布式锁才能消费消息。</p>
+<p>同时消息消费失败时会重试，直到超过最大次数，则将消息发回Broker的死信队列，不会再次消费。</p>
+<p>顺序消费需要注意消息堆积的问题。</p>
+<p>顺序消息不是绝对的，两条顺序消息MsgA和MsgB，MsgA发到BrokerA的QueueA，之后BrokerA关闭，MsgB发到BrokerB的QueueB，这样就不能保证顺序消费了。</p>
+<hr>
+<p>消息积压问题？</p>
+<p>如果，消费端出了故障，消息积压在消息队列中。</p>
+<p>如果，消费端无法立即恢复，或者说，即使恢复了，也需要很久才能消化。</p>
+<p>Kafka这种能处理大量消息积压的消息队列还好，但磁盘也可能写满，RabbitMQ这种，就，嗯。</p>
+<p>如果是RabbitMQ这种，还设置了TTL消息过期时间，消息积压过期后可能会被清理，就，嗯。</p>
+<p>Kafka的话，可以临时重分配多几个分区，提高消费速度，但是已经写入分区的消息不能重新分配。</p>
+<hr>
+<p>如何设计消息队列？</p>
+<p>可以直接抄袭火箭和甲虫的思路。</p>
+<hr>
+<p>MQ选型：功能维度、性能维度（吞吐量）、可靠性、可用性、运维（监控、告警、容灾）、社区生态。</p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>RabbitMQ</th>
+<th>RocketMQ</th>
+<th>Kafka</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单机吞吐量/秒</td>
+<td>万级</td>
+<td>十万级</td>
+<td>十万级+</td>
+</tr>
+<tr>
+<td>消息可靠性</td>
+<td>有条件可靠</td>
+<td>有条件可靠</td>
+<td>有条件可靠</td>
+</tr>
+<tr>
+<td>消息堆积能力</td>
+<td>支持，但性能不好</td>
+<td>亿级别</td>
+<td>亿级别</td>
+</tr>
+<tr>
+<td>消息实时性</td>
+<td>微秒级，支持推和拉</td>
+<td>毫秒级，支持推和拉（但都是通过主动拉取实现）</td>
+<td>毫秒级，长轮询</td>
+</tr>
+<tr>
+<td>顺序消息</td>
+<td>有条件支持</td>
+<td>有条件支持，Broker宕机后不能保证</td>
+<td>有条件支持，Broker宕机后不能保证</td>
+</tr>
+<tr>
+<td>延迟消息</td>
+<td>支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>死信</td>
+<td>支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>可用性</td>
+<td>基于镜像队列的主从架构，自动选主</td>
+<td>分布式，DLedger支持主从切换</td>
+<td>分布式，自动选主</td>
+</tr>
+</tbody></table>
+<hr>
+<p>对于RocketMQ，不同Topic/Queue都顺序写入CommitLog，Topic数量对吞吐量没有太大影响。</p>
+<p>只有一个CommitLog文件在写，其他在读，顺序写，读可能是随机。</p>
+<p>对于Kafka，不同Topic/Partition文件不同，Partition内顺序写入，分区过多，全局来看是随机写入，吞吐量会下降。</p>
+<hr>
+<p>RocketMQ对消息和索引文件的读写都基于MappedBuffer，内存映射；支持FileChannel写入，但不是FileChannel#transferTo，而是先写缓冲再刷盘。</p>
+<p>Kafka对消息的读写基于FileChannel#transferTo，零拷贝；对索引文件的读写基于MappedBuffer，mmap。</p>
+<p>RocketMQ和Kafka吞吐量高的原因是，使用了顺序写、Page Cache和异步刷盘。</p>
+<hr>
+<p>RocketMQ的消息在服务端按消息的存储格式组织然后持久化。</p>
+<p>Kafka的消息在客户端就已经按消息存储协议组织好数据，服务端可以直接写入，缓解了服务端的压力。</p>
+<hr>
+<p>Kafka发送消息使用批处理，先缓存在双端队列，极大提高吞吐量，但可能造成消息丢失和重复。</p>
+<p>RocketMQ只能批量消费消息，不支持批量发送消息。</p>
+<hr>
+<p>RabbitMQ的延时消息通过设置队列TTL和死信实现。</p>
+<p>消息在队列中超出TTL过期后被加入死信，消费者实际订阅的是死信队列。</p>
+<p>RocketMQ也是类似，延时消息到达Broker后，修改Topic为SCHEDULE_TOPIC_XXXX，QueueId为DelayLevel - 1。</p>
+<p>从CommitLog中更新ConsumeQueue时，将TagsCode换成时间戳，因为没有Consumer订阅，不需要Tag过滤。</p>
+<p>对不同延时级别的Topic，有单独的任务线程处理，遍历ConsumeQueue，根据TagsCode取出到期的消息，恢复原本的Topic和QueueId，再次写入CommitLog。</p>
+<p>然后再次更新ConsumeQueue，这样就可以被消费了。</p>
+<p>通过固定的延时级别避免了消息排序的开销。</p>
+<p>Kafka并不原生具备延时队列。</p>
+<p>延时消息的套路是，消息先投递到内部的Topic，内部Topic对消费者不可见，消息到期后，再投递到真实的Topic中，实现可见并消费。</p>
+<hr>
+<p>重试队列可以看做延时队列，一般分多个重试等级，每个重试等级设置投递延时，重试次数越多投递延时就越大。</p>
+<p>为每个Topic设置重试队列，消息第一次消费失败入重试队列Q1，Q1的延时为5s，5s后重新投递。</p>
+<p>如果消息再次消费失败，则入重试队列Q2，Q2的延时为10s，10s后再次投递。</p>
+<p>Kafka无死信，死信是Consumer无法处理的消息，超过重试次数后，为了可靠性，不丢弃，投递到死信队列中。</p>
+<p>RocketMQ支持重试和死信，Consumer消费失败，会将消息发回，并要求Broker重发。</p>
+<p>发回Broker的消息的Topic会被替换为%RETRY%开头，根据重试次数不同，延时级别也不同，重新写入CommitLog。</p>
+<p>如果已经超出消息的最大重消费次数，那么会将消息放入死信队列，Topic为%DLQ% + ConsumerGroup。</p>
+<hr>
+<p>RabbitMQ是典型的点对点，Kafka是典型的发布订阅模式。</p>
+<p>Kafka和RocketMQ都支持点对点和发布订阅，但RabbitMQ不支持队列的广播消费。</p>
+<p>RocketMQ的消费模式分为集群模式、广播模式。</p>
+<ol>
+<li>集群模式：</li>
+</ol>
+<p>一条消息只被集群中一个消费者消费，消费进度必须存储在Broker。</p>
+<p>比如消费者宕机后，由集群别的消费者继续消费，需要由Broker协调重新消费的偏移。</p>
+<p>消费者除了定时任务向Broker同步消费进度，拉取消息时也可能会顺便同步。</p>
+<p>消费进度保存在Master内存，定时持久化，Slave的消费进度是定时从Master拉取同步过来的。</p>
+<p>默认不允许从Slave拉取消息，但即使从Slave拉取消息，也只有Master才会保存Consumer消费进度。</p>
+<p>假如Master宕机，则Slave负责消息拉取，Master恢复时，Consumer拉取消息时也会更新消费进度（靠这个同步）。</p>
+<p>结构：Topic@ConsumerGroup - QueueId - QueueOffset。</p>
+<ol start="2">
+<li>广播模式：</li>
+</ol>
+<p>每条消息都被每一个消费者消费，消费进度可以存储在消费端本地。</p>
+<hr>
+<p>流量削峰依赖于消息堆积能力，消息堆积分内存式堆积和磁盘式堆积。</p>
+<p>RabbitMQ是典型的内存式堆积，但会将内存中的消息换页到磁盘，或者使用惰性队列将消息直接持久化至磁盘。</p>
+<p>Linux使用磁盘的一部分作为swap分区，把当前非活跃进程调入swap分区，把内存空出来让给活跃的进程。</p>
+<p>应当尽量避免这种内存交换。</p>
+<p>Kafka和RocketMQ是典型的磁盘式堆积，所有消息都存储在磁盘中。</p>
+<hr>
+<p>Kafka可以通过消费者的ConsumerInterceptor接口实现消息过滤，RocketMQ可以使用FilterServer。</p>
+<p>RocketMQ的Broker可以根据Tag的哈希值过滤，因为可能存在哈希冲突，Consumer需要根据字符串再次过滤。</p>
+<p>之所以不直接使用字符串，是因为ConsumeQueue为了性能设计为定长单元，不能使用字符串。</p>
+<hr>
+<p>消息轨迹指的是消息从Producer发出，经由Broker存储，再到Consumer消费的整个过程中，完整链路信息。</p>
+<p>常见的实现方式是封装客户端，实现埋点逻辑。</p>
+<p>RabbitMQ和RocketMQ都支持消息轨迹，Kafka需要自己实现。</p>
+<p>比如将轨迹信息保存到Kafka的某个Topic中，Producer在将消息发送到用户Topic后（或者Consumer在拉取到消息消费之后）将轨迹信息发送到轨迹Topic中。</p>
+<hr>
+<p>流量控制，针对发送方和接收方速度不匹配的问题。</p>
+<p>RabbitMQ会对生产者和消费者进行流控，如果内存和磁盘出现告警，会阻塞生产者全部的连接（呵呵）。</p>
+<p>RabbitMQ对消费者的流控是根据消费者未应答的消息数决定的，如果超过阈值，则停止向消费者推送消息。</p>
+<p>RocketMQ会对消费者进行限流，有Consumer层面和Broker层面。</p>
+<p>如果消费者本地缓存的拉取消息数量或大小超过阈值，会触发消费端的流控，放弃本次拉取，并延迟下一个拉取任务。</p>
+<p>如果消费者未处理的消息过多，超过消息拉取偏移阈值，Broker也可能提交延时任务，将PullRequest放回任务队列，然后返回。</p>
+<hr>
+<p>Kafka支持单个生产者单分区单会话的消息幂等性，RabbitMQ不支持。</p>
+<p>而消费者的幂等不是由消息中间件来保证的。</p>
+<p>如果要保证全局的幂等，那么需要引入外部资源，比如唯一标识，去重表。</p>
+<hr>
+<p>Kafka、RocketMQ、RabbitMQ都支持事务消息，但实现和侧重点有所不同。</p>
+<hr>
+<p>还有消息回溯，RabbitMQ不支持，Kafka和RocketMQ支持（都有索引文件）。</p>
+<hr>
+<p>Kafka吞吐量非常高，消息堆积能力很高，但功能比较少，如缺失延时队列功能，适合日志、大数据、流式处理场景。</p>
+<p>RocketMQ和RabbitMQ功能较丰富，适合一般业务场景（比较推荐RocketMQ）。</p>
+<hr>
+<p>RocketMQ自动创建Topic的实现：</p>
+<p>通过内置的Topic从NameServer获取并更新Topic路由信息，如果Broker开启了自动创建Topic，则NameServer会存在对应的TBW102路由。</p>
+<p>该Topic的消息会发到对应Broker的默认TBW102主题下，Broker收到消息后才自动创建对应Topic及向NameServer注册路由，就是自动创建Topic。</p>
+<p>官方建议生产环境关闭自动创建Topic的功能，因为发送时会选择一个Broker发送消息。</p>
+<p>对应的Broker才会自动创建和注册Topic，结果只有一个Broker向NameServer注册了该Topic。</p>
+<p>Producer定时从NameServer更新路由信息，如果这段时间内没有再发消息，那么别的Broker就不会注册该Topic。</p>
+<p>之后则从NameServer获取路由发送，这样无法完成负载均衡。</p>
+<hr>
+<p>RocketMQ的DLedger基于Raft协议，支持主从切换。</p>
+<p>去年看的时候好像就有了，不过没咋注意，现在发觉还挺重要的（不过现在不想看了）。</p>
+<p>翻了一下，如果启用了DLedger，那么Commitlog的实现则是DLedgerCommitLog。</p>
+<p>原本的CommitLog文件结构外包了一层，类似不同层的网络协议那样，消息体包裹原本的消息。</p>
+<p>Raft协议保证各个节点的CommitLog一致，ConsumeQueue、IndexFile都是基于CommitLog生成。</p>
+<p>客户端向Broker集群发起写请求时，由Leader节点处理，首先写入Leader节点，然后广播给Follower节点，如果一半以上的集群节点都成功写入，则向客户端返回成功。</p>
+<p>接下来就是Raft日志复制的那一套了，日志编号，Leader任期等等。</p>
+<p><del>去年看的Raft协议，现在有点忘了。。。算了。。。</del></p>
+<p>消息发到Leader后，被标记为uncommitted，等到收到过半的ack后，把消息标记为committed。</p>
+<p>然后通知Follower也更新为committed。</p>
+<p>这里的Raft复制只保证CommitLog的一致性，消费进度还是从主动从主拉取的，所以宕机后还是可能存在重复消费。</p>
+<p>不过问题不大，因为消费端自己内存也有一份消费进度，一般不也重启。</p>
+<p>消息不会丢失，因为新的Leader必须得到集群内过半节点认可，而发起投票的节点日志进度比自己小的话，会被拒绝。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

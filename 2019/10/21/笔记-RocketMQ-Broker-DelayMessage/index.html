@@ -113,7 +113,7 @@
                 <span class="token comment" spellcheck="true">// 修改QueueId</span>
                 msg<span class="token punctuation">.</span><span class="token function">setQueueId</span><span class="token punctuation">(</span>queueId<span class="token punctuation">)</span><span class="token punctuation">;</span>
                 <span class="token comment" spellcheck="true">/*
-                 * 简单说一下延时消息的逻辑：
+                 * 延时消息的逻辑：
                  * 延时消息到达Broker后，修改Topic为SCHEDULE_TOPIC_XXXX，QueueId为DelayLevel-1
                  * ReputMessageService将消息从CommitLog中更新ConsumeQueue时，将TagsCode换成时间戳，因为延时消息不需要Tag过滤，没有Consumer订阅
                  * DeliverDelayedMessageTimerTask任务线程遍历ConsumeQueue，根据TagsCode取出到时的消息，恢复原本的Topic和QueueId，再次写入CommitLog
