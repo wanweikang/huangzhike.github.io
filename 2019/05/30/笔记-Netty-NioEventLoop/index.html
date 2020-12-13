@@ -400,12 +400,14 @@ AbstractEventExecutor
             unsafe<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span>unsafe<span class="token punctuation">.</span><span class="token function">voidPromise</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
-<p>一个NioEventLoopGroup下包含多个NioEventLoop。</p>
-<p>一个NioEventLoop中包含一个Selector，一个任务队列，一个调度任务队列。</p>
-<p>一个NioEventLoop的Selector上可以注册多个Channel。</p>
-<p>对于Boss，轮询到的是基本是连接事件（OP_ACCEPT）。</p>
-<p>对于Worker，轮询到的基本是IO读写事件。</p>
-<p>在非IO线程调用Channel的各种方法时，将相关操作封装成一个任务并放入任务队列中，保证相关操作在IO线程中串行执行。</p>
+<p>NioEventLoopGroup下包含多个NioEventLoop。</p>
+<p>NioEventLoop包含一个Selector，一个任务队列，一个调度任务队列。</p>
+<p>NioEventLoop的Selector上可以注册多个Channel。</p>
+<p>对于Boss，轮询到的是是连接事件（OP_ACCEPT）。</p>
+<p>对于Worker，轮询到的是IO读写事件。</p>
+<p>每个Channel分配一个EventLoop，多个Channel可能共享一个EventLoop。</p>
+<p>一个Channel上的所有读写事件都只会在一个EventLoop上处理。</p>
+<p>在非IO线程调用Channel的方法时，将相关操作封装成一个任务并放入任务队列，保证相关操作在IO线程中串行执行。</p>
 <p>SingleThreadEventExecutor#execute</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span>Runnable task<span class="token punctuation">)</span> <span class="token punctuation">{</span>

@@ -93,8 +93,8 @@
 <p>刚开始看的时候感觉似乎有点<del>顺利</del>？后来看到后面协议处理，怎么这么多循环状态还有缓冲😬？</p>
 <p>还好之前有点基础（所以说基础很重要啊），好歹还是在进度内看完了。</p>
 <p>读源码最舒服的时候就是看完之后尘埃落定，画上句号的一刻了，虽然还有很多地方没看/没看懂（比如转发和异步），但是已经不想再看了😬。</p>
+<p>Tomcat版本：9.0.24。</p>
 <p>下一个源码是RocketMQ。</p>
-<p>Tomcat版本：9.0.24，因为Tomcat源码比较复杂，为了方便阅读，可能会省略一些代码。</p>
 <hr>
 <p>VM Option</p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// -D设置JVM的系统属性，System#setProperty，System#getProperty</span>
@@ -242,22 +242,19 @@
 
     <span class="token punctuation">}</span></code></pre>
 <p><img src="/imgs/Tomcat_ClassLoader.png" alt="Tomcat ClassLoader"></p>
+<p>catalina.properties中server.loader，shared.loader默认为空，Common、Catalina、Shared是同一个类加载器。</p>
+<p>如果需要分开，可以配置server.loader和shared.loader。</p>
 <ul>
-<li><p>catalina.properties中server.loader，shared.loader默认为空，所以Common、Catalina、Shared是同一个类加载器</p>
+<li><p>Common：父类加载器为AppClassLoader，全局使用。</p>
 </li>
-<li><p>如果需要分开，可以配置server.loader和shared.loader：</p>
+<li><p>Catalina：父类加载器为CommonClassLoader，加载Tomcat应用。</p>
 </li>
-<li><p>Common：父类加载器为AppClassLoader，全局使用</p>
+<li><p>Shared：父类加载器为CommonClassLoader，所有Web应用的父类加载器。</p>
 </li>
-<li><p>Catalina：父类加载器为CommonClassLoader，加载Tomcat应用</p>
-</li>
-<li><p>Shared：父类加载器为CommonClassLoader，所有Web应用的父类加载器</p>
-</li>
-<li><p>Webapp：父类加载器为SharedClassLoader，加载/WEB-INF/classes/，/WEB-INF/lib/，只对当前Web应用可见</p>
-</li>
-<li><p>同一个Web容器上两个Web应用应该相互隔离，不能用一个类加载器</p>
+<li><p>Webapp：父类加载器为SharedClassLoader，加载/WEB-INF/classes/，/WEB-INF/lib/，只对当前应用可见。</p>
 </li>
 </ul>
+<p>同一个Web容器上两个Web应用应该相互隔离，不能用一个类加载器。</p>
 <p>Bootstrap#initClassLoaders</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">initClassLoaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">try</span> <span class="token punctuation">{</span>

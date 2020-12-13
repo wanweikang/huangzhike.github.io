@@ -349,11 +349,7 @@
                 protocolHandlerClassName <span class="token operator">=</span> <span class="token string">"org.apache.coyote.http11.Http11NioProtocol"</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"AJP/1.3"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>protocol<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>aprConnector<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                protocolHandlerClassName <span class="token operator">=</span> <span class="token string">"org.apache.coyote.ajp.AjpAprProtocol"</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                protocolHandlerClassName <span class="token operator">=</span> <span class="token string">"org.apache.coyote.ajp.AjpNioProtocol"</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
         <span class="token comment" spellcheck="true">//</span>
         <span class="token keyword">else</span> <span class="token punctuation">{</span>
@@ -477,7 +473,7 @@
         serverSock<span class="token punctuation">.</span><span class="token function">configureBlocking</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//mimic APR behavior</span>
     <span class="token punctuation">}</span></code></pre>
 <p>关于BACKLOG参数，<a href="https://www.cnblogs.com/grey-wolf/p/10999342.htmll" target="_blank" rel="noopener">参考了这篇文章</a>。</p>
-<p>这部分似乎是“TCP/IP详解 卷2：实现”的内容？卷二还没看，计划是明年先看C/C++，感觉总得看看Linux源码（求求你做个人吧）。</p>
+<p>这部分似乎是“TCP/IP详解 卷2：实现”的内容？。</p>
 <p><img src="/imgs/TCP_backlog.png" alt="TCP BACKLOG"></p>
 <p>NioSelectorPool#open</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">open</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>

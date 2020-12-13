@@ -1018,6 +1018,11 @@
             <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
+<hr>
+<p>关于异步Servlet：</p>
+<p>Tomcat的工作线程在Request#startAsync后，直接就结束了，返回线程池中，不会保存信息。</p>
+<p>调用者Request#startAsync后，开启了一个线程处理请求，同时把上下文缓存在AsyncContext，如request和response这些。</p>
+<p>调用者开启的线程处理完后，通知Tomcat，Tomcat再从工作线程池中取出一个线程执行相关的网络IO逻辑。</p>
 
 				</div>
 				<!-- about -->
