@@ -19,8 +19,7 @@
 之前领导想做数据异构，接入ES搜索，好吧，没接触过ES，怎么也得好好调研一下吧。
 虽然对这块不感冒。
 
-
-关系型数据库 -&amp;gt; 表 -&amp;gt; 行">
+ES是基于Lucene实现的，Lucene是一">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -99,19 +98,32 @@
 <p>之前领导想做数据异构，接入ES搜索，好吧，没接触过ES，怎么也得好好调研一下吧。</p>
 <p><del>虽然对这块不感冒。</del></p>
 <hr>
+<p>ES是基于Lucene实现的，Lucene是一个全文检索引擎。</p>
+<p>使用ES的原因是，数据量太大了，MySQL搜索过慢，而ES支持数据分片，分布式非常方便扩展。</p>
+<p>而且搜索的时候，比如订单查询，起码有十多个查询条件，显然这种多搜索条件下，MySQL的联合索引是不合适的，也不可能给每个查询列建索引。</p>
+<p>而ES可以很高效地支持这种情况，还有分词，对一些模糊查询还是比MySQL高效很多的。</p>
+<hr>
 <ul>
-<li><p>关系型数据库 -&gt; 表 -&gt; 行 -&gt; 列</p>
+<li><p>关系型数据库：表 -&gt; 行 -&gt; 列</p>
 </li>
-<li><p>ES -&gt; 索引(Index) -&gt; 类型(Type) -&gt; 文档(Docment) -&gt; 字段(Field)</p>
+<li><p>ES：索引(Index) -&gt; <del>类型(Type)</del> -&gt; 文档(Docment) -&gt; 字段(Field)</p>
 </li>
 </ul>
 <p>ES是面向文档型数据库，一个JSON文档对应关系型数据库的一行，类型(Type)即将废弃，不建议使用。</p>
+<hr>
 <p>常见的索引：</p>
-<p>散列表：可以快速地精确匹配，但不适合范围的查找，因为是无序的，必须遍历一遍。</p>
-<p>有序数组：查询效率高，可以通过二分查找定位，因为是有序的，所以支持区间查询，但插入性能低，必须将后面的数据全部后移。</p>
-<p>平衡二叉树：区间查询效率不高。</p>
-<p>跳表：虽然有序链表不能通过数组下标进行二分查找，但可以通过多级的索引实现二分查找。</p>
-<p>B+树：略，参考InnoDB。</p>
+<ol>
+<li><p>散列表：可以快速地精确匹配，但不适合范围查找，因为是乱序的。</p>
+</li>
+<li><p>有序数组：查询效率高，可以通过二分定位，因为是有序的，所以支持区间查询，但插入性能低，必须将后面的数据全部后移。</p>
+</li>
+<li><p>平衡二叉树：区间查询效率不高。</p>
+</li>
+<li><p>跳表：虽然有序链表不能通过数组下标进行二分查找，但可以通过多级索引实现二分查找。</p>
+</li>
+<li><p>B+树：参考InnoDB。</p>
+</li>
+</ol>
 <p>一般的索引用Id之类的键去查找值对象，但不方便通过某个属性值去查找。</p>
 <p>ES使用倒排索引。</p>
 <p>数据：</p>
@@ -179,13 +191,13 @@
 </tbody></table>
 <p>ES为每个Field都建立了一个倒排索引，对于每个Term，都有对应的Posting List，如[1, 3]。</p>
 <p>Posting List是一个int数组，存储了所有符合某个Term的文档Id。</p>
-<p>在Term数量极大的情况下，为了快速定位某个具体的Term，ES引入了Term Dictionary，将所有的Term排序，通过二分法查找。</p>
-<p>但Term Dictionary可能非常大，不能完全加载到内存上，于是又引入了Term Index，就像字典里的索引页一样，A开头的有哪些Term，分别在哪页。</p>
+<p>在Term数量极大时，为了快速定位某个Term，ES引入了Term Dictionary，将所有的Term排序，通过二分法查找。</p>
+<p>但Term Dictionary可能非常大，不能完全加载到内存，于是又引入了Term Index，就像字典里的索引页，A开头的有哪些Term，分别在哪页。</p>
 <p>Term Index包含了Term的前缀与Term Dictionary位置的映射关系。</p>
 <p>通过Term Index快速定位到Term Dictionary的偏移，然后再往后顺序查找。</p>
 <p>Term Index使用的是FST（Finite State Transducers），FST是类似Trie前缀树的结构，对词典中单词前缀和后缀的重复利用，压缩了空间，同时查找是O(1)的，等于所查找的key的长度。</p>
 <p>于是查找就变成了：Term Index -&gt; Term Dictionary -&gt; Posting List -&gt; Data。</p>
-<p>假如只有男女两种性别，每个Posting List可能有百万个文档Id，所以需要对Posting List进行有效的压缩。</p>
+<p>假如只有男女两种性别，每个Posting List可能有百万个文档Id，所以需要对Posting List进行压缩。</p>
 <p>假设有某个Posting List：[1, 3, 4, 7, 10]，那么对应的Bitmap就是：[1, 0, 1, 1, 0, 0, 1, 0, 0, 1]。</p>
 <p>但是，位图占用的内存空间是恒定的，不管实际的元素基数有多少，数据越稀疏，空间越浪费。</p>
 <p>在无数个索引字段下，产生的空间浪费更加会被放大（线性增长）。</p>
@@ -203,25 +215,25 @@ Container<span class="token punctuation">[</span><span class="token punctuation"
 <p>keys数组保持有序，方便二分查找。</p>
 <p>高16位已经在key标记了，Container只需要处理低16位的数据。</p>
 <p>Container共有3种。</p>
-<ul>
+<ol>
 <li>ArrayContainer</li>
-</ul>
+</ol>
 <p>ArrayContainer是一个可变长度的无符号类型的数组short[]，将16位value直接存储。</p>
 <p>数组保持有序，方便二分查找。</p>
 <p>数组会自动扩容，当基数大于4096时，将当前Container转换为BitmapContainer。</p>
 <p>ArrayContainer没有任何压缩，只适合存储少量数据，占用的空间大小与存储的数据量为线性关系。</p>
 <p>每个short为2字节，存储4096个数据占用8kb。</p>
-<ul>
+<ol start="2">
 <li>BitmapContainer</li>
-</ul>
+</ol>
 <p>BitmapContainer是一个普通位图long[]，数组长度固定为1024，即位图的大小固定为216位（8KB）。</p>
-<p>每个Container处理16位的数据，也就是0~65535，要65536个比特来存储数据，每个比特位1表示有，0表示无。</p>
+<p>每个Container处理16位的数据，也就是0 ~ 65535，要65536个比特来存储数据，每个比特位1表示有，0表示无。</p>
 <p>long有64位，因此需要1024个long来提供65536个比特。</p>
-<ul>
+<ol start="3">
 <li>RunContainer</li>
-</ul>
+</ol>
 <p>RunContainer是一个变长的无符号的数组short[]，存储用行程长度编码（Run Length Encoding）压缩后的数据。</p>
-<p>整数序列11, 12, 13, 14, 15, 27, 28, 29会被压缩为两个二元组11, 4, 27, 2，表示11后面跟着4个连续递增的值，27后面跟着2个连续递增的值。</p>
+<p>整数序列<code>11, 12, 13, 14, 15, 27, 28, 29</code>会被压缩为两个二元组<code>11, 4, 27, 2</code>，表示11后面跟着4个连续递增的值，27后面跟着2个连续递增的值。</p>
 <p>RunContainer的压缩效果不稳定，对连续数据有比较好的压缩效果。</p>
 <p>极端情况：如果所有数据都是连续的，那么只需要4字节；如果所有数据都不连续，那么反而会膨胀成原来的两倍大。</p>
 <p>BitmapContainer只涉及位运算，时间复杂度为O(1)。</p>
@@ -242,14 +254,14 @@ Container<span class="token punctuation">[</span><span class="token punctuation"
 <li>行式存储：</li>
 </ul>
 <p>按行row为单位连续存储，如：(name_1, age_1), (name_2, age_2), (name_3, age_3)。</p>
-<p>优点：数据被保存在一起，INSERT/UPDATE容易。</p>
+<p>优点：数据被保存在一起，INSERT / UPDATE容易。</p>
 <p>缺点：查询时即使只涉及某几列，所有数据也都会被读取。</p>
 <ul>
 <li>列式存储：</li>
 </ul>
 <p>按列column为单位连续存储，如：(name_1, name_2, name_3) 和 (age_1, age_2, age_3)。</p>
 <p>优点：查询时只有涉及到的列会被读取，任何列都能作为索引。</p>
-<p>缺点：查询完成时，被查询的列要重新组装，INSERT/UPDATE比较麻烦。</p>
+<p>缺点：查询完成时，被查询的列要重新组装，INSERT / UPDATE比较麻烦。</p>
 <p>列存储使用两种编码类型：基于字典和基于值。</p>
 <p>字典编码是把唯一值编入字典，每一个唯一值都匹配一个序号，而序号用于索引字典，通过存储序号来压缩数据。</p>
 <p>如果数据表中存在大量的重复值，那么使用字典编码压缩率高。</p>
@@ -260,59 +272,59 @@ Container<span class="token punctuation">[</span><span class="token punctuation"
 <table>
 <thead>
 <tr>
-<th align="center"></th>
-<th align="center"></th>
+<th>id</th>
+<th>name</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="center">1</td>
-<td align="center">Dante</td>
+<td>1</td>
+<td>Dante</td>
 </tr>
 <tr>
-<td align="center">2</td>
-<td align="center">Nero</td>
+<td>2</td>
+<td>Nero</td>
 </tr>
 <tr>
-<td align="center">3</td>
-<td align="center">Virgil</td>
+<td>3</td>
+<td>Virgil</td>
 </tr>
 </tbody></table>
 <p>字典表</p>
 <table>
 <thead>
 <tr>
-<th align="center"></th>
-<th align="center"></th>
+<th>id</th>
+<th>age</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="center">1</td>
-<td align="center">1000</td>
+<td>1</td>
+<td>1000</td>
 </tr>
 <tr>
-<td align="center">2</td>
-<td align="center">20</td>
+<td>2</td>
+<td>20</td>
 </tr>
 </tbody></table>
 <p>表</p>
 <table>
 <thead>
 <tr>
-<th align="center">name</th>
-<th align="center">age</th>
+<th>name</th>
+<th>age</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="center">1</td>
-<td align="center">1</td>
+<td>1</td>
+<td>1</td>
 </tr>
 <tr>
-<td align="center">2</td>
-<td align="center">2</td>
+<td>2</td>
+<td>2</td>
 </tr>
 <tr>
-<td align="center">3</td>
-<td align="center">1</td>
+<td>3</td>
+<td>1</td>
 </tr>
 </tbody></table>
 <p>步骤：</p>
@@ -401,39 +413,42 @@ Container<span class="token punctuation">[</span><span class="token punctuation"
 <p>所以默认是每1s生成一个segment。</p>
 <p>segment多了后会merge成更大的segment。</p>
 <p>分段和倒排索引是不变的，写入后永远不会改变。</p>
-<p>好处是无需锁定，不用担心多进程操作更改数据导致数据不一致。</p>
+<p>好处是无需锁定，不用担心多线程修改导致数据不一致。</p>
 <p>坏处是更新了词典词库后，老的索引不能生效，必须reindex重建整个索引。</p>
-<p>更新文档时，实际上只是将旧文档标记为已删除，并为新文档编制索引。</p>
-<p>合并时还会清除旧的已删除文档。</p>
+<p>更新文档时，实际上只是将旧文档标记为已删除，并为新文档编制索引，合并时会清除旧的已删除文档。</p>
 <p>ES数据并发冲突控制基于乐观锁和版本号。</p>
 <p>对文档执行增删改操作，都会对文档的版本号执行自增（删除也是）。</p>
 <p>客户端更新ES时，如果带上了版本号，必须与ES中文档的版本号一致才能成功。</p>
 <p>如果没有带上版本号，首先会读取最新版本号才尝试更新，类似于CAS，可能需要尝试很多次。</p>
 <hr>
 <p>原本的写入步骤：</p>
-<ul>
-<li>新文档先写入内存缓冲。</li>
-<li>定时执行提交，将缓冲写入新的segment，segment写入文件系统缓存FileSystemCache。</li>
-<li>文件系统缓存被fsync刷盘，新segment被打开，接受搜索操作。</li>
-<li>清空内存缓冲，接收新的文档写入。</li>
-</ul>
-<p>实际上ES为保证实时性，会定时对segment缓冲做refresh操作，默认1s刷新到文件系统缓存，使得文档可见。</p>
+<ol>
+<li><p>新文档先写入内存缓冲。</p>
+</li>
+<li><p>定时执行提交，将缓冲写入新的segment，segment写入文件系统缓冲。</p>
+</li>
+<li><p>文件系统缓冲被fsync刷盘，新segment被打开，接受搜索操作。</p>
+</li>
+<li><p>清空内存缓冲，接收新的文档写入。</p>
+</li>
+</ol>
+<p>实际上ES为保证实时性，会定时对segment缓冲做refresh操作，默认1s刷新到文件系统缓冲，使得文档可见。</p>
 <p>所以ES是近实时的搜索引擎。</p>
 <p>新文档先被写到内存的缓冲中，同时会将操作记录在translog之中，translog用于防止ES宕机造成数据丢失。</p>
+<p>refresh时translog中的记录不会被清除，只有当数据从文件系统缓存flush刷盘后，才清空translog。</p>
 <p>当translog过大时会执行提交，translog还可以用于提供实时的CRUD。</p>
 <p>当按ID检索，更新或删除文档时，首先检查translog，然后再尝试从相关段中检索文档。</p>
-<p>当refresh时translog中的操作记录不会被清除，只有当数据从文件系统缓存flush刷盘后会将translog清空。</p>
 <hr>
 <p>Master节点</p>
-<ul>
+<ol>
 <li><p>检测所有其他节点，判断是否有节点已经挂掉。</p>
 </li>
-<li><p>创建或删除索引</p>
+<li><p>创建或删除索引。</p>
 </li>
-<li><p>决定分片在节点之间的分配</p>
+<li><p>决定分片在节点间的分配。</p>
 </li>
-</ul>
-<p>主节点尽可能做尽量少的工作，推荐使用一个专门的主节点来控制集群，不处理任何用户请求。</p>
+</ol>
+<p>主节点尽可能做尽量少的工作，推荐使用专门的主节点来控制集群，不处理任何用户请求。</p>
 <p>ES使用Gossip协议管理集群关系，请求可以发送到集群的任意节点，内部会找到需要转发的节点。</p>
 <p>默认使用单播发现，防止节点无意中加入集群。</p>
 <p>Master节点向集群的所有其他节点发起ping，验证节点是否处于活动状态。</p>
@@ -449,17 +464,20 @@ Container<span class="token punctuation">[</span><span class="token punctuation"
 <p>有兴趣的可以了解一下Bully算法。</p>
 <hr>
 <p>基本写模型</p>
-<p>写入包括单文档写入和批量bulk写入，以单文档写入流程为例：</p>
-<p>根据键哈希对主分片数量取模，确定对应的主分片。</p>
-<p>将操作转发到对应的主分片，主分片负责验证并执行，然后并行转发到其他副本分片。</p>
-<p>只需要复制到in-sync的副本即可，不需要复制到所有副本。</p>
-<p>in-sync的副本由Master节点维护。</p>
+<p>写入包括单文档写入和批量bulk写入，以单文档写入为例：</p>
+<ol>
+<li><p>根据键哈希对主分片数量取模，确定对应的主分片。</p>
+</li>
+<li><p>将操作转发到对应的主分片，主分片负责验证并执行，然后并行转发到其他副本分片。</p>
+</li>
+</ol>
+<p>只需要复制到in-sync的副本即可，不需要复制到所有副本，in-sync的副本由Master节点维护。</p>
 <p><del>Kafka看了直呼内行。</del></p>
 <p>所有副本成功地执行了操作并响应，然后主分片再响应客户端。</p>
 <p>如果超时还没收到副本的响应（或收到异常响应），主分片会向Master节点请求从同步副本中删除有问题的分片。</p>
 <p>同时Master节点还会指示另一个节点开始构建新的分片副本。</p>
 <p>主分片将操作转发到副本前，会用副本数来验证它仍然是活动的主分片。</p>
-<p>如果由于网络分区（或长GC），那么来自陈旧的主分片的操作将会被副本拒绝。</p>
+<p>如果由于网络分区（或长时间GC），那么来自陈旧的主分片的操作将会被副本拒绝。</p>
 <p>主分片收到拒绝响应时，会向Master节点请求更新，后续操作将会路由到新的主分片上。</p>
 <hr>
 <p>基本读模型</p>
@@ -477,23 +495,23 @@ Container<span class="token punctuation">[</span><span class="token punctuation"
 <p>类似读未提交的脏读。</p>
 <hr>
 <p>ES有4种方法处理数据实体间的关联：</p>
-<ul>
+<ol>
 <li>服务端Join或客户端Join</li>
-</ul>
+</ol>
 <p>适用于第一个实体只有少量的文档记录的情况。</p>
-<ul>
+<ol start="2">
 <li>数据的非规范化</li>
-</ul>
+</ol>
 <p>通俗点就是字段冗余，但是以牺牲索引性能及灵活度为代价的。</p>
 <p>适合一对少量关系，并且冗余的字段很少改变。</p>
-<ul>
+<ol start="3">
 <li>嵌套文档</li>
-</ul>
+</ol>
 <p>Nested Objects将实体关系嵌套组合在单文档内部，牺牲了索引性能（因为文档内任一属性变化都需要重新索引该文档）来换取查询性能。</p>
-<p>可以同时返回关系实体，比较适合于一对少量的关系。</p>
-<ul>
+<p>可以同时返回关系实体，适合于一对少量的关系。</p>
+<ol start="4">
 <li>父子文档</li>
-</ul>
+</ol>
 <p>牺牲了查询性能来换取索引性能，适用于一对多的关系处理。</p>
 <p>一般不建议使用。</p>
 <hr>

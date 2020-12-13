@@ -251,7 +251,7 @@
 <p>事务修改某行数据时，先用排它锁，锁定该行，再把该行的初始值复制到UNDO LOG的回滚段，再修改当前行，更新事务号，使回滚指针指向UNDO LOG中的副本。</p>
 <p>事务提交时，只需标记事务状态为COMMIT，不需其他额外操作，而回滚则需要根据行的回滚指针从UNDO LOG中找出事务修改前的版本并恢复。</p>
 <p>此时InnoDB是会加独占锁的，所以其它事务在锁释放前不能读写该行数据（除非是快照读）。</p>
-<p>锁释放后，假如有别的事务获取了锁，并修改该行，UNDO LOG的回滚段会组成一个链表，遍历链表可以看到该行的变化。</p>
+<p>锁释放后，假如别的事务获取了锁，并修改该行，回滚段会组成一个链表，遍历链表可以看到该行的变化。</p>
 <p>UNDO LOG保存了历史版本，当链表较长，那么回滚会比较耗时。</p>
 <p>对于INSERT操作，在事务提交前只有当前事务可见，因此产生的UNDO日志可以在事务提交后直接删除。</p>
 <p>对于UPDATE/DELETE，则需要维护多版本信息，不仅事务回滚时需要，MVCC一致性读也需要，所以不能直接删除。</p>
@@ -263,24 +263,12 @@
 <p>ReadView：</p>
 <p>InnoDB实现MVCC快照读的关键，在SELECT语句执行时创建。</p>
 <p>并不是BEGIN就是开始一个事务，而是执行了第一条SQL语句才开始事务，快照从此开始。</p>
+<p>ReadView是与SQL绑定的，不是事务。</p>
 <p>除非使用START TRANSACTION WITH CONSISTENT SNAPSHOT，此时会立即创建ReadView。</p>
-<p>MVCC允许可重复读，但读到的是历史数据，称为快照读(Snapshot Read)，而读取当前最新的版本，叫当前读(Current Read)，需要加锁。</p>
-<p>读已提交级别，事务中每次SELECT都会重新创建ReadView，所以每次读取都是新的快照。</p>
-<p>可重复读级别，事务中的第一个SELECT才创建ReadView，一次快照读后，后面都会读快照。</p>
-<p>三个主要字段：</p>
-<ol>
-<li><p>UP_TRX_ID：该SELECT执行时，最小的未提交的事务的事务号，即，当前最早创建但还未提交的事务的事务号；</p>
-</li>
-<li><p>LOW_TRX_ID：该SELECT执行时，最大的未提交的事务的事务号，即，除自身外最近创建的未提交的事务的事务号；</p>
-</li>
-<li><p>TRX_IDS：该SELECT执行时，未提交的事务号链表集合，即，对当前事务不可见的事务号。</p>
-</li>
-</ol>
-<p>所有DATA_TRX_ID小于UP_TRX_ID的记录，说明该事务在当前事务之前已提交，所以修改对当前事务可见。</p>
-<p>所有DATA_TRX_ID大于LOW_TRX_ID的记录，说明该事务在当前事务之后，所以修改对当前事务不可见。</p>
-<p>ReadView是与SQL绑定的，不是事务，即使在同一个事务中，每次SQL执行时构造的ReadView的UP_TRX_ID和LOW_TRX_ID也可能不一样。</p>
-<p>对于读已提交级别，所有已提交的事务都是对当前事务可见的，每次读取，都会创建新的ReadView，这样就能读取到其他事务已提交的内容。</p>
-<p>对于可重复读级别，ReadView是执行事务中的第一条SELECT语句时创建，后续所有的SELECT都是复用该ReadView，所以能保证可重复读。</p>
+<p>MVCC允许可重复读，但读的是历史数据，称为快照读(Snapshot Read)。</p>
+<p>而读取当前最新的版本，叫当前读(Current Read)，需要加锁。</p>
+<p>读已提交级别，事务中每次SELECT都会重新创建ReadView，所有已提交的事务都是对当前事务可见的。</p>
+<p>可重复读级别，事务中的第一个SELECT才创建ReadView，一次快照读后，后面都会读同一个快照，保证可重复读。</p>
 <hr>
 <p>InnoDB行记录（仅限聚簇索引）中保存了事务相关信息，如trx_id，roll_ptr。</p>
 <p>trx_id用于可见性判断，roll_ptr用于从undo中回溯上一个版本。</p>
@@ -307,22 +295,22 @@
 
 #define TRX_UNDO_DEL_MARK_REC 14 
 /* delete marking of a record; fields do not change */</code></pre>
-<ul>
+<ol>
 <li>TRX_UNDO_INSERT_REC</li>
-</ul>
-<p>insert的undo，只需记录键值。</p>
-<ul>
+</ol>
+<p>insert的undo，只需记录主键值。</p>
+<ol start="2">
 <li>TRX_UNDO_UPD_EXIST_REC</li>
-</ul>
-<p>update的undo，不涉及索引更新，因为修改了原值，undo中会记录键值和原本的值。</p>
-<ul>
+</ol>
+<p>update的undo，不涉及索引更新，因为修改了原值，undo中会记录主键值和原本的值。</p>
+<ol start="3">
 <li>TRX_UNDO_UPD_DEL_REC</li>
-</ul>
-<p>update的undo，更新了二级索引，先把原行标记为删除，再插入新行，undo只需记录键值。</p>
-<ul>
+</ol>
+<p>update的undo，更新了二级索引，先把原行标记为删除，再插入新行，undo只需记录主键值。</p>
+<ol start="4">
 <li>TRX_UNDO_DEL_MARK_REC</li>
-</ul>
-<p>delete的undo，因为delete操作只是标记删除，undo只需记录键值。</p>
+</ol>
+<p>delete的undo，因为delete操作只是标记删除，undo只需记录主键值。</p>
 <hr>
 <ul>
 <li>trx_sys-&gt;rw_trx_ids：</li>
@@ -331,7 +319,7 @@
 <ul>
 <li>trx_sys-&gt;max_trx_id：</li>
 </ul>
-<p>保存当前分配的最大事务Id，用于分配id和no。</p>
+<p>下一次分配的事务Id，用于分配id和no。</p>
 <ul>
 <li>trx_id::id：</li>
 </ul>
@@ -343,20 +331,23 @@
 <ul>
 <li>m_ids：</li>
 </ul>
-<p>readview创建时，活跃的事务id列表，不可见。</p>
+<p>readview创建时，系统中活跃的事务id列表，不可见。</p>
 <ul>
 <li>m_up_limit_id：</li>
 </ul>
-<p>readview创建时，小于此值的是已提交事务，可见。</p>
+<p>readview创建时，系统中活跃的事务中最小的事务id，也是m_ids中的最小值，小于此值的都是已提交事务，可见。</p>
 <ul>
 <li>m_low_limit_id：</li>
 </ul>
-<p>readview创建时，大于等于此值的是未开启的事务，不可见。</p>
+<p>readview创建时，大于等于此值的都是未开启的事务，不可见。</p>
 <ul>
 <li>m_low_limit_no：</li>
 </ul>
-<p>readview创建时，已经提交事务的最大trx-&gt;no，小于此值的事务都已提交，当前readview不需要这些事务的undo log。</p>
+<p>readview创建时，已提交事务的最大trx-&gt;no，trx-&gt;id小于此值的事务都已提交，不需要这些事务的undo log。</p>
 <p><img src="/imgs/mvcc_read_view.png" alt="mvcc_read_view"></p>
+<p><strong>上图是按<a href="https://mp.weixin.qq.com/s?__biz=MzI5NzkyOTA1Mw==&mid=2247484058&idx=1&sn=4f5c6ccfdd845c7543f2742e020b6f05" target="_blank" rel="noopener">原文</a>画的，m_low_limit_no应该是T5的trx-&gt;no，即11，可能是原作者笔误，也可能我理解错了。</strong></p>
+<p>只有修改表中的记录时（insert、delete、update）才会为事务分配事务id。</p>
+<p>只读事务中的事务id默认为0。</p>
 <pre class=" language-c++"><code class="language-c++">    bool changes_visible(trx_id_t id, const table_name_t & name) const MY_ATTRIBUTE((warn_unused_result)) {
         ut_ad(id > 0);
         // T1, T2, T3 trx_id都小于m_up_limit_id，可见

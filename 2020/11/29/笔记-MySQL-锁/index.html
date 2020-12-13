@@ -646,12 +646,13 @@ enum lock_mode {
 <span class="token keyword">update</span> t <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> col <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token keyword">select</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">from</span> s <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span></code></pre>
 <p>这两句中的select部分将在s表记录上加next-key lock（lock_mode S）。</p>
 <hr>
-<p>replace into通过delete和insert实现。</p>
+<p>replace into通过delete和insert实现，存在就删除再插入。</p>
 <p>在基于行的复制时，binlog记录的是update类型日志。</p>
-<p>insert会更新autoincrement，update则不会。</p>
+<p>insert会更新表的自增值，update则不会。</p>
 <p>replace into在master上按delete和insert操作，auto_increment是正常的。</p>
-<p>复制到slave后，slave按update回放，只更新行中自增键的值，不会更新auto_increment。</p>
-<p>但如果slave切为master，insert就会出现”Duplicate key”错误。</p>
+<p>只存在主键冲突时，master和slave都是通过delete和insert执行，一切正常。</p>
+<p>只存在唯一索引冲突时，slave按update回放，只更新行中自增键的值，不会更新auto_increment。</p>
+<p>此时如果slave切为master，insert就会出现”Duplicate key”错误。</p>
 <p>解决方案：</p>
 <ol>
 <li><p>binlog改为mixed或statement格式；</p>
@@ -659,6 +660,11 @@ enum lock_mode {
 <li><p>insert on duplicate key update代替replace into。</p>
 </li>
 </ol>
+<hr>
+<p>如果同时存在主键和唯一索引冲突，比如表中存在两行，如(1, ‘a’)和(2, ‘b’)。</p>
+<p>此时执行replace into … values(2, ‘a’)，有两行存在冲突，分别是唯一键和主键。</p>
+<p>此时会删除冲突的两行(1, ‘a’)和(2, ‘b’)，再插入(2, ‘a’)。</p>
+<p>需要特别注意。</p>
 <hr>
 <pre class=" language-sql"><code class="language-sql"><span class="token keyword">insert</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">on</span> <span class="token keyword">duplicate key</span> <span class="token keyword">update</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre>
 <p>insert和update的结合。</p>

@@ -14,21 +14,22 @@
     
     <meta name="description"
         content="Paxos协议
+
 角色：
 
-Proposer：提出提案。
 
-Acceptor：参与决策。
+Proposer：提案者，提出提案。
 
-Learner：不参与提案，只接收已确定的提案，提高集群对外提供读服务的能力。
+Acceptor：表决者，对提案作出投票。
+
+Learner：学习者，不参与提案，只接收已确定的提案，提高集群处理读请求的能力。
 
 
 一个节点可以同时充当多个角色。
-提案选定分两阶段：
 
-Prepare阶段
+提案选定分Prepare阶段和Accept阶段。
 
-Proposer向过半的Acceptor成员广播P">
+Prepa">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -102,75 +103,89 @@ Proposer向过半的Acceptor成员广播P">
 				
 				<div class="article-content">
 				<p>Paxos协议</p>
-<p>角色：</p>
 <ul>
-<li><p>Proposer：提出提案。</p>
-</li>
-<li><p>Acceptor：参与决策。</p>
-</li>
-<li><p>Learner：不参与提案，只接收已确定的提案，提高集群对外提供读服务的能力。</p>
-</li>
+<li>角色：</li>
 </ul>
-<p>一个节点可以同时充当多个角色。</p>
-<p>提案选定分两阶段：</p>
-<ul>
-<li>Prepare阶段</li>
-</ul>
-<p>Proposer向过半的Acceptor成员广播Prepare请求，携带全局唯一且递增的Proposal ID，如时间戳+Server ID；</p>
-<p>Acceptor收到时，做出“两个承诺，一个应答”：</p>
 <ol>
-<li><p>不再接受Proposal ID小于等于当前请求的Prepare请求。</p>
+<li><p>Proposer：提案者，提出提案。</p>
 </li>
-<li><p>不再接受Proposal ID小于当前请求的Propose请求。</p>
+<li><p>Acceptor：表决者，对提案作出投票。</p>
 </li>
-<li><p>不违背承诺的情况下，回复已经Accept过的提案中Proposal ID最大的提案的Value和Proposal ID，没有则返回空值。</p>
+<li><p>Learner：学习者，不参与提案，只接收已确定的提案，提高集群处理读请求的能力。</p>
 </li>
 </ol>
-<ul>
+<p>一个节点可以同时充当多个角色。</p>
+<hr>
+<p>提案选定分Prepare阶段和Accept阶段。</p>
+<ol>
+<li>Prepare阶段</li>
+</ol>
+<p>提案者负责提出提案（Proposal），每个提案对应一个全局唯一且递增的提案编号（Proposal Id），可以使用时间戳和服务器Id实现。</p>
+<p>提案者向所有表决者广播Prepare请求，此阶段只需将提案编号发送给所有表决者。</p>
+<p>表决者收到Prepare请求。</p>
+<p>表决者在批准某提案后，会记录该提案编号，维护了自己批准过的最大提案编号MaxNo。</p>
+<p>表决者仅会批准比MaxNo还大的提案。</p>
+<ol start="2">
 <li>Accept阶段</li>
-</ul>
-<p>Proposer收到过半的Acceptor对于Prepare请求的响应，那么从应答中选择Proposal ID最大的提案的Value，作为本次要发起的提案。</p>
-<p>如果所有应答的提案Value均为空值，则可以自己随意决定提案Value。</p>
-<p>然后携带当前Proposal ID，向所有Acceptors发送Propose请求。</p>
-<p>Acceptor收到Propose请求后，在不违背自己之前的承诺下（未对大于M编号的提案做出响应），接受提案并持久化当前Proposal ID和提案Value。</p>
-<p>当然，如果收到过半的Acceptor对于Prepare请求的响应时，发现响应的返回值有更新的提议的情况，那么重新进行Prepare阶段的步骤，生成新的Proposal ID继续。</p>
-<ul>
+</ol>
+<p>如果提案者收到过半的表决者的批准，那么给所有表决者发送真正的提案（第一阶段是试探），包含提案编号（Proposal Id）和提案内容（Value）。</p>
+<p>表决者收到Accept请求后，再次比较自己批准过的最大提案编号MaxNo，如果Accept请求的提案编号大于等于MaxNo，那么接受该提案（执行提案但不提交）。</p>
+<p>提案者收到过半的接受响应后，向所有的表决者发送提案的提交请求。</p>
+<p>因为没有批准的表决者没有执行该提案，所以此时需要向未批准的表决者发送提案内容和提案编号，并让它无条件执行和提交，而对于已经批准过该提案的表决者，仅需要提案编号，让表决者执行提交就行了。</p>
+<p><del>上面有点类似Raft的CommitIndex，不过是在下一轮心跳同步的。</del></p>
+<p>如果提案者没有收到过半的表决者的批准，那么将递增提案编号，然后重新进入Prepare阶段。</p>
+<ol start="3">
 <li>Learn阶段</li>
-</ul>
-<p>不属于选定提案，Proposer收到多数Acceptors的Accept后，决议形成，将形成的决议发送给所有Learners。</p>
-<p>Basic Paxos只能对一个值形成决议，决议的形成至少需要两次网络来回，极端情况下可能形成活锁，比如两个Proposers交替Prepare成功，但是Accept失败。</p>
-<p>Multi Paxos基于Basic Paxos做了改进：</p>
-<p>在所有Proposers中选举一个Leader，由Leader唯一地提交Proposal给Acceptors进行表决。</p>
-<p>没有Proposer竞争，解决了活锁问题。</p>
-<p>在系统中仅有一个Leader进行Value提交的情况下，Prepare阶段就可以跳过，将两阶段变为一阶段。</p>
-<p>Multi Paxos允许有多个自认为是Leader的节点并发提交Proposal而不影响安全性，即退化为Basic Paxos。</p>
-<p>只要有过半的节点可用，集群就可以进行Leader选举，对外服务，通常用来保证数据的多个副本间的一致性，构建一个分布式的一致性状态机。</p>
-<p>ZooKeeper使用的是Paxos的变种ZAB协议。</p>
+</ol>
+<p>不属于选定提案。</p>
+<p>提案者收到多数表决者的接受后，决议形成，将决议广播给所有学习者。</p>
+<p>一种说法是表决者接受提案后，广播给所有学习者，学习者发现大多数表决者都接受后，才接受。</p>
+<hr>
+<p>Basic Paxos的决议形成至少需要两次网络来回。</p>
+<p>Basic Paxos可以同时存在多个提案者和多个提案，容易产生冲突。</p>
+<p>极端情况下可能形成活锁，比如两个提案者交替Prepare成功，但是Accept失败。</p>
+<p>对于这种情况，Multi Paxos做了改进，只允许一个提案者存在。</p>
+<p>在所有提案者中选举一个Leader，由Leader唯一地提交提案给表决者进行表决。</p>
+<p>在系统中仅有一个Leader提交的情况下，Prepare阶段就可以跳过，将两阶段变为一阶段。</p>
+<p>Multi Paxos允许有多个自认为是Leader的节点并发提交提案而不影响安全性，即退化为Basic Paxos。</p>
+<p>只要有过半的节点可用，集群就可以进行Leader选举，对外服务。</p>
+<p>通常用来保证数据的多个副本间的一致性，构建一个分布式的一致性状态机。</p>
 <hr>
 <p>Raft协议</p>
-<p>Raft协议号称是更易理解和实施的一致性协议。</p>
 <p>角色：</p>
-<ul>
+<ol>
 <li><p>Leader：发出提案。</p>
 </li>
 <li><p>Follower：参与决策。</p>
 </li>
-<li><p>Candidate：Leader选举中的临时角色。</p>
+<li><p>CandIdate：Leader选举中的临时角色。</p>
 </li>
+</ol>
+<p>Raft协议号称是更易理解和实施的一致性协议，主要用于Leader选举和日志复制。</p>
+<ul>
+<li>Leader选举：</li>
 </ul>
-<p>刚开始所有节点都是Follower状态，然后转为Candidate进行Leader选举。</p>
-<p>Leader接受所有客户端的请求，然后把日志发送给所有Follower，当收到过半的节点的回复时，就返回客户端成功并更新提交的Index。</p>
-<p>Leader会周期性地发送心跳给所有的Follower，同步提交的Index，Follower收到后就保持Follower状态，并应用提交的Index及其之前对应的日志。</p>
-<p>如果Follower等待心跳超时了，则开始新的Leader选举，先把当前任期自增，自己成为Candidate，然后给自己投票并向其它节点发投票请求。</p>
-<p>直到它赢得选举，或者另一个节点成为Leader。</p>
-<p>在选举期间，Candidate可能收到来自其它自称为Leader的写请求，如果该Leader的任期大于等于Candidate的当前任期，那么Candidate承认它是合法的Leader，并回到Follower状态，否则拒绝请求。</p>
-<p>如果两个Candidate得票一样多，则它们都无法获取超过半数投票，然后进行新一轮的选举。</p>
+<p>刚开始所有节点都是Follower状态，然后因为Leader心跳超时，转为CandIdate进行Leader选举。</p>
+<p>先把当前任期自增，自己成为CandIdate，然后给自己投票并广播给集群，要求投票给自己。</p>
+<p>如果两个CandIdate得票一样多，则它们都无法获取超过半数投票，然后进行新一轮的选举。</p>
+<p>每个节点都设置了随机超时时间，一般不会同时出现多个Candidate并获得同样票数。</p>
+<p>直到CandIdate赢得选举，或者另一个节点成为Leader。</p>
+<p>在选举期间，CandIdate可能收到来自其它自称为Leader的写请求。</p>
+<p>如果该Leader的任期大于等于CandIdate的当前任期，那么CandIdate承认它是合法的Leader，并回到Follower状态。</p>
+<ul>
+<li>日志复制：</li>
+</ul>
+<p>Leader接受所有客户端的请求，然后把日志发送给所有Follower，然后Follower同步日志。</p>
+<p>Leader收到过半响应时，就更新CommitIndex并返回客户端成功。</p>
+<p>Leader会周期性地发送心跳给所有的Follower，同步CommitIndex。</p>
+<p>Follower收到后就保持Follower状态，并更新CommitIndex。</p>
+<p>Follower更新CommitIndex是异步的，会延迟一个心跳，大概也是Follower一般不处理读请求的原因。</p>
 <p>Raft协议的Leader选举、日志复制等都有详细的实现，JRaft就是其中的一个，建议去看看，这里不多说。</p>
 <hr>
 <p>Gossip协议</p>
-<p>Gossip协议最大的特点就是去中心化，Paxos和Raft都有Leader的角色来统筹安排，但是Gossip协议中没有Leader，每个节点都是平等的。</p>
-<p>Gossip协议又称Epidemic协议，是基于流行病传播方式的节点或者进程之间信息交换的协议。</p>
-<p>类似绯闻或流行病的传播，在一个有界网络中，每个节点都随机地与其他节点通信，最终所有节点的状态都会达成一致（最终一致）。</p>
+<p>Gossip协议最大的特点就是去中心化，Paxos和Raft都有Leader的角色来统筹，但Gossip协议中没有Leader，每个节点都是平等的。</p>
+<p>Gossip协议又称EpIdemic协议，类似绯闻或流行病的传播，用于节点或者进程之间信息交换。</p>
+<p>在一个有界网络中，每个节点都随机地与其他节点通信，最终所有节点的状态都会达成一致（最终一致）。</p>
 <p>每个节点可能知道所有节点，也可能仅知道几个节点，只要可以通过网络连通，最终的状态都是一致的。</p>
 <p>要传播谣言就要有种子节点，种子节点周期性地随机向N个目标节点发送自己拥有的节点列表，及需要传播的消息。</p>
 <p>一般需要O(logN)轮就可以将信息传播（感染）到所有的节点，其中N代表节点的个数。</p>
@@ -179,73 +194,80 @@ Proposer向过半的Acceptor成员广播P">
 <p>Gossip协议是去中心化的协议，集群中的所有节点都是对等的，任何节点出现问题都不会阻止其他节点继续发送消息。</p>
 <p>任何节点都可以随时加入或离开，而不会影响系统的整体服务。</p>
 <p>Gossip协议的主要用途就是信息传播和扩散，被用于数据库复制，信息扩散，集群成员身份确认，故障探测等。</p>
-<p>基于Gossip协议的一些系统：Redis（Cluster模式），Consul的集群节点发现。</p>
+<p>基于Gossip协议的一些系统：RedisCluster，Consul的集群节点发现。</p>
+<hr>
 <p>节点状态：</p>
-<ul>
+<ol>
 <li><p>Alive：节点是活的。</p>
 </li>
 <li><p>Suspect：没有应答或应答超时，状态是可疑的。</p>
 </li>
 <li><p>Dead：节点已死亡。</p>
 </li>
-</ul>
+</ol>
 <p>如果节点B无法被对节点A发出的请求进行响应，或者响应超时，它会被节点A标为Suspect。</p>
-<p>如果Suspect持续一段时间（或它收到足够多的其它节点关于B的SuspectMsg），节点A会在集群中广播SuspectMsg，告知集群中的其它节点，节点B很可疑。</p>
-<p>如果B收到了针对它的SuspectMsg，B可以通过发送AliveMsg告知对方，那么在对方节点看来B的状态从Suspect变为Alive。</p>
+<p>如果Suspect持续一段时间（或收到足够多的其它节点关于B的SuspectMsg），节点A会在集群中广播SuspectMsg，告知集群中的其它节点，节点B很可疑。</p>
+<p>如果B收到了针对它的SuspectMsg，可以发送AliveMsg告知对方，那么在对方节点看来B的状态从Suspect变为Alive。</p>
 <p>如果一段时间内，B的状态仍然是Suspect，那么对节点A而言，B的状态会被置为Dead。</p>
-<p>如果节点B在down掉一段时间后，重新上线，它可以通过与种子节点的Gossip，重新被认为Alive。</p>
+<p>如果节点B在宕机一段时间后重新上线，它可以通过与种子节点的Gossip，重新被认为Alive。</p>
+<hr>
 <p>动作：</p>
-<ul>
+<ol>
 <li>Probe</li>
-</ul>
+</ol>
 <p>周期性的探测集群中状态为Alive和Suspect的节点，每个周期只探测1个节点。</p>
-<ul>
-<li>Push/Pull</li>
-</ul>
-<p>周期性的从已知的Alive的集群节点中选1个节点进行Push/Pull交换信息，包含集群信息和自定义的状态信息。</p>
-<ul>
+<ol start="2">
+<li>Push / Pull</li>
+</ol>
+<p>周期性的从已知的Alive的集群节点中选1个节点进行Push / Pull交换信息，包含集群信息和自定义的状态信息。</p>
+<ol start="3">
 <li>Gossip</li>
-</ul>
+</ol>
 <p>广播所有处于Dead的节点，只广播一次。</p>
 <p>不把消息发给集群中的每一个节点，而是随机挑选N个，将消息发送出去。</p>
-<p>处于Dead状态的节点，仍然会被保留在集群信息中一段时间，以便Push/Pull的时候，这个状态能够被扩散出去。</p>
+<p>处于Dead状态的节点，仍然会被保留在集群信息中一段时间，以便Push / Pull时，这个状态能被扩散出去。</p>
+<hr>
 <p>极端情况，集群中有A、B、C，3个节点，A为种子节点，B、C为普通节点。</p>
 <p>某时刻，节点A、B、C都认为集群中有3个节点。</p>
 <p>某时刻，节点A宕机。</p>
 <p>某时刻，节点B、C都认为集群中有<code>[B, C]</code>2个节点。</p>
 <p>某时刻，节点A重新上线，但它已知的集群就只有<code>[A]</code>1个节点，节点B、C做Push/Pull的时候也只会在<code>[B、C]</code>中选取，因此集群分裂了。</p>
 <p>要避免这种问题，方法是多配种子节点，只要确保所有的种子节点不同时宕机即可。</p>
+<hr>
 <p>传播方法：</p>
-<ul>
+<ol>
 <li>Anti-Entropy：反熵，以固定的概率传播所有的数据。</li>
-</ul>
+</ol>
 <p>每个节点周期性地随机选择其他节点，然后通过互相交换自己的所有数据来消除两者之间的差异。</p>
 <p>非常可靠，但是会带来非常大的通信负担。</p>
 <p>包含两种状态：Susceptible和Infective。</p>
 <p>处于Infective状态的节点代表其有数据更新，并且会将这个数据分享给其他节点。</p>
 <p>处于Susceptible状态的节点代表其并没有收到来自其他节点的更新。</p>
-<ul>
+<ol start="2">
 <li>Rumor-Mongering：谣言传播，仅传播新到达的数据。</li>
-</ul>
-<p>当一个节点有了新的信息后，这个节点变成活跃状态，并周期性地联系其他节点向其发送新信息，直到所有的节点都知道该新信息。</p>
+</ol>
+<p>一个节点有了新的信息后，这个节点变成活跃状态，并周期性地联系其他节点，发送新信息。</p>
 <p>节点之间只是交换新信息，大大减少了通信负担。</p>
-<p>多了一种状态：Removed，处于该状态的节点说明其已经接收到来自其他节点的更新，但是并不会将这个更新分享给其他节点。</p>
+<p>多了一种状态：Removed。</p>
+<p>处于该状态的节点说明其已经接收到来自其他节点的更新，但是并不会将这个更新分享给其他节点。</p>
 <p>为了在通信代价和可靠性之间取得折中，需要将这两种方法结合使用。</p>
+<hr>
 <p>交互方式：</p>
-<ul>
+<ol>
 <li>Push：</li>
-</ul>
+</ol>
 <p>发起信息交换的节点A随机选择联系节点B，并向其发送自己的信息，节点B在收到信息后更新比自己新的数据。</p>
 <p>一般拥有新信息的节点才会作为发起节点。</p>
-<ul>
+<ol start="2">
 <li>Pull：</li>
-</ul>
-<p>发起信息交换的节点A随机选择联系节点 B，并从对方获取信息。</p>
+</ol>
+<p>发起信息交换的节点A随机选择联系节点B，并从对方获取信息。</p>
 <p>一般无新信息的节点才会作为发起节点。</p>
-<ul>
-<li>Push&amp;Pull：</li>
-</ul>
+<ol start="3">
+<li>Push &amp; Pull：</li>
+</ol>
 <p>发起信息交换的节点A向选择的节点B发送信息，同时从对方获取数据，用于更新自己的本地数据。</p>
+<hr>
 <p>Gossip看起来很美好，但是去中心化本身太复杂，节点之间沟通成本高，最终一致等待时间较长。</p>
 <p>还有拜占庭问题（Byzantine），如果有一个恶意传播消息的节点，系统就会出问题。</p>
 <p>社会还是需要领导的。</p>

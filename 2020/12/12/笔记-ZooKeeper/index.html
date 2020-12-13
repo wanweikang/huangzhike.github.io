@@ -1,0 +1,511 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-ZooKeeper | Reunion...</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="ZooKeeper是个开源的分布式协调框架。
+
+ZooKeeper的命名空间类似文件系统的目录结构，数据全量存储在内存。
+数据模型类似多叉树，每个节点（znode）都可以存储数据。
+ZooKeeper的功能是协调服务，而不是存储业务数据，每个节点最大容量为1MB。
+znode分为4种：
+
+持久（PE">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-ZooKeeper" />
+    
+    <meta property="og:site_name" content="Reunion..." />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-ZooKeeper</h2>
+				
+				<div>
+					<div class="post-time">2020-12-12</div>
+				</div>
+				
+				<div class="article-content">
+				<p>ZooKeeper是个开源的分布式协调框架。</p>
+<hr>
+<p>ZooKeeper的命名空间类似文件系统的目录结构，数据全量存储在内存。</p>
+<p>数据模型类似多叉树，每个节点（znode）都可以存储数据。</p>
+<p>ZooKeeper的功能是协调服务，而不是存储业务数据，每个节点最大容量为1MB。</p>
+<p>znode分为4种：</p>
+<ol>
+<li>持久（PERSISTENT）</li>
+</ol>
+<p>创建成功就会持久化，除非主动删除。</p>
+<ol start="2">
+<li>持久有序（PERSISTENT_SEQUENTIAL）</li>
+</ol>
+<p>除了持久化外，节点的名称还具有顺序性，如/p/c0000000001、/p/c0000000002。</p>
+<p>节点名称命名类似文件目录，这里根节点是/，下一级是/p，再下一级是/p/xxx。</p>
+<p>节点被创建时，会自动在节点名后追加一个自增的整型数字，由父节点维护。</p>
+<ol start="3">
+<li>临时（EPHEMERAL）</li>
+</ol>
+<p>临时节点的生命周期与创建节点的客户端会话（session）绑定，会话关闭则节点自动删除。</p>
+<p>临时节点只能作为叶子节点，不能创建子节点。</p>
+<ol start="4">
+<li>临时有序（EPHEMERAL_SEQUENTIAL）</li>
+</ol>
+<p>除了临时特性外，节点的名称还具有顺序性。</p>
+<hr>
+<p>客户端和服务器建立TCP长连接，通过心跳保证会话（session）有效，向服务器发送请求并接受响应，接收来自服务器的watch事件通知。</p>
+<p>会话有会话超时时间（sessionTimeout），如果由于服务器压力太大、网络故障等原因导致连接断开时，只要在超时时间内重新连接上集群中任意一台服务器，那么之前创建的会话仍然有效。</p>
+<p>服务端会为每个客户端都分配一个sessionId，保证全局唯一。</p>
+<p>会话还有对应的事件，如连接丢失事件（CONNECTION_LOSS）、会话转移事件（SESSION_MOVED）、会话超时失效事件（SESSION_EXPIRED）。</p>
+<hr>
+<p>znode由2部分组成：</p>
+<ol>
+<li>data：</li>
+</ol>
+<p>节点存放的具体数据。</p>
+<ol start="2">
+<li>stat：</li>
+</ol>
+<p>节点的所有状态信息，包括创建时的事务Id、最后一次更新时的事务Id等等。</p>
+<p>stat还记录了znode的3个版本信息：当前znode的版本号、当前znode子节点的版本号、当前znode的ACL版本号。</p>
+<p>ACL（Access Control List）是访问控制列表，类似UNIX文件系统的权限控制。</p>
+<hr>
+<p>客户端可以在指定节点上注册事件监听器（watcher），类似订阅，当节点发生变化时（创建、删除、数据变更），可以通知客户端。</p>
+<p>客户端收到通知后执行相应的回调方法。</p>
+<p>事件监听器是一次性的，当节点发生变化时，监听会被触发并移除，也就是说客户端只会收到一次通知。</p>
+<p>对客户端的通知是异步的，由于网络等原因，不能期望能监控到节点每次的变化。</p>
+<p>当客户端重新连接时，如果需要，所有先前注册过的监听，都会被重新注册。</p>
+<p>对一个未创建节点的存在监听，如果在客户端断开连接期间被创建了又被删除了，随后客户端连接上，可能丢失监听。</p>
+<p>监听是轻量级的，其实就是本地JVM的Callback。</p>
+<hr>
+<p>ZooKeeper其实只提供了两个核心功能：管理数据和数据监听服务。</p>
+<hr>
+<p>ZooKeeper提供了高可用的分布式数据一致性解决方案，可以用于实现数据发布订阅、负载均衡、命名服务、分布式协调通知、集群管理、主从选举、分布式锁和分布式队列等功能。</p>
+<ol>
+<li><p>Kafka：Broker的注册，Controller的选举，Topic的注册、Partition的负载均衡。</p>
+</li>
+<li><p>Dubbo：注册中心。</p>
+</li>
+<li><p>Canal：主备切换。</p>
+</li>
+<li><p>Hbase。</p>
+</li>
+<li><p>Hadoop。</p>
+</li>
+</ol>
+<hr>
+<p>集群管理：</p>
+<p>集群管理关键的两点：机器加入和退出、选举master。</p>
+<p>对于第一点，所有机器约定在父目录下创建临时节点，然后监听父目录节点的子节点变化。</p>
+<p>一旦有机器宕机，其创建的临时节点也会被移除，其他所有机器都会收到通知。</p>
+<p>一旦有机器加入，就会创建新的临时节点，其他所有机器都会收到通知。</p>
+<p>对于第二点，可以让所有机器创建临时顺序节点，选取编号最小的机器为master即可。</p>
+<p>还有一种方法，因为ZooKeeper的强一致性能保证节点创建的全局唯一性，无法重复创建同样的节点。</p>
+<p>利用这个特性，可以让多个客户端创建一个指定的节点，创建成功的就是master。</p>
+<p>同时，利用临时节点的生命周期，和监听机制，当master宕机时节点被移除，触发通知重新进行选举。</p>
+<p>出于容灾考虑，通常会配置两个Canal Server负责一个MySQL实例的数据增量复制。</p>
+<p>同一时刻，不同的Canal Server只能有一个处于Running状态，其他的处于Standby状态。</p>
+<p>所有Canal Server启动时都会向zk尝试创建一个临时节点，创建成功才能启动。</p>
+<p>Canal Server将自己的信息写入该节点，其它的Canal Server对该节点注册监听。</p>
+<p>主节点宕机时，临时节点被删除，所有的Canal Server会重新竞争，实现主备切换。</p>
+<p>一个问题是，进程可能被挂起，或因为网络原因，导致会话失效，但此时对应的进程并没未退出。</p>
+<p>解决方法是，状态为Standby的Cannal Sever在收到通知后，延迟一段时间（如5秒）再抢占节点。</p>
+<p>而原本处于Running状态的Cannal Sever不需要等待延迟，直接重新取得节点。</p>
+<p><del>不过JVM可能因为GC在任何时间挂起，这个方法也不能解决根本问题。</del></p>
+<p><del>怎么才能百分百确定自己还是master呢。</del></p>
+<hr>
+<p>分布式锁</p>
+<p>大部分锁的基本思想都是维护一个互斥的变量，通过成功修改这个变量（0或1之类）来进行判断。</p>
+<p>本地的JUC锁（如果不是自旋锁，可能还要引入一个等待队列实现阻塞唤醒），Redis锁（订阅通知）也基本这样。</p>
+<p>ZooKeeper可以保证节点创建的全局唯一性，这个可以用来实现互斥锁。</p>
+<p>ZooKeeper集群具有强一致性，可以用来实现分布式环境下的锁。</p>
+<p>让多个客户端竞争创建一个临时节点，创建成功就说明获取到了锁，删除节点则释放锁。</p>
+<p>没有获取到锁的客户端则监听节点状态，如果锁被释放了，则重新抢锁。</p>
+<p>这里不需要像redis那样考虑锁过期不能释放，或者是watch dog自动续约之类的，因为已经利用临时节点实现了。</p>
+<p>这里也不需要考虑重入问题，客户端在创建节点的时候，把信息写入到节点，下次获取锁时对比一下即可。</p>
+<p>这里也不需要考虑单点问题，只要ZooKeeper集群中有半数以上的机器存活，就可以对外提供服务。</p>
+<p>如果除了独占锁，还要求公平锁，则可以使用顺序节点实现。</p>
+<p>客户端在一个指定父节点下，创建临时顺序节点，然后获取该父节点所有已创建的子节点，如果发现自己创建的节点是最小的，则认为获得了锁。</p>
+<p>ZooKeeper的顺序节点可以实现一个锁等待队列，类似AQS中的等待队列。</p>
+<p>为了避免惊群效应（Herd Effect），锁释放之后，其实不需要所有等待方都同时被唤醒抢锁（非公平锁）。</p>
+<p>如果失败，则找到前一个节点，对该节点注册监听，当这个节点被删除，则客户端收到相应通知，再次尝试抢锁。</p>
+<p>如果还要求实现读写锁，也是可以的，再复制一下ReentrantReadWriteLock的思想就好了。</p>
+<p>当获取读锁时，如果没有比自己更小的节点，或比自己小的节点都是读节点，则可以获取到读锁。</p>
+<p>若比自己小的节点中有写节点，则只能等待前面的写节点被释放（监听比自己小的最后一个写节点）。</p>
+<p>当获取写锁时，如果没有比自己更小的节点，则可以获取写锁。</p>
+<p>若有比自己小的节点，无论是读节点还是写节点，都只能等待（监听比自己小的最后一个节点）。</p>
+<p>ZooKeeper的分布式锁虽然功能丰富，可靠性很高，但也不是完美的：</p>
+<ol>
+<li>性能稍弱。</li>
+</ol>
+<p>因为需要创建、销毁节点，而ZK中创建和删除节点只能通过Leader执行，然后同步到所有的Follower。</p>
+<p>这会有好几个网络来回和机器本地执行的开销，为了保证强一致性，性能是必须要稍微牺牲一些的。</p>
+<ol start="2">
+<li>也可能存在并发问题。</li>
+</ol>
+<p>客户端与集群的连接因为各种原因断了，就会删除临时节点，这时候其他客户端就可以获取到锁了，导致并发问题。</p>
+<p>解决方案是重试，一旦集群检测不到客户端的心跳，就会重试，多次重试后才会删除临时节点。</p>
+<p><del>但也不是百分百可靠的。</del></p>
+<hr>
+<p>注册中心</p>
+<p>服务提供者创建一个临时节点，并且将自己的元数据写入节点。</p>
+<p>服务消费者找到服务对应的元数据，如地址，并缓存到本地。</p>
+<p>当服务的某台实例下线时，相应节点会被移除，然后服务消费者会收到通知。</p>
+<hr>
+<p>配置中心、数据发布订阅、分布式协调和通知：不用再说了吧，都是套路。</p>
+<hr>
+<p>客户端只需与集群中的某台机器建立连接，如果连接断开了，可以自动连接到另外的机器上。</p>
+<p>读请求可以被集群中的任意一台机器处理，如果读请求在节点上注册了监听器，也由所连接的机器处理。</p>
+<p>写请求会被转发到Leader，只有达成一致后，请求才会返回成功。</p>
+<p>ZooKeeper将数据保存在内存中，保证了高吞吐量和低延迟。</p>
+<p>随着ZooKeeper集群机器增多，读请求的吞吐量会提高，但写请求的吞吐量会下降。</p>
+<p>因为写请求需要在服务器间同步状态并达成一致。</p>
+<p>ZooKeeper集群是个分布式协调框架，为分布式系统提供一致性服务，只要半数以上节点存活，就能提供服务。</p>
+<p>Zookeeper会在集群内执行数据复制，提高系统的容错性（方便其它节点接管）和扩展能力（增加节点来分摊负载）。</p>
+<p>集群和分布式的概念有些不同，集群的节点一般都提供相同的服务，分布式一般指不同的服务分布在不同的机器上。</p>
+<hr>
+<p>分布式系统中，因为分区容忍性（P），所以必须在可用性（A）和数据一致性（C）中做出选择，即CAP定理。</p>
+<p>ZooKeeper的目的是保证CP（数据一致性）。</p>
+<hr>
+<p>Paxos算法是个分布式一致性算法，解决了分布式系统中如何就某个值达成一致（决议）的问题。</p>
+<p>Paxos中主要有三个角色，分别为Proposer提案者、Acceptor表决者、Learner学习者。</p>
+<p>Paxos类似2PC，也有两个阶段：Prepare阶段和Accept阶段。</p>
+<ol>
+<li>Prepare阶段</li>
+</ol>
+<p>提案者负责提出提案（Proposal），每个提案对应一个全局唯一且递增的提案编号（Proposal Id），可以使用时间戳和服务器Id实现。</p>
+<p>提案者向所有表决者广播Prepare请求，此阶段只需将提案编号发送给所有表决者。</p>
+<p>表决者收到Prepare请求。</p>
+<p>表决者在批准某提案后，会记录该提案编号，维护了自己批准过的最大提案编号MaxNo。</p>
+<p>表决者仅会批准比MaxNo还大的提案。</p>
+<ol start="2">
+<li>Accept阶段</li>
+</ol>
+<p>如果提案者收到过半的表决者的批准，那么给所有表决者发送真正的提案（第一阶段是试探），包含提案编号（Proposal Id）和提案内容（Value）。</p>
+<p>表决者收到Accept请求后，再次比较自己批准过的最大提案编号MaxNo，如果Accept请求的提案编号大于等于MaxNo，那么接受该提案（执行提案但不提交）。</p>
+<p>提案者收到过半的接受响应后，向所有的表决者发送提案的提交请求。</p>
+<p>因为没有批准的表决者没有执行该提案，所以此时需要向未批准的表决者发送提案内容和提案编号，并让它无条件执行和提交，而对于已经批准过该提案的表决者，仅需要提案编号，让表决者执行提交就行了。</p>
+<p><del>上面有点类似Raft的CommitIndex，不过是在下一轮心跳同步的。</del></p>
+<p>如果提案者没有收到过半的表决者的批准，那么将递增提案编号，然后重新进入Prepare阶段。</p>
+<ol start="3">
+<li>Learn阶段</li>
+</ol>
+<p>不属于选定提案。</p>
+<p>提案者收到多数表决者的接受后，决议形成，将决议广播给所有学习者。</p>
+<p>一种说法是表决者接受提案后，广播给所有学习者，学习者发现大多数表决者都接受后，才接受。</p>
+<hr>
+<p>Basic Paxos的决议形成至少需要两次网络来回。</p>
+<p>Basic Paxos可以同时存在多个提案者和多个提案，容易产生冲突。</p>
+<p>极端情况下可能形成活锁，比如两个提案者交替Prepare成功，但是Accept失败。</p>
+<p>对于这种情况，Multi Paxos做了改进，只允许一个提案者存在。</p>
+<p>在所有提案者中选举一个Leader，由Leader唯一地提交提案给表决者进行表决。</p>
+<p>在系统中仅有一个Leader提交的情况下，Prepare阶段就可以跳过，将两阶段变为一阶段。</p>
+<p>Multi Paxos允许有多个自认为是Leader的节点并发提交提案而不影响安全性，即退化为Basic Paxos。</p>
+<p>只要有过半的节点可用，集群就可以进行Leader选举，对外服务。</p>
+<p>通常用来保证数据的多个副本间的一致性，构建一个分布式的一致性状态机。</p>
+<p>ZooKeeper使用的是Paxos的变种ZAB（ZooKeeper Automic Broadcast）协议，即原子广播协议。</p>
+<p>ZAB并不像Paxos算法那样，是一种通用的分布式一致性算法，它是为Zookeeper设计的，能很好地支持崩溃恢复。</p>
+<hr>
+<p>Leader为每个需要同步的节点维护了一个队列，保证发送请求的顺序性。</p>
+<p>网络传输的顺序性由TCP协议保证。</p>
+<p>ZAB协议还有一个全局单调递增的事务Id（Zookeeper Transaction Id），是一个64位长整型。</p>
+<p>其中高32位表示epoch，随着Leader换届而递增，低32位可以简单理解为递增的事务Id。</p>
+<p>zxid保证了顺序性，每个提议都附有zxid，所有写请求都是全局有序的。</p>
+<p>在某一时刻，集群中的每台机器的zxid值不一定一致，zxid越大，数据越新（完整）。</p>
+<hr>
+<p>ZAB协议中的三个角色：Leader领导者、Follower跟随者、Observer观察者。</p>
+<ol>
+<li><p>Leader：处理读请求和写请求。</p>
+</li>
+<li><p>Follower：处理读请求，写请求则需要要转发给Leader处理。参与投票，有选举权和被选举权。</p>
+</li>
+<li><p>Observer：没有选举权和被选举权的Follower，也不参与写请求的“过半写成功”策略，可以在不影响写性能的情况下提升集群的读性能。</p>
+</li>
+</ol>
+<hr>
+<p>ZAB协议中的节点状态：</p>
+<ol>
+<li><p>LOOKING：寻找Leader。</p>
+</li>
+<li><p>LEADING：对应的节点为Leader。</p>
+</li>
+<li><p>FOLLOWING：对应的节点为Follower。</p>
+</li>
+<li><p>OBSERVING：对应节点为Observer，不参与Leader选举。</p>
+</li>
+</ol>
+<hr>
+<p>分布式问题里，常见的大概就是如何选主，以及如何进行一致性的数据复制。</p>
+<p>ZAB协议有两种模式，分别是崩溃恢复和消息广播。</p>
+<p>节点启动后、Follower失去Leader后、Leader失去大多数的Follower后，该节点进入恢复模式，需要选举出Leader。</p>
+<p>恢复模式下，刚启动的节点还会从磁盘快照中恢复数据和会话信息。</p>
+<p>如果选举产生了新的Leader，同时集群中已经有过半机器与该Leader完成数据同步后，就会退出恢复模式，进入广播模式。</p>
+<ol>
+<li><p>Leader Election（选举阶段）：节点一开始都处于选举阶段，只要有一个节点得到超半数节点的票数，它就当选准Leader。</p>
+</li>
+<li><p>Discovery（发现阶段）：Follower跟准Leader通信，同步Follower最近接收的提议。</p>
+</li>
+<li><p>Synchronization（同步阶段）：利用准Leader前一阶段获得的提议，同步集群中所有的副本。同步完成后准Leader才会成为正式Leader。</p>
+</li>
+<li><p>Broadcast（广播阶段）：集群对外提供服务，并且Leader可以进行消息广播。如果有新节点加入，还要对新节点进行同步。</p>
+<ol>
+<li><p>Leader等待连接；</p>
+</li>
+<li><p>Follower连接Leader，将最大的zxid发给Leader；</p>
+</li>
+<li><p>Leader根据Follower的zxid确定同步点；</p>
+</li>
+<li><p>完成同步后，通知Follower已经uptodate；</p>
+</li>
+<li><p>Follower收到uptodate消息后，可以接受客户端的请求，提供服务。</p>
+</li>
+</ol>
+</li>
+</ol>
+<hr>
+<p>ZK有两种选举算法：一种基于basic paxos，另一种基于fast paxos，也是默认的选举算法。</p>
+<hr>
+<ul>
+<li>basic paxos：</li>
+</ul>
+<p>由发起选举的线程担任仲裁，选出推荐的Leader。</p>
+<ol>
+<li><p>发起者先向所有节点发起询问，获得对方投票的Leader信息（zxid，myid）。</p>
+</li>
+<li><p>收到所有回复后，计算投票中，zxid最大的节点，如果zxid相同，则取myid（服务器的Id）最大的节点。</p>
+</li>
+<li><p>将这个最大的节点设为推荐的Leader。</p>
+</li>
+</ol>
+<p>发起者选出推荐的Leader后，则统计投票，并进行对比。</p>
+<ol>
+<li><p>如果该节点获得绝大多数的票数，则该节点成为Leader，并更新自己的状态（LEADING或FOLLOWING）。</p>
+</li>
+<li><p>否则重复这个过程，直到Leader选举完成。</p>
+</li>
+</ol>
+<p>也就是说，只有大多数节点都存活下来时，才可能选举成功。</p>
+<p>网络分区时，小分区是不能选举成功的。</p>
+<hr>
+<ul>
+<li>fast paxos：</li>
+</ul>
+<p>节点都会提议自己成为Leader，其它节点收到提议后，解决zxid冲突，并接受对方的提议。</p>
+<ol>
+<li><p>推荐自己成为Leader，然后将自己的（zxid，myid）广播到集群中，节点收到后则会返回自身的信息。</p>
+</li>
+<li><p>收到节点返回的信息，分两种情况：节点处于LOOKING状态，或者其他状态。</p>
+<ol>
+<li><p>节点返回处于LOOKING状态</p>
+<ol>
+<li><p>如果收到的epoch大于自己的epoch，那么更新本机的epoch，同时和保存的（zxid，myid）对比，选择大的作为新的选举结果，广播给集群。</p>
+</li>
+<li><p>如果收到的epoch小于自己的epoch，说明对方信息落后，这时需要将自己的选举结果发送给它。</p>
+</li>
+<li><p>如果收到的epoch等于自己的epoch，再和保存的（zxid，myid）对比，选择大的作为新的选举结果，广播给集群。</p>
+</li>
+<li><p>除了判断epoch外：</p>
+<ol>
+<li><p>如果收到了其他所有节点的选举信息，那么根据这些信息确定自己的状态（Following，Leading），结束Looking，退出选举。</p>
+</li>
+<li><p>即使没有收到所有节点的选举信息，也要判断以上过程后的最新的选举Leader是不是得到了过半的节点支持。</p>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>节点返回处于其他状态（Following，Leading）</p>
+<ol>
+<li><p>如果收到的epoch等于自己的epoch，则先缓存数据，对方宣称自己是Leader，那么判断是不是有过半的节点支持，是则更新选举状态，退出选举。</p>
+</li>
+<li><p>如果收到的epoch不等于自己的epoch，说明另一个选举已经有了选举结果，则先缓存数据，再判断是否可以结束选举。</p>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<hr>
+<p>假设集群中有3台机器，那么需要两台或以上的同意（超过半数）。</p>
+<p>先启动节点1，那么首先投票(zxid, myid)给自己并广播，即(0, 1)。</p>
+<p>此时节点1只有1票，不能作为Leader，集群处于Looking状态。</p>
+<p>接着启动节点2，它首先也会投票给自己(0, 2)，并将投票信息广播到集群。</p>
+<p>节点1收到节点2的投票信息后，将投票信息与自己的比较(zxid, myid)。</p>
+<p>显然节点2胜出，那么节点1将自己的投票信息改为(0, 2)，然后广播到集群。</p>
+<p>节点2收到后发现和自己的一样，无需更改，并且自己的票数已过半，那么确定自己为Leader。</p>
+<p>节点1将自己状态更新为Following。</p>
+<p>整个集群的节点状态从Looking变为了正常状态。</p>
+<p>然后启动节点3，发现集群没有处于Looking状态，那么直接将自己状态更新为Following，加入集群。</p>
+<p>然后假如集群运行过程中，节点2宕机，剩下的两个Follower会将自己的状态从Following更新为Looking。</p>
+<p>然后两个节点都会先给自己投票，然后广播出去。</p>
+<p>假设节点1给自己投票为(99, 1)，节点3给自己投票为(95, 3)。</p>
+<p>节点1和节点3会收到对方的投票信息，然后比较自己的投票和收到的投票。</p>
+<p>节点1认为节点3的投票不如自己的大，于是投票不变。</p>
+<p>节点3发觉节点1的投票比自己的大，于是更改投票为节点1的票，即(99, 1)，然后广播。</p>
+<p>节点1收到后，发现自己的票数已过半数，于是确定自己为Leader，节点3也变为Follower。</p>
+<hr>
+<p>崩溃恢复中，集群如何保证数据一致性？</p>
+<p>如果Follower宕机，并且集群仍剩下过半节点，没关系。</p>
+<p>如果Leader宕机，所有节点会暂停服务，更新状态为Looking，然后进行Leader选举。</p>
+<p>两点：</p>
+<ol>
+<li>确保已经被Leader提交的提案，最终能够被所有Follower提交。</li>
+</ol>
+<p>假设Leader发送commit请求，发送给了节点1，然后准备发给节点3时，宕机了。</p>
+<p>节点1会提交，节点3会丢弃，如果重新选举后，节点3成为了Leader，数据会不一致。</p>
+<p>不过这不会发生，因为投票选举时会比较zxid，此时节点3比节点1小，不可能成为Leader。</p>
+<ol start="2">
+<li>废弃没被提交的提案。</li>
+</ol>
+<p>假设Leader同意了提案N1，自身提交了事务，并且准备向Follower广播commit请求时，宕机了。</p>
+<p>然后重新进行了Leader选举，选举完成后，宕机的旧Leader重新恢复，并作为Follower加入集群。</p>
+<p>此时这个旧Leader需要执行截断，抛弃已提交的提案N1。</p>
+<hr>
+<p>ZooKeeper集群为什么最好是奇数台？</p>
+<ol>
+<li><p>如果有3个节点，则最多允许1个节点宕机。</p>
+</li>
+<li><p>如果有4个节点，同样最多允许1个节点宕机。</p>
+</li>
+</ol>
+<p>可以看出，可靠性是一样的。</p>
+<p>多数原则除了方便保证一致性，还可以防止脑裂。</p>
+<hr>
+<p>为什么不应该使用ZooKeeper做服务发现：</p>
+<p>ZooKeeper用于解决大规模分布式应用场景下，服务协调同步（Coordinate Service）的问题。</p>
+<p>可以提供：命名服务、配置管理、分布式锁、集群管理等功能，但不是一个良好的服务发现解决方案。</p>
+<ol>
+<li>注册中心应该是CA的：</li>
+</ol>
+<p>假设对同一个服务，两次查询返回的数据不一致，带来的影响可能只是负载有些不均衡（可以接受）。</p>
+<p>如果返回了宕机的实例，那也是小概率事件（吧）。</p>
+<p>ZooKeeper是CP的，允许网络分区，请求能得到一致的结果，但此时不保证请求的可用性。</p>
+<p>如果一个网络分区的ZooKeeper节点数达不到选取Leader的法定人数时（小的网络分区），这个分区的节点都不可用。</p>
+<p>对服务发现来说，这是不允许的，宁可返回之前的可用信息，也不能因为网络分区，而不提供服务发现。</p>
+<ol start="2">
+<li>注册中心的容灾</li>
+</ol>
+<p>如果注册中心本身宕机了，服务调用不应该受到影响。</p>
+<p>理想情况下，服务调用应该是弱依赖于注册中心，除非是服务发布，实例上下线，服务扩缩容时。</p>
+<p>ZooKeeper是CP的，客户端没有缓存服务信息，对于服务发现是否可以接受呢。</p>
+<ol start="3">
+<li>ZooKeeper的写请求不可扩展</li>
+</ol>
+<p>服务规模可能很大，服务可能频繁发布注册，还有服务健康检查，这些都会带来大量写请求。</p>
+<p>另外，还要维护大量实例的长连接。</p>
+<p>ZooKeeper的写不是可扩展的，只能由Leader处理，不可以通过加节点解决水平扩展性问题。</p>
+<p>除非垂直划分到多个ZooKeeper注册中心集群，但是这样不同集群的服务信息就互不相通了。</p>
+<p>ZAB协议对每个写请求，会在每个节点上写事务日志，加上定期将内存镜像刷盘，保证持久性和崩溃恢复。</p>
+<p>服务发现场景中，实时的健康实例的地址列表其实不需要持久化，而服务的元数据如版本号，分组等信息需要持久化。</p>
+<ol start="4">
+<li>健康检查方式的多样性</li>
+</ol>
+<p>ZooKeeper作为服务注册中心时，服务的健康检测依赖于Session机制和Ephemeral ZNode机制。</p>
+<p>也就是说，仅仅依赖于TCP长链接活性来判断服务是否可用。</p>
+<p>但TCP长链接正常，服务不一定是健康的，所以注册中心应该提供更丰富的健康监测方案，开放给服务提供方定义。</p>
+<p><del>综上，我严重怀疑你在吹Nacos。</del></p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

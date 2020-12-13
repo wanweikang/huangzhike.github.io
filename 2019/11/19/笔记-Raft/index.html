@@ -142,19 +142,6 @@
 </li>
 </ul>
 <hr>
-<p>参考这篇文章：<a href="http://dockone.io/article/78" target="_blank" rel="noopener">为什么不应该使用ZooKeeper做服务发现</a>。</p>
-<p>ZooKeeper用于解决大规模分布式应用场景下，服务协调同步（Coordinate Service）的问题，可以提供：统一命名服务、配置管理、分布式锁服务、集群管理等功能，但不是一个良好的服务发现解决方案。</p>
-<p>ZooKeeper是CP的，请求能得到一致的结果，同时系统对网络分割具备容错性，但不保证请求的可用性。</p>
-<p>如果一个网络分区的节点数达不到选取Leader的法定人数时（小的网络分区），就会被移除，即便节点本身正常。</p>
-<p>对服务发现来说，宁可返回之前的可用信息，也不能因为网络故障找不到可用的服务器，而不返回任何结果。</p>
-<p>Eureka由两个组件组成：Eureka服务器和Eureka客户端。</p>
-<p>Eureka服务器用作服务注册服务器，Eureka客户端与服务器交互、作为轮询负载均衡器，并支持服务的故障切换。</p>
-<p>如果某台服务器宕机，不会有类似ZooKeeper的Leader选举，客户端请求会自动切换到新的Eureka节点。</p>
-<p>当网络分区时，每个Eureka节点继续对外提供服务，接收新的服务注册同时将它们提供给下游的服务发现请求。</p>
-<p>正常配置下，Eureka内置了心跳服务，如果在Eureka中注册的服务的心跳出现异常，Eureka会将其剔除。</p>
-<p>也可以配置，因为网络问题而被剔除出去的服务器本身可能是健康的，只是因为网络分割故障把Eureka集群分割成了独立的子网而不能互访而已。</p>
-<p>Eureka客户端还有缓存功能，即便Eureka集群中所有节点都失效，或者发生网络分区导致客户端不能访问任何一台Eureka服务器，仍然可以通过Eureka客户端缓存获取服务注册信息。</p>
-<hr>
 <h4 id="Raft节点的三个状态"><a href="#Raft节点的三个状态" class="headerlink" title="Raft节点的三个状态"></a>Raft节点的三个状态</h4><ul>
 <li><p>Follower</p>
 <ul>
@@ -242,7 +229,7 @@
 <p>随机选主触发时间：Random(ET, 2ET)。</p>
 <h4 id="关于日志"><a href="#关于日志" class="headerlink" title="关于日志"></a>关于日志</h4><p>日志只从Leader发送到其他节点。</p>
 <p>日志复制有连续性，不允许出现空洞。</p>
-<p>只要将写操作转化为WriteAheadLog（WAL），所有副本对WAL一致，对于每个状态机，只要按顺序执行WAL，就能保证最终状态是一致的。</p>
+<p>只要将写操作转化为Write Ahead Log（WAL），对于每个状态机，只要按顺序执行WAL，就能保证最终状态是一致的。</p>
 <ul>
 <li><p>Client向Leader发送请求（如果发送给了Follower，则会被重定向到Leader）；</p>
 </li>
@@ -252,10 +239,10 @@
 </li>
 <li><p>Leader提交Log的CommitIndex，再由状态机执行，再响应Client的请求；</p>
 </li>
-<li><p>在下一个心跳中，Follower根据Leader发来的当前CommitIndex，提交自己的日志索引。</p>
+<li><p>在下次心跳中，Follower根据Leader发来的当前CommitIndex，提交自己的日志索引。</p>
 </li>
 </ul>
-<p>￼CommitIndex就是已达成多数，可以应用到状态机的最新的日志位置。</p>
+<p>CommitIndex就是已达成多数，可以应用到状态机的最新的日志位置。</p>
 <p>AppendEntriesRPC的参数：</p>
 <ul>
 <li><p>CurrentTerm；</p>

@@ -160,7 +160,7 @@
 <hr>
 <p>搜索严禁左模糊（%xxx）或全模糊，如果需要可以使用搜索引擎如ES。</p>
 <p>InnoDB从5.6版本开始支持全文索引(Fulltext)。</p>
-<p>支持的字段格式包括CHAR、VARCHAR和TEXT。</p>
+<p>支持的字段格式包括char、vatchar和text。</p>
 <p>查询包含”hello”的记录：</p>
 <pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token keyword">match</span><span class="token punctuation">(</span>col<span class="token punctuation">)</span> against<span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p><code>match(col) against(&#39;hello&#39;)</code>返回col列对目标字符”hello”的匹配程度，不存在任何匹配结果时，返回0。</p>
@@ -250,26 +250,24 @@
 <pre class=" language-sql"><code class="language-sql"><span class="token keyword">truncate</span> <span class="token keyword">table</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre>
 <p>truncate是先把整张表删除，然后重建该表，同时重置水平线（自增长列起始位）。</p>
 <hr>
-<ul>
-<li>SELECT</li>
-</ul>
+<p>SELECT</p>
 <ol>
 <li><p>单表SELECT，查看执行计划是否使用了索引，含有ORDER BY LIMIT，可以考虑延迟JOIN。</p>
 </li>
 <li><p>多表JOIN，确定好驱动表，被驱动表必须含有索引，减少JOIN次数，含有GROUP BY的可以考虑先聚合后JOIN。</p>
 </li>
 </ol>
-<ul>
-<li>UPDATE / DELETE</li>
-</ul>
+<p>UPDATE / DELETE</p>
 <ol>
+<li><p>是否使用到了索引？</p>
+</li>
 <li><p>不要大事务更新或删除，适当分批进行。</p>
 </li>
-<li><p>查看是否有锁竞争。</p>
+<li><p>是否有锁竞争？</p>
 </li>
 <li><p>不要用WHERE条件的子查询，改成JOIN。</p>
 </li>
-<li><p>大量删除可以考虑创建表结构后更名。</p>
+<li><p>大量删除可以考虑创建表结构后改名。</p>
 </li>
 </ol>
 <hr>
@@ -291,6 +289,72 @@
 <p>假设a表的字符集编码是utf8mb4，bl表的字符集编码是utf8，那么是无法走索引的。</p>
 <p>根据执行计划可知，a是驱动表，b是被驱动表，也就是从a表中取col字段，再去b表里查询匹配字段。</p>
 <p>字符集utf8mb4是utf8的超集，当这两个类型比较时，MySQL先把utf8字符串转成utf8mb4字符集，再做比较。</p>
+<hr>
+<p>提高并发事务吞吐量的一些方法：</p>
+<ol>
+<li><p>关闭死锁检测，但要注意事务超时设置。</p>
+</li>
+<li><p>使用组提交，降低Server和引擎的交互次数，降低IO消耗。</p>
+</li>
+</ol>
+<hr>
+<p>group commit：</p>
+<p>基本思想是多个并发提交的事务共用一次fsync操作来实现持久化。</p>
+<ol>
+<li><p>多个并发提交的事务在写redo log或binlog前会被加入到队列中。</p>
+</li>
+<li><p>队列头部的事务线程称为Leader线程，其它线程称为Follower线程。</p>
+</li>
+<li><p>Leader线程负责为队列中所有事务执行刷盘，此时所有Follower线程处于等待状态。</p>
+</li>
+<li><p>然后通知Follower线程继续执行。</p>
+</li>
+</ol>
+<p>通常是定时或者等待线程数达到阈值时才执行fsync。</p>
+<p>可能会导致延迟和吞吐量下降，需要权衡fsync的成本进行设置。</p>
+<p>一般要有足够多的并发提交事务才能体现优势。</p>
+<hr>
+<p>如何优化MySQL的cpu消耗？</p>
+<p>cpu = 用户（us） + 系统（sy） + IO等待（wa） + 软硬中断（ni &amp; si） + 空闲（id）</p>
+<p>用户态：正在进行大量事务、函数、排序、复杂SQL。</p>
+<p>IO等待：此时cpu空闲，可以尝试优化索引，减少不必要的表扫描。</p>
+<hr>
+<p>低延迟，需要快速响应，需要更快的cpu（每个查询只能使用一个cpu）。</p>
+<p>高吞吐，同时运行很多查询语句，能从多个cpu中收益。</p>
+<hr>
+<p>如何找出项目中慢查询？</p>
+<ol>
+<li><p>一些全链路追踪框架，如Skywalking。</p>
+</li>
+<li><p>MySQL慢查询日志。</p>
+</li>
+</ol>
+<hr>
+<p>MySQL8.0的一些新特性</p>
+<ol>
+<li>降序索引（Descending Indexes）</li>
+</ol>
+<p>降序索引和搜索引擎中的倒排索引不一样，降序索引只是反向排序存储。</p>
+<p>MySQL8.0前，不支持降序索引，但支持基于索引的降序排序（利用索引的有序性）。</p>
+<p>MySQL8.0前，都是按正序来存储索引，即使创建索引的时候可以(a desc, b asc)，也会忽略。</p>
+<p>MySQL8.0前，列排序顺序不一样，不支持按索引排序。</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span> <span class="token keyword">asc</span> <span class="token punctuation">,</span> <span class="token number">b</span> <span class="token keyword">desc</span><span class="token punctuation">;</span></code></pre>
+<ol start="2">
+<li>秒级加列</li>
+</ol>
+<p>INSTANT，只改数据字典表元数据信息。</p>
+<p>以前表加列操作需要重建表，8.0加列不需要，也不需要加写锁。</p>
+<p>前提是不要指定新加的列的位置，或者指定追加的位置是列最后。</p>
+<ol start="3">
+<li><p>移除Query Cache。</p>
+</li>
+<li><p>Group By不再隐式排序。</p>
+</li>
+<li><p>函数索引（Functional Indexes），where条件列即使使用函数也能使用索引。</p>
+</li>
+<li><p>修复了锁扩大的问题。</p>
+</li>
+</ol>
 
 				</div>
 				<!-- about -->

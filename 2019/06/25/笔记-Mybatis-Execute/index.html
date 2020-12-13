@@ -133,7 +133,7 @@
     <span class="token keyword">public</span> <span class="token operator">&lt;</span>T<span class="token operator">></span> T <span class="token function">getMapper</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span>T<span class="token operator">></span> type<span class="token punctuation">,</span> SqlSession sqlSession<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">final</span> MapperProxyFactory<span class="token operator">&lt;</span>T<span class="token operator">></span> mapperProxyFactory <span class="token operator">=</span> <span class="token punctuation">(</span>MapperProxyFactory<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token punctuation">)</span> knownMappers<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>mapperProxyFactory <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">BindingException</span><span class="token punctuation">(</span><span class="token string">"Type "</span> <span class="token operator">+</span> type <span class="token operator">+</span> <span class="token string">" is not known to the MapperRegistry."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
             <span class="token keyword">return</span> mapperProxyFactory<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span>sqlSession<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -210,7 +210,7 @@
                 <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">BindingException</span><span class="token punctuation">(</span><span class="token string">"Unknown execution method for: "</span> <span class="token operator">+</span> command<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>result <span class="token operator">==</span> null <span class="token operator">&amp;&amp;</span> method<span class="token punctuation">.</span><span class="token function">getReturnType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isPrimitive</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>method<span class="token punctuation">.</span><span class="token function">returnsVoid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">BindingException</span><span class="token punctuation">(</span><span class="token string">"Mapper method '"</span> <span class="token operator">+</span> command<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" attempted to return null from a method with a primitive return type ("</span> <span class="token operator">+</span> method<span class="token punctuation">.</span><span class="token function">getReturnType</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">")."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
         <span class="token keyword">return</span> result<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
@@ -224,7 +224,7 @@
             <span class="token comment" spellcheck="true">// 传入的ResultHandler是null</span>
             <span class="token keyword">return</span> executor<span class="token punctuation">.</span><span class="token function">query</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> <span class="token function">wrapCollection</span><span class="token punctuation">(</span>parameter<span class="token punctuation">)</span><span class="token punctuation">,</span> rowBounds<span class="token punctuation">,</span> Executor<span class="token punctuation">.</span>NO_RESULT_HANDLER<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> ExceptionFactory<span class="token punctuation">.</span><span class="token function">wrapException</span><span class="token punctuation">(</span><span class="token string">"Error querying database.  Cause: "</span> <span class="token operator">+</span> e<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
             ErrorContext<span class="token punctuation">.</span><span class="token function">instance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">reset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
@@ -235,7 +235,7 @@
         Statement stmt <span class="token operator">=</span> null<span class="token punctuation">;</span>
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
             Configuration configuration <span class="token operator">=</span> ms<span class="token punctuation">.</span><span class="token function">getConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 创建一个StatementHandler, 包含结果处理器、参数处理器、执行器等</span>
+            <span class="token comment" spellcheck="true">// 创建一个StatementHandler 包含结果处理器、参数处理器、执行器等</span>
             StatementHandler handler <span class="token operator">=</span> configuration<span class="token punctuation">.</span><span class="token function">newStatementHandler</span><span class="token punctuation">(</span>wrapper<span class="token punctuation">,</span> ms<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">,</span> resultHandler<span class="token punctuation">,</span> boundSql<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token comment" spellcheck="true">// JDBC</span>
             stmt <span class="token operator">=</span> <span class="token function">prepareStatement</span><span class="token punctuation">(</span>handler<span class="token punctuation">,</span> ms<span class="token punctuation">.</span><span class="token function">getStatementLog</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -316,7 +316,7 @@
                         <span class="token comment" spellcheck="true">// Jdbc下标从1开始，设置参数，内部调用PrepareStatement.setXXX</span>
                         typeHandler<span class="token punctuation">.</span><span class="token function">setParameter</span><span class="token punctuation">(</span>ps<span class="token punctuation">,</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> value<span class="token punctuation">,</span> jdbcType<span class="token punctuation">)</span><span class="token punctuation">;</span>
                     <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">TypeException</span> <span class="token operator">|</span> SQLException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">TypeException</span><span class="token punctuation">(</span><span class="token string">"Could not set parameters for mapping: "</span> <span class="token operator">+</span> parameterMapping <span class="token operator">+</span> <span class="token string">". Cause: "</span> <span class="token operator">+</span> e<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">// ...</span>
                     <span class="token punctuation">}</span>
                 <span class="token punctuation">}</span>
             <span class="token punctuation">}</span>
@@ -505,6 +505,64 @@
         <span class="token punctuation">}</span>
         <span class="token keyword">return</span> foundValues<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
+<hr>
+<ol>
+<li><p>Configuration：所有配置信息。</p>
+</li>
+<li><p>SqlSource：从XML文件或注释读取的映射语句内容。</p>
+</li>
+<li><p>MappedStatement：动态SQL的包装。</p>
+</li>
+<li><p>TypeHandler：Java类型和JDBC类型之间的转换，比如实现Enum枚举类的映射。PreparedStatementHandler设置参数时，要把Java Type转换为JDBC Type；ResultSetHandler返回结果集时，要把JDBC Type转为Java Type。</p>
+</li>
+<li><p>StatementHandler：JDBC Statement操作，如设置参数、将Statement结果集转换成List集合。</p>
+</li>
+<li><p>ParameterHandler：设置JDBC Statement的参数。</p>
+</li>
+<li><p>SqlSession：略。</p>
+</li>
+<li><p>Executor：执行器。</p>
+</li>
+<li><p>ResultSetHandler：将JDBC返回的ResultSet结果集对象转换成List类型的集合。</p>
+</li>
+</ol>
+<hr>
+<p>MyBatis的缓存：</p>
+<ol>
+<li><p>一级缓存：SqlSession级别，openSession -&gt; close，然后就被回收。</p>
+</li>
+<li><p>二级缓存：Mapper级别，生命周期是整个应用的生命周期，可能溢出。</p>
+</li>
+</ol>
+<p>因为二级缓存是Mapper级别的，如果在MapperA中查t1，然后在MapperB增删改t1，这时再在MapperA中查t1，二级缓存是无感知的。</p>
+<p>所以使用二级缓存的前提是，保证所有的增删改查都在同一个命名空间下。</p>
+<p>不用最好。</p>
+<hr>
+<p>Mapper接口里的方法，参数不同时，方法不能重载。</p>
+<p>因为根据（全限名 + 方法名）来保存和查找（emmm）。</p>
+<p>每个<code>&lt;select&gt;</code>、<code>&lt;insert&gt;</code>、<code>&lt;update&gt;</code>、<code>&lt;delete&gt;</code>标签，都会被解析为一个MappedStatement对象。</p>
+<p>工作原理是JDK动态代理，为Mapper接口生成代理对象，拦截接口方法，执行MappedStatement的SQL。</p>
+<hr>
+<p>Mybatis支持association一对一关联对象和collection一对多关联集合对象的延迟加载。</p>
+<p>返回的是CGLIB创建的代理对象，当调用方法时，才执行查询。</p>
+<hr>
+<p>MyBatis的插件实现原理是JDK的动态代理，可以为<code>ParameterHandler</code>、<code>ResultSetHandler</code>、<code>StatementHandler</code>、<code>Executor</code>4种接口生成代理对象。</p>
+<p>分页插件就是这么实现的，实现Interceptor接口。</p>
+<hr>
+<ol>
+<li><p>建造者模式：SqlSessionFactoryBuilder</p>
+</li>
+<li><p>抽象工厂模式：TransactionFactory</p>
+</li>
+<li><p>模板模式：BaseExecutor</p>
+</li>
+<li><p>责任链模式：InterceptorChain</p>
+</li>
+<li><p>装饰器模式：CachingExecutor</p>
+</li>
+<li><p>代理模式：PooledConnection</p>
+</li>
+</ol>
 
 				</div>
 				<!-- about -->

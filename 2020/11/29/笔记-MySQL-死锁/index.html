@@ -413,7 +413,7 @@ Record <span class="token keyword">lock</span><span class="token punctuation">,<
 <ul>
 <li>infimum和supremum：</li>
 </ul>
-<p>一个page中总是包含这两个伪记录。</p>
+<p>每个data page中都包含这两个伪记录。</p>
 <p>页中所有未删除（或删除但还未purged）的行逻辑上都链接到这两个伪记录之间，表现为一个逻辑链表结构。</p>
 <p>其中supremum伪记录的锁始终为next-key lock。</p>
 <ul>
@@ -442,6 +442,10 @@ Record <span class="token keyword">lock</span><span class="token punctuation">,<
 <p>当前事务加锁的行数，lock struct中行级锁的数量，包含了infimum和supremum伪记录。</p>
 <p>对大量行加锁时，多次show engine innodb status可以看到输出中，事务信息中的row lock会不断增加。</p>
 <p>因为加行锁会调用lock_rec_lock逐行加锁，也是导致死锁的原因。</p>
+<ul>
+<li>compact format：</li>
+</ul>
+<p>InnoDB的一种行格式，比redundant格式减少了存储空间，但会增加某些操作的CPU开销。</p>
 <hr>
 <p>读已提交级别</p>
 <pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>t1<span class="token punctuation">`</span> <span class="token punctuation">(</span>

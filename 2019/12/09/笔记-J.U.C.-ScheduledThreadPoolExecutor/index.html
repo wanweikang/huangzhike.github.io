@@ -282,6 +282,12 @@ public class ScheduledThreadPoolExecutor extends ThreadPoolExecutor implements S
                 lock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span></code></pre>
+<p>这里有一个Leader的概念。</p>
+<p>调度线程池可能有多个worker线程从队列take任务执行，而任务通常都是未到期的，所以这些worker线程都需要阻塞。</p>
+<p>第一个等待任务的线程为Leader，awaitNanos释放锁，等待队列头任务到期被唤醒，重新获得锁，然后唤醒其它等待的线程，最后释放锁。</p>
+<p>其余线程都是Follower，await无限期等待，直至被Leader唤醒，然后所有线程重新抢锁，继续这个循环。</p>
+<p>不过这里一个任务只能被一个线程执行，没必要全部唤醒所有等待的线程，执行无意义的抢任务操作（然后没抢到的线程还要重新阻塞）。</p>
+<p>不过也有道理，如果不这样，其它等待的线程就不知道要被阻塞到什么时候了，也没人唤醒它们。</p>
 <p>ScheduledThreadPoolExecutor$ScheduledFutureTask#run</p>
 <pre class=" language-java"><code class="language-java">        <span class="token annotation punctuation">@Override</span>
         <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>

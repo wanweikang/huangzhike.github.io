@@ -93,10 +93,11 @@
 <p>吭，说句题外话，之前面试某大厂的时候，面试官问了我一个问题，连接池是怎么实现的，我的回答是用一个阻塞队列，AOP拦截关闭方法，将连接返回连接池。</p>
 <p>当时我没太关注这方面，所以只是简单说了我的想法，不过面试官听到我用阻塞队列实现的时候，惊讶地叫了出来，额，难道不可以么。</p>
 <p>看Druid的实现，也是用数组保存连接，然后通过锁和条件控制并发，这不就是阻塞队列ArrayBlockingQueue的基本思路么。</p>
+<p>虽然是个LIFO的栈，大概是为了方便获得最新鲜的Connection吧，毕竟老的连接可能被回收，而新的连接是最好的。</p>
 <p>虽然直接用阻塞队列可能不灵活，但是应该也能用吧（可能的问题就是比较难回收闲置的连接，因为是FIFO）。。。</p>
 <p>返还连接时，Druid也是在连接的代理对象内包了一层过滤链，在调用关闭方法的时候将连接放回连接池。</p>
 <p><del>所以就是有点疑惑。。。</del></p>
-<p>好吧，我已经会自问自答了，我觉得应该是因为阻塞队列这种队尾进队头出的结构不适合连接池的业务逻辑，比如回收连接时，不能跳过前面的连接（其实应该可以做个懒处理的，但是性能不好）。</p>
+<p>好吧，我已经会自问自答了，我觉得应该是因为队列这种队尾进队头出的结构不适合连接池的业务逻辑，比如回收连接时，不能跳过前面的连接（其实应该可以做个懒处理的，但是性能不好）。</p>
 <hr>
 <p>DruidDataSource#getConnection</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> DruidPooledConnection <span class="token function">getConnection</span><span class="token punctuation">(</span><span class="token keyword">long</span> maxWaitMillis<span class="token punctuation">)</span> <span class="token keyword">throws</span> SQLException <span class="token punctuation">{</span>

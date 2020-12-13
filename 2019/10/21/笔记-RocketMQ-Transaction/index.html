@@ -18,9 +18,9 @@
 
 两阶段提交协议（Two Phase Commit，2PC）：
 
-Client向Coordinator（中心协调节点）发起事务请求；
+客户端向中心协调节点（Coordinator）发起事务请求；
 
-Coordinator向N个Partcipant（参与者节点）发">
+中心协调节点向N个参与者节点（Partcipant）发送事务预处理请求">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -98,49 +98,55 @@ Coordinator向N个Partcipant（参与者节点）发">
 <hr>
 <p>两阶段提交协议（Two Phase Commit，2PC）：</p>
 <ul>
-<li><p>Client向Coordinator（中心协调节点）发起事务请求；</p>
+<li><p>客户端向中心协调节点（Coordinator）发起事务请求；</p>
 </li>
-<li><p>Coordinator向N个Partcipant（参与者节点）发送PrepareRequest（事务预处理请求）；</p>
+<li><p>中心协调节点向N个参与者节点（Partcipant）发送事务预处理请求（PrepareRequest）；</p>
 </li>
-<li><p>Partcipant收到PrepareRequest后，如果可以处理，则执行本地事务，但不提交，给Coordinator回复YES，如果不能处理，回复NO；</p>
+<li><p>参与者节点收到预处理请求后，如果可以处理，则执行本地事务但不提交，返回成功，如果不能，返回失败；</p>
 </li>
-<li><p>Coordinator收到所有的Partcipant的YES后，再向Partcipant发送事务提交请求，Partcipant再提交本地事务；</p>
+<li><p>中心协调节点收到所有的参与者节点成功后，再向参与者节点广播事务提交请求，参与者节点再提交本地事务；</p>
 </li>
-<li><p>否则，Coordinator向所有Partcipant发起回滚请求，Partcipant执行回滚后返回确认。</p>
+<li><p>否则，中心协调节点向所有参与者节点广播回滚请求，参与者节点执行回滚后返回确认。</p>
 </li>
 </ul>
 <p>问题：</p>
 <ul>
-<li><p>Coordinator发送PrepareRequest后，如果宕机，Partcipant事务会一直挂起直到超时；</p>
+<li><p><strong>单点</strong>故障问题，如果中心协调节点宕机，整个系统都不可用。</p>
 </li>
-<li><p>Partcipant直到收到提交请求后，才会释放，这个过程是阻塞的；</p>
+<li><p>中心协调节点发送事务预处理请求后，如果宕机，参与者节点事务会挂起直到超时。</p>
 </li>
-<li><p>如果因为网络原因，只有部分Partcipant收到了提交请求，就会导致不一致。</p>
+<li><p>参与者节点直到收到提交请求后，才会释放，这个过程是<strong>阻塞</strong>的。</p>
+</li>
+<li><p>如果因为网络原因，只有部分参与者节点收到了提交请求，就会导致<strong>不一致</strong>。</p>
 </li>
 </ul>
+<p>没有完全解决分布式下所有服务的原子性问题，不能保证所有服务的处理要么都成功要么都失败。</p>
 <hr>
 <p>三阶段提交协议（Three Phase Commit，3PC）：</p>
-<ul>
-<li><p>CanCommit：Client向Coordinator发起事务请求，Coordinator向N个Partcipant发送CanCommit询问，是否可以完成事务，比如尝试获取锁，可以则回复YES，否则NO；</p>
+<ol>
+<li><p>CanCommit：客户端向协调者发起事务请求，协调者向N个参与者发送CanCommitRequest，询问是否可以完成事务，比如尝试获取锁；</p>
 </li>
 <li><p>PreCommit：</p>
 <ul>
-<li><p>如果所有的Partcipant都返回YES，Coordinator则向所有Partcipant发送PreCommit请求，Partcipant收到后执行事务，但不提交，并记录Undo和Redo信息到日志，向Coordinator回复YES，同时等待指令；</p>
+<li><p>如果所有参与者都返回成功，协调者则向所有参与者广播PreCommitRequest，参与者收到后执行事务，但不提交，返回成功；</p>
 </li>
-<li><p>如果有Partcipant回复NO，或Coordinator等待Partcipant回复超时，则向所有Partcipant发送Abort请求，中断事务；</p>
+<li><p>如果有参与者返回失败，或协调者等待返回超时，则向所有参与者广播AbortRequest，中断事务；</p>
 </li>
 </ul>
 </li>
 <li><p>DoCommit：</p>
 <ul>
-<li><p>如果所有的Partcipant都返回YES，Coordinator则向所有Partcipant发送DoCommit请求，Partcipant收到后提交事务，向Coordinator回复YES，Coordinator收到所有的Partcipant的YES后完成事务；</p>
+<li><p>如果所有参与者都返回成功，协调者则向所有参与者广播DoCommitRequest，参与者收到后提交事务，返回成功，协调者收到所有的成功响应后完成事务；</p>
 </li>
-<li><p>如果有Partcipant回复NO，或Coordinator等待Partcipant回复超时，则向所有Partcipant发送Abort请求，中断事务，Partcipant收到后根据Undo信息执行回滚，向Coordinator回复YES。</p>
-</li>
-</ul>
+<li><p>如果有参与者返回失败，或协调者等待返回超时，则向所有参与者广播AbortRequest，中断事务，参与者收到后执行回滚，返回成功。</p>
 </li>
 </ul>
-<p>在DoCommit阶段，假如因为网络原因或者Coordinator宕机，Partcipant没有收到DoCommit或Abort请求，都会在等待超时之后，继续提交事务，所以可能会出现不一致。</p>
+</li>
+</ol>
+<p>3PC添加了超时处理，在DoCommit阶段，假如因为网络或协调者宕机，参与者未收到协调者发送的提交事务请求，它会继续提交事务。</p>
+<p>因为在CanCommit所有的参与者已经返回了成功响应，所以倾向于相信事务能成功（或者说可能性比较大）。</p>
+<p>但谁也不能保证所有的参与者都能成功，可能有的失败了，此时可能会出现不一致。</p>
+<p>一致性问题也没有解决，比如在PreCommit阶段，一个参与者收到了请求后，其他参与者和协调者挂了或出现了网络分区，这个参与者都会提交事务。</p>
 <hr>
 <p>补偿事务（Try Confirm Cancel，TCC）：</p>
 <p>对每个事务分支操作都要注册一个对应的确认和补偿（撤销）操作（Try Confirm Cancel）。</p>

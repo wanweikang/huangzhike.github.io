@@ -382,39 +382,34 @@ InnoDB引擎遍历表，取出行的主键，返回给Server层，Server层判�
 <p>多表连接查询，并且order by的列全部来自执行计划的第一个非常量（const）驱动表时，才能使用索引排序。</p>
 <p>另外，对于字符串的部分前缀索引，如idx_name(name(2))，不能使用索引排序。</p>
 <hr>
-<p>如果不能利用索引排序，那么只能优化order by相关的缓存参数。</p>
-<p>增加sort_buffer_size大小，避免磁盘排序和合并排序。</p>
-<p>sort_buffer_size是connection级的参数，并不是越大越好，过大的设置和高并发可能会耗尽系统内存资源。</p>
-<p>常规排序：</p>
+<p>如果不能利用索引排序，那么只能增加sort_buffer_size大小，避免磁盘排序和合并排序。</p>
+<p>和join_buffer_size一样，sort_buffer_size也是connection级的参数，并不是越大越好。</p>
+<p>过大的设置和高并发可能会耗尽系统内存资源。</p>
+<ul>
+<li>常规排序（single-pass算法，rowid排序）：</li>
+</ul>
 <ol>
-<li><p>从表中获取满足where条件的记录；</p>
+<li><p>获取满足where条件的记录，将记录的主键和排序键(id, col)取出放入sort buffer。</p>
 </li>
-<li><p>对于每条记录，将记录的主键和排序键(id, col)取出放入sort buffer；</p>
+<li><p>如果sort buffer可以存放所有的(id, col)，则直接进行快速排序。</p>
 </li>
-<li><p>如果sort buffer可以存放所有的(id, col)，则进行排序（快速排序）；</p>
+<li><p>否则sort buffer满后，进行快速排序并固化到临时文件，重复这个过程，最后对临时文件执行归并排序。</p>
 </li>
-<li><p>否则sort buffer满后，进行排序并固化到临时文件中；</p>
-</li>
-<li><p>若排序中产生了临时文件，需要归并排序；</p>
-</li>
-<li><p>循环执行上述过程，直到所有满足条件的记录全部排序；</p>
-</li>
-<li><p>扫描排好序的(id, col)，并利用id回表查询需要的列；</p>
-</li>
-<li><p>返回获取的结果集。</p>
+<li><p>利用排好序的(id, col)，回表查询需要的列，最后返回结果集。</p>
 </li>
 </ol>
-<p>是否使用文件排序主要看sort buffer大小，由sort_buffer_size参数控制。</p>
-<p>此外一次排序需要两次IO，一次是获取(id, col)，第二次回表获取需要的列(col1, col2, …)。</p>
-<p>由于返回的结果集按col排序，因此通过乱序的主键回表时会产生大量的随机IO。</p>
-<p>MySQL对回表有一个优化，在回表前先将id排序，并放入缓冲区，大小由read_rnd_buffer_size参数控制。</p>
-<p>然后有序去回表，将随机IO转为顺序IO。</p>
-<p>优化排序：</p>
-<p>为了避免常规排序的第二次回表IO，优化排序放入sort buffer的不是(id, col)，而是需要的所有列(col1, col2, …)。</p>
-<p>排序完成后可以直接返回，无需回表。</p>
-<p>代价在于容纳的记录变小了，可能导致需要写临时文件，造成额外的IO。</p>
+<p>是否使用文件排序主要看sort_buffer_size。</p>
+<p>一次排序需要两次IO，一次是获取(id, col)，第二次是回表获取需要的列(col1, col2, …)。</p>
+<p>由于返回的结果集按col排序，如果通过乱序的主键回表，会产生大量随机IO。</p>
+<p>MySQL的优化是，在回表前先将id排序，然后有序去回表。</p>
+<p>优点是行数据进行了压缩，缺点是需要两次访问表。</p>
+<ul>
+<li>优化排序（two-pass算法，全字段排序）：</li>
+</ul>
+<p>为了避免第二次回表IO，放入sort buffer的不是(id, col)，而是需要的所有列(col1, col2, …)。</p>
+<p>优点是只访问了一次表，缺点是数据没有压缩，会耗用更多排序缓冲，及临时文件的额外IO。</p>
 <p>所以查询时尽量不要select不必要的返回字段。</p>
-<p>另外，当有查询列含有blob或text时，MySQL会选择常规排序。</p>
+<p>另外，当查询列有blob或text时，MySQL会选择常规排序。</p>
 <hr>
 <p>优先队列排序：</p>
 <p>针对order by limit m, n，加入了新的排序方式，采用堆排序实现。</p>
@@ -444,12 +439,6 @@ InnoDB引擎遍历表，取出行的主键，返回给Server层，Server层判�
 <p>解决方法第一种就是，在排序中加上唯一值，如主键，确保参与排序的值不相同。</p>
 <p>如：order by view_count desc, id limit 0, 2。</p>
 <p>第二种就是避免使用堆排序，让order by根据索引来排序。</p>
-<hr>
-<p>MySQL8.0引入了倒序索引，和搜索引擎中的倒排索引不一样，这里倒序索引只是反向排序存储。</p>
-<p>MySQL8.0前，不支持倒序索引，但支持基于索引的倒序排序（利用索引的有序性）。</p>
-<p>MySQL8.0前，都是按正序来存储索引，即使创建索引的时候可以(a desc, b asc)，也会忽略。</p>
-<p>MySQL8.0前，列排序顺序不一样，不支持按索引排序。</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">where</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">a</span> <span class="token keyword">asc</span> <span class="token punctuation">,</span> <span class="token number">b</span> <span class="token keyword">desc</span><span class="token punctuation">;</span></code></pre>
 
 				</div>
 				<!-- about -->
