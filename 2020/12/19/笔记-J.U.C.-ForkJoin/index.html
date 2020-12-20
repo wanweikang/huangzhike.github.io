@@ -1,0 +1,388 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script>
+        var timeStart = new Date();
+    </script>
+    <meta charset="utf-8">
+    
+    <title>[笔记]-J.U.C.-ForkJoin | 草木禾</title>
+    
+    <meta name="author" content="huangzhike">
+    
+    
+    <meta name="description"
+        content="又到了白色相簿的季节了。
+一个无关的话题，好记性不如烂笔头，我觉得非常有道理。
+很多之前看过的东西，有些甚至是看过没多久，记忆就有些模糊了。心好累。
+于是我从拼多多买了一个笔记本，决定认真写字记笔记。
+
+去年就一直觉得NB，现在终于有时间看了。虽然看了也没啥用，别问，问就是Niubility。
+Fo">
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta property="og:title" content="[笔记]-J.U.C.-ForkJoin" />
+    
+    <meta property="og:site_name" content="草木禾" />
+    
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/ico" href="/logo.ico" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#009688">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.ico">
+    <meta name="theme-color" content="#009688">
+    <!-- favicon end -->
+    <!-- <link href="//ok.ico" rel="icon"> -->
+    
+
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/css/prism.css" media="screen" type="text/css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+<body>
+    <nav class="navbar navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">菜单</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" title="早く来い、クラウド" href="/">Reunion...</a>
+           
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li>
+					<a href="https://huangzhike.github.io/archives" title="">
+						<i class="fa fa-list"></i>Archives
+					</a>
+				</li>
+				
+				<li>
+					<a href="https://github.com/huangzhike" target="_blank" rel="noopener" title="">
+						<i class="fa fa-github"></i>GitHub
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+    <div class="container" >
+        <div class="row">
+	
+		<div class="col-md-9 center-content">
+			
+			<div class="content">
+				<!-- index -->
+				
+				<h2>[笔记]-J.U.C.-ForkJoin</h2>
+				
+				<div>
+					<div class="post-time">2020-12-19</div>
+				</div>
+				
+				<div class="article-content">
+				<p><del>又到了白色相簿的季节了。</del></p>
+<p>一个无关的话题，好记性不如烂笔头，我觉得非常有道理。</p>
+<p>很多之前看过的东西，有些甚至是看过没多久，记忆就有些模糊了。<del>心好累。</del></p>
+<p>于是我从拼多多买了一个笔记本，决定认真写字记笔记。</p>
+<hr>
+<p>去年就一直觉得NB，现在终于有时间看了。虽然看了也没啥用，别问，问就是Niubility。</p>
+<p>ForkJoin远远比我知道的复杂，不过也足够满足我的好奇心了。</p>
+<p>其实类似ForkJoin的思想平时已经用到，比如经常会遇到一些数据聚合的需求，获得了主体数据后，还要根据主键获取一堆关联的信息，如果一个接一个串行执行，会比较耗时，这些请求并没有前后依赖，所以可以考虑并发执行。</p>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">get</span><span class="token punctuation">(</span>Long id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token comment" spellcheck="true">// 耗时RPC操作</span>
+
+        CompletableFuture<span class="token operator">&lt;</span>Void<span class="token operator">></span> cf1 <span class="token operator">=</span> CompletableFuture<span class="token punctuation">.</span><span class="token function">runAsync</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 耗时RPC操作</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CompletableFuture<span class="token operator">&lt;</span>Void<span class="token operator">></span> cf2 <span class="token operator">=</span> CompletableFuture<span class="token punctuation">.</span><span class="token function">runAsync</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 耗时RPC操作</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CompletableFuture<span class="token operator">&lt;</span>Void<span class="token operator">></span> cf3 <span class="token operator">=</span> CompletableFuture<span class="token punctuation">.</span><span class="token function">runAsync</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 耗时RPC操作</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 耗时RPC操作</span>
+
+        CompletableFuture<span class="token punctuation">.</span><span class="token function">allOf</span><span class="token punctuation">(</span>cf1<span class="token punctuation">,</span> cf2<span class="token punctuation">,</span> cf3<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>这里的CompletableFuture如果没有显示指定线程池的话，使用的就是ForkJoin的commonPool。</p>
+<hr>
+<p>Collection#parallelStream</p>
+<p>并行流使用的是全局的ForkJoinPool的commonPool，如果机器只有2个CPU核心，那么只有两个线程，全局共享。</p>
+<p>线程切换也有开销，一般只有在IO耗时比CPU高时才考虑，比如RPC之类的。</p>
+<p>不过最好也别用。</p>
+<hr>
+<p>ForkJoin有两个部分，任务和线程。</p>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">CountTask</span> <span class="token keyword">extends</span> <span class="token class-name">RecursiveTask</span><span class="token operator">&lt;</span>Long<span class="token operator">></span> <span class="token punctuation">{</span>
+        Long maxCountRange <span class="token operator">=</span> 10000L<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 拆分界限</span>
+        Long startNum<span class="token punctuation">;</span>
+        Long endNum<span class="token punctuation">;</span>
+
+        <span class="token keyword">public</span> <span class="token function">CountTask</span><span class="token punctuation">(</span>Long startNum<span class="token punctuation">,</span> Long endNum<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>startNum <span class="token operator">=</span> startNum<span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>endNum <span class="token operator">=</span> endNum<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">protected</span> Long <span class="token function">compute</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">long</span> range <span class="token operator">=</span> endNum <span class="token operator">-</span> startNum<span class="token punctuation">;</span>
+            <span class="token keyword">long</span> sum <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 可以拆分，则拆分为多个任务</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>range <span class="token operator">>=</span> maxCountRange<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">long</span> middle <span class="token operator">=</span> <span class="token punctuation">(</span>startNum <span class="token operator">+</span> endNum<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">;</span>
+                CountTask subTask1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountTask</span><span class="token punctuation">(</span>startNum<span class="token punctuation">,</span> middle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                CountTask subTask2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountTask</span><span class="token punctuation">(</span>middle <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> endNum<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 拆分后fork提交子任务</span>
+                subTask1<span class="token punctuation">.</span><span class="token function">fork</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                subTask2<span class="token punctuation">.</span><span class="token function">fork</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// join获取子任务的结果</span>
+                sum <span class="token operator">+=</span> subTask2<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                sum <span class="token operator">+=</span> subTask1<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 不能拆分了，则执行计算</span>
+            <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span> startNum <span class="token operator">&lt;=</span> endNum<span class="token punctuation">;</span> startNum<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    sum <span class="token operator">+=</span> startNum<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> sum<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>任务会不断递归，拆分成小任务，体现了分而治之(divide and conquer)的思想。</p>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
+        CountTask countTask <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountTask</span><span class="token punctuation">(</span>1L<span class="token punctuation">,</span> 1000000000L<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ForkJoinPool forkJoinPool <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ForkJoinPool</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Future<span class="token operator">&lt;</span>Long<span class="token operator">></span> result <span class="token operator">=</span> forkJoinPool<span class="token punctuation">.</span><span class="token function">submit</span><span class="token punctuation">(</span>countTask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        result<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>上面的例子，其实使用普通的循环效率更高，因为ForkJoin有线程通信和切换的开销。</p>
+<p>ForkJoinTask#fork</p>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">final</span> ForkJoinTask<span class="token operator">&lt;</span>V<span class="token operator">></span> <span class="token function">fork</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Thread t<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 如果当前线程是ForkJoin的工作线程，那么直接提交到对应线程的工作队列</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>t <span class="token operator">=</span> Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">instanceof</span> <span class="token class-name">ForkJoinWorkerThread</span><span class="token punctuation">)</span>
+            <span class="token punctuation">(</span><span class="token punctuation">(</span>ForkJoinWorkerThread<span class="token punctuation">)</span>t<span class="token punctuation">)</span><span class="token punctuation">.</span>workQueue<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span>
+        <span class="token comment" spellcheck="true">// 否则提交到全局默认的commonPool执行</span>
+            ForkJoinPool<span class="token punctuation">.</span>common<span class="token punctuation">.</span><span class="token function">externalPush</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<hr>
+<p>ForkJoinPool</p>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@sun</span><span class="token punctuation">.</span>misc<span class="token punctuation">.</span>Contended
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ForkJoinPool</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractExecutorService</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@sun</span><span class="token punctuation">.</span>misc<span class="token punctuation">.</span>Contended
+    <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">WorkQueue</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Instance fields</span>
+        <span class="token keyword">volatile</span> <span class="token keyword">int</span> scanState<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// versioned, &lt;0: inactive; odd:scanning</span>
+        <span class="token keyword">int</span> stackPred<span class="token punctuation">;</span>             <span class="token comment" spellcheck="true">// pool stack (ctl) predecessor</span>
+        <span class="token keyword">int</span> nsteals<span class="token punctuation">;</span>               <span class="token comment" spellcheck="true">// number of steals</span>
+        <span class="token keyword">int</span> hint<span class="token punctuation">;</span>                  <span class="token comment" spellcheck="true">// randomization and stealer index hint</span>
+        <span class="token keyword">int</span> config<span class="token punctuation">;</span>                <span class="token comment" spellcheck="true">// pool index and mode</span>
+        <span class="token keyword">volatile</span> <span class="token keyword">int</span> qlock<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// 1: locked, &lt; 0: terminate; else 0</span>
+        <span class="token keyword">volatile</span> <span class="token keyword">int</span> base<span class="token punctuation">;</span>         <span class="token comment" spellcheck="true">// index of next slot for poll</span>
+        <span class="token keyword">int</span> top<span class="token punctuation">;</span>                   <span class="token comment" spellcheck="true">// index of next slot for push</span>
+        ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> array<span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">// the elements (initially unallocated)</span>
+        <span class="token keyword">final</span> ForkJoinPool pool<span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">// the containing pool (may be null)</span>
+        <span class="token keyword">final</span> ForkJoinWorkerThread owner<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// owning thread or null if shared</span>
+        <span class="token keyword">volatile</span> Thread parker<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// == owner during call to park; else null</span>
+        <span class="token keyword">volatile</span> ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> currentJoin<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// task being joined in awaitJoin</span>
+        <span class="token keyword">volatile</span> ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> currentSteal<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// mainly used by helpStealer</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">static</span> <span class="token keyword">final</span> ForkJoinPool common<span class="token punctuation">;</span>
+
+    <span class="token keyword">volatile</span> <span class="token keyword">long</span> ctl<span class="token punctuation">;</span>                   <span class="token comment" spellcheck="true">// main pool control</span>
+    <span class="token keyword">volatile</span> <span class="token keyword">int</span> runState<span class="token punctuation">;</span>               <span class="token comment" spellcheck="true">// lockable status</span>
+    <span class="token keyword">final</span> <span class="token keyword">int</span> config<span class="token punctuation">;</span>                    <span class="token comment" spellcheck="true">// parallelism, mode</span>
+    <span class="token keyword">int</span> indexSeed<span class="token punctuation">;</span>                       <span class="token comment" spellcheck="true">// to generate worker index</span>
+    <span class="token keyword">volatile</span> WorkQueue<span class="token punctuation">[</span><span class="token punctuation">]</span> workQueues<span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">// main registry</span>
+    <span class="token keyword">final</span> ForkJoinWorkerThreadFactory factory<span class="token punctuation">;</span>
+    <span class="token keyword">final</span> UncaughtExceptionHandler ueh<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// per-worker UEH</span>
+    <span class="token keyword">final</span> String workerNamePrefix<span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">// to create worker name string</span>
+    <span class="token keyword">volatile</span> AtomicLong stealCounter<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// also used as sync monitor</span>
+
+<span class="token punctuation">}</span></code></pre>
+<p>WorkQueue是一个双端队列，存放ForkJoinTask。</p>
+<p>每个工作线程都有自己的工作队列（也是ForkJoinPool与普通线程池最明显的区别）。</p>
+<p>工作线程在处理自己的工作队列时，会从队列尾获取任务（LIFO）。</p>
+<p>工作线程窃取其他线程的队列的任务时，从队列头窃取任务（FIFO）。</p>
+<p>工作窃取算法：线程执行完自己队列的任务后，从其他线程的任务队列里窃取任务来执行，充分利用CPU资源。</p>
+<p>使用双端队列是为了减少两个任务线程之间的竞争。</p>
+<hr>
+<p>任务加入工作队列可能是外部线程加入，此时是通过Unsafe的CAS自旋插入工作队列数组。</p>
+<p>如果是工作线程把任务push加入自己的工作队列，则是线程安全的，没有竞争，不需要CAS或锁。</p>
+<p>push只能是任务队列所属的线程才能操作，一般是工作调用ForkJoinTask#fork时。</p>
+<pre class=" language-java"><code class="language-java">        <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">push</span><span class="token punctuation">(</span>ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> task<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> a<span class="token punctuation">;</span> ForkJoinPool p<span class="token punctuation">;</span>
+            <span class="token keyword">int</span> b <span class="token operator">=</span> base<span class="token punctuation">,</span> s <span class="token operator">=</span> top<span class="token punctuation">,</span> n<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>a <span class="token operator">=</span> array<span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">// ignore if queue removed</span>
+                <span class="token keyword">int</span> m <span class="token operator">=</span> a<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">// fenced write for task visibility</span>
+                <span class="token comment" spellcheck="true">// Unsafe直接插入</span>
+                U<span class="token punctuation">.</span><span class="token function">putOrderedObject</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>m <span class="token operator">&amp;</span> s<span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> ASHIFT<span class="token punctuation">)</span> <span class="token operator">+</span> ABASE<span class="token punctuation">,</span> task<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// Unsafe更新top位置</span>
+                U<span class="token punctuation">.</span><span class="token function">putOrderedInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> QTOP<span class="token punctuation">,</span> s <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>n <span class="token operator">=</span> s <span class="token operator">-</span> b<span class="token punctuation">)</span> <span class="token operator">&lt;=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// 说明现在工作队列有两个任务了，那么唤醒别的等待线程</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>p <span class="token operator">=</span> pool<span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span>
+                        p<span class="token punctuation">.</span><span class="token function">signalWork</span><span class="token punctuation">(</span>p<span class="token punctuation">.</span>workQueues<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">>=</span> m<span class="token punctuation">)</span>
+                    <span class="token function">growArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span></code></pre>
+<hr>
+<p>owner线程执行push/pop，stealer线程执行poll。</p>
+<p>owner线程操作的是队列尾，stealer线程操作的是队列头。</p>
+<p>工作队列有两个指针，base和top。</p>
+<pre class=" language-java"><code class="language-java">        <span class="token keyword">volatile</span> <span class="token keyword">int</span> base<span class="token punctuation">;</span>         <span class="token comment" spellcheck="true">// index of next slot for poll</span>
+        <span class="token keyword">int</span> top<span class="token punctuation">;</span>                   <span class="token comment" spellcheck="true">// index of next slot for push</span></code></pre>
+<ul>
+<li><p>base：下一个偷取的位置，多线程竞争操作，需要volatile保证可见性。</p>
+</li>
+<li><p>top：下一个插入的位置，单线程操作，不需要volatile修饰。</p>
+</li>
+</ul>
+<p><img src="/imgs/fork_join_task.jpg" alt="fork_join_task"></p>
+<hr>
+<p>从队列头偷任务。</p>
+<pre class=" language-java"><code class="language-java">        <span class="token keyword">final</span> ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> <span class="token function">poll</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> a<span class="token punctuation">;</span> <span class="token keyword">int</span> b<span class="token punctuation">;</span> ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> t<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 初步判断任务队列不为空</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>b <span class="token operator">=</span> base<span class="token punctuation">)</span> <span class="token operator">-</span> top <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>a <span class="token operator">=</span> array<span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 任务在队列的偏移</span>
+                <span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> b<span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> ASHIFT<span class="token punctuation">)</span> <span class="token operator">+</span> ABASE<span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 获取队列头的任务</span>
+                t <span class="token operator">=</span> <span class="token punctuation">(</span>ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">)</span>U<span class="token punctuation">.</span><span class="token function">getObjectVolatile</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> j<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 再次判断base有没有被修改，没有则说明还没被偷走</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>base <span class="token operator">==</span> b<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>t <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token comment" spellcheck="true">// CAS更新工作队列成功，说明偷成功</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>U<span class="token punctuation">.</span><span class="token function">compareAndSwapObject</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> j<span class="token punctuation">,</span> t<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token comment" spellcheck="true">// 更新base指针</span>
+                            base <span class="token operator">=</span> b <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+                            <span class="token keyword">return</span> t<span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+                    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>b <span class="token operator">+</span> <span class="token number">1</span> <span class="token operator">==</span> top<span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// now empty</span>
+                        <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span></code></pre>
+<p>非阻塞式抢锁，乐观的CAS控制并发，保证只有一个线程从队列获取任务，并且base的修改对其它线程立即可见。</p>
+<hr>
+<p>自己从队列尾取任务，一般没有线程竞争，只有当工作队列只有一个任务时，可能存在竞争。</p>
+<pre class=" language-java"><code class="language-java">        <span class="token keyword">final</span> ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> <span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> a<span class="token punctuation">;</span> ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> t<span class="token punctuation">;</span> <span class="token keyword">int</span> m<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>a <span class="token operator">=</span> array<span class="token punctuation">)</span> <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>m <span class="token operator">=</span> a<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">>=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> s<span class="token punctuation">;</span> <span class="token punctuation">(</span>s <span class="token operator">=</span> top <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">-</span> base <span class="token operator">>=</span> <span class="token number">0</span><span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">long</span> j <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>m <span class="token operator">&amp;</span> s<span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> ASHIFT<span class="token punctuation">)</span> <span class="token operator">+</span> ABASE<span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>t <span class="token operator">=</span> <span class="token punctuation">(</span>ForkJoinTask<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">)</span>U<span class="token punctuation">.</span><span class="token function">getObject</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> j<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> null<span class="token punctuation">)</span>
+                        <span class="token keyword">break</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>U<span class="token punctuation">.</span><span class="token function">compareAndSwapObject</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> j<span class="token punctuation">,</span> t<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        U<span class="token punctuation">.</span><span class="token function">putOrderedInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> QTOP<span class="token punctuation">,</span> s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token keyword">return</span> t<span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span></code></pre>
+<hr>
+<p>ForkJoin将共享的任务队列拆分成线程各自的双端任务队列，owner线程只操作队列尾，stealer线程只操作队列头，减少冲突，同时通过CAS保证线程安全。</p>
+<hr>
+<p>ForkJoinWorkerThread启动后，调用ForkJoinPool#runWorker执行任务：</p>
+<ol>
+<li>scan：尝试偷取一个任务。</li>
+</ol>
+<p>随机选择一个WorkQueue，获取base位的ForkJoinTask，成功获取后更新base位并返回任务。</p>
+<p>如果WorkQueue中还有剩余任务，则调用signalWork创建或唤醒其他工作线程。</p>
+<ol start="2">
+<li><p>runTask：执行偷的任务，执行完后则执行自己工作队列里的任务。</p>
+</li>
+<li><p>awaitWork：没有任务偷取，自己也没有任务，则阻塞等待。</p>
+</li>
+</ol>
+<p><del>不知道为什么是先偷任务执行，而不是先执行自己的任务。</del></p>
+<hr>
+<p>ForkJoinTask#join用来获取任务的执行结果。</p>
+<p>判断调用线程是否是工作线程：</p>
+<ol>
+<li><p>如果非工作线程调用，则阻塞等待任务完成。</p>
+</li>
+<li><p>如果是工作线程调用：</p>
+<ol>
+<li><p>如果任务已经完成，直接返回结果。</p>
+</li>
+<li><p>如果任务刚好在当前线程的工作队列队列的top位置，则立即执行。</p>
+</li>
+<li><p>如果任务不在top位置，则ForkJoinPool#awaitJoin</p>
+<ol>
+<li><p>tryRemoveAndExec：从top位开始自旋向下查找该任务a，找到则移除并执行。</p>
+</li>
+<li><p>helpStealer：帮助偷取者执行任务，每次从偷取者的base偷取一个任务执行，直到任务a被执行。</p>
+</li>
+<li><p>tryCompensate：补偿工作线程因为阻塞而导致的损失，如果工作线程自身的工作队列还有任务，但是自己又要阻塞，那么先唤醒一个空闲的工作线程。</p>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>对于工作线程来说，如果join的任务a在自己的队列，那么自己执行，返回结果。</p>
+<p>如果任务被偷走了，自己又没任务执行，就帮助小偷执行任务，每次执行一个任务，每次执行前判断一下任务a的状态，检查是否需要阻塞自己等待任务a的结果。</p>
+<p>阻塞前，如果自己有任务要执行，需要找小偷帮自己执行，然后才能挂起自己等待任务a的结果。</p>
+<p>JUC包写得非常精简，很难阅读，上面只是我查资料外加注释和源码的理解，如果有不对，<del>那就不对吧</del>。</p>
+
+				</div>
+				<!-- about -->
+				
+			</div>
+			<!-- pagination -->
+			
+			<div class="comment-section">
+	
+	
+
+
+</div>
+		</div>
+		
+	</div>
+
+
+        <footer>
+             
+<a id="gotop" href="#" title="back to top"><i class="mdi-hardware-keyboard-arrow-up"></i></a>
+
+        </footer>
+    </div>
+    <!-- <script src="/libs/bs/js/bootstrap.min.js"></script> -->
+    <!-- <script src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+    <script>
+        var timeEnd = new Date();
+        console.log('耗时：' + (timeEnd - timeStart));
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre').forEach((block) => {
+                block.classList.add("line-numbers");
+            });
+        });
+    </script>
+
+    <script src="/js/prism.js"></script>
+</body>
+</html>

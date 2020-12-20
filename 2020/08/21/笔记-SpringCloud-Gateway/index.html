@@ -7,7 +7,7 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-SpringCloud-Gateway | Reunion...</title>
+    <title>[笔记]-SpringCloud-Gateway | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
@@ -23,7 +23,7 @@ SpringCloud的Gateway是一个API网关，提供统一的微服务接入口，�
     
     <meta property="og:title" content="[笔记]-SpringCloud-Gateway" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -104,8 +104,10 @@ SpringCloud的Gateway是一个API网关，提供统一的微服务接入口，�
 <p>而反应式处理不了可以不发送，压力在发送端这边，类似排队过安检，压力是在门左边还是在门右边呢？</p>
 <p>而剩下的请求，可以缓冲起来，选择丢弃或拒绝。</p>
 <p>对比发生了事故才执行限流熔断，算是一个比较好的处理方式。</p>
-<p><del>其实原本还想看看WebFlux的，翻了翻还是算了，收入和付出相差有点大，剩下的时间用来干别的事情它不香么。</del></p>
-<p><del>于是我决定贯彻这个思想，这次Gateway也是粗略地看了看，摸了摸了。</del></p>
+<p>WebFlux虽然很酷炫，号称提高提高吞吐量，但也不是什么都合适的。</p>
+<p>如果服务本身响应时间非常短，比如一些低延时场景，异步非阻塞效果可能还变差。</p>
+<p>IO延时小的情况下，还不如同步阻塞的方法。</p>
+<p><del>其实原本还想看看WebFlux的，翻了翻还是算了。</del></p>
 <hr>
 <p>首先是一堆AutoConfiguration，自动配置和加载。</p>
 <p>自定义路由信息的处理：</p>

@@ -7,7 +7,7 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-MySQL | Reunion...</title>
+    <title>[笔记]-MySQL | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
@@ -23,7 +23,7 @@
     
     <meta property="og:title" content="[笔记]-MySQL" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -222,7 +222,7 @@
 <p>记录的是SQL语句，备库把主库执行过的SQL再执行一遍，好处是简单。</p>
 <p>更新必须串行，需要更多锁，执行INSERT … SELECT … 会锁定原表的行，不允许修改，保证主备执行结果一致。</p>
 <p>假设不加锁，那么如果事务A执行INSERT … SELECT … 期间，事务B修改了原表的行后提交，然后事务A才提交。</p>
-<p>此时从库会先执行事务B的语句，再执行事务A的语句，如此便出现了不一致。</p>
+<p>binlog只在事务提交后一次写入，此时从库会先执行事务B的语句，再执行事务A的语句，如此便出现了不一致。</p>
 <p>另外，如果使用了某些函数如now()，会改为基于行的复制。</p>
 <ol start="2">
 <li>基于行（Row）：</li>
@@ -249,10 +249,8 @@
 <p>系统表空间存放了回滚信息（undo），插入缓冲索引页（IBUF bitmap），系统事务信息（trx_sys），二次写缓冲（double write）等信息。</p>
 <p>每个数据文件都归属于一个表空间（tablespace），不同的表空间使用唯一标识space id来标记。</p>
 <p>系统表空间虽然包括不同文件ibdata1, ibdata2…，但这些文件逻辑上是相连的，同属于space_id为0的表空间。</p>
-<p>表空间内部，所有页按照区（extent）为物理单元进行管理，一个区内所有页面物理相邻，表空间可以理解为由物理相邻的区组成。</p>
+<p>表空间内，所有页按照区（extent）为物理单元进行管理，一个区内所有页面物理相邻，表空间由物理相邻的区组成。</p>
 <p>表空间内部由自下而上包括page（页），extent（区），segment（段），tablespace（表空间）等几个层次。</p>
-<p>表空间构建起用户数据的结构是btree，每一个索引对应一个btree。</p>
-<p>每个btree使用两个segment来管理数据页，一个管理叶子节点（leaf segment），一个管理非叶子节点（non-leaf segment）。</p>
 <ul>
 <li>.ibd：用户表空间文件。</li>
 </ul>
@@ -297,13 +295,13 @@
 </ol>
 <hr>
 <p>Double Write：解决部分写（Partial Write）问题。</p>
-<p>MySQL默认一个数据页的大小是16K，所以数据库IO的单位是16K，假设文件系统IO的最小单位是4K，磁盘IO的最小单位是512字节（一个扇区）。</p>
-<p>如果在把内存中的脏页刷盘时，写了2K突然掉电，那么前2K数据是新的，后14K是旧的，这个数据页就损坏了。</p>
+<p>MySQL默认数据页的大小是16K，数据库的IO单位是16K，假设磁盘的IO单位是512字节（一个扇区）。</p>
+<p>如果把内存中的脏页刷盘时，写了2K突然掉电，那么前2K数据是新的，后14K是旧的，这个数据页就损坏了。</p>
 <p>redo log记录了对页的物理修改（变化），但如果页本身已经损坏，无法根据redo log判断哪些数据需要被修复。</p>
-<p>Double Write由两部分组成，一部分为内存中的double write buffer，另一部分是磁盘上表空间中连续的页。</p>
-<p>当触发数据缓冲池中的脏页刷新时，并不直接写入磁盘，而是先拷贝至内存中的double write buffer，接着顺序写入double write文件。</p>
-<p>保证double write刷盘后，再将double write buffer中的数据写入表空间文件（随机写）。</p>
-<p>如果在将页写入磁盘过程中崩溃，在恢复时可以从double write中找到该页的最近的副本，将其复制到表空间文件，再应用redo log完成恢复。</p>
+<p>Double Write有两部分，一部分为内存中的double write buffer，另一部分是磁盘中表空间连续的页。</p>
+<p>数据缓冲池中的脏页刷新时，不是直接写入磁盘，而是先拷贝至内存的double write buffer，接着顺序写入磁盘的double write file。</p>
+<p>double write buffer刷盘后，再将double write buffer中的数据写入表空间文件（随机写）。</p>
+<p>如果页写入磁盘时崩溃，恢复时可以从double write中找到该页的最近的副本，将其复制到表空间文件，再应用redo log完成恢复。</p>
 <hr>
 <p>InnoDB维护了一个buffer pool，将最近访问的数据（表和索引）缓存到缓冲区。</p>
 <p>所有数据页的读写操作都要通过buffer pool。</p>

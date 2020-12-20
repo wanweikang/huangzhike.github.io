@@ -7,23 +7,27 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-Spring Framework-AOP | Reunion...</title>
+    <title>[笔记]-Spring Framework-AOP | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
     
     <meta name="description"
-        content="推荐一个高质量的技术网站：Baeldung（总是感觉外国人写的东西质量比较高，为什么呢。。。）
-参考：https://www.jianshu.com/p/a1950bbae852
+        content="Spring的AOP：
 
-Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默认基于CGLIB或">
+运行时通过动态代理织入，基于CGLIB或JDK动态代理实现，AspectJ风格，如果需要实现AspectJ的AOP，需要另外的操作。
+
+
+AspectJ的AOP：
+
+编译时织入：利用ajc编译器替代javac编译器，直接将源文件(.java或.aspect)编译成.clas">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta property="og:title" content="[笔记]-Spring Framework-AOP" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -89,35 +93,41 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
 				</div>
 				
 				<div class="article-content">
-				<p>推荐一个高质量的技术网站：<a href="https://www.baeldung.com/aspectj" target="_blank" rel="noopener">Baeldung</a>（总是感觉外国人写的东西质量比较高，为什么呢。。。）</p>
-<p>参考：<a href="https://www.jianshu.com/p/a1950bbae852" target="_blank" rel="noopener">https://www.jianshu.com/p/a1950bbae852</a></p>
+				<ul>
+<li><p>Spring的AOP：</p>
 <ul>
-<li><p>Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默认基于CGLIB或JDK动态代理实现，运行时通过动态代理织入，如果需要实现AspectJ的AOP，需要另外的操作。</p>
+<li>运行时通过动态代理织入，基于CGLIB或JDK动态代理实现，AspectJ风格，如果需要实现AspectJ的AOP，需要另外的操作。</li>
+</ul>
 </li>
 <li><p>AspectJ的AOP：</p>
 <ul>
-<li><p>编译时织入（compile-time weaving）：利用ajc编译器替代javac编译器，直接将源文件(.java或.aspect)编译成.class文件并织入</p>
+<li><p>编译时织入：利用ajc编译器替代javac编译器，直接将源文件(.java或.aspect)编译成.class文件并织入。</p>
 </li>
-<li><p>编译后织入（post-compile weaving）：利用ajc编译器向javac编译期编译后的.class文件或.jar文件织入</p>
+<li><p>编译后织入：利用ajc编译器向javac编译期编译后的.class文件或.jar文件织入。</p>
 </li>
-<li><p>加载时织入（load-time weaving）：不使用ajc编译器，利用aspectjweaver.jar，在类加载期织入</p>
-</li>
-</ul>
+<li><p>加载时织入：不使用ajc编译器，利用aspectjweaver.jar，在类加载期织入。</p>
 </li>
 </ul>
-<p>没用过，不多说。</p>
+</li>
+</ul>
+<p>简单来说就是Spring的AOP是运行时织入，基于代理，性能相对较低，而AspectJ的AOP可以在编译时织入，基于字节码操作，性能高一些。</p>
 <hr>
-<p>Xml：<code>&lt;aop:aspectj-autoproxy/&gt;</code></p>
+<ul>
+<li>Xml：<code>&lt;aop:aspectj-autoproxy/&gt;</code></li>
+</ul>
 <p>AopNamespaceHandler#init</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"config"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">ConfigBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"aspectj-autoproxy"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">AspectJAutoProxyBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">registerBeanDefinitionDecorator</span><span class="token punctuation">(</span><span class="token string">"scoped-proxy"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">ScopedProxyBeanDefinitionDecorator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">registerBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token string">"spring-configured"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">SpringConfiguredBeanDefinitionParser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ...</span>
     <span class="token punctuation">}</span></code></pre>
-<p>注解：<code>@EnableAspectJAutoProxy</code></p>
-<p>SpringBoot：<code>@AopAutoConfiguration</code></p>
+<ul>
+<li>注解：<code>@EnableAspectJAutoProxy</code></li>
+</ul>
+<ul>
+<li>SpringBoot：<code>@AopAutoConfiguration</code></li>
+</ul>
 <hr>
 <p>AopAutoConfiguration</p>
 <pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span><span class="token punctuation">(</span>proxyBeanMethods <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
@@ -167,13 +177,6 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
-<p>SpringAOP：</p>
-<pre class=" language-java"><code class="language-java">DefaultAdvisorAutoProxyCreator
-<span class="token operator">-</span><span class="token operator">></span> AbstractAdvisorAutoProxyCreator
-<span class="token operator">-</span><span class="token operator">></span> AbstractAutoProxyCreator
-<span class="token operator">-</span><span class="token operator">></span> SmartInstantiationAwareBeanPostProcessor
-<span class="token operator">-</span><span class="token operator">></span> InstantiationAwareBeanPostProcessor
-<span class="token operator">-</span><span class="token operator">></span> BeanPostProcessor</code></pre>
 <p>AspectJ风格AOP:</p>
 <pre class=" language-java"><code class="language-java">AnnotationAwareAspectJAutoProxyCreator <span class="token comment" spellcheck="true">// 在Bean的初始化后拦截，从容器获取所有匹配适用的Advisor和被@AspectJ注解的Bean，包装生成代理</span>
 <span class="token operator">-</span><span class="token operator">></span> AspectJAwareAdvisorAutoProxyCreator
@@ -228,70 +231,20 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
                                 <span class="token operator">-</span><span class="token operator">></span> BeanPostProcessor#postProcessAfterInitialization
         <span class="token operator">-</span><span class="token operator">></span> SmartInitializingSingleton#afterSingletonsInstantiated</code></pre>
 <p>是不是很吓人，哈哈。</p>
-<p>AnnotationAwareAspectJAutoProxyCreator实现了BeanFactoryAware接口：</p>
-<pre class=" language-java"><code class="language-java">AbstractAutowireCapableBeanFactory#createBean
-<span class="token operator">-</span><span class="token operator">></span> AbstractAutowireCapableBeanFactory#doCreateBean
-<span class="token operator">-</span><span class="token operator">></span> AbstractAutowireCapableBeanFactory#initializeBean
-<span class="token operator">-</span><span class="token operator">></span> AbstractAutowireCapableBeanFactory#invokeAwareMethods</code></pre>
-<p>AbstractAutowireCapableBeanFactory#invokeAwareMethods</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">invokeAwareMethods</span><span class="token punctuation">(</span><span class="token keyword">final</span> String beanName<span class="token punctuation">,</span> <span class="token keyword">final</span> Object bean<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>bean <span class="token keyword">instanceof</span> <span class="token class-name">Aware</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>bean <span class="token keyword">instanceof</span> <span class="token class-name">BeanNameAware</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 设置自己的名字</span>
-                <span class="token punctuation">(</span><span class="token punctuation">(</span>BeanNameAware<span class="token punctuation">)</span> bean<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setBeanName</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>bean <span class="token keyword">instanceof</span> <span class="token class-name">BeanClassLoaderAware</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                ClassLoader bcl <span class="token operator">=</span> <span class="token function">getBeanClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>bcl <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token punctuation">(</span><span class="token punctuation">(</span>BeanClassLoaderAware<span class="token punctuation">)</span> bean<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setBeanClassLoader</span><span class="token punctuation">(</span>bcl<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>bean <span class="token keyword">instanceof</span> <span class="token class-name">BeanFactoryAware</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 注入</span>
-                <span class="token punctuation">(</span><span class="token punctuation">(</span>BeanFactoryAware<span class="token punctuation">)</span> bean<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setBeanFactory</span><span class="token punctuation">(</span>AbstractAutowireCapableBeanFactory<span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AbstractAdvisorAutoProxyCreator#setBeanFactory</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setBeanFactory</span><span class="token punctuation">(</span>BeanFactory beanFactory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 调用父类AbstractAutoProxyCreator的方法设置BeanFactory</span>
-        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">setBeanFactory</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 检查</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>beanFactory <span class="token keyword">instanceof</span> <span class="token class-name">ConfigurableListableBeanFactory</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"AdvisorAutoProxyCreator requires a ConfigurableListableBeanFactory: "</span> <span class="token operator">+</span> beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 初始化BeanFactory</span>
-        <span class="token function">initBeanFactory</span><span class="token punctuation">(</span><span class="token punctuation">(</span>ConfigurableListableBeanFactory<span class="token punctuation">)</span> beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AnnotationAwareAspectJAutoProxyCreator#initBeanFactory</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">initBeanFactory</span><span class="token punctuation">(</span>ConfigurableListableBeanFactory beanFactory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">/*
-         * 调用父类AbstractAdvisorAutoProxyCreator#initBeanFactory初始化BeanFactory
-         * 其实是构造一个BeanFactoryAdvisorRetrievalHelper，用于从BeanFactory获取Advisor
-         */</span>
-        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">initBeanFactory</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>aspectJAdvisorFactory <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>aspectJAdvisorFactory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReflectiveAspectJAdvisorFactory</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 用于通过反射从BeanFactory获取所有被@AspectJ注解的Bean</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>aspectJAdvisorsBuilder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeanFactoryAspectJAdvisorsBuilderAdapter</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>aspectJAdvisorFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AbstractAdvisorAutoProxyCreator#initBeanFactory</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">initBeanFactory</span><span class="token punctuation">(</span>ConfigurableListableBeanFactory beanFactory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 创建一个AdvisorRetrievalHelper，用于从BeanFactory获取Advisor</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>advisorRetrievalHelper <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeanFactoryAdvisorRetrievalHelperAdapter</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
+<hr>
 <p>AnnotationAwareAspectJAutoProxyCreator可能拦截并创建代理对象的几个时机：</p>
-<ul>
-<li><p>SmartInstantiationAwareBeanPostProcessor#getEarlyBeanReference：前提是有早期引用</p>
+<ol>
+<li><p>SmartInstantiationAwareBeanPostProcessor#getEarlyBeanReference：循环依赖的情况，要被代理的Bean有早期引用，提前拦截。</p>
 </li>
-<li><p>InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation：前提是配置了customTargetSourceCreators</p>
+<li><p>InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation：前提是配置了customTargetSourceCreators。</p>
 </li>
-<li><p>BeanPostProcessor#postProcessAfterInitialization：一般情况</p>
+<li><p>BeanPostProcessor#postProcessAfterInitialization：一般情况，在Bean实例完成属性注入后执行拦截代理。</p>
 </li>
-</ul>
+</ol>
+<p>之所以AOP动态代理的时机可能不一样，是因为对于循环引用的情况，假设A和B循环引用，A要被代理拦截。</p>
+<p>如果动态代理不提前，那么实例化B对象，执行属性注入时，注入的A对象还没被代理，然后B对象就暴露到单例缓存。</p>
+<p>之后A对象执行完属性注入，再进行动态代理，生成被代理的A对象，暴露到单例缓存。</p>
+<p>此时B注入的A对象和单例缓存中的被代理的A对象不是同一个对象（也就是B对象注入的A对象是没被代理的）。</p>
 <p>AbstractAutoProxyCreator#postProcessAfterInitialization</p>
 <pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
      * 实例化并初始化完成后
@@ -308,10 +261,7 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
         <span class="token keyword">return</span> bean<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
 <p>AbstractAutoProxyCreator#wrapIfNecessary</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * 代理包装，如果需要
-     */</span>
-    <span class="token keyword">protected</span> Object <span class="token function">wrapIfNecessary</span><span class="token punctuation">(</span>Object bean<span class="token punctuation">,</span> String beanName<span class="token punctuation">,</span> Object cacheKey<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> Object <span class="token function">wrapIfNecessary</span><span class="token punctuation">(</span>Object bean<span class="token punctuation">,</span> String beanName<span class="token punctuation">,</span> Object cacheKey<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 该Bean之前已经被postProcessBeforeInstantiation处理过，不再处理</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">hasLength</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>targetSourcedBeans<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token keyword">return</span> bean<span class="token punctuation">;</span>
@@ -327,12 +277,7 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
             <span class="token comment" spellcheck="true">// 不需要代理包装</span>
             <span class="token keyword">return</span> bean<span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">/*
-         * 获取适用该Bean的所有专用拦截器对象，三种返回值 :
-         *      有值：代理，使用专用拦截器和通用拦截器
-         *      无值：代理，没有专用拦截器，仅使用通用拦截器
-         *      Null：不代理
-         */</span>
+        <span class="token comment" spellcheck="true">// 获取所有匹配某个Bean的Advice和Advisor，没有则不创建代理</span>
         Object<span class="token punctuation">[</span><span class="token punctuation">]</span> specificInterceptors <span class="token operator">=</span> <span class="token function">getAdvicesAndAdvisorsForBean</span><span class="token punctuation">(</span>bean<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> beanName<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>specificInterceptors <span class="token operator">!=</span> DO_NOT_PROXY<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 加入缓存，表示当前Bean需要创建相应的代理对象</span>
@@ -348,35 +293,13 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
         <span class="token keyword">this</span><span class="token punctuation">.</span>advisedBeans<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>cacheKey<span class="token punctuation">,</span> Boolean<span class="token punctuation">.</span>FALSE<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">return</span> bean<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
-<p>AbstractAutoProxyCreator#getAdvicesAndAdvisorsForBean</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * 获取所有匹配某个Bean的Advice和Advisor，没有则不创建代理
-     */</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token annotation punctuation">@Nullable</span>
-    <span class="token keyword">protected</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">getAdvicesAndAdvisorsForBean</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> beanClass<span class="token punctuation">,</span> String beanName<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> TargetSource targetSource<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 匹配的</span>
-        List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> advisors <span class="token operator">=</span> <span class="token function">findEligibleAdvisors</span><span class="token punctuation">(</span>beanClass<span class="token punctuation">,</span> beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>advisors<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// null，没有匹配的Advisor，不为该Bean创建代理</span>
-            <span class="token keyword">return</span> DO_NOT_PROXY<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> advisors<span class="token punctuation">.</span><span class="token function">toArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
 <p>AbstractAutoProxyCreator#findEligibleAdvisors</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> <span class="token function">findEligibleAdvisors</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> beanClass<span class="token punctuation">,</span> String beanName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">/*
-         * 找到容器中所有的Advisor
-         * 当前类实现：获取容器中所有Advisor
-         * AnnotationAwareAspectJAutoProxyCreator重写：获取容器中所有Advisor及将每个AspectJ切面类中的每个Advice方法封装成的Advisor
-         */</span>
+        <span class="token comment" spellcheck="true">// 从BeanFactory中获取所有的Advisor和@AspectJ注解的Bean，解析被@AspectJ注解的切面类的Advice方法，每个构造成一个Advisor</span>
         List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> candidateAdvisors <span class="token operator">=</span> <span class="token function">findCandidateAdvisors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 过滤，找到所有适用该Bean的Advisor</span>
         List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> eligibleAdvisors <span class="token operator">=</span> <span class="token function">findAdvisorsThatCanApply</span><span class="token punctuation">(</span>candidateAdvisors<span class="token punctuation">,</span> beanClass<span class="token punctuation">,</span> beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">/*
-         * 扩展Advisor，子类重写
-         * AnnotationAwareAspectJAutoProxyCreator#extendAdvisors：添加一个ExposeInvocationInterceptor
-         */</span>
+        <span class="token comment" spellcheck="true">// 添加一个ExposeInvocationInterceptor</span>
         <span class="token function">extendAdvisors</span><span class="token punctuation">(</span>eligibleAdvisors<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>eligibleAdvisors<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 排序</span>
@@ -384,391 +307,9 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
         <span class="token punctuation">}</span>
         <span class="token keyword">return</span> eligibleAdvisors<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
-<p>AnnotationAwareAspectJAutoProxyCreator#findCandidateAdvisors</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * 从BeanFactory中获取所有的Advisor和@AspectJ注解的Bean，封装成Advisor列表返回
-     */</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> <span class="token function">findCandidateAdvisors</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 通过父类AbstractAdvisorAutoProxyCreator查找：BeanFactoryAdvisorRetrievalHelper#findAdvisorBeans从容器中查找</span>
-        List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> advisors <span class="token operator">=</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">findCandidateAdvisors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 通过AspectJAdvisorsBuilder从容器中获取所有@AspectJ注解的Bean，并包装成Advisor加入</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>aspectJAdvisorsBuilder <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            advisors<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>aspectJAdvisorsBuilder<span class="token punctuation">.</span><span class="token function">buildAspectJAdvisors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> advisors<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AbstractAutoProxyCreator#findCandidateAdvisors</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * 从BeanFactory中获取所有的Advisor，子类可重写
-     */</span>
-    <span class="token keyword">protected</span> List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> <span class="token function">findCandidateAdvisors</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Assert<span class="token punctuation">.</span><span class="token function">state</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>advisorRetrievalHelper <span class="token operator">!=</span> null<span class="token punctuation">,</span> <span class="token string">"No BeanFactoryAdvisorRetrievalHelper available"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>advisorRetrievalHelper<span class="token punctuation">.</span><span class="token function">findAdvisorBeans</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>BeanFactoryAdvisorRetrievalHelper#findAdvisorBeans</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * 从BeanFactory中找所有符合的Advisor（除去FactoryBean和创建中的Bean）
-     */</span>
-    <span class="token keyword">public</span> List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> <span class="token function">findAdvisorBeans</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        String<span class="token punctuation">[</span><span class="token punctuation">]</span> advisorNames <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>cachedAdvisorBeanNames<span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 如果缓存为空，从容器以及其父容器得到所有AdvisorBean的名称</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>advisorNames <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">/*
-             * 从当前及父BeanFactory获取所有Advisor的BeanName
-             * includeNonSingletons=true，包含单例，非单例Bean
-             * allowEagerInit=false，不初始化懒加载的单例和FactoryBean创建的Bean
-             */</span>
-            advisorNames <span class="token operator">=</span> BeanFactoryUtils<span class="token punctuation">.</span><span class="token function">beanNamesForTypeIncludingAncestors</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory<span class="token punctuation">,</span> Advisor<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 加入缓存</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>cachedAdvisorBeanNames <span class="token operator">=</span> advisorNames<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>advisorNames<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 存放返回值</span>
-        List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> advisors <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 遍历</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>String name <span class="token operator">:</span> advisorNames<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 检查是否符合条件，默认true，子类可重写</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isEligibleBean</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 忽略正在创建中的Bean</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory<span class="token punctuation">.</span><span class="token function">isCurrentlyInCreation</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isTraceEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        logger<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Skipping currently created advisor '"</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">"'"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-                <span class="token comment" spellcheck="true">// 符合条件</span>
-                <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                        <span class="token comment" spellcheck="true">// 实例化，加入</span>
-                        advisors<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory<span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> Advisor<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">BeanCreationException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        Throwable rootCause <span class="token operator">=</span> ex<span class="token punctuation">.</span><span class="token function">getMostSpecificCause</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token comment" spellcheck="true">// 如果创建过程中遇到异常是因为其依赖Bean正在创建中</span>
-                        <span class="token keyword">if</span> <span class="token punctuation">(</span>rootCause <span class="token keyword">instanceof</span> <span class="token class-name">BeanCurrentlyInCreationException</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                            BeanCreationException bce <span class="token operator">=</span> <span class="token punctuation">(</span>BeanCreationException<span class="token punctuation">)</span> rootCause<span class="token punctuation">;</span>
-                            String bceBeanName <span class="token operator">=</span> bce<span class="token punctuation">.</span><span class="token function">getBeanName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            <span class="token keyword">if</span> <span class="token punctuation">(</span>bceBeanName <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory<span class="token punctuation">.</span><span class="token function">isCurrentlyInCreation</span><span class="token punctuation">(</span>bceBeanName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                                <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isTraceEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                                    logger<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Skipping advisor '"</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">"' with dependency on currently created bean: "</span> <span class="token operator">+</span> ex<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                                <span class="token punctuation">}</span>
-                                <span class="token comment" spellcheck="true">// 先忽略</span>
-                                <span class="token keyword">continue</span><span class="token punctuation">;</span>
-                            <span class="token punctuation">}</span>
-                        <span class="token punctuation">}</span>
-                        <span class="token comment" spellcheck="true">// 其他异常，抛出异常并中断方法</span>
-                        <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> advisors<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>BeanFactoryAspectJAdvisorsBuilder#buildAspectJAdvisors</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * 从BeanFactory中获取所有被@AspectJ注解的Bean，将其Advice方法包装成Advisor返回
-     */</span>
-    <span class="token keyword">public</span> List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> <span class="token function">buildAspectJAdvisors</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        List<span class="token operator">&lt;</span>String<span class="token operator">></span> aspectNames <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>aspectBeanNames<span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 第一次进来</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>aspectNames <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                aspectNames <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>aspectBeanNames<span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>aspectNames <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> advisors <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    aspectNames <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token comment" spellcheck="true">/*
-                     * 获取所有类型为Object的BeanName，就是所有的BeanName
-                     * includeNonSingletons=true，包含单例，非单例Bean
-                     * allowEagerInit=false，不初始化懒加载的单例和FactoryBean创建的Bean
-                     */</span>
-                    String<span class="token punctuation">[</span><span class="token punctuation">]</span> beanNames <span class="token operator">=</span> BeanFactoryUtils<span class="token punctuation">.</span><span class="token function">beanNamesForTypeIncludingAncestors</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory<span class="token punctuation">,</span> Object<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token comment" spellcheck="true">// 遍历所有Bean</span>
-                    <span class="token keyword">for</span> <span class="token punctuation">(</span>String beanName <span class="token operator">:</span> beanNames<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token comment" spellcheck="true">// 默认true，子类可重写</span>
-                        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isEligibleBean</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                            <span class="token keyword">continue</span><span class="token punctuation">;</span>
-                        <span class="token punctuation">}</span>
-                        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> beanType <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory<span class="token punctuation">.</span><span class="token function">getType</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token keyword">if</span> <span class="token punctuation">(</span>beanType <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                            <span class="token keyword">continue</span><span class="token punctuation">;</span>
-                        <span class="token punctuation">}</span>
-                        <span class="token comment" spellcheck="true">// Bean被@AspectJ注解</span>
-                        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>advisorFactory<span class="token punctuation">.</span><span class="token function">isAspect</span><span class="token punctuation">(</span>beanType<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                            <span class="token comment" spellcheck="true">// 加进去</span>
-                            aspectNames<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            <span class="token comment" spellcheck="true">// 切面元数据</span>
-                            AspectMetadata amd <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AspectMetadata</span><span class="token punctuation">(</span>beanType<span class="token punctuation">,</span> beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            <span class="token comment" spellcheck="true">// 一般都是这个</span>
-                            <span class="token keyword">if</span> <span class="token punctuation">(</span>amd<span class="token punctuation">.</span><span class="token function">getAjType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getPerClause</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getKind</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> PerClauseKind<span class="token punctuation">.</span>SINGLETON<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                                MetadataAwareAspectInstanceFactory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeanFactoryAspectInstanceFactory</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory<span class="token punctuation">,</span> beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                                <span class="token comment" spellcheck="true">// 解析被@AspectJ注解的切面类的Advice方法，每个构造成一个Advisor，包含Pointcut和Advice</span>
-                                List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> classAdvisors <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>advisorFactory<span class="token punctuation">.</span><span class="token function">getAdvisors</span><span class="token punctuation">(</span>factory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                                <span class="token comment" spellcheck="true">// 切面类是单例</span>
-                                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory<span class="token punctuation">.</span><span class="token function">isSingleton</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                                    <span class="token keyword">this</span><span class="token punctuation">.</span>advisorsCache<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>beanName<span class="token punctuation">,</span> classAdvisors<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                                    <span class="token keyword">this</span><span class="token punctuation">.</span>aspectFactoryCache<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>beanName<span class="token punctuation">,</span> factory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                                <span class="token punctuation">}</span>
-                                advisors<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>classAdvisors<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            <span class="token punctuation">}</span>
-                            <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory<span class="token punctuation">.</span><span class="token function">isSingleton</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Bean with name '"</span> <span class="token operator">+</span> beanName <span class="token operator">+</span> <span class="token string">"' is a singleton, but aspect instantiation model is not singleton"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                                <span class="token punctuation">}</span>
-                                MetadataAwareAspectInstanceFactory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PrototypeAspectInstanceFactory</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory<span class="token punctuation">,</span> beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                                <span class="token keyword">this</span><span class="token punctuation">.</span>aspectFactoryCache<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>beanName<span class="token punctuation">,</span> factory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                                advisors<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>advisorFactory<span class="token punctuation">.</span><span class="token function">getAdvisors</span><span class="token punctuation">(</span>factory<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            <span class="token punctuation">}</span>
-                        <span class="token punctuation">}</span>
-                    <span class="token punctuation">}</span>
-                    <span class="token keyword">this</span><span class="token punctuation">.</span>aspectBeanNames <span class="token operator">=</span> aspectNames<span class="token punctuation">;</span>
-                    <span class="token keyword">return</span> advisors<span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>aspectNames<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> Collections<span class="token punctuation">.</span><span class="token function">emptyList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 从缓存获取返回</span>
-        List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> advisors <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>String aspectName <span class="token operator">:</span> aspectNames<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> cachedAdvisors <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>advisorsCache<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>aspectName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>cachedAdvisors <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                advisors<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>cachedAdvisors<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                MetadataAwareAspectInstanceFactory factory <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>aspectFactoryCache<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>aspectName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                advisors<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>advisorFactory<span class="token punctuation">.</span><span class="token function">getAdvisors</span><span class="token punctuation">(</span>factory<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> advisors<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>ReflectiveAspectJAdvisorFactory#getAdvisors</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> <span class="token function">getAdvisors</span><span class="token punctuation">(</span>MetadataAwareAspectInstanceFactory aspectInstanceFactory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 被@AspectJ注解的顶级类</span>
-        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> aspectClass <span class="token operator">=</span> aspectInstanceFactory<span class="token punctuation">.</span><span class="token function">getAspectMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAspectClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 被@AspectJ注解的类名</span>
-        String aspectName <span class="token operator">=</span> aspectInstanceFactory<span class="token punctuation">.</span><span class="token function">getAspectMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAspectName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 验证</span>
-        <span class="token function">validate</span><span class="token punctuation">(</span>aspectClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        MetadataAwareAspectInstanceFactory lazySingletonAspectInstanceFactory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LazySingletonAspectInstanceFactoryDecorator</span><span class="token punctuation">(</span>aspectInstanceFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> advisors <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 用户声明的没有被被@Pointcut注解的方法</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>Method method <span class="token operator">:</span> <span class="token function">getAdvisorMethods</span><span class="token punctuation">(</span>aspectClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 转为Advisor，这里advisors.size()会给Advisor一个顺序</span>
-            Advisor advisor <span class="token operator">=</span> <span class="token function">getAdvisor</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> lazySingletonAspectInstanceFactory<span class="token punctuation">,</span> advisors<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> aspectName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>advisor <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                advisors<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>advisor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>advisors<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> lazySingletonAspectInstanceFactory<span class="token punctuation">.</span><span class="token function">getAspectMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isLazilyInstantiated</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            Advisor instantiationAdvisor <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SyntheticInstantiationAdvisor</span><span class="token punctuation">(</span>lazySingletonAspectInstanceFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            advisors<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> instantiationAdvisor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 遍历域变量</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>Field field <span class="token operator">:</span> aspectClass<span class="token punctuation">.</span><span class="token function">getDeclaredFields</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 如果有@DeclareParents注解就转为Advisor</span>
-            Advisor advisor <span class="token operator">=</span> <span class="token function">getDeclareParentsAdvisor</span><span class="token punctuation">(</span>field<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>advisor <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                advisors<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>advisor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> advisors<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>ReflectiveAspectJAdvisorFactory#getAdvisor</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token annotation punctuation">@Nullable</span>
-    <span class="token keyword">public</span> Advisor <span class="token function">getAdvisor</span><span class="token punctuation">(</span>Method candidateAdviceMethod<span class="token punctuation">,</span> MetadataAwareAspectInstanceFactory aspectInstanceFactory<span class="token punctuation">,</span> <span class="token keyword">int</span> declarationOrderInAspect<span class="token punctuation">,</span> String aspectName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">validate</span><span class="token punctuation">(</span>aspectInstanceFactory<span class="token punctuation">.</span><span class="token function">getAspectMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAspectClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 获得Pointcut表达式，包含了方法上面的@Before，@Around之类的注解</span>
-        AspectJExpressionPointcut expressionPointcut <span class="token operator">=</span> <span class="token function">getPointcut</span><span class="token punctuation">(</span>candidateAdviceMethod<span class="token punctuation">,</span> aspectInstanceFactory<span class="token punctuation">.</span><span class="token function">getAspectMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAspectClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>expressionPointcut <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 返回Advisor封装，实例化过程会调用instantiateAdvice实例化通知（增强）Advice</span>
-        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">InstantiationModelAwarePointcutAdvisorImpl</span><span class="token punctuation">(</span>expressionPointcut<span class="token punctuation">,</span> candidateAdviceMethod<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">,</span> aspectInstanceFactory<span class="token punctuation">,</span> declarationOrderInAspect<span class="token punctuation">,</span> aspectName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>ReflectiveAspectJAdvisorFactory#getAdvice</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * 实例化Advice
-     */</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token annotation punctuation">@Nullable</span>
-    <span class="token keyword">public</span> Advice <span class="token function">getAdvice</span><span class="token punctuation">(</span>Method candidateAdviceMethod<span class="token punctuation">,</span> AspectJExpressionPointcut expressionPointcut<span class="token punctuation">,</span> MetadataAwareAspectInstanceFactory aspectInstanceFactory<span class="token punctuation">,</span> <span class="token keyword">int</span> declarationOrder<span class="token punctuation">,</span> String aspectName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 被@AspectJ注解的顶级类</span>
-        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> candidateAspectClass <span class="token operator">=</span> aspectInstanceFactory<span class="token punctuation">.</span><span class="token function">getAspectMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getAspectClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 验证</span>
-        <span class="token function">validate</span><span class="token punctuation">(</span>candidateAspectClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 返回方法上面的@Before，@Around之类的注解</span>
-        AspectJAnnotation<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> aspectJAnnotation <span class="token operator">=</span> AbstractAspectJAdvisorFactory<span class="token punctuation">.</span><span class="token function">findAspectJAnnotationOnMethod</span><span class="token punctuation">(</span>candidateAdviceMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 没有就返回</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>aspectJAnnotation <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 类必须被@AspectJ注解</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isAspect</span><span class="token punctuation">(</span>candidateAspectClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">AopConfigException</span><span class="token punctuation">(</span><span class="token string">"Advice must be declared inside an aspect type: "</span> <span class="token operator">+</span> <span class="token string">"Offending method '"</span> <span class="token operator">+</span> candidateAdviceMethod <span class="token operator">+</span> <span class="token string">"' in class ["</span> <span class="token operator">+</span> candidateAspectClass<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"]"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Found AspectJ method: "</span> <span class="token operator">+</span> candidateAdviceMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        AbstractAspectJAdvice springAdvice<span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// switch</span>
-        <span class="token keyword">switch</span> <span class="token punctuation">(</span>aspectJAnnotation<span class="token punctuation">.</span><span class="token function">getAnnotationType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">case</span> AtPointcut<span class="token operator">:</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Processing pointcut '"</span> <span class="token operator">+</span> candidateAdviceMethod<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"'"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-                <span class="token keyword">return</span> null<span class="token punctuation">;</span>
-            <span class="token keyword">case</span> AtAround<span class="token operator">:</span>
-                springAdvice <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AspectJAroundAdvice</span><span class="token punctuation">(</span>candidateAdviceMethod<span class="token punctuation">,</span> expressionPointcut<span class="token punctuation">,</span> aspectInstanceFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> AtBefore<span class="token operator">:</span>
-                springAdvice <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AspectJMethodBeforeAdvice</span><span class="token punctuation">(</span>candidateAdviceMethod<span class="token punctuation">,</span> expressionPointcut<span class="token punctuation">,</span> aspectInstanceFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> AtAfter<span class="token operator">:</span>
-                springAdvice <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AspectJAfterAdvice</span><span class="token punctuation">(</span>candidateAdviceMethod<span class="token punctuation">,</span> expressionPointcut<span class="token punctuation">,</span> aspectInstanceFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> AtAfterReturning<span class="token operator">:</span>
-                springAdvice <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AspectJAfterReturningAdvice</span><span class="token punctuation">(</span>candidateAdviceMethod<span class="token punctuation">,</span> expressionPointcut<span class="token punctuation">,</span> aspectInstanceFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                AfterReturning afterReturningAnnotation <span class="token operator">=</span> <span class="token punctuation">(</span>AfterReturning<span class="token punctuation">)</span> aspectJAnnotation<span class="token punctuation">.</span><span class="token function">getAnnotation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">hasText</span><span class="token punctuation">(</span>afterReturningAnnotation<span class="token punctuation">.</span><span class="token function">returning</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    springAdvice<span class="token punctuation">.</span><span class="token function">setReturningName</span><span class="token punctuation">(</span>afterReturningAnnotation<span class="token punctuation">.</span><span class="token function">returning</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> AtAfterThrowing<span class="token operator">:</span>
-                springAdvice <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AspectJAfterThrowingAdvice</span><span class="token punctuation">(</span>candidateAdviceMethod<span class="token punctuation">,</span> expressionPointcut<span class="token punctuation">,</span> aspectInstanceFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                AfterThrowing afterThrowingAnnotation <span class="token operator">=</span> <span class="token punctuation">(</span>AfterThrowing<span class="token punctuation">)</span> aspectJAnnotation<span class="token punctuation">.</span><span class="token function">getAnnotation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">hasText</span><span class="token punctuation">(</span>afterThrowingAnnotation<span class="token punctuation">.</span><span class="token function">throwing</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    springAdvice<span class="token punctuation">.</span><span class="token function">setThrowingName</span><span class="token punctuation">(</span>afterThrowingAnnotation<span class="token punctuation">.</span><span class="token function">throwing</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">default</span><span class="token operator">:</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">UnsupportedOperationException</span><span class="token punctuation">(</span><span class="token string">"Unsupported advice type on method: "</span> <span class="token operator">+</span> candidateAdviceMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        springAdvice<span class="token punctuation">.</span><span class="token function">setAspectName</span><span class="token punctuation">(</span>aspectName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 设置顺序</span>
-        springAdvice<span class="token punctuation">.</span><span class="token function">setDeclarationOrder</span><span class="token punctuation">(</span>declarationOrder<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        String<span class="token punctuation">[</span><span class="token punctuation">]</span> argNames <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>parameterNameDiscoverer<span class="token punctuation">.</span><span class="token function">getParameterNames</span><span class="token punctuation">(</span>candidateAdviceMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>argNames <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            springAdvice<span class="token punctuation">.</span><span class="token function">setArgumentNamesFromStringArray</span><span class="token punctuation">(</span>argNames<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token comment" spellcheck="true">// 绑定参数</span>
-        springAdvice<span class="token punctuation">.</span><span class="token function">calculateArgumentBindings</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> springAdvice<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AbstractAdvisorAutoProxyCreator#findAdvisorsThatCanApply</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> <span class="token function">findAdvisorsThatCanApply</span><span class="token punctuation">(</span>List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> candidateAdvisors<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> beanClass<span class="token punctuation">,</span> String beanName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 使用ThreadLocal保存当前BeanName</span>
-        ProxyCreationContext<span class="token punctuation">.</span><span class="token function">setCurrentProxiedBeanName</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 返回需要应用到该Bean的Advisor</span>
-            <span class="token keyword">return</span> AopUtils<span class="token punctuation">.</span><span class="token function">findAdvisorsThatCanApply</span><span class="token punctuation">(</span>candidateAdvisors<span class="token punctuation">,</span> beanClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 完成后清除</span>
-            ProxyCreationContext<span class="token punctuation">.</span><span class="token function">setCurrentProxiedBeanName</span><span class="token punctuation">(</span>null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AopUtils#findAdvisorsThatCanApply</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">static</span> List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> <span class="token function">findAdvisorsThatCanApply</span><span class="token punctuation">(</span>List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> candidateAdvisors<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> clazz<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 空</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>candidateAdvisors<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> candidateAdvisors<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 存放合格的Advisor</span>
-        List<span class="token operator">&lt;</span>Advisor<span class="token operator">></span> eligibleAdvisors <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 遍历</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>Advisor candidate <span class="token operator">:</span> candidateAdvisors<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">/*
-             * 引介 &amp;&amp; 合格
-             * DefaultIntroductionAdvisor：对应IntroductionInfo
-             * DeclareParentsAdvisor：对应@DeclareParents
-             */</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>candidate <span class="token keyword">instanceof</span> <span class="token class-name">IntroductionAdvisor</span> <span class="token operator">&amp;&amp;</span> <span class="token function">canApply</span><span class="token punctuation">(</span>candidate<span class="token punctuation">,</span> clazz<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 加</span>
-                eligibleAdvisors<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>candidate<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 有合格的引介Advisor，一般没有</span>
-        <span class="token keyword">boolean</span> hasIntroductions <span class="token operator">=</span> <span class="token operator">!</span>eligibleAdvisors<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>Advisor candidate <span class="token operator">:</span> candidateAdvisors<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 跳过IntroductionAdvisor，上面验证过了</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>candidate <span class="token keyword">instanceof</span> <span class="token class-name">IntroductionAdvisor</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">continue</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 验证非IntroductionAdvisor，比如之前AspectJ的AdviceMethod转化的InstantiationModelAwarePointcutAdvisorImpl</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">canApply</span><span class="token punctuation">(</span>candidate<span class="token punctuation">,</span> clazz<span class="token punctuation">,</span> hasIntroductions<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 加</span>
-                eligibleAdvisors<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>candidate<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> eligibleAdvisors<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AopUtils#canApply</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">boolean</span> <span class="token function">canApply</span><span class="token punctuation">(</span>Advisor advisor<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> targetClass<span class="token punctuation">,</span> <span class="token keyword">boolean</span> hasIntroductions<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>advisor <span class="token keyword">instanceof</span> <span class="token class-name">IntroductionAdvisor</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>IntroductionAdvisor<span class="token punctuation">)</span> advisor<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getClassFilter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">matches</span><span class="token punctuation">(</span>targetClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// InstantiationModelAwarePointcutAdvisorImpl</span>
-        <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>advisor <span class="token keyword">instanceof</span> <span class="token class-name">PointcutAdvisor</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            PointcutAdvisor pca <span class="token operator">=</span> <span class="token punctuation">(</span>PointcutAdvisor<span class="token punctuation">)</span> advisor<span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 传入AspectJExpressionPointcut</span>
-            <span class="token keyword">return</span> <span class="token function">canApply</span><span class="token punctuation">(</span>pca<span class="token punctuation">.</span><span class="token function">getPointcut</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> targetClass<span class="token punctuation">,</span> hasIntroductions<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AopUtils#canApply</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">boolean</span> <span class="token function">canApply</span><span class="token punctuation">(</span>Pointcut pc<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> targetClass<span class="token punctuation">,</span> <span class="token keyword">boolean</span> hasIntroductions<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Assert<span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>pc<span class="token punctuation">,</span> <span class="token string">"Pointcut must not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// JoinPoint不匹配目标类</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>pc<span class="token punctuation">.</span><span class="token function">getClassFilter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">matches</span><span class="token punctuation">(</span>targetClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        MethodMatcher methodMatcher <span class="token operator">=</span> pc<span class="token punctuation">.</span><span class="token function">getMethodMatcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 大概就是直接通过不用匹配吧</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>methodMatcher <span class="token operator">==</span> MethodMatcher<span class="token punctuation">.</span>TRUE<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        IntroductionAwareMethodMatcher introductionAwareMethodMatcher <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>methodMatcher <span class="token keyword">instanceof</span> <span class="token class-name">IntroductionAwareMethodMatcher</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 转型</span>
-            introductionAwareMethodMatcher <span class="token operator">=</span> <span class="token punctuation">(</span>IntroductionAwareMethodMatcher<span class="token punctuation">)</span> methodMatcher<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        Set<span class="token operator">&lt;</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">>></span> classes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedHashSet</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 没被JDK动态代理</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>Proxy<span class="token punctuation">.</span><span class="token function">isProxyClass</span><span class="token punctuation">(</span>targetClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 被CGLIB代理就返回父类，否则原样返回</span>
-            classes<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>ClassUtils<span class="token punctuation">.</span><span class="token function">getUserClass</span><span class="token punctuation">(</span>targetClass<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 所有父接口</span>
-        classes<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>ClassUtils<span class="token punctuation">.</span><span class="token function">getAllInterfacesForClassAsSet</span><span class="token punctuation">(</span>targetClass<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 遍历</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> clazz <span class="token operator">:</span> classes<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 声明的方法</span>
-            Method<span class="token punctuation">[</span><span class="token punctuation">]</span> methods <span class="token operator">=</span> ReflectionUtils<span class="token punctuation">.</span><span class="token function">getAllDeclaredMethods</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 遍历</span>
-            <span class="token keyword">for</span> <span class="token punctuation">(</span>Method method <span class="token operator">:</span> methods<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 匹配目标类方法</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>introductionAwareMethodMatcher <span class="token operator">!=</span> null <span class="token operator">?</span> introductionAwareMethodMatcher<span class="token punctuation">.</span><span class="token function">matches</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> targetClass<span class="token punctuation">,</span> hasIntroductions<span class="token punctuation">)</span> <span class="token operator">:</span> methodMatcher<span class="token punctuation">.</span><span class="token function">matches</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> targetClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
 <p>AbstractAutoProxyCreator#createProxy</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> Object <span class="token function">createProxy</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> beanClass<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> String beanName<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> Object<span class="token punctuation">[</span><span class="token punctuation">]</span> specificInterceptors<span class="token punctuation">,</span> TargetSource targetSource<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory <span class="token keyword">instanceof</span> <span class="token class-name">ConfigurableListableBeanFactory</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">/*
-             * 暴露目标类：
-             * 在BeanDefinition设置属性org.springframework.aop.framework.autoproxy.AutoProxyUtils.originalTargetClass为原始类
-             */</span>
-            AutoProxyUtils<span class="token punctuation">.</span><span class="token function">exposeTargetClass</span><span class="token punctuation">(</span><span class="token punctuation">(</span>ConfigurableListableBeanFactory<span class="token punctuation">)</span> <span class="token keyword">this</span><span class="token punctuation">.</span>beanFactory<span class="token punctuation">,</span> beanName<span class="token punctuation">,</span> beanClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token comment" spellcheck="true">// 创建ProxyFactory</span>
         ProxyFactory proxyFactory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ProxyFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 复制到ProxyConfig</span>
@@ -786,12 +327,7 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
         Advisor<span class="token punctuation">[</span><span class="token punctuation">]</span> advisors <span class="token operator">=</span> <span class="token function">buildAdvisors</span><span class="token punctuation">(</span>beanName<span class="token punctuation">,</span> specificInterceptors<span class="token punctuation">)</span><span class="token punctuation">;</span>
         proxyFactory<span class="token punctuation">.</span><span class="token function">addAdvisors</span><span class="token punctuation">(</span>advisors<span class="token punctuation">)</span><span class="token punctuation">;</span>
         proxyFactory<span class="token punctuation">.</span><span class="token function">setTargetSource</span><span class="token punctuation">(</span>targetSource<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">customizeProxyFactory</span><span class="token punctuation">(</span>proxyFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 默认false</span>
-        proxyFactory<span class="token punctuation">.</span><span class="token function">setFrozen</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>freezeProxy<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">advisorsPreFiltered</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            proxyFactory<span class="token punctuation">.</span><span class="token function">setPreFiltered</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token comment" spellcheck="true">// 创建当前Bean的代理对象</span>
         <span class="token keyword">return</span> proxyFactory<span class="token punctuation">.</span><span class="token function">getProxy</span><span class="token punctuation">(</span><span class="token function">getProxyClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
@@ -807,9 +343,7 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
         <span class="token comment" spellcheck="true">// Optimize，默认false || proxy-target-class=true || 没有实现接口</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">isOptimize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> config<span class="token punctuation">.</span><span class="token function">isProxyTargetClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token function">hasNoUserSuppliedProxyInterfaces</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> targetClass <span class="token operator">=</span> config<span class="token punctuation">.</span><span class="token function">getTargetClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>targetClass <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">AopConfigException</span><span class="token punctuation">(</span><span class="token string">"TargetSource cannot determine target class: "</span> <span class="token operator">+</span> <span class="token string">"Either an interface or a target is required for proxy creation."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// ...</span>
             <span class="token comment" spellcheck="true">// 如果要代理的类本身就是接口，用JDK动态代理</span>
             <span class="token keyword">if</span> <span class="token punctuation">(</span>targetClass<span class="token punctuation">.</span><span class="token function">isInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> Proxy<span class="token punctuation">.</span><span class="token function">isProxyClass</span><span class="token punctuation">(</span>targetClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
                 <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">JdkDynamicAopProxy</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -822,18 +356,8 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
             <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">JdkDynamicAopProxy</span><span class="token punctuation">(</span>config<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
-<p>JdkDynamicAopProxy#getProxy</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> Object <span class="token function">getProxy</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Nullable</span> ClassLoader classLoader<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isTraceEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            logger<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span><span class="token string">"Creating JDK dynamic proxy: "</span> <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">.</span>advised<span class="token punctuation">.</span><span class="token function">getTargetSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> proxiedInterfaces <span class="token operator">=</span> AopProxyUtils<span class="token punctuation">.</span><span class="token function">completeProxiedInterfaces</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>advised<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 遍历确定有没有实现equals和hashCode方法并缓存</span>
-        <span class="token function">findDefinedEqualsAndHashCodeMethods</span><span class="token punctuation">(</span>proxiedInterfaces<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 返回代理对象</span>
-        <span class="token keyword">return</span> Proxy<span class="token punctuation">.</span><span class="token function">newProxyInstance</span><span class="token punctuation">(</span>classLoader<span class="token punctuation">,</span> proxiedInterfaces<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
+<hr>
+<p>以JDK动态代理为例。</p>
 <p>JdkDynamicAopProxy#invoke</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
     <span class="token annotation punctuation">@Nullable</span>
@@ -844,26 +368,7 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
         TargetSource targetSource <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>advised<span class="token punctuation">.</span>targetSource<span class="token punctuation">;</span>
         Object target <span class="token operator">=</span> null<span class="token punctuation">;</span>
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 没有声明equals方法 &amp;&amp; 调用equals方法</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>equalsDefined <span class="token operator">&amp;&amp;</span> AopUtils<span class="token punctuation">.</span><span class="token function">isEqualsMethod</span><span class="token punctuation">(</span>method<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 调用JdkDynamicAopProxy的equals方法</span>
-                <span class="token keyword">return</span> <span class="token function">equals</span><span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 没有声明hashCode方法 &amp;&amp; 调用hashCode方法</span>
-            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>hashCodeDefined <span class="token operator">&amp;&amp;</span> AopUtils<span class="token punctuation">.</span><span class="token function">isHashCodeMethod</span><span class="token punctuation">(</span>method<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 调用JdkDynamicAopProxy的equals方法</span>
-                <span class="token keyword">return</span> <span class="token function">hashCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 调用的方法是DecoratingProxy声明的方法</span>
-            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>method<span class="token punctuation">.</span><span class="token function">getDeclaringClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> DecoratingProxy<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// DecoratingProxy只有一个getDecoratedClass方法，直接返回被装饰的Class</span>
-                <span class="token keyword">return</span> AopProxyUtils<span class="token punctuation">.</span><span class="token function">ultimateTargetClass</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>advised<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 代理不是不透明的 &amp;&amp; 是接口声明的方法 &amp;&amp; 声明该方法的接口继承了Advised接口</span>
-            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>advised<span class="token punctuation">.</span>opaque <span class="token operator">&amp;&amp;</span> method<span class="token punctuation">.</span><span class="token function">getDeclaringClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isInterface</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> method<span class="token punctuation">.</span><span class="token function">getDeclaringClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>Advised<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 直接调用</span>
-                <span class="token keyword">return</span> AopUtils<span class="token punctuation">.</span><span class="token function">invokeJoinpointUsingReflection</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>advised<span class="token punctuation">,</span> method<span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// ...</span>
             Object retVal<span class="token punctuation">;</span>
             <span class="token comment" spellcheck="true">// 如果暴露代理，默认false</span>
             <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>advised<span class="token punctuation">.</span>exposeProxy<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -873,18 +378,11 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
             <span class="token punctuation">}</span>
             target <span class="token operator">=</span> targetSource<span class="token punctuation">.</span><span class="token function">getTarget</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> targetClass <span class="token operator">=</span> <span class="token punctuation">(</span>target <span class="token operator">!=</span> null <span class="token operator">?</span> target<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">/*
-             * 遍历，把Advisor中的Advice包装成Interceptor
-             * 以AspectJ为例：Advisor - Advice - MethodInterceptor
-             * AspectJAroundAdvice，AspectJAfterAdvice，AtAfterThrowing直接添加
-             * AspectJMethodBeforeAdvice，AspectJAfterReturningAdvice通过对应AdvisorAdapter包装成MethodInterceptor添加到尾部
-             */</span>
+            <span class="token comment" spellcheck="true">// 遍历，把Advisor中的Advice包装成Interceptor</span>
             List<span class="token operator">&lt;</span>Object<span class="token operator">></span> chain <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>advised<span class="token punctuation">.</span><span class="token function">getInterceptorsAndDynamicInterceptionAdvice</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> targetClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token comment" spellcheck="true">// 如果链是空</span>
             <span class="token keyword">if</span> <span class="token punctuation">(</span>chain<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                Object<span class="token punctuation">[</span><span class="token punctuation">]</span> argsToUse <span class="token operator">=</span> AopProxyUtils<span class="token punctuation">.</span><span class="token function">adaptArgumentsIfNecessary</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment" spellcheck="true">// 直接反射调用被代理对象的方法</span>
-                retVal <span class="token operator">=</span> AopUtils<span class="token punctuation">.</span><span class="token function">invokeJoinpointUsingReflection</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> method<span class="token punctuation">,</span> argsToUse<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// ...</span>
             <span class="token punctuation">}</span>
             <span class="token comment" spellcheck="true">// 否则</span>
             <span class="token keyword">else</span> <span class="token punctuation">{</span>
@@ -893,14 +391,7 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
                 <span class="token comment" spellcheck="true">// 执行链式调用，得到返回结果</span>
                 retVal <span class="token operator">=</span> invocation<span class="token punctuation">.</span><span class="token function">proceed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
-            Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> returnType <span class="token operator">=</span> method<span class="token punctuation">.</span><span class="token function">getReturnType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 返回结果不为null &amp;&amp; 返回结果是this，即原始对象 &amp;&amp; 方法声明类没有标记为RawTargetAccess(没继承RawTargetAccess接口)</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>retVal <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> retVal <span class="token operator">==</span> target <span class="token operator">&amp;&amp;</span> returnType <span class="token operator">!=</span> Object<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token operator">&amp;&amp;</span> returnType<span class="token punctuation">.</span><span class="token function">isInstance</span><span class="token punctuation">(</span>proxy<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>RawTargetAccess<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>method<span class="token punctuation">.</span><span class="token function">getDeclaringClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 返回代理对象</span>
-                retVal <span class="token operator">=</span> proxy<span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>retVal <span class="token operator">==</span> null <span class="token operator">&amp;&amp;</span> returnType <span class="token operator">!=</span> Void<span class="token punctuation">.</span>TYPE <span class="token operator">&amp;&amp;</span> returnType<span class="token punctuation">.</span><span class="token function">isPrimitive</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">AopInvocationException</span><span class="token punctuation">(</span><span class="token string">"Null return value from advice does not match primitive return type for: "</span> <span class="token operator">+</span> method<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// ...</span>
             <span class="token keyword">return</span> retVal<span class="token punctuation">;</span>
         <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
             <span class="token keyword">if</span> <span class="token punctuation">(</span>target <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>targetSource<span class="token punctuation">.</span><span class="token function">isStatic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -926,19 +417,7 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
 
         <span class="token comment" spellcheck="true">// 需要动态匹配</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>interceptorOrInterceptionAdvice <span class="token keyword">instanceof</span> <span class="token class-name">InterceptorAndDynamicMethodMatcher</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 转型</span>
-            InterceptorAndDynamicMethodMatcher dm <span class="token operator">=</span> <span class="token punctuation">(</span>InterceptorAndDynamicMethodMatcher<span class="token punctuation">)</span> interceptorOrInterceptionAdvice<span class="token punctuation">;</span>
-            Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> targetClass <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>targetClass <span class="token operator">!=</span> null <span class="token operator">?</span> <span class="token keyword">this</span><span class="token punctuation">.</span>targetClass <span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>method<span class="token punctuation">.</span><span class="token function">getDeclaringClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 匹配成功</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>dm<span class="token punctuation">.</span>methodMatcher<span class="token punctuation">.</span><span class="token function">matches</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>method<span class="token punctuation">,</span> targetClass<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>arguments<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 执行</span>
-                <span class="token keyword">return</span> dm<span class="token punctuation">.</span>interceptor<span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 匹配失败</span>
-            <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 跳过，递归执行下一个</span>
-                <span class="token keyword">return</span> <span class="token function">proceed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
         <span class="token comment" spellcheck="true">// 直接invoke</span>
         <span class="token keyword">else</span> <span class="token punctuation">{</span>
@@ -946,7 +425,14 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
             <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>MethodInterceptor<span class="token punctuation">)</span> interceptorOrInterceptionAdvice<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
-<p>前面AbstractAdvisorAutoProxyCreator#findEligibleAdvisors会给Advisor排序，顺序在ReflectiveAspectJAdvisorFactory#getAdvisors设置，方法来自ReflectiveAspectJAdvisorFactory#getAdvisorMethods，顺序是@Around，@Before，@After，@AfterReturning，@AfterThrowing。</p>
+<hr>
+<p>就是通过BeanPostProcessor对Bean进行拦截包装。</p>
+<p>从BeanFactory中获取所有被@AspectJ注解的Bean，解析切面类的Advice方法，每个方法构造成一个Advisor。</p>
+<p>然后过滤得到适用于该Bean的所有Advisor。</p>
+<p>然后根据配置和被代理的Bean，使用JDK动态代理或CGLIB创建代理对象，实际注入的是代理对象。</p>
+<p>调用时会创建拦截链，通过职责链的方式调用一个个Advisor，进行拦截增强。</p>
+<hr>
+<p>顺序是@Around，@Before，@After，@AfterReturning，@AfterThrowing。</p>
 <p>假设有两个切面A、B，每个切面有@Around，@Before，@After，@AfterReturning，@AfterThrowing的方法，所有方法以职责链形式进行：</p>
 <pre class=" language-java"><code class="language-java">A <span class="token operator">-</span> AspectJAroundAdvice#invoke
     A <span class="token operator">-</span> <span class="token annotation punctuation">@Around</span>
@@ -984,68 +470,28 @@ Spring的AOP：将Spring的AOP和AspectJ风格的AOP统一成Advisor切面，默
                                     A <span class="token operator">-</span> <span class="token annotation punctuation">@AfterReturning</span>
                         A <span class="token operator">-</span> <span class="token annotation punctuation">@After</span></code></pre>
 <hr>
-<p>一般AOP如果拦截的是Controller，因为没有接口，所以使用CGLIB子类继承代理的，如果是Service，一般用JDK动态代理，所以AOP性能相对还是有损耗的，虽然Spring加了缓存。</p>
-<p>Spring的AspectJ默认只是使用了几个AspectJ的注解，实际还是运行时织入，如果想运行前织入，需要另外配置，代码是兼容的。</p>
-<p>以SpringBoot为例：</p>
-<pre class=" language-xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="UTF-8"?></span>
-<span class="token doctype">&lt;!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd"></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>aspectj</span><span class="token punctuation">></span></span>
-    <span class="token comment" spellcheck="true">&lt;!-- 要织入切面的目标类 --></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>weaver</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>include</span> <span class="token attr-name">within</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org..*<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>weaver</span><span class="token punctuation">></span></span>
-    <span class="token comment" spellcheck="true">&lt;!-- 切面类 --></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>aspects</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>aspect</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>org.XxxAspect<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>aspects</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>aspectj</span><span class="token punctuation">></span></span></code></pre>
-<p>运行时需要指定JavaAgent参数<code>-javaagent:spring-instrument-{version}.jar</code>。</p>
-<p>或者Maven配置：</p>
-<pre class=" language-xml"><code class="language-xml">        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>plugin</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.apache.maven.plugins<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>maven-surefire-plugin<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
-                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>argLine</span><span class="token punctuation">></span></span>
-                    -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                    -javaagent:"${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar"
-                    <span class="token comment" spellcheck="true">&lt;!-- -Dspring.profiles.active=test --></span>
-                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>argLine</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>plugin</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>plugin</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-maven-plugin<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
-                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>agent</span><span class="token punctuation">></span></span>
-                    ${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar
-                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>agent</span><span class="token punctuation">></span></span>
-                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>agent</span><span class="token punctuation">></span></span>
-                    ${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar
-                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>agent</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>plugin</span><span class="token punctuation">></span></span></code></pre>
-<p>参考这篇文章：<a href="https://blog.csdn.net/scorpio3k/article/details/6745443" target="_blank" rel="noopener">https://blog.csdn.net/scorpio3k/article/details/6745443</a></p>
-<p>Agent是执行main方法前的一个Interceptor，Agent代码和main方法在同一个JVM运行，被同一个Classloader装载，被同一个SecurityPolicy和Context管理。</p>
-<p>实现一个Agent只需要实现premain方法：<code>public static void premain(String agentArgs, Instrumentation inst)</code>。</p>
-<p>Agent类必须打成.jar包，里面的<code>META-INF/MAINIFEST.MF</code>必须包含<code>Premain-Class</code>属性。</p>
+<p>一般AOP如果拦截的是Controller，因为没有接口，所以使用CGLIB子类继承代理的。</p>
+<p>如果是Service，一般用JDK动态代理，所以AOP性能相对还是有损耗的，虽然Spring加了缓存。</p>
+<p>Spring的AspectJ默认只是使用了几个AspectJ的注解，实际还是运行时织入，如果想运行前织入，需要另外配置。</p>
+<p>运行时需要指定javaagent参数<code>-javaagent:spring-instrument-{version}.jar</code>。</p>
+<p>javaagent是执行main方法前的拦截器，javaagent代码和main方法在同一个JVM运行。</p>
+<p>实现javaagent需要实现premain方法。</p>
+<p>javaagent类必须打成.jar包，里面的<code>META-INF/MAINIFEST.MF</code>必须包含<code>Premain-Class</code>属性。</p>
 <p>MANIFEST.MF</p>
-<pre><code>Manifest-Version: 1.0
+<pre class=" language-ini"><code class="language-ini">Manifest-Version: 1.0
 Implementation-Title: spring-instrument
 Automatic-Module-Name: spring.instrument
-Premain-Class: org.springframework.instrument.InstrumentationSavingAge
- nt
+Premain-Class: org.springframework.instrument.InstrumentationSavingAgent
 Implementation-Version: 5.1.8.RELEASE
 Agent-Class: org.springframework.instrument.InstrumentationSavingAgent
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true
 Can-Set-Native-Method-Prefix: false
-Created-By: 1.8.0_212 (Oracle Corporation)</code></pre><p>spring-instrument.jar: InstrumentationSavingAgent</p>
+Created-By: 1.8.0_212 (Oracle Corporation)</code></pre>
+<p>spring-instrument.jar: InstrumentationSavingAgent</p>
 <pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">InstrumentationSavingAgent</span> <span class="token punctuation">{</span>
     <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">volatile</span> Instrumentation instrumentation<span class="token punctuation">;</span>
-
-    <span class="token keyword">private</span> <span class="token function">InstrumentationSavingAgent</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token punctuation">}</span>
-
+    <span class="token comment" spellcheck="true">// ...</span>
     <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">premain</span><span class="token punctuation">(</span>String agentArgs<span class="token punctuation">,</span> Instrumentation inst<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 只是暴露出来</span>
         <span class="token comment" spellcheck="true">// 通过Instrumentation，可以添加自定义的ClassFileTransformer，来改变.class，不修改原有的代码进行增强</span>
@@ -1055,154 +501,10 @@ Created-By: 1.8.0_212 (Oracle Corporation)</code></pre><p>spring-instrument.jar:
     <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">agentmain</span><span class="token punctuation">(</span>String agentArgs<span class="token punctuation">,</span> Instrumentation inst<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         instrumentation <span class="token operator">=</span> inst<span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
-
-    <span class="token keyword">public</span> <span class="token keyword">static</span> Instrumentation <span class="token function">getInstrumentation</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> instrumentation<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">// ...</span>
 <span class="token punctuation">}</span></code></pre>
-<p>EnableLoadTimeWeaving</p>
-<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span>ElementType<span class="token punctuation">.</span>TYPE<span class="token punctuation">)</span>
-<span class="token annotation punctuation">@Retention</span><span class="token punctuation">(</span>RetentionPolicy<span class="token punctuation">.</span>RUNTIME<span class="token punctuation">)</span>
-<span class="token annotation punctuation">@Documented</span>
-<span class="token annotation punctuation">@Import</span><span class="token punctuation">(</span>LoadTimeWeavingConfiguration<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 导入</span>
-<span class="token keyword">public</span> @<span class="token keyword">interface</span> <span class="token class-name">EnableLoadTimeWeaving</span> <span class="token punctuation">{</span>
-
-    AspectJWeaving <span class="token function">aspectjWeaving</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">default</span> AspectJWeaving<span class="token punctuation">.</span>AUTODETECT<span class="token punctuation">;</span>
-
-    <span class="token keyword">enum</span> AspectJWeaving <span class="token punctuation">{</span>
-
-        ENABLED<span class="token punctuation">,</span>
-
-        DISABLED<span class="token punctuation">,</span>
-        <span class="token comment" spellcheck="true">/**
-         * 自动检测，如果类路径下有META-INF/aop.xml，开启
-         */</span>
-        AUTODETECT<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-<span class="token punctuation">}</span></code></pre>
-<p>LoadTimeWeavingConfiguration#loadTimeWeaver</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> ConfigurableApplicationContext<span class="token punctuation">.</span>LOAD_TIME_WEAVER_BEAN_NAME<span class="token punctuation">)</span>
-    <span class="token annotation punctuation">@Role</span><span class="token punctuation">(</span>BeanDefinition<span class="token punctuation">.</span>ROLE_INFRASTRUCTURE<span class="token punctuation">)</span>
-    <span class="token keyword">public</span> LoadTimeWeaver <span class="token function">loadTimeWeaver</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Assert<span class="token punctuation">.</span><span class="token function">state</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanClassLoader <span class="token operator">!=</span> null<span class="token punctuation">,</span> <span class="token string">"No ClassLoader set"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        LoadTimeWeaver loadTimeWeaver <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>ltwConfigurer <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 用户提供了自定义的LoadTimeWeaver实例</span>
-            loadTimeWeaver <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>ltwConfigurer<span class="token punctuation">.</span><span class="token function">getLoadTimeWeaver</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>loadTimeWeaver <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 没有就默认DefaultContextLoadTimeWeaver</span>
-            loadTimeWeaver <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DefaultContextLoadTimeWeaver</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>enableLTW <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            AspectJWeaving aspectJWeaving <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>enableLTW<span class="token punctuation">.</span><span class="token function">getEnum</span><span class="token punctuation">(</span><span class="token string">"aspectjWeaving"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">switch</span> <span class="token punctuation">(</span>aspectJWeaving<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">case</span> DISABLED<span class="token operator">:</span>
-                    <span class="token comment" spellcheck="true">// AJ weaving is disabled -> do nothing</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>
-                <span class="token keyword">case</span> AUTODETECT<span class="token operator">:</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanClassLoader<span class="token punctuation">.</span><span class="token function">getResource</span><span class="token punctuation">(</span>AspectJWeavingEnabler<span class="token punctuation">.</span>ASPECTJ_AOP_XML_RESOURCE<span class="token punctuation">)</span> <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token comment" spellcheck="true">// No aop.xml present on the classpath -> treat as 'disabled'</span>
-                        <span class="token keyword">break</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                    <span class="token comment" spellcheck="true">// aop.xml is present on the classpath -> enable</span>
-                    AspectJWeavingEnabler<span class="token punctuation">.</span><span class="token function">enableAspectJWeaving</span><span class="token punctuation">(</span>loadTimeWeaver<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>beanClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>
-                <span class="token keyword">case</span> ENABLED<span class="token operator">:</span>
-                    AspectJWeavingEnabler<span class="token punctuation">.</span><span class="token function">enableAspectJWeaving</span><span class="token punctuation">(</span>loadTimeWeaver<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>beanClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> loadTimeWeaver<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>DefaultContextLoadTimeWeaver#setBeanClassLoader</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setBeanClassLoader</span><span class="token punctuation">(</span>ClassLoader classLoader<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        LoadTimeWeaver serverSpecificLoadTimeWeaver <span class="token operator">=</span> <span class="token function">createServerSpecificLoadTimeWeaver</span><span class="token punctuation">(</span>classLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// Web服务器</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>serverSpecificLoadTimeWeaver <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>loadTimeWeaver <span class="token operator">=</span> serverSpecificLoadTimeWeaver<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// spring-instrument.jar -javaagent</span>
-        <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>InstrumentationLoadTimeWeaver<span class="token punctuation">.</span><span class="token function">isInstrumentationAvailable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Found Spring's JVM agent for instrumentation"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>loadTimeWeaver <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InstrumentationLoadTimeWeaver</span><span class="token punctuation">(</span>classLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 默认sun.misc.Launcher.AppClassLoader</span>
-        <span class="token keyword">else</span> <span class="token punctuation">{</span>
-            <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>loadTimeWeaver <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReflectiveLoadTimeWeaver</span><span class="token punctuation">(</span>classLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IllegalStateException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span>ex<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" Specify a custom LoadTimeWeaver or start your "</span> <span class="token operator">+</span> <span class="token string">"Java virtual machine with Spring's agent: -javaagent:spring-instrument-{version}.jar"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AspectJWeavingEnabler#enableAspectJWeaving</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">enableAspectJWeaving</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Nullable</span> LoadTimeWeaver weaverToUse<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> ClassLoader beanClassLoader<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>weaverToUse <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>InstrumentationLoadTimeWeaver<span class="token punctuation">.</span><span class="token function">isInstrumentationAvailable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                weaverToUse <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InstrumentationLoadTimeWeaver</span><span class="token punctuation">(</span>beanClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"No LoadTimeWeaver available"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// ClassFileTransformer</span>
-        weaverToUse<span class="token punctuation">.</span><span class="token function">addTransformer</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">AspectJClassBypassingClassFileTransformer</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ClassPreProcessorAgentAdapter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>InstrumentationLoadTimeWeaver#addTransformer</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * new AspectJClassBypassingClassFileTransformer(new ClassPreProcessorAgentAdapter())
-     * 具体的类加载处理由AspectJ接管
-     */</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addTransformer</span><span class="token punctuation">(</span>ClassFileTransformer transformer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Assert<span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>transformer<span class="token punctuation">,</span> <span class="token string">"Transformer must not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        FilteringClassFileTransformer actualTransformer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FilteringClassFileTransformer</span><span class="token punctuation">(</span>transformer<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>classLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>transformers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            Assert<span class="token punctuation">.</span><span class="token function">state</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>instrumentation <span class="token operator">!=</span> null<span class="token punctuation">,</span> <span class="token string">"Must start with Java agent to use InstrumentationLoadTimeWeaver. See Spring documentation."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>instrumentation<span class="token punctuation">.</span><span class="token function">addTransformer</span><span class="token punctuation">(</span>actualTransformer<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>transformers<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>actualTransformer<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
-<hr>
-<p>参考这篇文章： <a href="https://www.cnblogs.com/hackem/p/9718311.html" target="_blank" rel="noopener">https://www.cnblogs.com/hackem/p/9718311.html</a></p>
-<p>AbstractBeanFactory#doResolveBeanClass</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * 选择不同的ClassLoader加载类，beanClassLoader和tempClassLoader，和AspectJ有关
-     */</span>
-    <span class="token annotation punctuation">@Nullable</span>
-    <span class="token keyword">private</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> <span class="token function">doResolveBeanClass</span><span class="token punctuation">(</span>RootBeanDefinition mbd<span class="token punctuation">,</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> typesToMatch<span class="token punctuation">)</span> <span class="token keyword">throws</span> ClassNotFoundException <span class="token punctuation">{</span>
-        ClassLoader beanClassLoader <span class="token operator">=</span> <span class="token function">getBeanClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ClassLoader dynamicLoader <span class="token operator">=</span> beanClassLoader<span class="token punctuation">;</span>
-        <span class="token keyword">boolean</span> freshResolve <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 如果不为空</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ObjectUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>typesToMatch<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">/*
-             * 只是类型检查的时候（不创建实例），使用这个暂时的Classloader(织入)
-             * 一个ClassLoader对一个Class只加载一次，防止LoadTimeWeaver还没执行，类就被加载了，没被AOP拦截增强
-             * tempClassLoader设置：beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
-             * 时机：
-             *      Xml：AbstractApplicationContext#prepareBeanFactory
-             *      Annotation：AbstractApplicationContext#invokeBeanFactoryPostProcessors
-             */</span>
-            ClassLoader tempClassLoader <span class="token operator">=</span> <span class="token function">getTempClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>tempClassLoader <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                dynamicLoader <span class="token operator">=</span> tempClassLoader<span class="token punctuation">;</span>
-                freshResolve <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>tempClassLoader <span class="token keyword">instanceof</span> <span class="token class-name">DecoratingClassLoader</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    DecoratingClassLoader dcl <span class="token operator">=</span> <span class="token punctuation">(</span>DecoratingClassLoader<span class="token punctuation">)</span> tempClassLoader<span class="token punctuation">;</span>
-                    <span class="token keyword">for</span> <span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> typeToMatch <span class="token operator">:</span> typesToMatch<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        dcl<span class="token punctuation">.</span><span class="token function">excludeClass</span><span class="token punctuation">(</span>typeToMatch<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// ...</span>
-    <span class="token punctuation">}</span></code></pre>
 <p>这种方式的@Aspect注解的切面类不在BeanFactory内，所以不要加@Component之类的添加进容器。</p>
-<p>Spring在加载目标类的.class文件到JVM之前，AspectJ会将切面类中的增强逻辑织入到.class文件中，生成新的.class字节码，所以不需要动态代理就能实现AOP。</p>
+<p>Spring在加载目标类的.class文件到JVM之前，AspectJ会将切面类中的增强逻辑织入到.class文件中，生成新的.class字节码，不需要动态代理就能实现AOP。</p>
 <p>在类加载期，注册的ClassFileTransformer读取类路径下META-INF/aop.xml文件中定义的切面类和目标类信息，生成新的.class字节码，然后交给JVM加载。</p>
 
 				</div>

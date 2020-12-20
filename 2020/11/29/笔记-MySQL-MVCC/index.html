@@ -7,7 +7,7 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-MySQL-MVCC | Reunion...</title>
+    <title>[笔记]-MySQL-MVCC | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
@@ -28,7 +28,7 @@
     
     <meta property="og:title" content="[笔记]-MySQL-MVCC" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -299,6 +299,7 @@
 <li>TRX_UNDO_INSERT_REC</li>
 </ol>
 <p>insert的undo，只需记录主键值。</p>
+<p>insert只对事务本身可见，事务提交后可以直接删除，update和delete则不行。</p>
 <ol start="2">
 <li>TRX_UNDO_UPD_EXIST_REC</li>
 </ol>
@@ -424,7 +425,7 @@
 <p>Index Condition Pushdown并不会受到MVCC的影响。</p>
 <p>在通过聚簇索引或二级索引查找记录时，会优先判断记录的可见性。</p>
 <p>例如，select * from t1 force index(idx) where c2 &gt; 1 and c3 = 2;。</p>
-<p>从二级索引扫描到记录不可见时，这时候需要回聚簇索引判断可见性，但在这之前会优先判断条件c3 = 2是否满足，满足条件才会扫描聚簇索引，否则忽略。</p>
+<p>从二级索引扫描到记录不可见时，这时需要回聚簇索引判断可见性，但在这之前会优先判断条件c3 = 2是否满足，满足条件才会扫描聚簇索引，否则忽略。</p>
 <hr>
 <p>semi-consistent read</p>
 <p>semi-consistent read是在InnoDB多版本基础上的针对update的优化。</p>

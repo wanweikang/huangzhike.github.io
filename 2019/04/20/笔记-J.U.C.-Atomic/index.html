@@ -7,7 +7,7 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-J.U.C.-Atomic | Reunion...</title>
+    <title>[笔记]-J.U.C.-Atomic | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
@@ -24,7 +24,7 @@ CAS需要3个操作数：内存地址V，旧的预期值A，即将要更新的�
     
     <meta property="og:title" content="[笔记]-J.U.C.-Atomic" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -103,6 +103,38 @@ CAS需要3个操作数：内存地址V，旧的预期值A，即将要更新的�
 <li><p>ABA问题，提供了AtomicStampedReference类，通过加版本号解决。</p>
 </li>
 </ul>
+<hr>
+<p>i++不是线程安全的，因为它不是一个原子性操作。</p>
+<p>Atomic原子类是无锁的，保证并发更新的线程安全。</p>
+<p>AtomicInteger#getAndIncrement可以替换i++，原子性的增加当前的值，并返回原本的值。</p>
+<p>AtomicInteger#incrementAndGet可以替换++i，原子性的增加当前的值，并返回增加后的值。</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">long</span> <span class="token function">incrementAndGet</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 自旋</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span><span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 获取最新值</span>
+        <span class="token keyword">long</span> current <span class="token operator">=</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">long</span> next <span class="token operator">=</span> current <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// CAS原子更新，成功则返回，否则继续自旋</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compareAndSet</span><span class="token punctuation">(</span>current<span class="token punctuation">,</span> next<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> next<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>volatile变量保证修改对其它线程立即可见。</p>
+<p>Unsafe#compareAndSwap比较并更新，同时保证更新的原子性。</p>
+<p>无限循环即自旋，更新失败说明有其他线程提前更新了该值，则当前线程继续自旋重试。</p>
+<p>这也是自旋锁的基本思想。</p>
+<p>自旋的基本思想是，乐观地看待并发，在更新值时先检查该值有没有变化，没有变化则更新，否则放弃。</p>
+<p>比较适合锁保持时间比较短的情况，比如执行一个变量的自增操作。</p>
+<p>以及竞争不激烈的情况，避免睡眠和唤醒的昂贵的切换开销。</p>
+<p>但在竞争激烈和长时间自旋时，会过多占用cpu时间，此时最好使用阻塞的锁。</p>
+<p>所以自旋最好有次数限制，超出次数则转为使用阻塞的锁。</p>
+<p>对于ABA问题，可通过AtomicStampedReference来解决。</p>
+<p>先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则更新。</p>
+<p>不过基本没啥用。</p>
+<p>在并发量非常高的情况下，CAS失败率非常高，如果还想用原子类，可以使用LongAdder之类的替换。</p>
+<p>将单个value的更新压力分担到多个value，降低单个value的竞争。</p>
+<p>LongAdder存在cells，当需要总数时，把cell中的value都累加即可。</p>
+<p>当并发低时，LongAdder先采用CAS更新，并发高且CAS更新失败时，则进入分段更新。</p>
 
 				</div>
 				<!-- about -->

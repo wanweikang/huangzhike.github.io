@@ -7,22 +7,24 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-SOFA-JRaft-RheaKV | Reunion...</title>
+    <title>[笔记]-SOFA-JRaft-RheaKV | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
     
     <meta name="description"
-        content="MultiRaftGroup：多个RaftGroup，对于RheaKV，每个分组（Region）都有一个独立的Leader和多个Follower。
-PlacementDriver：管理整个集群，生成RegionId，根据Region的心跳更新路由表，也可以使用Fake的固定配置。
-Store：Reg">
+        content="MultiRaftGroup：多个RaftGroup，RheaKV每个分组（Region）都有一个独立的Leader和多个Follower。
+
+PlacementDriver：管理整个集群，生成RegionId，根据Region的心跳更新路由表，或者使用Fake的固定配置。
+
+Store：Regio">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta property="og:title" content="[笔记]-SOFA-JRaft-RheaKV" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -88,16 +90,22 @@ Store：Reg">
 				</div>
 				
 				<div class="article-content">
-				<p>MultiRaftGroup：多个RaftGroup，对于RheaKV，每个分组（Region）都有一个独立的Leader和多个Follower。</p>
-<p>PlacementDriver：管理整个集群，生成RegionId，根据Region的心跳更新路由表，也可以使用Fake的固定配置。</p>
-<p>Store：Region的容器，包含多个分片，Store向PD主动上报心跳，包含该Store的基本信息，如，包含多少Region，有哪些Region的Leader在该Store等。</p>
-<p>Region：数据存储的单元，也包含了一个选举单元，对应Store里某个数据区间，每个Region有多个副本，每个副本存储在不同的Store，一起组成一个RaftGroup。Region的Leader会向PD主动上报心跳，PD通过Region的Epoch感知Region是否有变化。</p>
-<p>数据分区或分片算法通常是Range和Hash，RheaKV通过Range进行数据分片，分成一个个RaftGroup，也称为Region。</p>
-<p>因为Range切分是对Key进行字节排序后再切分，像类似Scan等操作对相近Key的查询会尽可能集中在某个Region，这个Hash无法支持。</p>
+				<ul>
+<li><p>MultiRaftGroup：多个RaftGroup，RheaKV每个分组（Region）都有一个独立的Leader和多个Follower。</p>
+</li>
+<li><p>PlacementDriver：管理整个集群，生成RegionId，根据Region的心跳更新路由表，或者使用Fake的固定配置。</p>
+</li>
+<li><p>Store：Region的容器，包含多个分片，Store向PD主动上报心跳，包含该Store的信息，如，包含多少Region，有哪些Region的Leader在该Store等。</p>
+</li>
+<li><p>Region：数据存储和选举的单元，对应Store里某个数据区间，每个Region有多个副本，每个副本存储在不同的Store。Region的Leader会向PD主动上报心跳，PD通过Region的Epoch感知Region是否有变化。</p>
+</li>
+</ul>
+<p>数据分片算法通常是Range和Hash，RheaKV通过Range进行分片，分成一个个RaftGroup，也称为Region。</p>
+<p>Range是对Key排序后再切分，类似Scan等操作对相近Key的查询会尽可能集中在某个Region，而Hash无法支持。</p>
 <p>拆分单个Region也更好处理，只用修改部分元数据，不会涉及到大范围的数据挪动。</p>
-<p>Range有一个问题就是，可能某个Region被频繁操作成为热点Region，可以通过PD调度热点Region到更空闲的机器上，或者提供Follower分担读的压力等。</p>
+<p>Range有一个问题是，可能某个Region是热点Region，可以通过PD调度热点Region到更空闲的机器上，或者Follower分担读压力等。</p>
 <hr>
-<p>Client和Server的初始化</p>
+<p>Client和Server的初始化。</p>
 <p>DefaultRheaKVStore#init</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">boolean</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token keyword">final</span> RheaKVStoreOptions opts<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -160,13 +168,7 @@ Store：Reg">
         <span class="token keyword">this</span><span class="token punctuation">.</span>onlyLeaderRead <span class="token operator">=</span> opts<span class="token punctuation">.</span><span class="token function">isOnlyLeaderRead</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 默认使用并行处理器，可以理解为提交给线程池并发执行</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>opts<span class="token punctuation">.</span><span class="token function">isUseParallelKVExecutor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> <span class="token keyword">int</span> numWorkers <span class="token operator">=</span> Utils<span class="token punctuation">.</span><span class="token function">cpus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 左移4位，等于乘以2^4</span>
-            <span class="token keyword">final</span> <span class="token keyword">int</span> bufSize <span class="token operator">=</span> numWorkers <span class="token operator">&lt;&lt;</span> <span class="token number">4</span><span class="token punctuation">;</span>
-            <span class="token keyword">final</span> String name <span class="token operator">=</span> <span class="token string">"parallel-kv-executor"</span><span class="token punctuation">;</span>
-            <span class="token keyword">final</span> ThreadFactory threadFactory <span class="token operator">=</span> Constants<span class="token punctuation">.</span>THREAD_AFFINITY_ENABLED <span class="token operator">?</span> <span class="token keyword">new</span> <span class="token class-name">AffinityNamedThreadFactory</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">NamedThreadFactory</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 启动Disruptor</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>kvDispatcher <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TaskDispatcher</span><span class="token punctuation">(</span>bufSize<span class="token punctuation">,</span> numWorkers<span class="token punctuation">,</span> WaitStrategyType<span class="token punctuation">.</span>LITE_BLOCKING_WAIT<span class="token punctuation">,</span> threadFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span>batchingOpts <span class="token operator">=</span> opts<span class="token punctuation">.</span><span class="token function">getBatchingOptions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 默认允许批处理</span>
@@ -180,7 +182,7 @@ Store：Reg">
         <span class="token punctuation">}</span>
         <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>started <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
-<p>初始化PlacementDriverClient</p>
+<p>初始化PlacementDriverClient。</p>
 <p>AbstractPlacementDriverClient#init</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">boolean</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token keyword">final</span> PlacementDriverOptions opts<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -245,9 +247,7 @@ Store：Reg">
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 更新集群的配置</span>
             gc<span class="token punctuation">.</span>conf <span class="token operator">=</span> conf<span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>gc<span class="token punctuation">.</span>leader <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>gc<span class="token punctuation">.</span>conf<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>gc<span class="token punctuation">.</span>leader<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                gc<span class="token punctuation">.</span>leader <span class="token operator">=</span> null<span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
             stampedLock<span class="token punctuation">.</span><span class="token function">unlockWrite</span><span class="token punctuation">(</span>stamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
@@ -277,10 +277,6 @@ Store：Reg">
         Endpoint serverAddress <span class="token operator">=</span> Requires<span class="token punctuation">.</span><span class="token function">requireNonNull</span><span class="token punctuation">(</span>opts<span class="token punctuation">.</span><span class="token function">getServerAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"opts.serverAddress"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">final</span> <span class="token keyword">int</span> port <span class="token operator">=</span> serverAddress<span class="token punctuation">.</span><span class="token function">getPort</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">final</span> String ip <span class="token operator">=</span> serverAddress<span class="token punctuation">.</span><span class="token function">getIp</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 没有设置就使用当前主机的地址</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>ip <span class="token operator">==</span> null <span class="token operator">||</span> Utils<span class="token punctuation">.</span>IP_ANY<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>ip<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// ...</span>
-        <span class="token punctuation">}</span>
         <span class="token comment" spellcheck="true">// ...</span>
         List<span class="token operator">&lt;</span>RegionEngineOptions<span class="token operator">></span> rOptsList <span class="token operator">=</span> opts<span class="token punctuation">.</span><span class="token function">getRegionEngineOptionsList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 如果RegionEngine选项为空，初始化一个默认的RegionEngine</span>
@@ -366,12 +362,6 @@ Store：Reg">
 <p>StoreEngine#initAllRegionEngine</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">initAllRegionEngine</span><span class="token punctuation">(</span><span class="token keyword">final</span> StoreEngineOptions opts<span class="token punctuation">,</span> <span class="token keyword">final</span> Store store<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// ...</span>
-        String baseRaftDataPath <span class="token operator">=</span> opts<span class="token punctuation">.</span><span class="token function">getRaftDataPath</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>Strings<span class="token punctuation">.</span><span class="token function">isNotBlank</span><span class="token punctuation">(</span>baseRaftDataPath<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// ...</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// ...</span>
-        <span class="token punctuation">}</span>
         <span class="token keyword">final</span> Endpoint serverAddress <span class="token operator">=</span> opts<span class="token punctuation">.</span><span class="token function">getServerAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">final</span> List<span class="token operator">&lt;</span>RegionEngineOptions<span class="token operator">></span> rOptsList <span class="token operator">=</span> opts<span class="token punctuation">.</span><span class="token function">getRegionEngineOptionsList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">final</span> List<span class="token operator">&lt;</span>Region<span class="token operator">></span> regionList <span class="token operator">=</span> store<span class="token punctuation">.</span><span class="token function">getRegions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -551,17 +541,6 @@ Store：Reg">
         <span class="token comment" spellcheck="true">// 从路由表查</span>
         <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>regionRouteTable<span class="token punctuation">.</span><span class="token function">findRegionByKey</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
-<p>RegionRouteTable#findRegionByKey</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> Region <span class="token function">findRegionByKey</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// ...</span>
-        <span class="token keyword">final</span> StampedLock stampedLock <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>stampedLock<span class="token punctuation">;</span>
-        <span class="token keyword">final</span> <span class="token keyword">long</span> stamp <span class="token operator">=</span> stampedLock<span class="token punctuation">.</span><span class="token function">readLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token function">findRegionByKeyWithoutLock</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-            stampedLock<span class="token punctuation">.</span><span class="token function">unlockRead</span><span class="token punctuation">(</span>stamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
 <p>RegionRouteTable#findRegionByKeyWithoutLock</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> Region <span class="token function">findRegionByKeyWithoutLock</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 范围表是一个TreeMap，保存了Region的StartKey和RegionId的映射</span>
@@ -709,9 +688,7 @@ Store：Reg">
                 <span class="token comment" spellcheck="true">// ...</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>timeoutException <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> timeoutException<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token keyword">return</span> st<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
 <p>RouteTable#selectLeader</p>
@@ -774,50 +751,7 @@ Store：Reg">
         <span class="token function">internalGet</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> readOnlySafe<span class="token punctuation">,</span> future<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>failoverRetries<span class="token punctuation">,</span> null<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>onlyLeaderRead<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">return</span> future<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
-<p>DefaultRheaKVStore$GetBatchingHandler#onEvent</p>
-<p>Get基本和Put一致，不加注释了</p>
-<pre class=" language-java"><code class="language-java">        <span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onEvent</span><span class="token punctuation">(</span><span class="token keyword">final</span> KeyEvent event<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">long</span> sequence<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> endOfBatch<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>cachedBytes <span class="token operator">+=</span> event<span class="token punctuation">.</span>key<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
-            <span class="token keyword">final</span> <span class="token keyword">int</span> size <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>endOfBatch <span class="token operator">&amp;&amp;</span> size <span class="token operator">&lt;</span> batchingOpts<span class="token punctuation">.</span><span class="token function">getBatchSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>cachedBytes <span class="token operator">&lt;</span> batchingOpts<span class="token punctuation">.</span><span class="token function">getMaxReadBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">return</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>size <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token function">reset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                    <span class="token function">get</span><span class="token punctuation">(</span>event<span class="token punctuation">.</span>key<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>readOnlySafe<span class="token punctuation">,</span> event<span class="token punctuation">.</span>future<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">final</span> Throwable t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token function">exceptionally</span><span class="token punctuation">(</span>t<span class="token punctuation">,</span> event<span class="token punctuation">.</span>future<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                <span class="token keyword">final</span> List<span class="token operator">&lt;</span><span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span> keys <span class="token operator">=</span> Lists<span class="token punctuation">.</span><span class="token function">newArrayListWithCapacity</span><span class="token punctuation">(</span>size<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">final</span> CompletableFuture<span class="token operator">&lt;</span><span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> futures <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CompletableFuture</span><span class="token punctuation">[</span>size<span class="token punctuation">]</span><span class="token punctuation">;</span>
-                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> size<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">final</span> KeyEvent e <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    keys<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    futures<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> e<span class="token punctuation">.</span>future<span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-                <span class="token function">reset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                    <span class="token function">multiGet</span><span class="token punctuation">(</span>keys<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>readOnlySafe<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">whenComplete</span><span class="token punctuation">(</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> throwable<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
-                        <span class="token keyword">if</span> <span class="token punctuation">(</span>throwable <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> futures<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                                <span class="token keyword">final</span> ByteArray realKey <span class="token operator">=</span> ByteArray<span class="token punctuation">.</span><span class="token function">wrap</span><span class="token punctuation">(</span>keys<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                                futures<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">complete</span><span class="token punctuation">(</span>result<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>realKey<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            <span class="token punctuation">}</span>
-                            <span class="token keyword">return</span><span class="token punctuation">;</span>
-                        <span class="token punctuation">}</span>
-                        <span class="token function">exceptionally</span><span class="token punctuation">(</span>throwable<span class="token punctuation">,</span> futures<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">final</span> Throwable t<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token function">exceptionally</span><span class="token punctuation">(</span>t<span class="token punctuation">,</span> futures<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span></code></pre>
-<p>剩下基本和Put一样，不贴了。</p>
+<p>Get基本和Put一致。</p>
 <p>RaftRawKVStore#get</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> key<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> readOnlySafe<span class="token punctuation">,</span> <span class="token keyword">final</span> KVStoreClosure closure<span class="token punctuation">)</span> <span class="token punctuation">{</span>

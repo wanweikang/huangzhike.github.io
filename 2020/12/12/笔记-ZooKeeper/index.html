@@ -7,7 +7,7 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-ZooKeeper | Reunion...</title>
+    <title>[笔记]-ZooKeeper | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
@@ -27,7 +27,7 @@ znode分为4种：
     
     <meta property="og:title" content="[笔记]-ZooKeeper" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -252,6 +252,7 @@ znode分为4种：
 <p>提案者收到过半的接受响应后，向所有的表决者发送提案的提交请求。</p>
 <p>因为没有批准的表决者没有执行该提案，所以此时需要向未批准的表决者发送提案内容和提案编号，并让它无条件执行和提交，而对于已经批准过该提案的表决者，仅需要提案编号，让表决者执行提交就行了。</p>
 <p><del>上面有点类似Raft的CommitIndex，不过是在下一轮心跳同步的。</del></p>
+<p>ZooKeeper在更新内存中的znode前，集群的所有节点都会先将更新持久化（Follower可能落后于Leader）。</p>
 <p>如果提案者没有收到过半的表决者的批准，那么将递增提案编号，然后重新进入Prepare阶段。</p>
 <ol start="3">
 <li>Learn阶段</li>

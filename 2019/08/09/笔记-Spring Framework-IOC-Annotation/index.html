@@ -7,7 +7,7 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-Spring Framework-IoC-Annotation | Reunion...</title>
+    <title>[笔记]-Spring Framework-IoC-Annotation | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
@@ -25,7 +25,7 @@ AnnotationConfigApplicationContext
     
     <meta property="og:title" content="[笔记]-Spring Framework-IoC-Annotation" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -99,14 +99,6 @@ AnnotationConfigApplicationContext
 <span class="token operator">-</span><span class="token operator">></span> ApplicationContext
 <span class="token operator">-</span><span class="token operator">></span> BeanFactory</code></pre>
 <p>AnnotationConfigApplicationContext</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token function">AnnotationConfigApplicationContext</span><span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> annotatedClasses<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 初始化</span>
-        <span class="token keyword">this</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 注册注解配置Bean</span>
-        <span class="token function">register</span><span class="token punctuation">(</span>annotatedClasses<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">refresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AnnotationConfigApplicationContext</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token function">AnnotationConfigApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 从Annotation的配置读取BeanDefinition并注册</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span>reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AnnotatedBeanDefinitionReader</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -115,7 +107,7 @@ AnnotationConfigApplicationContext
     <span class="token punctuation">}</span></code></pre>
 <p>ClassPathBeanDefinitionScanner</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token function">ClassPathBeanDefinitionScanner</span><span class="token punctuation">(</span>BeanDefinitionRegistry registry<span class="token punctuation">,</span> <span class="token keyword">boolean</span> useDefaultFilters<span class="token punctuation">,</span> Environment environment<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> ResourceLoader resourceLoader<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Assert<span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> <span class="token string">"BeanDefinitionRegistry must not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span>registry <span class="token operator">=</span> registry<span class="token punctuation">;</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>useDefaultFilters<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 将@Component、JSR-250、JSR-330的AnnotationTypeFilter加入includeFilters列表</span>
@@ -127,8 +119,7 @@ AnnotationConfigApplicationContext
     <span class="token punctuation">}</span></code></pre>
 <p>AnnotatedBeanDefinitionReader</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token function">AnnotatedBeanDefinitionReader</span><span class="token punctuation">(</span>BeanDefinitionRegistry registry<span class="token punctuation">,</span> Environment environment<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Assert<span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> <span class="token string">"BeanDefinitionRegistry must not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Assert<span class="token punctuation">.</span><span class="token function">notNull</span><span class="token punctuation">(</span>environment<span class="token punctuation">,</span> <span class="token string">"Environment must not be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span>registry <span class="token operator">=</span> registry<span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// BeanFactory、Environment、ResourceLoader、ClassLoader</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span>conditionEvaluator <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConditionEvaluator</span><span class="token punctuation">(</span>registry<span class="token punctuation">,</span> environment<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -159,49 +150,13 @@ AnnotationConfigApplicationContext
         String beanName <span class="token operator">=</span> <span class="token punctuation">(</span>name <span class="token operator">!=</span> null <span class="token operator">?</span> name <span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>beanNameGenerator<span class="token punctuation">.</span><span class="token function">generateBeanName</span><span class="token punctuation">(</span>abd<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>registry<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 处理@Lazy，@Primary，@Primary，@Role，@Description注解</span>
         AnnotationConfigUtils<span class="token punctuation">.</span><span class="token function">processCommonDefinitionAnnotations</span><span class="token punctuation">(</span>abd<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>qualifiers <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">for</span> <span class="token punctuation">(</span>Class<span class="token operator">&lt;</span><span class="token operator">?</span> <span class="token keyword">extends</span> <span class="token class-name">Annotation</span><span class="token operator">></span> qualifier <span class="token operator">:</span> qualifiers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>Primary<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token operator">==</span> qualifier<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    abd<span class="token punctuation">.</span><span class="token function">setPrimary</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>Lazy<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token operator">==</span> qualifier<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    abd<span class="token punctuation">.</span><span class="token function">setLazyInit</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                    abd<span class="token punctuation">.</span><span class="token function">addQualifier</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">AutowireCandidateQualifier</span><span class="token punctuation">(</span>qualifier<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>customizers <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">for</span> <span class="token punctuation">(</span>BeanDefinitionCustomizer customizer <span class="token operator">:</span> customizers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                customizer<span class="token punctuation">.</span><span class="token function">customize</span><span class="token punctuation">(</span>abd<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token comment" spellcheck="true">// BeanDefinitionHolder</span>
         BeanDefinitionHolder definitionHolder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeanDefinitionHolder</span><span class="token punctuation">(</span>abd<span class="token punctuation">,</span> beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 如果对象需要代理，重新创建BeanDefinition加入代理信息，否则直接返回</span>
         definitionHolder <span class="token operator">=</span> AnnotationConfigUtils<span class="token punctuation">.</span><span class="token function">applyScopedProxyMode</span><span class="token punctuation">(</span>scopeMetadata<span class="token punctuation">,</span> definitionHolder<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 注册配置类的BeanDefinition到beanDefinitionMap</span>
         BeanDefinitionReaderUtils<span class="token punctuation">.</span><span class="token function">registerBeanDefinition</span><span class="token punctuation">(</span>definitionHolder<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AbstractApplicationContext#refresh（同Xml方式）</p>
-<p>ConfigurationClassPostProcessor#postProcessBeanDefinitionRegistry</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">postProcessBeanDefinitionRegistry</span><span class="token punctuation">(</span>BeanDefinitionRegistry registry<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 每个BeanDefinitionRegistry一个Id</span>
-        <span class="token keyword">int</span> registryId <span class="token operator">=</span> System<span class="token punctuation">.</span><span class="token function">identityHashCode</span><span class="token punctuation">(</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 已处理过该BeanDefinitionRegistry</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>registriesPostProcessed<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>registryId<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 抛异常</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"postProcessBeanDefinitionRegistry already called on this post-processor against "</span> <span class="token operator">+</span> registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 已处理过该BeanFactory</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>factoriesPostProcessed<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>registryId<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 抛异常</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"postProcessBeanFactory already called on this post-processor against "</span> <span class="token operator">+</span> registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 添加进已处理BeanDefinitionRegistry</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>registriesPostProcessed<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>registryId<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 处理该BeanDefinitionRegistry</span>
-        <span class="token function">processConfigBeanDefinitions</span><span class="token punctuation">(</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
 <p>ConfigurationClassPostProcessor#processConfigBeanDefinitions</p>
 <ul>
@@ -222,9 +177,6 @@ AnnotationConfigApplicationContext
             BeanDefinition beanDef <span class="token operator">=</span> registry<span class="token punctuation">.</span><span class="token function">getBeanDefinition</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token comment" spellcheck="true">// 已标记处理</span>
             <span class="token keyword">if</span> <span class="token punctuation">(</span>beanDef<span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span>ConfigurationClassUtils<span class="token punctuation">.</span>CONFIGURATION_CLASS_ATTRIBUTE<span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isDebugEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Bean definition has already been processed as a configuration class: "</span> <span class="token operator">+</span> beanDef<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
             <span class="token punctuation">}</span>
             <span class="token comment" spellcheck="true">// 没处理，并且是配置类（有@Configuration，@Component，@ComponentScan，@Import，@ImportResource之一），打上标记</span>
             <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>ConfigurationClassUtils<span class="token punctuation">.</span><span class="token function">checkConfigurationClassCandidate</span><span class="token punctuation">(</span>beanDef<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>metadataReaderFactory<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -232,31 +184,7 @@ AnnotationConfigApplicationContext
                 configCandidates<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BeanDefinitionHolder</span><span class="token punctuation">(</span>beanDef<span class="token punctuation">,</span> beanName<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 没有配置类，直接返回</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>configCandidates<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// Sort by previously determined @Order value, if applicable</span>
-        configCandidates<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>bd1<span class="token punctuation">,</span> bd2<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
-            <span class="token keyword">int</span> i1 <span class="token operator">=</span> ConfigurationClassUtils<span class="token punctuation">.</span><span class="token function">getOrder</span><span class="token punctuation">(</span>bd1<span class="token punctuation">.</span><span class="token function">getBeanDefinition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">int</span> i2 <span class="token operator">=</span> ConfigurationClassUtils<span class="token punctuation">.</span><span class="token function">getOrder</span><span class="token punctuation">(</span>bd2<span class="token punctuation">.</span><span class="token function">getBeanDefinition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span> Integer<span class="token punctuation">.</span><span class="token function">compare</span><span class="token punctuation">(</span>i1<span class="token punctuation">,</span> i2<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// Detect any custom bean name generation strategy supplied through the enclosing application context</span>
-        SingletonBeanRegistry sbr <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>registry <span class="token keyword">instanceof</span> <span class="token class-name">SingletonBeanRegistry</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            sbr <span class="token operator">=</span> <span class="token punctuation">(</span>SingletonBeanRegistry<span class="token punctuation">)</span> registry<span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>localBeanNameGeneratorSet<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                BeanNameGenerator generator <span class="token operator">=</span> <span class="token punctuation">(</span>BeanNameGenerator<span class="token punctuation">)</span> sbr<span class="token punctuation">.</span><span class="token function">getSingleton</span><span class="token punctuation">(</span>AnnotationConfigUtils<span class="token punctuation">.</span>CONFIGURATION_BEAN_NAME_GENERATOR<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>generator <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">this</span><span class="token punctuation">.</span>componentScanBeanNameGenerator <span class="token operator">=</span> generator<span class="token punctuation">;</span>
-                    <span class="token keyword">this</span><span class="token punctuation">.</span>importBeanNameGenerator <span class="token operator">=</span> generator<span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>environment <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>environment <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StandardEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token comment" spellcheck="true">// 解析工具</span>
         ConfigurationClassParser parser <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConfigurationClassParser</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>metadataReaderFactory<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>problemReporter<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>environment<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>resourceLoader<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>componentScanBeanNameGenerator<span class="token punctuation">,</span> registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
         Set<span class="token operator">&lt;</span>BeanDefinitionHolder<span class="token operator">></span> candidates <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedHashSet</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span>configCandidates<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -308,11 +236,7 @@ AnnotationConfigApplicationContext
         <span class="token keyword">if</span> <span class="token punctuation">(</span>sbr <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>sbr<span class="token punctuation">.</span><span class="token function">containsSingleton</span><span class="token punctuation">(</span>IMPORT_REGISTRY_BEAN_NAME<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             sbr<span class="token punctuation">.</span><span class="token function">registerSingleton</span><span class="token punctuation">(</span>IMPORT_REGISTRY_BEAN_NAME<span class="token punctuation">,</span> parser<span class="token punctuation">.</span><span class="token function">getImportRegistry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>metadataReaderFactory <span class="token keyword">instanceof</span> <span class="token class-name">CachingMetadataReaderFactory</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// Clear cache in externally provided MetadataReaderFactory; this is a no-op</span>
-            <span class="token comment" spellcheck="true">// for a shared cache since it'll be cleared by the ApplicationContext.</span>
-            <span class="token punctuation">(</span><span class="token punctuation">(</span>CachingMetadataReaderFactory<span class="token punctuation">)</span> <span class="token keyword">this</span><span class="token punctuation">.</span>metadataReaderFactory<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">clearCache</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
     <span class="token punctuation">}</span></code></pre>
 <p>ConfigurationClassParser#doProcessConfigurationClass</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Nullable</span>
@@ -324,11 +248,7 @@ AnnotationConfigApplicationContext
         <span class="token punctuation">}</span>
         <span class="token comment" spellcheck="true">// 处理@PropertySource，@PropertySource("classpath:xxx.properties")，导入PropertySource到Environment</span>
         <span class="token keyword">for</span> <span class="token punctuation">(</span>AnnotationAttributes propertySource <span class="token operator">:</span> AnnotationConfigUtils<span class="token punctuation">.</span><span class="token function">attributesForRepeatable</span><span class="token punctuation">(</span>sourceClass<span class="token punctuation">.</span><span class="token function">getMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> PropertySources<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> org<span class="token punctuation">.</span>springframework<span class="token punctuation">.</span>context<span class="token punctuation">.</span>annotation<span class="token punctuation">.</span>PropertySource<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>environment <span class="token keyword">instanceof</span> <span class="token class-name">ConfigurableEnvironment</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token function">processPropertySource</span><span class="token punctuation">(</span>propertySource<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Ignoring @PropertySource annotation on ["</span> <span class="token operator">+</span> sourceClass<span class="token punctuation">.</span><span class="token function">getMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getClassName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"]. Reason: Environment must implement ConfigurableEnvironment"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
         <span class="token comment" spellcheck="true">// 处理@ComponentScan</span>
         Set<span class="token operator">&lt;</span>AnnotationAttributes<span class="token operator">></span> componentScans <span class="token operator">=</span> AnnotationConfigUtils<span class="token punctuation">.</span><span class="token function">attributesForRepeatable</span><span class="token punctuation">(</span>sourceClass<span class="token punctuation">.</span><span class="token function">getMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> ComponentScans<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> ComponentScan<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -340,9 +260,7 @@ AnnotationConfigApplicationContext
                 <span class="token comment" spellcheck="true">// 遍历扫描到的集合，看有没有配置类需要处理</span>
                 <span class="token keyword">for</span> <span class="token punctuation">(</span>BeanDefinitionHolder holder <span class="token operator">:</span> scannedBeanDefinitions<span class="token punctuation">)</span> <span class="token punctuation">{</span>
                     BeanDefinition bdCand <span class="token operator">=</span> holder<span class="token punctuation">.</span><span class="token function">getBeanDefinition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getOriginatingBeanDefinition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>bdCand <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        bdCand <span class="token operator">=</span> holder<span class="token punctuation">.</span><span class="token function">getBeanDefinition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
+                    <span class="token comment" spellcheck="true">// ...</span>
                     <span class="token comment" spellcheck="true">// 是配置类</span>
                     <span class="token keyword">if</span> <span class="token punctuation">(</span>ConfigurationClassUtils<span class="token punctuation">.</span><span class="token function">checkConfigurationClassCandidate</span><span class="token punctuation">(</span>bdCand<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>metadataReaderFactory<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
                         <span class="token comment" spellcheck="true">// 递归解析</span>
@@ -390,42 +308,45 @@ AnnotationConfigApplicationContext
         <span class="token keyword">return</span> null<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
 <p>@Import的处理比较复杂，四种用法 ：</p>
-<ul>
-<li><p>导入普通Bean</p>
+<ol>
+<li><p>导入普通Bean。</p>
 </li>
-<li><p>导入配置类（如@Configuration注解的类）</p>
+<li><p>导入配置类（如@Configuration注解的类）。</p>
 </li>
-<li><p>导入ImportSelector的实现类（ImportSelector主要是用来导入配置类的，别的也可以，都会被ConfigurationClassParser#processImports递归处理）</p>
+<li><p>导入ImportSelector的实现类（ImportSelector主要是用来导入配置类的，别的也可以，都会被ConfigurationClassParser#processImports递归处理）。</p>
 </li>
-</ul>
+</ol>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 配置类</span>
 <span class="token annotation punctuation">@Configuration</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token annotation punctuation">@EnableXxxService</span><span class="token punctuation">(</span>name<span class="token operator">=</span><span class="token string">"xxx"</span><span class="token punctuation">)</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Config</span> <span class="token punctuation">{</span>
- <span class="token punctuation">}</span>
- <span class="token comment" spellcheck="true">// 注解</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 注解</span>
 <span class="token annotation punctuation">@Retention</span><span class="token punctuation">(</span>RetentionPolicy<span class="token punctuation">.</span>RUNTIME<span class="token punctuation">)</span>
 <span class="token annotation punctuation">@Documented</span>
 <span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span>ElementType<span class="token punctuation">.</span>TYPE<span class="token punctuation">)</span>
 <span class="token annotation punctuation">@Import</span><span class="token punctuation">(</span>XxxServiceImportSelector<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
 <span class="token keyword">public</span> @<span class="token keyword">interface</span> <span class="token class-name">EnableXxxService</span> <span class="token punctuation">{</span>
      String <span class="token function">name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
- <span class="token punctuation">}</span>
- <span class="token comment" spellcheck="true">// 实现类</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 实现类</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">XxxServiceImportSelector</span> <span class="token keyword">implements</span> <span class="token class-name">ImportSelector</span> <span class="token punctuation">{</span>
     <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> String<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">selectImports</span><span class="token punctuation">(</span>AnnotationMetadata importingClassMetadata<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">{</span>XxxServiceImpl<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-<ul>
-<li>导入ImportBeanDefinitionRegistrar的实现类（ImportBeanDefinitionRegistrar主要是注册BeanDefinition的）</li>
-</ul>
+<ol start="4">
+<li>导入ImportBeanDefinitionRegistrar的实现类（ImportBeanDefinitionRegistrar主要是注册BeanDefinition的）。</li>
+</ol>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 配置类</span>
 <span class="token annotation punctuation">@Configuration</span><span class="token punctuation">(</span>value<span class="token operator">=</span><span class="token string">"xxx"</span><span class="token punctuation">)</span>
 <span class="token annotation punctuation">@Import</span><span class="token punctuation">(</span>value<span class="token operator">=</span><span class="token punctuation">{</span>XxxBeanDefinitionRegistrar<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Config</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span>
+
 <span class="token comment" spellcheck="true">// 实现类</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">XxxBeanDefinitionRegistrar</span> <span class="token keyword">implements</span> <span class="token class-name">ImportBeanDefinitionRegistrar</span> <span class="token punctuation">{</span>
     <span class="token annotation punctuation">@Override</span>
@@ -449,18 +370,8 @@ AnnotationConfigApplicationContext
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
 <p>ConfigurationClassParser#processImports</p>
-<ul>
-<li><p>如果被import的是ImportSelector.class接口实现，初始化这个类，然后调用它的selectImports方法获得真正要导入的实现类，递归处理</p>
-</li>
-<li><p>如果被import的是ImportBeanDefinitionRegistrar.class接口实现，初始化，添加到importBeanDefinitionRegistrars映射，解析完后ConfigurationClassBeanDefinitionReader#loadBeanDefinitionsForConfigurationClass处理</p>
-</li>
-<li><p>否则将被import的类作为普通类或者配置类处理</p>
-</li>
-</ul>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">processImports</span><span class="token punctuation">(</span>ConfigurationClass configClass<span class="token punctuation">,</span> SourceClass currentSourceClass<span class="token punctuation">,</span> Collection<span class="token operator">&lt;</span>SourceClass<span class="token operator">></span> importCandidates<span class="token punctuation">,</span> <span class="token keyword">boolean</span> checkForCircularImports<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>importCandidates<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token comment" spellcheck="true">// 处理之前被@Import导入的配置类</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>checkForCircularImports <span class="token operator">&amp;&amp;</span> <span class="token function">isChainedImportOnStack</span><span class="token punctuation">(</span>configClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token keyword">this</span><span class="token punctuation">.</span>problemReporter<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">CircularImportProblem</span><span class="token punctuation">(</span>configClass<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>importStack<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -484,7 +395,7 @@ AnnotationConfigApplicationContext
                         ParserStrategyUtils<span class="token punctuation">.</span><span class="token function">invokeAwareMethods</span><span class="token punctuation">(</span>selector<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>environment<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>resourceLoader<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
                         <span class="token comment" spellcheck="true">// 延迟实现</span>
                         <span class="token keyword">if</span> <span class="token punctuation">(</span>selector <span class="token keyword">instanceof</span> <span class="token class-name">DeferredImportSelector</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                            <span class="token keyword">this</span><span class="token punctuation">.</span>deferredImportSelectorHandler<span class="token punctuation">.</span><span class="token function">handle</span><span class="token punctuation">(</span>configClass<span class="token punctuation">,</span> <span class="token punctuation">(</span>DeferredImportSelector<span class="token punctuation">)</span> selector<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token comment" spellcheck="true">// ...</span>
                         <span class="token punctuation">}</span>
                         <span class="token comment" spellcheck="true">// 普通实现</span>
                         <span class="token keyword">else</span> <span class="token punctuation">{</span>
@@ -517,9 +428,9 @@ AnnotationConfigApplicationContext
                     <span class="token punctuation">}</span>
                 <span class="token punctuation">}</span>
             <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">BeanDefinitionStoreException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// ...</span>
             <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">BeanDefinitionStoreException</span><span class="token punctuation">(</span><span class="token string">"Failed to process import candidates for configuration class ["</span> <span class="token operator">+</span> configClass<span class="token punctuation">.</span><span class="token function">getMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getClassName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"]"</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// ...</span>
             <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
                 <span class="token comment" spellcheck="true">// 出栈</span>
                 <span class="token keyword">this</span><span class="token punctuation">.</span>importStack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -528,21 +439,7 @@ AnnotationConfigApplicationContext
     <span class="token punctuation">}</span></code></pre>
 <p>ConfigurationClassBeanDefinitionReader#loadBeanDefinitionsForConfigurationClass</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">loadBeanDefinitionsForConfigurationClass</span><span class="token punctuation">(</span>ConfigurationClass configClass<span class="token punctuation">,</span> TrackedConditionEvaluator trackedConditionEvaluator<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 跳过</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>trackedConditionEvaluator<span class="token punctuation">.</span><span class="token function">shouldSkip</span><span class="token punctuation">(</span>configClass<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            String beanName <span class="token operator">=</span> configClass<span class="token punctuation">.</span><span class="token function">getBeanName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">hasLength</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>registry<span class="token punctuation">.</span><span class="token function">containsBeanDefinition</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 移除</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>registry<span class="token punctuation">.</span><span class="token function">removeBeanDefinition</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 移除之前@Import时加入的</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>importRegistry<span class="token punctuation">.</span><span class="token function">removeImportingClass</span><span class="token punctuation">(</span>configClass<span class="token punctuation">.</span><span class="token function">getMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getClassName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 导入被导入的类的类？</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>configClass<span class="token punctuation">.</span><span class="token function">isImported</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">registerBeanDefinitionForImportedConfigurationClass</span><span class="token punctuation">(</span>configClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token comment" spellcheck="true">// 遍历</span>
         <span class="token keyword">for</span> <span class="token punctuation">(</span>BeanMethod beanMethod <span class="token operator">:</span> configClass<span class="token punctuation">.</span><span class="token function">getBeanMethods</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 把@Bean注解的Bean注册BeanDefinition到容器</span>
@@ -555,24 +452,15 @@ AnnotationConfigApplicationContext
         <span class="token function">loadBeanDefinitionsFromRegistrars</span><span class="token punctuation">(</span>configClass<span class="token punctuation">.</span><span class="token function">getImportBeanDefinitionRegistrars</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
 <p>ConfigurationClassPostProcessor#postProcessBeanFactory</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * 处理BeanFactory
-     */</span>
-    <span class="token annotation punctuation">@Override</span>
+<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">postProcessBeanFactory</span><span class="token punctuation">(</span>ConfigurableListableBeanFactory beanFactory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 一个BeanFactory一个Id</span>
         <span class="token keyword">int</span> factoryId <span class="token operator">=</span> System<span class="token punctuation">.</span><span class="token function">identityHashCode</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 已处理过该BeanFactory</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>factoriesPostProcessed<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>factoryId<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 抛异常</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"postProcessBeanFactory already called on this post-processor against "</span> <span class="token operator">+</span> beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token comment" spellcheck="true">// 添加进已处理BeanFactory</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span>factoriesPostProcessed<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>factoryId<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 如果没处理过该BeanDefinitionRegistry</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>registriesPostProcessed<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>factoryId<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// BeanDefinitionRegistryPostProcessor hook apparently not supported...</span>
-            <span class="token comment" spellcheck="true">// Simply call processConfigurationClasses lazily at this point then.</span>
             <span class="token function">processConfigBeanDefinitions</span><span class="token punctuation">(</span><span class="token punctuation">(</span>BeanDefinitionRegistry<span class="token punctuation">)</span> beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
         <span class="token comment" spellcheck="true">// 类增强，代理</span>
@@ -589,24 +477,7 @@ AnnotationConfigApplicationContext
         <span class="token comment" spellcheck="true">// 遍历</span>
         <span class="token keyword">for</span> <span class="token punctuation">(</span>String beanName <span class="token operator">:</span> beanFactory<span class="token punctuation">.</span><span class="token function">getBeanDefinitionNames</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             BeanDefinition beanDef <span class="token operator">=</span> beanFactory<span class="token punctuation">.</span><span class="token function">getBeanDefinition</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            Object configClassAttr <span class="token operator">=</span> beanDef<span class="token punctuation">.</span><span class="token function">getAttribute</span><span class="token punctuation">(</span>ConfigurationClassUtils<span class="token punctuation">.</span>CONFIGURATION_CLASS_ATTRIBUTE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            MethodMetadata methodMetadata <span class="token operator">=</span> null<span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>beanDef <span class="token keyword">instanceof</span> <span class="token class-name">AnnotatedBeanDefinition</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                methodMetadata <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>AnnotatedBeanDefinition<span class="token punctuation">)</span> beanDef<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getFactoryMethodMetadata</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>configClassAttr <span class="token operator">!=</span> null <span class="token operator">||</span> methodMetadata <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> beanDef <span class="token keyword">instanceof</span> <span class="token class-name">AbstractBeanDefinition</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// Configuration class (full or lite) or a configuration-derived @Bean method</span>
-                <span class="token comment" spellcheck="true">// -> resolve bean class at this point...</span>
-                AbstractBeanDefinition abd <span class="token operator">=</span> <span class="token punctuation">(</span>AbstractBeanDefinition<span class="token punctuation">)</span> beanDef<span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>abd<span class="token punctuation">.</span><span class="token function">hasBeanClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                        abd<span class="token punctuation">.</span><span class="token function">resolveBeanClass</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>beanClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Cannot load configuration class: "</span> <span class="token operator">+</span> beanDef<span class="token punctuation">.</span><span class="token function">getBeanClassName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-
+            <span class="token comment" spellcheck="true">// ...</span>
             <span class="token comment" spellcheck="true">/*
              * CONFIGURATION_CLASS_FULL的是被@Configuration注解的类（默认proxyBeanMethods==true）
              * 调用被@Component注解的类对象里边被@Bean注解的方法，返回的是原始的对象，每次都是新的
@@ -614,18 +485,11 @@ AnnotationConfigApplicationContext
              * 参考这篇文章：https://my.oschina.net/guangshan/blog/1807721
              */</span>
             <span class="token keyword">if</span> <span class="token punctuation">(</span>ConfigurationClassUtils<span class="token punctuation">.</span>CONFIGURATION_CLASS_FULL<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>configClassAttr<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>beanDef <span class="token keyword">instanceof</span> <span class="token class-name">AbstractBeanDefinition</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">BeanDefinitionStoreException</span><span class="token punctuation">(</span><span class="token string">"Cannot enhance @Configuration bean definition '"</span> <span class="token operator">+</span> beanName <span class="token operator">+</span> <span class="token string">"' since it is not stored in an AbstractBeanDefinition subclass"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isInfoEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> beanFactory<span class="token punctuation">.</span><span class="token function">containsSingleton</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Cannot enhance @Configuration bean definition '"</span> <span class="token operator">+</span> beanName <span class="token operator">+</span> <span class="token string">"' since its singleton instance has been created too early. The typical cause "</span> <span class="token operator">+</span> <span class="token string">"is a non-static @Bean method with a BeanDefinitionRegistryPostProcessor "</span> <span class="token operator">+</span> <span class="token string">"return type: Consider declaring such methods as 'static'."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">// ...</span>
                 configBeanDefs<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>beanName<span class="token punctuation">,</span> <span class="token punctuation">(</span>AbstractBeanDefinition<span class="token punctuation">)</span> beanDef<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>configBeanDefs<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// nothing to enhance -> return immediately</span>
-            <span class="token keyword">return</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         ConfigurationClassEnhancer enhancer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConfigurationClassEnhancer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">for</span> <span class="token punctuation">(</span>Map<span class="token punctuation">.</span>Entry<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> AbstractBeanDefinition<span class="token operator">></span> entry <span class="token operator">:</span> configBeanDefs<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             AbstractBeanDefinition beanDef <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -636,15 +500,20 @@ AnnotationConfigApplicationContext
             <span class="token comment" spellcheck="true">// 类增强</span>
             Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> enhancedClass <span class="token operator">=</span> enhancer<span class="token punctuation">.</span><span class="token function">enhance</span><span class="token punctuation">(</span>configClass<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>beanClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token keyword">if</span> <span class="token punctuation">(</span>configClass <span class="token operator">!=</span> enhancedClass<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isTraceEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    logger<span class="token punctuation">.</span><span class="token function">trace</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"Replacing bean definition '%s' existing class '%s' with "</span> <span class="token operator">+</span> <span class="token string">"enhanced class '%s'"</span><span class="token punctuation">,</span> entry<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> configClass<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> enhancedClass<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
                 <span class="token comment" spellcheck="true">// 替换class为CGLIB代理的class</span>
                 beanDef<span class="token punctuation">.</span><span class="token function">setBeanClass</span><span class="token punctuation">(</span>enhancedClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
 <p>其它基本同Xml方式，主要是加载BeanDefinition的时间和方式不同。</p>
+<ol>
+<li><p>注册@Configuration配置类的BeanDefinition到BeanFactory。</p>
+</li>
+<li><p>通过BeanFactoryPostProcessor遍历处理这些BeanDefinition，把一些类（比如@Bean注解的方法）转为BeanDefinition注册到BeanFactory。</p>
+</li>
+<li><p>然后就是把BeanDefinition转为Bean实例，和Xml方式基本一致。</p>
+</li>
+</ol>
 
 				</div>
 				<!-- about -->

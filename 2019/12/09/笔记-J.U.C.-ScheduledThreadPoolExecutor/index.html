@@ -7,7 +7,7 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-J.U.C.-ScheduledThreadPoolExecutor | Reunion...</title>
+    <title>[笔记]-J.U.C.-ScheduledThreadPoolExecutor | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
@@ -16,14 +16,14 @@
         content="ScheduledThreadPoolExecutor
 public class ScheduledThreadPoolExecutor extends ThreadPoolExecutor implements ScheduledExecutorService {
 
-    private sta">
+    public Sche">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta property="og:title" content="[笔记]-J.U.C.-ScheduledThreadPoolExecutor" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -91,12 +91,6 @@ public class ScheduledThreadPoolExecutor extends ThreadPoolExecutor implements S
 				<div class="article-content">
 				<p>ScheduledThreadPoolExecutor</p>
 <pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ScheduledThreadPoolExecutor</span> <span class="token keyword">extends</span> <span class="token class-name">ThreadPoolExecutor</span> <span class="token keyword">implements</span> <span class="token class-name">ScheduledExecutorService</span> <span class="token punctuation">{</span>
-
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> AtomicLong sequencer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicLong</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token keyword">public</span> <span class="token function">ScheduledThreadPoolExecutor</span><span class="token punctuation">(</span><span class="token keyword">int</span> corePoolSize<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">super</span><span class="token punctuation">(</span>corePoolSize<span class="token punctuation">,</span> Integer<span class="token punctuation">.</span>MAX_VALUE<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> NANOSECONDS<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DelayedWorkQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
 
     <span class="token keyword">public</span> <span class="token function">ScheduledThreadPoolExecutor</span><span class="token punctuation">(</span><span class="token keyword">int</span> corePoolSize<span class="token punctuation">,</span> ThreadFactory threadFactory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// ScheduledThreadPoolExecutor没有最大线程数量（Integer.MAX_VALUE）</span>
@@ -285,9 +279,9 @@ public class ScheduledThreadPoolExecutor extends ThreadPoolExecutor implements S
 <p>这里有一个Leader的概念。</p>
 <p>调度线程池可能有多个worker线程从队列take任务执行，而任务通常都是未到期的，所以这些worker线程都需要阻塞。</p>
 <p>第一个等待任务的线程为Leader，awaitNanos释放锁，等待队列头任务到期被唤醒，重新获得锁，然后唤醒其它等待的线程，最后释放锁。</p>
-<p>其余线程都是Follower，await无限期等待，直至被Leader唤醒，然后所有线程重新抢锁，继续这个循环。</p>
-<p>不过这里一个任务只能被一个线程执行，没必要全部唤醒所有等待的线程，执行无意义的抢任务操作（然后没抢到的线程还要重新阻塞）。</p>
-<p>不过也有道理，如果不这样，其它等待的线程就不知道要被阻塞到什么时候了，也没人唤醒它们。</p>
+<p>其余线程都是Follower，await无限期等待。</p>
+<p>Leader恢复后在下一个循环获取到任务，然后signal唤醒一个Follower线程，成为新的Leader，awaitNanos。</p>
+<p>这里一个任务只能被一个线程执行，没必要全部唤醒所有等待的线程，执行无意义的竞争。</p>
 <p>ScheduledThreadPoolExecutor$ScheduledFutureTask#run</p>
 <pre class=" language-java"><code class="language-java">        <span class="token annotation punctuation">@Override</span>
         <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>

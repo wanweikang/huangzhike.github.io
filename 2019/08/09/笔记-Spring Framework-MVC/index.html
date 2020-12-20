@@ -7,7 +7,7 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-Spring Framework-MVC | Reunion...</title>
+    <title>[笔记]-Spring Framework-MVC | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
@@ -24,7 +24,7 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
     
     <meta property="og:title" content="[笔记]-Spring Framework-MVC" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -175,15 +175,7 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
 <span class="token annotation punctuation">@AutoConfigureAfter</span><span class="token punctuation">(</span>ServletWebServerFactoryAutoConfiguration<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// Tomcat之后</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DispatcherServletAutoConfiguration</span> <span class="token punctuation">{</span>
 
-    <span class="token comment" spellcheck="true">/*
-     * The bean name for a DispatcherServlet that will be mapped to the root URL "/"
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> String DEFAULT_DISPATCHER_SERVLET_BEAN_NAME <span class="token operator">=</span> <span class="token string">"dispatcherServlet"</span><span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">/*
-     * The bean name for a ServletRegistrationBean for the DispatcherServlet "/"
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> String DEFAULT_DISPATCHER_SERVLET_REGISTRATION_BEAN_NAME <span class="token operator">=</span> <span class="token string">"dispatcherServletRegistration"</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// ...</span>
 
     <span class="token annotation punctuation">@Configuration</span><span class="token punctuation">(</span>proxyBeanMethods <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// 配置类</span>
     <span class="token annotation punctuation">@Conditional</span><span class="token punctuation">(</span>DefaultDispatcherServletCondition<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
@@ -203,23 +195,8 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
         <span class="token keyword">public</span> DispatcherServlet <span class="token function">dispatcherServlet</span><span class="token punctuation">(</span>HttpProperties httpProperties<span class="token punctuation">,</span> WebMvcProperties webMvcProperties<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 初始化DispatcherServlet</span>
             DispatcherServlet dispatcherServlet <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DispatcherServlet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 分发Option请求</span>
-            dispatcherServlet<span class="token punctuation">.</span><span class="token function">setDispatchOptionsRequest</span><span class="token punctuation">(</span>webMvcProperties<span class="token punctuation">.</span><span class="token function">isDispatchOptionsRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            dispatcherServlet<span class="token punctuation">.</span><span class="token function">setDispatchTraceRequest</span><span class="token punctuation">(</span>webMvcProperties<span class="token punctuation">.</span><span class="token function">isDispatchTraceRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            dispatcherServlet<span class="token punctuation">.</span><span class="token function">setThrowExceptionIfNoHandlerFound</span><span class="token punctuation">(</span>webMvcProperties<span class="token punctuation">.</span><span class="token function">isThrowExceptionIfNoHandlerFound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            dispatcherServlet<span class="token punctuation">.</span><span class="token function">setEnableLoggingRequestDetails</span><span class="token punctuation">(</span>httpProperties<span class="token punctuation">.</span><span class="token function">isLogRequestDetails</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
             <span class="token keyword">return</span> dispatcherServlet<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token comment" spellcheck="true">/**
-         * 文件上传
-         */</span>
-        <span class="token annotation punctuation">@Bean</span>
-        <span class="token annotation punctuation">@ConditionalOnBean</span><span class="token punctuation">(</span>MultipartResolver<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
-        <span class="token annotation punctuation">@ConditionalOnMissingBean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> DispatcherServlet<span class="token punctuation">.</span>MULTIPART_RESOLVER_BEAN_NAME<span class="token punctuation">)</span>
-        <span class="token keyword">public</span> MultipartResolver <span class="token function">multipartResolver</span><span class="token punctuation">(</span>MultipartResolver resolver<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// Detect if the user has created a MultipartResolver but named it incorrectly</span>
-            <span class="token keyword">return</span> resolver<span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
 
     <span class="token punctuation">}</span>
@@ -276,7 +253,7 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
             <span class="token function">createWebServer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ApplicationContextException</span><span class="token punctuation">(</span><span class="token string">"Unable to start web server"</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
 <p>ServletWebServerApplicationContext#createWebServer</p>
@@ -303,50 +280,18 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
              */</span>
             <span class="token keyword">this</span><span class="token punctuation">.</span>webServer <span class="token operator">=</span> factory<span class="token punctuation">.</span><span class="token function">getWebServer</span><span class="token punctuation">(</span><span class="token function">getSelfInitializer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>servletContext <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                <span class="token function">getSelfInitializer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">onStartup</span><span class="token punctuation">(</span>servletContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ServletException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ApplicationContextException</span><span class="token punctuation">(</span><span class="token string">"Cannot initialize servlet context"</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
-        <span class="token function">initPropertySources</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>ServletWebServerApplicationContext#finishRefresh</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">finishRefresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">finishRefresh</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        WebServer webServer <span class="token operator">=</span> <span class="token function">startWebServer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>webServer <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">publishEvent</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ServletWebServerInitializedEvent</span><span class="token punctuation">(</span>webServer<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>ServletWebServerApplicationContext#startWebServer</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> WebServer <span class="token function">startWebServer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        WebServer webServer <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>webServer<span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>webServer <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            webServer<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> webServer<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ...</span>
     <span class="token punctuation">}</span></code></pre>
 <hr>
-<p>RegistrationBean#onStartup</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">onStartup</span><span class="token punctuation">(</span>ServletContext servletContext<span class="token punctuation">)</span> <span class="token keyword">throws</span> ServletException <span class="token punctuation">{</span>
-        String description <span class="token operator">=</span> <span class="token function">getDescription</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">capitalize</span><span class="token punctuation">(</span>description<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" was not registered (disabled)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token function">register</span><span class="token punctuation">(</span>description<span class="token punctuation">,</span> servletContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
 <p>DynamicRegistrationBean#register</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">protected</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">register</span><span class="token punctuation">(</span>String description<span class="token punctuation">,</span> ServletContext servletContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 将DispatcherServlet加入ServletContext（DispatcherServlet继承了HttpServlet）</span>
         D registration <span class="token operator">=</span> <span class="token function">addRegistration</span><span class="token punctuation">(</span>description<span class="token punctuation">,</span> servletContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>registration <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>StringUtils<span class="token punctuation">.</span><span class="token function">capitalize</span><span class="token punctuation">(</span>description<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" was not registered "</span> <span class="token operator">+</span> <span class="token string">"(possibly already registered?)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
         <span class="token function">configure</span><span class="token punctuation">(</span>registration<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
@@ -355,10 +300,7 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
     <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">configure</span><span class="token punctuation">(</span>ServletRegistration<span class="token punctuation">.</span>Dynamic registration<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span>registration<span class="token punctuation">)</span><span class="token punctuation">;</span>
         String<span class="token punctuation">[</span><span class="token punctuation">]</span> urlMapping <span class="token operator">=</span> StringUtils<span class="token punctuation">.</span><span class="token function">toStringArray</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>urlMappings<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>urlMapping<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>alwaysMapUrl<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 默认"/*"</span>
-            urlMapping <span class="token operator">=</span> DEFAULT_MAPPINGS<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ObjectUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>urlMapping<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             registration<span class="token punctuation">.</span><span class="token function">addMapping</span><span class="token punctuation">(</span>urlMapping<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
@@ -384,40 +326,6 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
 <span class="token operator">-</span><span class="token operator">></span> FrameworkServlet
 <span class="token operator">-</span><span class="token operator">></span> HttpServletBean
 <span class="token operator">-</span><span class="token operator">></span> HttpServlet</code></pre>
-<p>HttpServletBean#init</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> ServletException <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// Set bean properties from init parameters.</span>
-        PropertyValues pvs <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServletConfigPropertyValues</span><span class="token punctuation">(</span><span class="token function">getServletConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>requiredProperties<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>pvs<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                BeanWrapper bw <span class="token operator">=</span> PropertyAccessorFactory<span class="token punctuation">.</span><span class="token function">forBeanPropertyAccess</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                ResourceLoader resourceLoader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServletContextResourceLoader</span><span class="token punctuation">(</span><span class="token function">getServletContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                bw<span class="token punctuation">.</span><span class="token function">registerCustomEditor</span><span class="token punctuation">(</span>Resource<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">ResourceEditor</span><span class="token punctuation">(</span>resourceLoader<span class="token punctuation">,</span> <span class="token function">getEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token function">initBeanWrapper</span><span class="token punctuation">(</span>bw<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                bw<span class="token punctuation">.</span><span class="token function">setPropertyValues</span><span class="token punctuation">(</span>pvs<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">BeansException</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>logger<span class="token punctuation">.</span><span class="token function">isErrorEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Failed to set bean properties on servlet '"</span> <span class="token operator">+</span> <span class="token function">getServletName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"'"</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-                <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// Let subclasses do whatever initialization they like.</span>
-        <span class="token function">initServletBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>FrameworkServlet#initServletBean</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">initServletBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> ServletException <span class="token punctuation">{</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">//</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>webApplicationContext <span class="token operator">=</span> <span class="token function">initWebApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">initFrameworkServlet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ServletException</span> <span class="token operator">|</span> RuntimeException ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Context initialization failed"</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
 <p>FrameworkServlet#initWebApplicationContext</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> WebApplicationContext <span class="token function">initWebApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 获得之前设为ServletContext属性的WebApplicationContext</span>
@@ -469,11 +377,6 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
         <span class="token punctuation">}</span>
         <span class="token keyword">return</span> wac<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
-<p>DispatcherServlet#onRefresh</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onRefresh</span><span class="token punctuation">(</span>ApplicationContext context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">initStrategies</span><span class="token punctuation">(</span>context<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
 <p>DispatcherServlet#initStrategies</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">initStrategies</span><span class="token punctuation">(</span>ApplicationContext context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token function">initMultipartResolver</span><span class="token punctuation">(</span>context<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 从BeanFactory实例化MultipartResolver 文件上传</span>
@@ -495,23 +398,6 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
 <span class="token operator">-</span><span class="token operator">></span> RequestMappingInfoHandlerMapping
 <span class="token operator">-</span><span class="token operator">></span> AbstractHandlerMethodMapping
 <span class="token operator">-</span><span class="token operator">></span> InitializingBean</code></pre>
-<p>RequestMappingHandlerMapping#afterPropertiesSet</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">afterPropertiesSet</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>config <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RequestMappingInfo<span class="token punctuation">.</span>BuilderConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span><span class="token function">setUrlPathHelper</span><span class="token punctuation">(</span><span class="token function">getUrlPathHelper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span><span class="token function">setPathMatcher</span><span class="token punctuation">(</span><span class="token function">getPathMatcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span><span class="token function">setSuffixPatternMatch</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>useSuffixPatternMatch<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span><span class="token function">setTrailingSlashMatch</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>useTrailingSlashMatch<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span><span class="token function">setRegisteredSuffixPatternMatch</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>useRegisteredSuffixPatternMatch<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>config<span class="token punctuation">.</span><span class="token function">setContentNegotiationManager</span><span class="token punctuation">(</span><span class="token function">getContentNegotiationManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">afterPropertiesSet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>AbstractHandlerMethodMapping#afterPropertiesSet</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">afterPropertiesSet</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">initHandlerMethods</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span></code></pre>
 <p>AbstractHandlerMethodMapping#initHandlerMethods</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">initHandlerMethods</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 遍历当前容器所有Bean名称</span>
@@ -544,7 +430,7 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
 <span class="token operator">-</span><span class="token operator">></span> DispatcherServlet#doDispatch</code></pre>
 <p>FrameworkServlet#processRequest</p>
 <pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * Servlet是单例多线程的，之前一直以为是一个请求创建一个新线程，现在看来Tomcat应该有复用的线程池？
+     * Servlet是单例多线程的，Tomcat有线程池
      */</span>
     <span class="token keyword">protected</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">processRequest</span><span class="token punctuation">(</span>HttpServletRequest request<span class="token punctuation">,</span> HttpServletResponse response<span class="token punctuation">)</span> <span class="token keyword">throws</span> ServletException<span class="token punctuation">,</span> IOException <span class="token punctuation">{</span>
         <span class="token keyword">long</span> startTime <span class="token operator">=</span> System<span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -569,8 +455,7 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
             failureCause <span class="token operator">=</span> ex<span class="token punctuation">;</span>
             <span class="token keyword">throw</span> ex<span class="token punctuation">;</span>
         <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            failureCause <span class="token operator">=</span> ex<span class="token punctuation">;</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">NestedServletException</span><span class="token punctuation">(</span><span class="token string">"Request processing failed"</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 实际上是每次都会移除ThreadLocal变量</span>
             <span class="token function">resetContextHolders</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> previousLocaleContext<span class="token punctuation">,</span> previousAttributes<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -604,12 +489,7 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
         request<span class="token punctuation">.</span><span class="token function">setAttribute</span><span class="token punctuation">(</span>THEME_RESOLVER_ATTRIBUTE<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>themeResolver<span class="token punctuation">)</span><span class="token punctuation">;</span>
         request<span class="token punctuation">.</span><span class="token function">setAttribute</span><span class="token punctuation">(</span>THEME_SOURCE_ATTRIBUTE<span class="token punctuation">,</span> <span class="token function">getThemeSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>flashMapManager <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            FlashMap inputFlashMap <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>flashMapManager<span class="token punctuation">.</span><span class="token function">retrieveAndUpdate</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> response<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>inputFlashMap <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                request<span class="token punctuation">.</span><span class="token function">setAttribute</span><span class="token punctuation">(</span>INPUT_FLASH_MAP_ATTRIBUTE<span class="token punctuation">,</span> Collections<span class="token punctuation">.</span><span class="token function">unmodifiableMap</span><span class="token punctuation">(</span>inputFlashMap<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            request<span class="token punctuation">.</span><span class="token function">setAttribute</span><span class="token punctuation">(</span>OUTPUT_FLASH_MAP_ATTRIBUTE<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">FlashMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            request<span class="token punctuation">.</span><span class="token function">setAttribute</span><span class="token punctuation">(</span>FLASH_MAP_MANAGER_ATTRIBUTE<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>flashMapManager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// 分发处理</span>
@@ -632,7 +512,7 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
         WebAsyncManager asyncManager <span class="token operator">=</span> WebAsyncUtils<span class="token punctuation">.</span><span class="token function">getAsyncManager</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
             ModelAndView mv <span class="token operator">=</span> null<span class="token punctuation">;</span>
-            Exception dispatchException <span class="token operator">=</span> null<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
             <span class="token keyword">try</span> <span class="token punctuation">{</span>
                 <span class="token comment" spellcheck="true">// 如果是文件上传，将request封装为MultipartHttpServletRequest</span>
                 processedRequest <span class="token operator">=</span> <span class="token function">checkMultipart</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -683,11 +563,9 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
                 <span class="token comment" spellcheck="true">// 执行拦截器，逆序，HandlerInterceptor#postHandle</span>
                 mappedHandler<span class="token punctuation">.</span><span class="token function">applyPostHandle</span><span class="token punctuation">(</span>processedRequest<span class="token punctuation">,</span> response<span class="token punctuation">,</span> mv<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                dispatchException <span class="token operator">=</span> ex<span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// ...</span>
             <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// As of 4.3, we're processing Errors thrown from handler methods as well,</span>
-                <span class="token comment" spellcheck="true">// making them available for @ExceptionHandler methods and other scenarios.</span>
-                dispatchException <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">NestedServletException</span><span class="token punctuation">(</span><span class="token string">"Handler dispatch failed"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// ...</span>
             <span class="token punctuation">}</span>
             <span class="token comment" spellcheck="true">// ViewResolver根据ModelAndView得到View，跳转到指定页面，调用拦截器的AfterCompletion</span>
             <span class="token function">processDispatchResult</span><span class="token punctuation">(</span>processedRequest<span class="token punctuation">,</span> response<span class="token punctuation">,</span> mappedHandler<span class="token punctuation">,</span> mv<span class="token punctuation">,</span> dispatchException<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -695,23 +573,32 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
             <span class="token comment" spellcheck="true">// 异常也要调用，倒序执行，HandlerInterceptor#afterCompletion</span>
             <span class="token function">triggerAfterCompletion</span><span class="token punctuation">(</span>processedRequest<span class="token punctuation">,</span> response<span class="token punctuation">,</span> mappedHandler<span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 异常也要调用拦截器的AfterCompletion</span>
-            <span class="token function">triggerAfterCompletion</span><span class="token punctuation">(</span>processedRequest<span class="token punctuation">,</span> response<span class="token punctuation">,</span> mappedHandler<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">NestedServletException</span><span class="token punctuation">(</span><span class="token string">"Handler processing failed"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
             <span class="token keyword">if</span> <span class="token punctuation">(</span>asyncManager<span class="token punctuation">.</span><span class="token function">isConcurrentHandlingStarted</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// Instead of postHandle and afterCompletion</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>mappedHandler <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    mappedHandler<span class="token punctuation">.</span><span class="token function">applyAfterConcurrentHandlingStarted</span><span class="token punctuation">(</span>processedRequest<span class="token punctuation">,</span> response<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">// ...</span>
             <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// Clean up any resources used by a multipart request.</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>multipartRequestParsed<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token function">cleanupMultipart</span><span class="token punctuation">(</span>processedRequest<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">// ...</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
 <p>细节太多，let’s call it a day.</p>
+<hr>
+<p>一年后再看，这些都是什么X啊。。。已经看不懂了。。。</p>
+<p>整理一下：</p>
+<p>每个DispatcherServlet都拥自己的WebApplicationContext，它继承了ApplicationContext。</p>
+<p>SpringMvc会创建为Web应用创建两个容器。</p>
+<p>一个容器处理Web相关，如Controller，这里称为web容器。</p>
+<p>一个容器处理基础业务，如Service，这里称为业务容器。</p>
+<p>业务容器先于web容器初始化，web容器初始化时，会将业务容器作为父容器（比如Controller依赖Service）。</p>
+<ol>
+<li><p>请求来到DispatcherServlet。</p>
+</li>
+<li><p>找到请求的URL对应的HandlerMapping的Handler的拦截器链，包括了要执行的方法。</p>
+</li>
+<li><p>HandlerAdapter根据Handler，反射调用真正的方法处理请求。</p>
+</li>
+</ol>
 <hr>
 <p>附，如果不想使用内置Tomcat容器：</p>
 <p>SpringServletContainerInitializer</p>
@@ -742,16 +629,12 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
                          */</span>
                         initializers<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token punctuation">(</span>WebApplicationInitializer<span class="token punctuation">)</span> ReflectionUtils<span class="token punctuation">.</span><span class="token function">accessibleConstructor</span><span class="token punctuation">(</span>waiClass<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
                     <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ServletException</span><span class="token punctuation">(</span><span class="token string">"Failed to instantiate WebApplicationInitializer class"</span><span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">// ...</span>
                     <span class="token punctuation">}</span>
                 <span class="token punctuation">}</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>initializers<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            servletContext<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"No Spring WebApplicationInitializer types detected on classpath"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        servletContext<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>initializers<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" Spring WebApplicationInitializers detected on classpath"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         AnnotationAwareOrderComparator<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span>initializers<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">for</span> <span class="token punctuation">(</span>WebApplicationInitializer initializer <span class="token operator">:</span> initializers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// onStartup</span>
@@ -776,14 +659,7 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
     <span class="token punctuation">}</span></code></pre>
 <p>WebApplicationContextUtils#registerWebApplicationScopes</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">registerWebApplicationScopes</span><span class="token punctuation">(</span>ConfigurableListableBeanFactory beanFactory<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> ServletContext sc<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        beanFactory<span class="token punctuation">.</span><span class="token function">registerScope</span><span class="token punctuation">(</span>WebApplicationContext<span class="token punctuation">.</span>SCOPE_REQUEST<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">RequestScope</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        beanFactory<span class="token punctuation">.</span><span class="token function">registerScope</span><span class="token punctuation">(</span>WebApplicationContext<span class="token punctuation">.</span>SCOPE_SESSION<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">SessionScope</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>sc <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            ServletContextScope appScope <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServletContextScope</span><span class="token punctuation">(</span>sc<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            beanFactory<span class="token punctuation">.</span><span class="token function">registerScope</span><span class="token punctuation">(</span>WebApplicationContext<span class="token punctuation">.</span>SCOPE_APPLICATION<span class="token punctuation">,</span> appScope<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// Register as ServletContext attribute, for ContextCleanupListener to detect it.</span>
-            sc<span class="token punctuation">.</span><span class="token function">setAttribute</span><span class="token punctuation">(</span>ServletContextScope<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> appScope<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token comment" spellcheck="true">// 注册ServletRequest的ObjectFactory，用来依赖注入ServletRequest对象</span>
         beanFactory<span class="token punctuation">.</span><span class="token function">registerResolvableDependency</span><span class="token punctuation">(</span>ServletRequest<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">RequestObjectFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 注册ServletResponse的ObjectFactory，用来依赖注入ServletResponse对象</span>
@@ -792,9 +668,7 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
         beanFactory<span class="token punctuation">.</span><span class="token function">registerResolvableDependency</span><span class="token punctuation">(</span>HttpSession<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">SessionObjectFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 注册WebRequest的ObjectFactory，用来依赖注入WebRequest对象</span>
         beanFactory<span class="token punctuation">.</span><span class="token function">registerResolvableDependency</span><span class="token punctuation">(</span>WebRequest<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">WebRequestObjectFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>jsfPresent<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            FacesDependencyRegistrar<span class="token punctuation">.</span><span class="token function">registerFacesDependencies</span><span class="token punctuation">(</span>beanFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
     <span class="token punctuation">}</span></code></pre>
 <p>WebApplicationContextUtils.RequestObjectFactory</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"serial"</span><span class="token punctuation">)</span>
@@ -805,18 +679,13 @@ org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoCo
             <span class="token keyword">return</span> <span class="token function">currentRequestAttributes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
 
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> String <span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token string">"Current HttpServletRequest"</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
     <span class="token punctuation">}</span></code></pre>
 <p>WebApplicationContextUtils#currentRequestAttributes</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">static</span> ServletRequestAttributes <span class="token function">currentRequestAttributes</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 从当前请求处理线程获取ServletRequestAttributes对象，进而获取ServletRequest，ServletResponse，HttpSession，WebRequest对象</span>
         RequestAttributes requestAttr <span class="token operator">=</span> RequestContextHolder<span class="token punctuation">.</span><span class="token function">currentRequestAttributes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>requestAttr <span class="token keyword">instanceof</span> <span class="token class-name">ServletRequestAttributes</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Current request is not a servlet request"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
         <span class="token keyword">return</span> <span class="token punctuation">(</span>ServletRequestAttributes<span class="token punctuation">)</span> requestAttr<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>

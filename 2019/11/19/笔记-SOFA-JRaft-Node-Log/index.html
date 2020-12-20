@@ -7,7 +7,7 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-SOFA-JRaft-Node-Log | Reunion...</title>
+    <title>[笔记]-SOFA-JRaft-Node-Log | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
@@ -26,7 +26,7 @@ IncrementAndGetRequestProcessor#handleRequest
     
     <meta property="og:title" content="[笔记]-SOFA-JRaft-Node-Log" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -1369,6 +1369,23 @@ IncrementAndGetRequestProcessor#handleRequest
         response<span class="token punctuation">.</span><span class="token function">setValue</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>counterServer<span class="token punctuation">.</span><span class="token function">getFsm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">return</span> response<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
+<hr>
+<p>JRaft整个链路几乎都是Batch的，依靠Disruptor的MPSC模型批量消费：</p>
+<ul>
+<li><p>批量提交Task；</p>
+</li>
+<li><p>批量网络发送，Pipeline复制Log；</p>
+</li>
+<li><p>本地IO批量写入；</p>
+</li>
+<li><p>批量应用到状态机；</p>
+</li>
+<li><p>Leader持久化Log和向Follower发送Log是并行的，向所有Follower发送Log也是并行的；</p>
+</li>
+<li><p>整个链路基于回调，完全不阻塞；</p>
+</li>
+</ul>
+<p>官方文档说，JRaft虽然是Batch，但不会累积请求，看代码，猜测应该是Disruptor的处理？不然那就是累积了。</p>
 
 				</div>
 				<!-- about -->

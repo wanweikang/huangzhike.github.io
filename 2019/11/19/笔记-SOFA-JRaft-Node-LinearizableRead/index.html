@@ -7,7 +7,7 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-SOFA-JRaft-Node-LinearizableRead | Reunion...</title>
+    <title>[笔记]-SOFA-JRaft-Node-LinearizableRead | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
@@ -15,15 +15,21 @@
     <meta name="description"
         content="关于一致性，这篇文章讲得挺好的。
 线性一致读，不能直接从当前Leader节点读，因为无法确定当前Leader仍是Leader，比如网络分区。
-Raft Log同写请求一样，读请求也走一遍Raft协议，但开销较大。
-ReadIndex ReadLeader将自己当前Log的CommitIndex记录到">
+
+Raft Log：
+
+同写请求一样，读请求也走一遍Raft协议，但开销较大。
+
+ReadIndex Read
+
+Leader将自己当前Log的CommitI">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta property="og:title" content="[笔记]-SOFA-JRaft-Node-LinearizableRead" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -91,25 +97,33 @@ ReadIndex ReadLeader将自己当前Log的CommitIndex记录到">
 				<div class="article-content">
 				<p>关于一致性，<a href="https://www.cnblogs.com/hzmark/p/consistency_model.html" target="_blank" rel="noopener">这篇文章</a>讲得挺好的。</p>
 <p>线性一致读，不能直接从当前Leader节点读，因为无法确定当前Leader仍是Leader，比如网络分区。</p>
-<h4 id="Raft-Log"><a href="#Raft-Log" class="headerlink" title="Raft Log"></a>Raft Log</h4><p>同写请求一样，读请求也走一遍Raft协议，但开销较大。</p>
-<h4 id="ReadIndex-Read"><a href="#ReadIndex-Read" class="headerlink" title="ReadIndex Read"></a>ReadIndex Read</h4><p>Leader将自己当前Log的CommitIndex记录到ReadIndex。</p>
-<p>Leader向Follower发起一轮Heartbeat，如果半数以上节点返回了对应响应，那么就能确定自己仍是Leader。</p>
-<p>Leader等待自己的状态机执行，直到ApplyIndex超过了ReadIndex，这样就能安全的提供线性一致读，不管读的时候是否仍是Leader。</p>
-<p>Leader执行读请求，将结果返回给Client。</p>
+<ol>
+<li>Raft Log：</li>
+</ol>
+<p>同写请求一样，读请求也走一遍Raft协议，但开销较大。</p>
+<ol start="2">
+<li>ReadIndex Read</li>
+</ol>
+<p>Leader将自己当前Log的CommitIndex记录到ReadIndex。</p>
+<p>Leader向Follower发起一轮心跳，如果半数以上节点响应，就能确定自己仍是Leader。</p>
+<p>Leader等待自己的状态机执行，直到ApplyIndex超过了ReadIndex，这样不管此时是否仍是Leader，读都是安全的。</p>
 <p>其实也可以从Follower读，但是当Follower进度落后太多的情况下，响应时间会变长。</p>
-<h4 id="Lease-Read"><a href="#Lease-Read" class="headerlink" title="Lease Read"></a>Lease Read</h4><p>类似ReadIndex，但省去了Log和网络交互。</p>
-<p>Leader取一个比ElectionTimeout小一个数量级的租期（Lease），在租约期内不会发生选举，确保了Leader不会变，所以可以略过心跳。</p>
-<h4 id="Wait-Free"><a href="#Wait-Free" class="headerlink" title="Wait Free"></a>Wait Free</h4><p>节点有两个状态，日志状态和状态机状态，Leader的日志状态表示当前集群最新的数据状态，因为所有的写请求一定都先记录在日志中。</p>
-<p>只要保证当前时刻，当前节点状态机是最新即可，但是Leader节点的状态机不一定是最新的，比如新当选的Leader。</p>
-<p>当Leader已经成功应用了自己任期的第一条日志后，状态机状态一定是满足线性一致读的。</p>
+<ol start="3">
+<li>Lease Read</li>
+</ol>
+<p>Leader有个比选举超时小一个数量级的租期（Lease），在租约期内不会发生选举，确保Leader不会变，不需要心跳。</p>
+<p>省去了Log和网络交互。</p>
+<ol start="4">
+<li>Wait Free</li>
+</ol>
+<p>节点有两个状态，日志状态和状态机状态。</p>
+<p>Leader的日志状态代表当前集群最新的数据状态，因为所有写请求一定都先记录在日志中。</p>
+<p>只要保证当前时刻，当前节点状态机是最新即可，但Leader节点的状态机不一定是最新的，比如新当选的Leader。</p>
+<p>Leader成功应用了自己任期的第一条日志后，状态机状态一定是满足线性一致读的。</p>
 <hr>
 <p>NodeImpl#readIndex</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">readIndex</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> requestContext<span class="token punctuation">,</span> <span class="token keyword">final</span> ReadIndexClosure done<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 节点在关闭</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>shutdownLatch <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// ...</span>
-        <span class="token punctuation">}</span>
         <span class="token comment" spellcheck="true">// ...</span>
         <span class="token comment" spellcheck="true">// 提交至ReadOnlyService的RingBuffer</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span>readOnlyService<span class="token punctuation">.</span><span class="token function">addRequest</span><span class="token punctuation">(</span>requestContext<span class="token punctuation">,</span> done<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -117,16 +131,10 @@ ReadIndex ReadLeader将自己当前Log的CommitIndex记录到">
 <p>ReadOnlyServiceImpl#addRequest</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addRequest</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> reqCtx<span class="token punctuation">,</span> <span class="token keyword">final</span> ReadIndexClosure closure<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 服务正在关闭</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>shutdownLatch <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            Utils<span class="token punctuation">.</span><span class="token function">runClosureInThread</span><span class="token punctuation">(</span>closure<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Status</span><span class="token punctuation">(</span>RaftError<span class="token punctuation">.</span>EHOSTDOWN<span class="token punctuation">,</span> <span class="token string">"Was stopped"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Service already shutdown."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
             EventTranslator<span class="token operator">&lt;</span>ReadIndexEvent<span class="token operator">></span> translator <span class="token operator">=</span> <span class="token punctuation">(</span>event<span class="token punctuation">,</span> sequence<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
-                event<span class="token punctuation">.</span>done <span class="token operator">=</span> closure<span class="token punctuation">;</span>
-                event<span class="token punctuation">.</span>requestContext <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Bytes</span><span class="token punctuation">(</span>reqCtx<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                event<span class="token punctuation">.</span>startTime <span class="token operator">=</span> Utils<span class="token punctuation">.</span><span class="token function">monotonicMs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// ...</span>
             <span class="token punctuation">}</span><span class="token punctuation">;</span>
             <span class="token keyword">int</span> retryTimes <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
             <span class="token comment" spellcheck="true">// 重试发布</span>
@@ -135,16 +143,7 @@ ReadIndex ReadLeader将自己当前Log的CommitIndex记录到">
                 <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>readIndexQueue<span class="token punctuation">.</span><span class="token function">tryPublishEvent</span><span class="token punctuation">(</span>translator<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
                     <span class="token keyword">break</span><span class="token punctuation">;</span>
                 <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                    retryTimes<span class="token operator">++</span><span class="token punctuation">;</span>
-                    <span class="token comment" spellcheck="true">// 超过发布重试次数</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>retryTimes <span class="token operator">></span> MAX_ADD_REQUEST_RETRY_TIMES<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        <span class="token comment" spellcheck="true">// 提交到线程池执行回调</span>
-                        Utils<span class="token punctuation">.</span><span class="token function">runClosureInThread</span><span class="token punctuation">(</span>closure<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Status</span><span class="token punctuation">(</span>RaftError<span class="token punctuation">.</span>EBUSY<span class="token punctuation">,</span> <span class="token string">"Node is busy, has too many read-only requests."</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                        <span class="token comment" spellcheck="true">// ...</span>
-                        <span class="token keyword">return</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                    <span class="token comment" spellcheck="true">// 让一下线程</span>
-                    ThreadHelper<span class="token punctuation">.</span><span class="token function">onSpinWait</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// ...</span>
                 <span class="token punctuation">}</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">final</span> Exception e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -155,14 +154,7 @@ ReadIndex ReadLeader将自己当前Log的CommitIndex记录到">
 <p>ReadOnlyServiceImpl$ReadIndexEventHandler#onEvent</p>
 <pre class=" language-java"><code class="language-java">        <span class="token annotation punctuation">@Override</span>
         <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onEvent</span><span class="token punctuation">(</span><span class="token keyword">final</span> ReadIndexEvent newEvent<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">long</span> sequence<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> endOfBatch<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 要关闭</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>newEvent<span class="token punctuation">.</span>shutdownLatch <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 先执行</span>
-                <span class="token function">executeReadIndexEvents</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                newEvent<span class="token punctuation">.</span>shutdownLatch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">return</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// ...</span>
             <span class="token comment" spellcheck="true">// 加入列表</span>
             <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>newEvent<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token comment" spellcheck="true">// 到达批量大小</span>
@@ -217,7 +209,7 @@ ReadIndex ReadLeader将自己当前Log的CommitIndex记录到">
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
 <hr>
-<p>节点状态是Leader的情况</p>
+<p>当前节点状态是Leader的情况。</p>
 <p>NodeImpl#readLeader</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">readLeader</span><span class="token punctuation">(</span><span class="token keyword">final</span> ReadIndexRequest request<span class="token punctuation">,</span> <span class="token keyword">final</span> ReadIndexResponse<span class="token punctuation">.</span>Builder respBuilder<span class="token punctuation">,</span> <span class="token keyword">final</span> RpcResponseClosure<span class="token operator">&lt;</span>ReadIndexResponse<span class="token operator">></span> closure<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 合法人数，即满足大多数节点的数量</span>
@@ -235,22 +227,14 @@ ReadIndex ReadLeader将自己当前Log的CommitIndex记录到">
         <span class="token keyword">final</span> <span class="token keyword">long</span> lastCommittedIndex <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>ballotBox<span class="token punctuation">.</span><span class="token function">getLastCommittedIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 如果Leader上台后还没提交过日志，拒绝读请求</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>logManager<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span>lastCommittedIndex<span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>currTerm<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// Reject read only request when this leader has not committed any log entry at its term</span>
-            closure<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Status</span><span class="token punctuation">(</span>RaftError<span class="token punctuation">.</span>EAGAIN<span class="token punctuation">,</span> <span class="token string">"ReadIndex request rejected because leader has not committed any log entry at its term, logIndex=%d, currTerm=%d."</span><span class="token punctuation">,</span> lastCommittedIndex<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>currTerm<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
             <span class="token keyword">return</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
         <span class="token comment" spellcheck="true">// 当前提交的位置</span>
         respBuilder<span class="token punctuation">.</span><span class="token function">setIndex</span><span class="token punctuation">(</span>lastCommittedIndex<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 说明是来自Follower的读请求</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getPeerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// request from follower, check if the follower is in current conf.</span>
-            <span class="token keyword">final</span> PeerId peer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PeerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            peer<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 检查该Follower是否在配置中，不在就拒绝</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>conf<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>peer<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                closure<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Status</span><span class="token punctuation">(</span>RaftError<span class="token punctuation">.</span>EPERM<span class="token punctuation">,</span> <span class="token string">"Peer %s is not in current configuration: {}."</span><span class="token punctuation">,</span> peer<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>conf<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">return</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
         <span class="token comment" spellcheck="true">// 默认ReadOnlySafe</span>
         ReadOnlyOption readOnlyOpt <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>raftOptions<span class="token punctuation">.</span><span class="token function">getReadOnlyOptions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -286,80 +270,7 @@ ReadIndex ReadLeader将自己当前Log的CommitIndex记录到">
                 <span class="token keyword">break</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
-<p>心跳回调</p>
-<p>NodeImpl$ReadIndexHeartbeatResponseClosure#run</p>
-<pre class=" language-java"><code class="language-java">        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token keyword">final</span> Status status<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>isDone<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">return</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>status<span class="token punctuation">.</span><span class="token function">isOk</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token function">getResponse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSuccess</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>ackSuccess<span class="token operator">++</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>ackFailures<span class="token operator">++</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 加一是包含Leader自己的投票，如果得到了过半节点的承认，说明自己仍是Leader</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>ackSuccess <span class="token operator">+</span> <span class="token number">1</span> <span class="token operator">>=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>quorum<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 成功</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>respBuilder<span class="token punctuation">.</span><span class="token function">setSuccess</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment" spellcheck="true">// 设置响应</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>closure<span class="token punctuation">.</span><span class="token function">setResponse</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>respBuilder<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment" spellcheck="true">// 执行回调</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>closure<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>Status<span class="token punctuation">.</span><span class="token function">OK</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>isDone <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 过半节点都没有承认你，你还是自己下台吧</span>
-            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>ackFailures <span class="token operator">>=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>failPeersThreshold<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 失败</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>respBuilder<span class="token punctuation">.</span><span class="token function">setSuccess</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>closure<span class="token punctuation">.</span><span class="token function">setResponse</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>respBuilder<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>closure<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>Status<span class="token punctuation">.</span><span class="token function">OK</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>isDone <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span></code></pre>
-<p>响应回调</p>
-<p>ReadOnlyServiceImpl$ReadIndexResponseClosure#run</p>
-<pre class=" language-java"><code class="language-java">        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token keyword">final</span> Status status<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>status<span class="token punctuation">.</span><span class="token function">isOk</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token function">notifyFail</span><span class="token punctuation">(</span>status<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">return</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 之前生成的响应</span>
-            <span class="token keyword">final</span> ReadIndexResponse readIndexResponse <span class="token operator">=</span> <span class="token function">getResponse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>readIndexResponse<span class="token punctuation">.</span><span class="token function">getSuccess</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token function">notifyFail</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Status</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">"Fail to run ReadIndex task, maybe the leader stepped down."</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">return</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// Success</span>
-            <span class="token keyword">final</span> ReadIndexStatus readIndexStatus <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReadIndexStatus</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>states<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>request<span class="token punctuation">,</span> readIndexResponse<span class="token punctuation">.</span><span class="token function">getIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">final</span> ReadIndexState state <span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>states<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 记录当前提交的Log的索引</span>
-                state<span class="token punctuation">.</span><span class="token function">setIndex</span><span class="token punctuation">(</span>readIndexResponse<span class="token punctuation">.</span><span class="token function">getIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token keyword">boolean</span> doUnlock <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-            ReadOnlyServiceImpl<span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span>lock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// 本地状态机已应用到该位置</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>readIndexStatus<span class="token punctuation">.</span><span class="token function">isApplied</span><span class="token punctuation">(</span>ReadOnlyServiceImpl<span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span>fsmCaller<span class="token punctuation">.</span><span class="token function">getLastAppliedIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    ReadOnlyServiceImpl<span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span>lock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    doUnlock <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-                    <span class="token comment" spellcheck="true">// 执行成功回调</span>
-                    <span class="token function">notifySuccess</span><span class="token punctuation">(</span>readIndexStatus<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-                <span class="token comment" spellcheck="true">// 状态机还没应用到该位置</span>
-                <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                    <span class="token comment" spellcheck="true">// 添加到Pending缓存</span>
-                    ReadOnlyServiceImpl<span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span>pendingNotifyStatus<span class="token punctuation">.</span><span class="token function">computeIfAbsent</span><span class="token punctuation">(</span>readIndexStatus<span class="token punctuation">.</span><span class="token function">getIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> k <span class="token operator">-</span><span class="token operator">></span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//</span>
-                            <span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>readIndexStatus<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>doUnlock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    ReadOnlyServiceImpl<span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span>lock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span></code></pre>
-<p>当状态机应用时，有个回调</p>
+<p>当状态机应用时，有个回调。</p>
 <p>FSMCallerImpl#doCommitted</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">doCommitted</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token keyword">long</span> committedIndex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// ...</span>
@@ -379,60 +290,10 @@ ReadIndex ReadLeader将自己当前Log的CommitIndex记录到">
             listener<span class="token punctuation">.</span><span class="token function">onApplied</span><span class="token punctuation">(</span>lastAppliedIndex<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
-<p>ReadOnlyServiceImpl#onApplied</p>
-<pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onApplied</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token keyword">long</span> appliedIndex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// TODO reuse pendingStatuses list?</span>
-        List<span class="token operator">&lt;</span>ReadIndexStatus<span class="token operator">></span> pendingStatuses <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>lock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>pendingNotifyStatus<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">return</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token comment" spellcheck="true">// 返回所有小于已应用位置的</span>
-            <span class="token keyword">final</span> Map<span class="token operator">&lt;</span>Long<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>ReadIndexStatus<span class="token operator">>></span> statuses <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>pendingNotifyStatus<span class="token punctuation">.</span><span class="token function">headMap</span><span class="token punctuation">(</span>appliedIndex<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>statuses <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                pendingStatuses <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span>statuses<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">final</span> Iterator<span class="token operator">&lt;</span>Map<span class="token punctuation">.</span>Entry<span class="token operator">&lt;</span>Long<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>ReadIndexStatus<span class="token operator">>>></span> it <span class="token operator">=</span> statuses<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">while</span> <span class="token punctuation">(</span>it<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">final</span> Map<span class="token punctuation">.</span>Entry<span class="token operator">&lt;</span>Long<span class="token punctuation">,</span> List<span class="token operator">&lt;</span>ReadIndexStatus<span class="token operator">>></span> entry <span class="token operator">=</span> it<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    pendingStatuses<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token comment" spellcheck="true">// 移除</span>
-                    it<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>lock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>pendingStatuses <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>pendingStatuses<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">final</span> ReadIndexStatus status <span class="token operator">:</span> pendingStatuses<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token comment" spellcheck="true">// 通知</span>
-                    <span class="token function">notifySuccess</span><span class="token punctuation">(</span>status<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>ReadOnlyServiceImpl#notifySuccess</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">notifySuccess</span><span class="token punctuation">(</span><span class="token keyword">final</span> ReadIndexStatus status<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// ...</span>
-        <span class="token keyword">final</span> List<span class="token operator">&lt;</span>ReadIndexState<span class="token operator">></span> states <span class="token operator">=</span> status<span class="token punctuation">.</span><span class="token function">getStates</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> <span class="token keyword">int</span> taskCount <span class="token operator">=</span> states<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> taskCount<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> ReadIndexState task <span class="token operator">=</span> states<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">final</span> ReadIndexClosure done <span class="token operator">=</span> task<span class="token punctuation">.</span><span class="token function">getDone</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// stack copy</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>done <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-                done<span class="token punctuation">.</span><span class="token function">setResult</span><span class="token punctuation">(</span>task<span class="token punctuation">.</span><span class="token function">getIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> task<span class="token punctuation">.</span><span class="token function">getRequestContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                done<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>Status<span class="token punctuation">.</span><span class="token function">OK</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>节点状态是Follower的情况</p>
+<hr>
+<p>节点状态是Follower的情况。</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">readFollower</span><span class="token punctuation">(</span><span class="token keyword">final</span> ReadIndexRequest request<span class="token punctuation">,</span> <span class="token keyword">final</span> RpcResponseClosure<span class="token operator">&lt;</span>ReadIndexResponse<span class="token operator">></span> closure<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 当前没有Leader</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>leaderId <span class="token operator">==</span> null <span class="token operator">||</span> <span class="token keyword">this</span><span class="token punctuation">.</span>leaderId<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// ...</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token comment" spellcheck="true">// send request to leader.</span>
         <span class="token keyword">final</span> ReadIndexRequest newRequest <span class="token operator">=</span> ReadIndexRequest<span class="token punctuation">.</span><span class="token function">newBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//</span>
                 <span class="token punctuation">.</span><span class="token function">mergeFrom</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//</span>

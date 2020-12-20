@@ -7,7 +7,7 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-SOFA-JRaft-DistributedLock | Reunion...</title>
+    <title>[笔记]-SOFA-JRaft-DistributedLock | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
@@ -19,20 +19,20 @@
 
 获取锁和释放锁的性能要好；
 
-获得锁是否是原子性的，否则可能导致多个请求都能获取到锁；
+获得锁是原子性的，否则可能导致多个请求都能获取到锁；
 
 网络中断或者宕机无法释放锁时，锁必须被清除；
 
-可重入，本地一个线程中多次获取同一把锁，无需重新获得锁；
+可重入，一个线程中多次获取同一把锁，无需重新获得锁；
 
-阻塞锁和非阻塞锁，阻塞锁即没有获取到锁，则继">
+阻塞锁和非阻塞锁，阻塞锁即没有获取到锁，则继续等待获">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta property="og:title" content="[笔记]-SOFA-JRaft-DistributedLock" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -104,41 +104,41 @@
 <ul>
 <li><p>获取锁和释放锁的性能要好；</p>
 </li>
-<li><p>获得锁是否是原子性的，否则可能导致多个请求都能获取到锁；</p>
+<li><p>获得锁是原子性的，否则可能导致多个请求都能获取到锁；</p>
 </li>
 <li><p>网络中断或者宕机无法释放锁时，锁必须被清除；</p>
 </li>
-<li><p>可重入，本地一个线程中多次获取同一把锁，无需重新获得锁；</p>
+<li><p>可重入，一个线程中多次获取同一把锁，无需重新获得锁；</p>
 </li>
-<li><p>阻塞锁和非阻塞锁，阻塞锁即没有获取到锁，则继续等待获取锁；非阻塞锁即没有获取到锁，不继续等待直接返回获取锁失败；</p>
+<li><p>阻塞锁和非阻塞锁，阻塞锁即没有获取到锁，则继续等待获取锁；非阻塞锁即没有获取到锁，不等待直接返回获取锁失败；</p>
 </li>
 </ul>
 <p>分布式锁的三种实现方式：</p>
 <ul>
 <li><p>基于数据库实现：</p>
 <ul>
-<li>在数据库中创建一张表，包含方法名等字段，并为方法名字段创建唯一索引，执行某个方法需要使用方法名向表中插入数据，成功插入则获取锁，执行结束则删除对应的行数据释放锁。</li>
+<li>在数据库中创建一张表，包含方法名等字段，并为方法名字段创建唯一索引，执行某个方法需要使用方法名向表中插入数据，成功插入则获取锁，执行结束则删除对应的行，释放锁。</li>
 </ul>
 </li>
 <li><p>基于缓存实现：</p>
 <ul>
-<li><p>以Redis为例，因为单Redis节点的分布式锁在Failover时有安全问题，Redis作者提出了集群模式的Redis分布式锁Redlock算法，基于N个完全独立的Redis节点（通常N可以设置成5）；</p>
+<li><p>以Redis为例，单Redis节点的分布式锁在Failover时有安全问题，Redis作者提出了集群模式的Redis分布式锁Redlock算法，基于N个完全独立的Redis节点（通常N可以设置成5）；</p>
 </li>
 <li><p>客户端发起获取锁操作前，先获取当前时间；</p>
 </li>
 <li><p>客户端按顺序依次向N个Redis节点获取锁；</p>
 <ul>
-<li><p>获取操作的参数包含：随机字符串，过期时间（锁的有效时间），获取锁超时（远小于锁的有效时间，使得Redis节点不可用时流程继续进行）；</p>
+<li><p>获取操作的参数包含：随机字符串，锁的过期时间，获取锁超时（远小于锁的有效时间）；</p>
 </li>
-<li><p>客户端向某个Redis节点获取锁失败后（包括节点不可用，锁已被持有等），立即尝试下一个Redis节点；</p>
+<li><p>客户端向某个Redis节点获取锁失败后（节点不可用，锁已被持有等），立即尝试下一个Redis节点；</p>
 </li>
 </ul>
 </li>
-<li><p>客户端计算整个获取锁的过程总耗时，如果客户端从大多数Redis节点成功获取到了锁，并且获取锁的总耗时没有超过锁的有效时间，那么认为最终获取锁成功；否则认为失败；</p>
+<li><p>客户端计算整个获取锁的过程总耗时，如果从大多数Redis节点成功获取到了锁，并且获取锁的总耗时没有超过锁的有效时间，那么认为获取锁成功；</p>
 <ul>
-<li><p>如果最终获取锁成功，此锁的有效时间应该重新计算，它等于最初锁的有效时间减去获取锁过程的总耗时；</p>
+<li><p>如果获取锁成功，此锁的有效时间应该重新计算，等于最初锁的有效时间减去获取锁过程的总耗时；</p>
 </li>
-<li><p>如果最终获取锁失败，那么客户端立即向所有Redis节点发起释放锁的操作；</p>
+<li><p>如果获取锁失败，那么客户端立即向所有Redis节点发起释放锁的操作；</p>
 </li>
 </ul>
 </li>
@@ -150,9 +150,9 @@
 </li>
 <li><p>期望获得锁的线程A在锁目录下创建临时顺序节点；</p>
 </li>
-<li><p>当前线程获取锁目录下所有的子节点，然后获取比自己小的兄弟节点，如果不存在，说明当前线程顺序号最小，获得锁；</p>
+<li><p>当前线程获取锁目录下所有的子节点，然后获取比自己小的兄弟节点，如果不存在，说明获得锁；</p>
 </li>
-<li><p>线程B获取所有节点，判断自己不是最小节点，设置监听比自己次小的节点（只关注比自己次小的节点是为了防止发生羊群效应）；</p>
+<li><p>线程B获取所有节点，判断自己不是最小节点，设置监听比自己次小的节点（防止发生羊群效应）；</p>
 </li>
 <li><p>线程A处理完后，删除自己的节点，线程B监听到变更事件判断自己是否为最小的节点，如果是则获得锁；</p>
 </li>
@@ -257,8 +257,7 @@
     <span class="token punctuation">}</span></code></pre>
 <p>DefaultRheaKVStore#tryLockWith</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> CompletableFuture<span class="token operator">&lt;</span>DistributedLock<span class="token punctuation">.</span>Owner<span class="token operator">></span> <span class="token function">tryLockWith</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> key<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> keepLease<span class="token punctuation">,</span> <span class="token keyword">final</span> DistributedLock<span class="token punctuation">.</span>Acquirer acquirer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">checkState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Requires<span class="token punctuation">.</span><span class="token function">requireNonNull</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token string">"key"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token keyword">final</span> CompletableFuture<span class="token operator">&lt;</span>DistributedLock<span class="token punctuation">.</span>Owner<span class="token operator">></span> future <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CompletableFuture</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token function">internalTryLockWith</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> keepLease<span class="token punctuation">,</span> acquirer<span class="token punctuation">,</span> future<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>failoverRetries<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">return</span> future<span class="token punctuation">;</span>
@@ -282,11 +281,7 @@
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
             <span class="token keyword">final</span> KeyLockRequest request <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KeyLockRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            request<span class="token punctuation">.</span><span class="token function">setKey</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            request<span class="token punctuation">.</span><span class="token function">setKeepLease</span><span class="token punctuation">(</span>keepLease<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            request<span class="token punctuation">.</span><span class="token function">setAcquirer</span><span class="token punctuation">(</span>acquirer<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            request<span class="token punctuation">.</span><span class="token function">setRegionId</span><span class="token punctuation">(</span>region<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            request<span class="token punctuation">.</span><span class="token function">setRegionEpoch</span><span class="token punctuation">(</span>region<span class="token punctuation">.</span><span class="token function">getRegionEpoch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
             <span class="token comment" spellcheck="true">// RPC向Leader调用</span>
             <span class="token keyword">this</span><span class="token punctuation">.</span>rheaKVRpcService<span class="token punctuation">.</span><span class="token function">callAsyncWithRpc</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> closure<span class="token punctuation">,</span> lastCause<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
@@ -309,42 +304,9 @@
         <span class="token keyword">final</span> RequestProcessClosure<span class="token operator">&lt;</span>BaseRequest<span class="token punctuation">,</span> BaseResponse<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">>></span> closure <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RequestProcessClosure</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> bizCtx<span class="token punctuation">,</span> asyncCtx<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment" spellcheck="true">// 根据RegionId获取对应的RegionKVService</span>
         <span class="token keyword">final</span> RegionKVService regionKVService <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>storeEngine<span class="token punctuation">.</span><span class="token function">getRegionKVService</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getRegionId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>regionKVService <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> NoRegionFoundResponse noRegion <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">NoRegionFoundResponse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            noRegion<span class="token punctuation">.</span><span class="token function">setRegionId</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getRegionId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            noRegion<span class="token punctuation">.</span><span class="token function">setError</span><span class="token punctuation">(</span>Errors<span class="token punctuation">.</span>NO_REGION_FOUND<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            noRegion<span class="token punctuation">.</span><span class="token function">setValue</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            closure<span class="token punctuation">.</span><span class="token function">sendResponse</span><span class="token punctuation">(</span>noRegion<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// ...</span>
         <span class="token keyword">switch</span> <span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">magic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>PUT<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>BATCH_PUT<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>PUT_IF_ABSENT<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>GET_PUT<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>COMPARE_PUT<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>DELETE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>DELETE_RANGE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>BATCH_DELETE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>MERGE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>GET<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>MULTI_GET<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>SCAN<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>GET_SEQUENCE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>RESET_SEQUENCE<span class="token operator">:</span>
+            <span class="token comment" spellcheck="true">// ...</span>
                 <span class="token comment" spellcheck="true">// ...</span>
             <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>KEY_LOCK<span class="token operator">:</span>
                 regionKVService<span class="token punctuation">.</span><span class="token function">handleKeyLockRequest</span><span class="token punctuation">(</span><span class="token punctuation">(</span>KeyLockRequest<span class="token punctuation">)</span> request<span class="token punctuation">,</span> closure<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -352,10 +314,7 @@
             <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>KEY_UNLOCK<span class="token operator">:</span>
                 regionKVService<span class="token punctuation">.</span><span class="token function">handleKeyUnlockRequest</span><span class="token punctuation">(</span><span class="token punctuation">(</span>KeyUnlockRequest<span class="token punctuation">)</span> request<span class="token punctuation">,</span> closure<span class="token punctuation">)</span><span class="token punctuation">;</span>
                 <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>NODE_EXECUTE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> BaseRequest<span class="token punctuation">.</span>RANGE_SPLIT<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
+            <span class="token comment" spellcheck="true">// ...</span>
             <span class="token keyword">default</span><span class="token operator">:</span>
                 <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
@@ -377,14 +336,13 @@
             <span class="token comment" spellcheck="true">// ...</span>
             <span class="token comment" spellcheck="true">// 尝试获取锁</span>
             <span class="token keyword">this</span><span class="token punctuation">.</span>rawKVStore<span class="token punctuation">.</span><span class="token function">tryLockWith</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> fencingKey<span class="token punctuation">,</span> request<span class="token punctuation">.</span><span class="token function">isKeepLease</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> acquirer<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">BaseKVStoreClosure</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-
                 <span class="token annotation punctuation">@Override</span>
                 <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token keyword">final</span> Status status<span class="token punctuation">)</span> <span class="token punctuation">{</span>
                     <span class="token comment" spellcheck="true">// 日志成功提交</span>
                     <span class="token keyword">if</span> <span class="token punctuation">(</span>status<span class="token punctuation">.</span><span class="token function">isOk</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
                         response<span class="token punctuation">.</span><span class="token function">setValue</span><span class="token punctuation">(</span><span class="token punctuation">(</span>DistributedLock<span class="token punctuation">.</span>Owner<span class="token punctuation">)</span> <span class="token function">getData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
                     <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                        <span class="token function">setFailure</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> response<span class="token punctuation">,</span> status<span class="token punctuation">,</span> <span class="token function">getError</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token comment" spellcheck="true">// ...</span>
                     <span class="token punctuation">}</span>
                     closure<span class="token punctuation">.</span><span class="token function">sendResponse</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
                 <span class="token punctuation">}</span>
@@ -424,35 +382,18 @@
         <span class="token keyword">int</span> index <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
         <span class="token keyword">int</span> applied <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// KVState输出列表，虽然有个newInstance，其实是从对象池拿</span>
-            KVStateOutputList kvStates <span class="token operator">=</span> KVStateOutputList<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// ...</span>
             <span class="token keyword">while</span> <span class="token punctuation">(</span>it<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
                 KVOperation kvOp<span class="token punctuation">;</span>
                 <span class="token keyword">final</span> KVClosureAdapter done <span class="token operator">=</span> <span class="token punctuation">(</span>KVClosureAdapter<span class="token punctuation">)</span> it<span class="token punctuation">.</span><span class="token function">done</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment" spellcheck="true">// Leader节点有回调</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>done <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token comment" spellcheck="true">// 直接获取KVOperation</span>
-                    <span class="token comment" spellcheck="true">// ...</span>
-                <span class="token punctuation">}</span>
-                <span class="token comment" spellcheck="true">// 说明是Follower，回调不会被序列化</span>
-                <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                    <span class="token comment" spellcheck="true">// 反序列化KVOperation</span>
-                    <span class="token comment" spellcheck="true">// ...</span>
-                <span class="token punctuation">}</span>
-                <span class="token keyword">final</span> KVState first <span class="token operator">=</span> kvStates<span class="token punctuation">.</span><span class="token function">getFirstElement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token comment" spellcheck="true">// 没看懂这些操作的意图</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>first <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>first<span class="token punctuation">.</span><span class="token function">isSameOp</span><span class="token punctuation">(</span>kvOp<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    applied <span class="token operator">+=</span> <span class="token function">batchApplyAndRecycle</span><span class="token punctuation">(</span>first<span class="token punctuation">.</span><span class="token function">getOpByte</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> kvStates<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    kvStates <span class="token operator">=</span> KVStateOutputList<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">// ...</span>
                 <span class="token comment" spellcheck="true">// 将KVOperation和回调包装为KVState加入</span>
                 kvStates<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>KVState<span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span>kvOp<span class="token punctuation">,</span> done<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
                 <span class="token operator">++</span>index<span class="token punctuation">;</span>
                 it<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
             <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>kvStates<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">final</span> KVState first <span class="token operator">=</span> kvStates<span class="token punctuation">.</span><span class="token function">getFirstElement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">assert</span> first <span class="token operator">!=</span> null<span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// ...</span>
                 <span class="token comment" spellcheck="true">// 执行</span>
                 applied <span class="token operator">+=</span> <span class="token function">batchApplyAndRecycle</span><span class="token punctuation">(</span>first<span class="token punctuation">.</span><span class="token function">getOpByte</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> kvStates<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
@@ -462,80 +403,13 @@
             <span class="token comment" spellcheck="true">// ...</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
-<p>KVStoreStateMachine#batchApplyAndRecycle</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">int</span> <span class="token function">batchApplyAndRecycle</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token keyword">byte</span> opByte<span class="token punctuation">,</span> <span class="token keyword">final</span> KVStateOutputList kvStates<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> <span class="token keyword">int</span> size <span class="token operator">=</span> kvStates<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token function">batchApply</span><span class="token punctuation">(</span>opByte<span class="token punctuation">,</span> kvStates<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span> size<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-            RecycleUtil<span class="token punctuation">.</span><span class="token function">recycle</span><span class="token punctuation">(</span>kvStates<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>KVStoreStateMachine#batchApply</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">batchApply</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token keyword">byte</span> opType<span class="token punctuation">,</span> <span class="token keyword">final</span> KVStateOutputList kvStates<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">switch</span> <span class="token punctuation">(</span>opType<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>PUT<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>PUT_IF_ABSENT<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>PUT_LIST<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>DELETE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>DELETE_RANGE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>DELETE_LIST<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>GET_SEQUENCE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>NODE_EXECUTE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>KEY_LOCK<span class="token operator">:</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>rawKVStore<span class="token punctuation">.</span><span class="token function">batchTryLockWith</span><span class="token punctuation">(</span>kvStates<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>KEY_LOCK_RELEASE<span class="token operator">:</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>rawKVStore<span class="token punctuation">.</span><span class="token function">batchReleaseLockWith</span><span class="token punctuation">(</span>kvStates<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>GET<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>MULTI_GET<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>SCAN<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>GET_PUT<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>COMPARE_PUT<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>MERGE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>RESET_SEQUENCE<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">case</span> KVOperation<span class="token punctuation">.</span>RANGE_SPLIT<span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-            <span class="token keyword">default</span><span class="token operator">:</span>
-                <span class="token comment" spellcheck="true">// ...</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>BatchRawKVStore#batchTryLockWith</p>
-<pre class=" language-java"><code class="language-java">    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">batchTryLockWith</span><span class="token punctuation">(</span><span class="token keyword">final</span> KVStateOutputList kvStates<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> l <span class="token operator">=</span> kvStates<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> l<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> KVState kvState <span class="token operator">=</span> kvStates<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">final</span> KVOperation op <span class="token operator">=</span> kvState<span class="token punctuation">.</span><span class="token function">getOp</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">final</span> Pair<span class="token operator">&lt;</span>Boolean<span class="token punctuation">,</span> DistributedLock<span class="token punctuation">.</span>Acquirer<span class="token operator">></span> acquirerPair <span class="token operator">=</span> op<span class="token punctuation">.</span><span class="token function">getAcquirerPair</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">tryLockWith</span><span class="token punctuation">(</span>op<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> op<span class="token punctuation">.</span><span class="token function">getFencingKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> acquirerPair<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> acquirerPair<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> kvState<span class="token punctuation">.</span><span class="token function">getDone</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
 <p>以MemoryRawKVStore为例</p>
 <p>MemoryRawKVStore#tryLockWith</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>
     <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">tryLockWith</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> key<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> fencingKey<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> keepLease<span class="token punctuation">,</span> <span class="token keyword">final</span> DistributedLock<span class="token punctuation">.</span>Acquirer acquirer<span class="token punctuation">,</span> <span class="token keyword">final</span> KVStoreClosure closure<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// ...</span>
         <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// The algorithm relies on the assumption that while there is no synchronized clock across the processes,</span>
-            <span class="token comment" spellcheck="true">// still the local time in every process flows approximately at the same rate,</span>
-            <span class="token comment" spellcheck="true">// with an error which is small compared to the auto-release time of the lock.</span>
+
             <span class="token keyword">final</span> <span class="token keyword">long</span> now <span class="token operator">=</span> acquirer<span class="token punctuation">.</span><span class="token function">getLockingTimestamp</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token keyword">final</span> <span class="token keyword">long</span> timeoutMillis <span class="token operator">=</span> acquirer<span class="token punctuation">.</span><span class="token function">getLeaseMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token keyword">final</span> ByteArray wrappedKey <span class="token operator">=</span> ByteArray<span class="token punctuation">.</span><span class="token function">wrap</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -685,8 +559,10 @@
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
 <p>关于FencingToken，FencingToken是一个单调递增的Long类型，标明锁的持有者的先后顺序。</p>
-<p>按照官方的说法，假如ClientA获取锁后发生了很长的GC，这段时间内没有自动续租，并且锁过期了，然后ClientB获取了该锁，在ClientA从GC中恢复后，它不知道自己的锁已经失效了，锁就会同时被两个Client持有。</p>
-<p>不过，这个和FencingToken有啥关系呢，难道是需要加一个判断，FencingToken代表的锁执行后，小于该FencingToken的锁就无效？</p>
+<p>按照官方的说法，假如ClientA获取锁后发生了很长的GC，这段时间内没有自动续租，于是锁过期了。</p>
+<p>然后ClientB获取了该锁，在ClientA从GC中恢复后，它不知道自己的锁已经失效了，锁就会同时被两个Client持有。</p>
+<p>难道需要续约时加一个判断，新的FencingToken生成后，小于该FencingToken的锁就无效？</p>
+<p>不过也不是百分百可靠。</p>
 <hr>
 <p>DefaultDistributedLock#unlock</p>
 <pre class=" language-java"><code class="language-java">    <span class="token annotation punctuation">@Override</span>

@@ -7,36 +7,24 @@
     </script>
     <meta charset="utf-8">
     
-    <title>[笔记]-一致性协议 | Reunion...</title>
+    <title>[笔记]-一致性协议 | 草木禾</title>
     
     <meta name="author" content="huangzhike">
     
     
     <meta name="description"
-        content="Paxos协议
+        content="CAP：分布式系统不可能同时满足一致性（Consistency），可用性（Availability）和分区容错性（Partition Tolerance），最多只能同时满足两个。
 
-角色：
+一致性：数据在多个副本之间能保持一致，读操作总是能读取到之前完成的写操作结果。
 
-
-Proposer：提案者，提出提案。
-
-Acceptor：表决者，对提案作出投票。
-
-Learner：学习者，不参与提案，只接收已确定的提案，提高集群处理读请求的能力。
-
-
-一个节点可以同时充当多个角色。
-
-提案选定分Prepare阶段和Accept阶段。
-
-Prepa">
+可用性：系统提供的服务一直处于可用的">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta property="og:title" content="[笔记]-一致性协议" />
     
-    <meta property="og:site_name" content="Reunion..." />
+    <meta property="og:site_name" content="草木禾" />
     
     
     <!-- favicon -->
@@ -102,7 +90,31 @@ Prepa">
 				</div>
 				
 				<div class="article-content">
-				<p>Paxos协议</p>
+				<p>CAP：分布式系统不可能同时满足一致性（Consistency），可用性（Availability）和分区容错性（Partition Tolerance），最多只能同时满足两个。</p>
+<ul>
+<li><p>一致性：数据在多个副本之间能保持一致，读操作总是能读取到之前完成的写操作结果。</p>
+</li>
+<li><p>可用性：系统提供的服务一直处于可用的状态。</p>
+</li>
+<li><p>分区容错性：遇到网络分区故障时，仍然能够对外提供满足一致性和可用性的服务。</p>
+</li>
+</ul>
+<p>分区：不同的节点被切分在不同的子网络中，子网络间可能通信不正常，但子网络内部通信正常。</p>
+<p>如果不出现分区，那么就能够同时满足CAP。</p>
+<p>如果出现了分区，可以不必使用强一致性，先将数据暂存，稍后再补偿，实现最终一致性。</p>
+<hr>
+<p>BASE：Basically Available（基本可用），Soft State（软状态），Eventually Consistent（最终一致性）。</p>
+<p>核心：无法做到强一致性（Strong Consistency），但可以达到最终一致性（Eventual Consistency）。</p>
+<ul>
+<li><p>基本可用：系统出现了故障，但还是能用，可能是响应时间变长，或者服务降级。</p>
+</li>
+<li><p>软状态：允许系统中的数据存在中间状态（不一致），允许不同节点的数据副本存在数据延时。</p>
+</li>
+<li><p>最终一致性：软状态有个期限，期限过后，所有副本保持数据一致性。</p>
+</li>
+</ul>
+<hr>
+<p>Paxos协议</p>
 <ul>
 <li>角色：</li>
 </ul>
