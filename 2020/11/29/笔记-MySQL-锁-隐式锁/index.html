@@ -20,11 +20,11 @@ SELECT FOR UPDATE：
 
 通过主键访问数据：
 
-访问主键，判断是否存在隐式锁（Implicit Lock），然后加显示锁。
+访问主键，判断是否存在隐式锁（Implicit Lock），然后加显式锁。
 
 通过二级索引访问数据（需要回表的情况）：
 
-访问二级索引，判断是否存在隐式锁，然后加显示锁，接着回表主键判断是否存在">
+访问二级索引，判断是否存在隐式锁，然后加显式锁，接着回表主键判断是否存在">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -104,29 +104,29 @@ SELECT FOR UPDATE：
 <ol>
 <li>通过主键访问数据：</li>
 </ol>
-<p>访问主键，判断是否存在隐式锁（Implicit Lock），然后加显示锁。</p>
+<p>访问主键，判断是否存在隐式锁（Implicit Lock），然后加显式锁。</p>
 <ol start="2">
 <li>通过二级索引访问数据（需要回表的情况）：</li>
 </ol>
-<p>访问二级索引，判断是否存在隐式锁，然后加显示锁，接着回表主键判断是否存在隐式锁，然后加显示锁。</p>
+<p>访问二级索引，判断是否存在隐式锁，然后加显式锁，接着回表主键判断是否存在隐式锁，然后加显式锁。</p>
 <ul>
 <li>UPDATE / DELETE：</li>
 </ul>
 <ol>
 <li>通过主键访问修改数据：</li>
 </ol>
-<p>数据查找阶段，主键判断是否存在隐式锁，然后加显示锁。</p>
+<p>数据查找阶段，主键判断是否存在隐式锁，然后加显式锁。</p>
 <p>数据修改阶段，如果修改了其它二级索引，那么为对应的二级索引加隐式锁。</p>
 <ol start="2">
 <li>通过二级索引访问修改数据：</li>
 </ol>
-<p>数据查找阶段，二级索引判断是否存在隐式锁（可能需要回表），二级索引加显示锁。</p>
-<p>数据修改阶段，回表修改主键数据加显示锁，然后为二级索引（修改字段涉及的二级索引，修改主键则包含所有二级索引）加隐式锁。</p>
+<p>数据查找阶段，二级索引判断是否存在隐式锁（可能需要回表），二级索引加显式锁。</p>
+<p>数据修改阶段，回表修改主键数据加显式锁，然后为二级索引（修改字段涉及的二级索引，修改主键则包含所有二级索引）加隐式锁。</p>
 <ul>
 <li>INSERT</li>
 </ul>
 <p>如果没有冲突，那么始终为隐式锁。</p>
-<p>隐式锁不会占用lock结构体，因此在SHOW ENGINE INNODB STATUS里看不到，除非其他事务将其转换为显示锁。</p>
+<p>隐式锁不会占用lock结构体，因此在SHOW ENGINE INNODB STATUS里看不到，除非其他事务将其转换为显式锁。</p>
 <p>隐式锁可以理解为没有主动加锁。</p>
 <hr>
 <p>可重复读级别。</p>
@@ -237,7 +237,7 @@ RECORD LOCKS space id <span class="token number">501</span> page <span class="to
 RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> lock_mode X locks rec but <span class="token operator">not</span> gap
 RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">b</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> lock_mode X locks rec but <span class="token operator">not</span> gap
 RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">5</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">d</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94487</span> lock_mode X locks rec but <span class="token operator">not</span> gap</code></pre>
-<p>INSERT后，主键和各个索引都加了隐式锁，通过其他事务，逐步把这些隐式锁转换为显示锁。</p>
+<p>INSERT后，主键和各个索引都加了隐式锁，通过其他事务，逐步把这些隐式锁转换为显式锁。</p>
 <hr>
 <p>通过主键DELETE</p>
 <pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- S1</span>
@@ -260,8 +260,8 @@ RECORD LOCKS space id <span class="token number">501</span> page <span class="to
 RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">3</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> lock_mode X locks rec but <span class="token operator">not</span> gap
 RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">4</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">b</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> lock_mode X locks rec but <span class="token operator">not</span> gap
 RECORD LOCKS space id <span class="token number">501</span> page <span class="token keyword">no</span> <span class="token number">5</span> n bits <span class="token number">80</span> <span class="token keyword">index</span> <span class="token number">d</span> <span class="token keyword">of</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>test<span class="token punctuation">`</span><span class="token punctuation">.</span><span class="token punctuation">`</span>t<span class="token punctuation">`</span> trx id <span class="token number">94493</span> lock_mode X locks rec but <span class="token operator">not</span> gap</code></pre>
-<p>通过主键DELETE，主键加了显示锁，因为数据查找阶段要加显示锁。</p>
-<p>但是各个二级索引加的是隐式锁，通过其他事务，逐步把这些隐式锁转换为显示锁。</p>
+<p>通过主键DELETE，主键加了显式锁，因为数据查找阶段要加显式锁。</p>
+<p>但是各个二级索引加的是隐式锁，通过其他事务，逐步把这些隐式锁转换为显式锁。</p>
 <hr>
 <p>通过二级索引DELETE</p>
 <pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- S1</span>
@@ -313,8 +313,8 @@ RECORD LOCKS space id 501 page no 5 n bits 80 index d of table `test`.`t` trx id
 Record lock, heap no 12 PHYSICAL RECORD: n_fields 2; compact format; info bits 32
 0: len 1; hex 61; asc a;;
 1: len 4; hex 8000270f; asc   '</span> <span class="token punctuation">;</span><span class="token punctuation">;</span></code></pre>
-<p>通过二级索引DELETE，二级索引加了显示锁，然后主键加了显示锁，因为数据查找阶段先查找二级索引然后回表。</p>
-<p>但对于语句没有直接涉及的二级索引，加的是隐式锁（标记删除然后更新page_update_max_trx_id），通过其他事务，把隐式锁转换为显示锁。</p>
+<p>通过二级索引DELETE，二级索引加了显式锁，然后主键加了显式锁，因为数据查找阶段先查找二级索引然后回表。</p>
+<p>但对于语句没有直接涉及的二级索引，加的是隐式锁（标记删除然后更新page_update_max_trx_id），通过其他事务，把隐式锁转换为显式锁。</p>
 <hr>
 <p>通过主键UPDATE，更新了二级索引。</p>
 <pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- S1</span>

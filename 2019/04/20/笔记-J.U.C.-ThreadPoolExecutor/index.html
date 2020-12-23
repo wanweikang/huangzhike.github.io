@@ -13,14 +13,11 @@
     
     
     <meta name="description"
-        content="2019-12-09更新
-想做一条安静的咸鱼。
-
-ThreadPoolExecutor
+        content="ThreadPoolExecutor
 public class ThreadPoolExecutor extends AbstractExecutorService {
     /**
      * 高3位表示线程池状态，低29位表示线程池线程个数
-">
+     * workerCount：当前有效的线">
     
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -93,47 +90,17 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 				</div>
 				
 				<div class="article-content">
-				<p>2019-12-09更新</p>
-<p>想做一条安静的咸鱼。</p>
-<hr>
-<p>ThreadPoolExecutor</p>
+				<p>ThreadPoolExecutor</p>
 <pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ThreadPoolExecutor</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractExecutorService</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">/**
      * 高3位表示线程池状态，低29位表示线程池线程个数
-     * workerCount：当前有效的线程数，最大线程数是2^29-1=536870911
+     * workerCount：当前有效的线程数，最大线程数是2^29 - 1 = 536870911
      * runState：线程池的五种状态，Running、Shutdown、Stop、Tidying、Terminate
-     * 初始化为RUNNING状态，并且任务数量初始化为0
      */</span>
     <span class="token keyword">private</span> <span class="token keyword">final</span> AtomicInteger ctl <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicInteger</span><span class="token punctuation">(</span><span class="token function">ctlOf</span><span class="token punctuation">(</span>RUNNING<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
     <span class="token comment" spellcheck="true">/**
-     * 正在运行，能够接收新任务，处理已添加的任务
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> RUNNING <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token operator">&lt;&lt;</span> COUNT_BITS<span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">/**
-     * shutdown，不接收新任务，但能处理已添加的任务
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> SHUTDOWN <span class="token operator">=</span> <span class="token number">0</span> <span class="token operator">&lt;&lt;</span> COUNT_BITS<span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">/**
-     * shutdownNow，不接收新任务，不处理已添加的任务，中断正在处理的任务
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> STOP <span class="token operator">=</span> <span class="token number">1</span> <span class="token operator">&lt;&lt;</span> COUNT_BITS<span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">/**
-     * 所有任务已停止，准备清理
-     * 变为TIDYING状态时，执行ThreadPoolExecutor#terminated
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> TIDYING <span class="token operator">=</span> <span class="token number">2</span> <span class="token operator">&lt;&lt;</span> COUNT_BITS<span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">/**
-     * 已终止，TIDYING状态时，执行完ThreadPoolExecutor#terminated后
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> TERMINATED <span class="token operator">=</span> <span class="token number">3</span> <span class="token operator">&lt;&lt;</span> COUNT_BITS<span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">/**
-     * 阻塞工作队列，一般用ArrayBlockingQueue或LinkedBlockingQueue
+     * 阻塞队列，一般用ArrayBlockingQueue或LinkedBlockingQueue
      */</span>
     <span class="token keyword">private</span> <span class="token keyword">final</span> BlockingQueue<span class="token operator">&lt;</span>Runnable<span class="token operator">></span> workQueue<span class="token punctuation">;</span>
 
@@ -153,16 +120,6 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
     <span class="token keyword">private</span> <span class="token keyword">final</span> Condition termination <span class="token operator">=</span> mainLock<span class="token punctuation">.</span><span class="token function">newCondition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
     <span class="token comment" spellcheck="true">/**
-     * 线程池中线程数量曾经达到过的最大值
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">int</span> largestPoolSize<span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">/**
-     * ThreadFactory对象，用于创建线程
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">volatile</span> ThreadFactory threadFactory<span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">/**
      * 拒绝策略
      */</span>
     <span class="token keyword">private</span> <span class="token keyword">volatile</span> RejectedExecutionHandler handler<span class="token punctuation">;</span>
@@ -171,13 +128,6 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * 线程存活时间
      */</span>
     <span class="token keyword">private</span> <span class="token keyword">volatile</span> <span class="token keyword">long</span> keepAliveTime<span class="token punctuation">;</span>
-
-    <span class="token keyword">private</span> <span class="token keyword">volatile</span> <span class="token keyword">boolean</span> allowCoreThreadTimeOut<span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">/**
-     * 已完成任务数量
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">long</span> completedTaskCount<span class="token punctuation">;</span>
 
     <span class="token comment" spellcheck="true">/**
      * 核心池大小
@@ -195,6 +145,30 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
     <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> RejectedExecutionHandler defaultHandler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AbortPolicy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token punctuation">}</span></code></pre>
+<p>ThreadPoolExecutor$Worker</p>
+<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
+     * 继承了AQS，实现了Runnable，所以是线程，也是锁，但是不可重入
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">Worker</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractQueuedSynchronizer</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">/**
+         * 工作的线程
+         */</span>
+        <span class="token keyword">final</span> Thread thread<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">/**
+         * 创建Worker时指定的任务，如果有的话
+         */</span>
+        Runnable firstTask<span class="token punctuation">;</span>
+
+        <span class="token function">Worker</span><span class="token punctuation">(</span>Runnable firstTask<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 设置AQS的同步状态为-1，防止runWorker前，线程没启动就被interrupt中断，直到调用runWorker，才设为0</span>
+            <span class="token comment" spellcheck="true">// 另外如果大于0，说明锁被获取</span>
+            <span class="token function">setState</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// inhibit interrupts until runWorker</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>firstTask <span class="token operator">=</span> firstTask<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 通过线程工厂来创建线程</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>thread <span class="token operator">=</span> <span class="token function">getThreadFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">newThread</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span></code></pre>
 <hr>
 <p>AbstractExecutorService#submit</p>
 <pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
@@ -241,6 +215,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">addWorker</span><span class="token punctuation">(</span>command<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
             <span class="token function">reject</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
+<hr>
 <p>ThreadPoolExecutor#addWorker</p>
 <pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
      * 创建线程
@@ -323,41 +298,6 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         <span class="token comment" spellcheck="true">// 返回任务是否启动</span>
         <span class="token keyword">return</span> workerStarted<span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
-<p>ThreadPoolExecutor$Worker</p>
-<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">/**
-     * 继承了AQS，实现了Runnable，所以是线程，也是锁，但是不可重入
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">Worker</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractQueuedSynchronizer</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span> <span class="token punctuation">{</span>
-
-        <span class="token comment" spellcheck="true">/**
-         * 工作的线程
-         */</span>
-        <span class="token keyword">final</span> Thread thread<span class="token punctuation">;</span>
-
-        <span class="token comment" spellcheck="true">/**
-         * 创建Worker时指定的任务，如果有的话
-         */</span>
-        Runnable firstTask<span class="token punctuation">;</span>
-
-        <span class="token comment" spellcheck="true">/**
-         * 完成的任务数
-         */</span>
-        <span class="token keyword">volatile</span> <span class="token keyword">long</span> completedTasks<span class="token punctuation">;</span>
-
-        <span class="token function">Worker</span><span class="token punctuation">(</span>Runnable firstTask<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 设置AQS的同步状态为-1，防止runWorker前，线程没启动就被interrupt中断，直到调用runWorker，才设为0</span>
-            <span class="token comment" spellcheck="true">// 另外如果大于0，说明锁被获取</span>
-            <span class="token function">setState</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// inhibit interrupts until runWorker</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>firstTask <span class="token operator">=</span> firstTask<span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 通过线程工厂来创建线程</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>thread <span class="token operator">=</span> <span class="token function">getThreadFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">newThread</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span></code></pre>
-<p>ThreadPoolExecutor$Worker#run</p>
-<pre class=" language-java"><code class="language-java">        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">runWorker</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span></code></pre>
 <p>ThreadPoolExecutor$Worker#runWorker</p>
 <pre class=" language-java"><code class="language-java">    <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">runWorker</span><span class="token punctuation">(</span>ThreadPoolExecutor<span class="token punctuation">.</span>Worker w<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         Thread wt <span class="token operator">=</span> Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -572,19 +512,24 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 <hr>
 <p>线程池的作用：</p>
 <ul>
-<li><p>减少了创建和销毁线程的次数，每个工作线程都可以被重复利用</p>
+<li><p>减少创建和销毁线程的次数，每个线程都可以被重复利用。</p>
 </li>
-<li><p>调整线程池中工作线程的数量，限流作用</p>
+<li><p>自动管理线程数量，即使线程因为异常退出。</p>
+</li>
+<li><p>调整线程池中工作线程的数量，限流。</p>
+</li>
+<li><p>业务隔离。</p>
 </li>
 </ul>
 <p>建议：</p>
 <ul>
-<li><p>CPU密集型：避免线程争抢资源，无用的切换线程上下文，配置尽量少的线程，比如CPU个数；</p>
+<li><p>CPU密集型：避免无用的线程上下文切换，配置尽量少的线程，如CPU核数；</p>
 </li>
-<li><p>IO密集型：需要长时间等待，可以配置多一些线程，比如CPU数的两倍。</p>
+<li><p>IO密集型：需要长时间等待，可以配置多一些线程，如CPU核数的两倍。</p>
 </li>
 </ul>
 <p>获取CPU核心数：<code>Runtime.getRuntime().availableProcessors()</code>。</p>
+<hr>
 
 				</div>
 				<!-- about -->

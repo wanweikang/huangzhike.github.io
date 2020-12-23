@@ -117,7 +117,7 @@ ForkJoin远远比我知道的复杂，不过也足够满足好奇心了。虽然
 
         CompletableFuture<span class="token punctuation">.</span><span class="token function">allOf</span><span class="token punctuation">(</span>cf1<span class="token punctuation">,</span> cf2<span class="token punctuation">,</span> cf3<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
-<p>这里的CompletableFuture如果没有显示指定线程池的话，使用的就是ForkJoin的commonPool。</p>
+<p>这里的CompletableFuture如果没有显式指定线程池的话，使用的就是ForkJoin的commonPool。</p>
 <hr>
 <p>Collection#parallelStream</p>
 <p>并行流使用的是全局的ForkJoinPool的commonPool，如果机器只有2个CPU核心，那么只有两个线程，全局共享。</p>
